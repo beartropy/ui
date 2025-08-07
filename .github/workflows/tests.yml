@@ -1,0 +1,35 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: [8.2, 8.3]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+          tools: composer:v2
+          extensions: mbstring, dom, fileinfo, sqlite3
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress
+
+      - name: Dump optimized autoload
+        run: composer dump-autoload -o
+
+      - name: Run tests (Pest)
+        run: vendor/bin/pest --colors=always --compact
