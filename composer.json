@@ -2,7 +2,6 @@
     "name": "beartropy/ui",
     "description": "UI components for Laravel",
     "type": "library",
-    "version": "0.0.1",
     "autoload": {
         "psr-4": {
             "Beartropy\\Ui\\": "src/"
