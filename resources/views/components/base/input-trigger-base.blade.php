@@ -15,7 +15,7 @@
 <div class="flex flex-col {{ $disabled ? $colorPreset['disabled'] : '' }}">
 
     <div class="flex items-center w-full group transition-all shadow-sm rounded
-        {{ $colorPreset['bg'] ?? '' }}
+        {{ ($outline) ? '' : $colorPreset['bg'] }}
         {{ $borderClass }}
         {{ $ringClass }}
         {{ $colorPreset['disabled_bg'] ?? '' }}

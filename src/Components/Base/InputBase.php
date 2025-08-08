@@ -12,8 +12,9 @@ class InputBase extends BeartropyComponent
     public $placeholder;
     public $type;
     public $hasError;
+    public $outline;
 
-    public function __construct($size = 'md', $color = null, $label = null, $placeholder = null, $type = 'text', $hasError=false)
+    public function __construct($size = 'md', $color = null, $label = null, $placeholder = null, $type = 'text', $hasError=false, $outline=false)
     {
         $this->size = $size;
         $this->color = $color;
@@ -21,6 +22,7 @@ class InputBase extends BeartropyComponent
         $this->placeholder = $placeholder;
         $this->type = $type;
         $this->hasError = $hasError;
+        $this->outline = $outline;
     }
 
     public function render()
