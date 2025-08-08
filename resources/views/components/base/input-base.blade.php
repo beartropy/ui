@@ -48,8 +48,9 @@
             </div>
         @endif
 
-        <div class="flex-1 min-w-0 h-full flex items-center" wire:ignore>
+        <div class="flex-1 min-w-0 h-full flex items-center" wire:key="{{ $inputId }}">
             <input
+                id="{{ $inputId }}"
                 x-ref="input"
                 x-bind:type="(typeof showPassword !== 'undefined' && showPassword) ? 'text' : '{{ $type }}'"
                 class="w-full min-w-0 bg-transparent outline-none border-none shadow-none beartropy-input

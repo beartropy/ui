@@ -11,9 +11,10 @@
     $isAlpineExternal = !!$xModel;
     $isAlpineLocal = !$isLivewire && !$isAlpineExternal;
 
+
     $extraInputAttrs = [];
     if ($isLivewire) {
-        // Livewire (no hace falta x-model)
+        $inputId = $attributes->wire('model')->value();
     } elseif ($isAlpineExternal) {
         $extraInputAttrs['x-model'] = $xModel;
     } elseif ($isAlpineLocal) {
