@@ -65,7 +65,7 @@
     <div class="flex items-center justify-between mt-2"  x-show="paginated">
         <div class="text-sm {{$colorPreset['pagination_info']}}">
             Showing <span x-text="filtered.length ? start + 1 : 0"></span>
-            to <span x-text="start + paginated.length"></span>
+            to <span x-text="start + paginatedRows.length"></span>
             of <span x-text="filtered.length"></span> results
         </div>
         <nav>
