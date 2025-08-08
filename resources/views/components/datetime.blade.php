@@ -46,6 +46,8 @@
         custom-error="{{ $customError }}"
         hint="{{ $hint }}"
         has-error="{{ $hasError }}"
+        :fill="$attributes->has('fill')"
+        :outline="$attributes->has('outline')"
     >
         <x-slot name="button">
             <div @click="open = !open" class="flex items-center gap-2 min-h-[1.6em] cursor-pointer w-full truncate ">

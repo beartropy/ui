@@ -191,6 +191,8 @@
         custom-error="{{ $customError }}"
         hint="{{ $hint }}"
         has-error="{{ $hasError }}"
+        :fill="$attributes->has('fill')"
+        :outline="$attributes->has('outline')"
     >
         @isset($start)
             <x-slot name="start">{!! $start !!}</x-slot>
