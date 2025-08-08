@@ -11,6 +11,8 @@ class Radio extends BeartropyComponent
         public $color = null,
         public $label = null,
         public $customError = null,
+        public $grouped = false,
+        public $groupedError = false,
     ){}
 
 

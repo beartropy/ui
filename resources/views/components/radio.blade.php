@@ -52,5 +52,7 @@
             </span>
         @endif
     </label>
-    <x-beartropy-ui::support.field-help :error-message="$finalError" :hint="$hint ?? null" />
+    @if(!$grouped)
+        <x-beartropy-ui::support.field-help :error-message="$finalError" :hint="$hint ?? null" />
+    @endif
 </div>
