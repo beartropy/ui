@@ -30,7 +30,7 @@
 
     <div
         class="flex items-center group w-full rounded transition-all shadow-sm
-            {{ $colorPreset['bg'] ?? '' }}
+            {{ ($outline) ? '' : $colorPreset['bg'] }}
             {{ $borderClass ?? '' }}
             {{ $ringClass ?? '' }}
             {{ $colorPreset['disabled_bg'] ?? '' }}
