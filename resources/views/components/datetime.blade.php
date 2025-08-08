@@ -89,7 +89,7 @@
                 placement="right"
                 side="bottom"
                 color="{{ $presetNames['color'] }}"
-                preset-for="select"
+                preset-for="datetime"
                 width="w-full max-w-[25rem]"
                 x-show="open"
                 x-transition

@@ -22,7 +22,7 @@
     x-transition:leave-end="opacity-0 scale-95"
     class="absolute z-50 {{ $alignment }} {{ $vertical }} {{ $width }}
         rounded-lg
-        {{ $colorPreset['dropdown_border'] }}
+        {{ $colorPreset['dropdown_border'] ?? '' }}
         {{ $colorPreset['dropdown_bg'] }}
         {{ $colorPreset['dropdown_shadow'] }}
         origin-top beartropy-thin-scrollbar"
