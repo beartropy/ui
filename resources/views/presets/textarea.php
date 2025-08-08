@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'default_color' => 'beartropy',
     'colors' => [
         'beartropy' => [
             'main'           => 'relative bg-white dark:bg-gray-900/50 text-gray-800 dark:text-gray-100 border rounded-md shadow-sm focus-within:ring-2 transition',

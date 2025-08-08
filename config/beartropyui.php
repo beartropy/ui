@@ -34,6 +34,64 @@ return [
         'variant' => env('BEARTROPY_UI_ICON_VARIANT', 'outline'), // outline | solid
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Component Defaults
+    |--------------------------------------------------------------------------
+    | Here you can set the default values for each component.
+    | These values will be used if no specific attributes are provided when using the component.
+    | You can override these defaults by passing attributes directly to the component.
+    */
+    'component_defaults' => [
+        'input' => [
+            'color' => env('BEARTROPY_UI_INPUT_COLOR', 'beartropy'),
+            'size' => env('BEARTROPY_UI_INPUT_SIZE', 'md'),
+            'outline' => env('BEARTROPY_UI_INPUT_OUTLINE', true)
+        ],
+        'select' => [
+            'color' => env('BEARTROPY_UI_SELECT_COLOR', 'beartropy'),
+            'size' => env('BEARTROPY_UI_SELECT_SIZE', 'md'),
+            'outline' => env('BEARTROPY_UI_SELECT_OUTLINE', true)
+        ],
+        'textarea' => [
+            'color' => env('BEARTROPY_UI_TEXTAREA_COLOR', 'beartropy'),
+            'size' => env('BEARTROPY_UI_TEXTAREA_SIZE', 'md'),
+            'outline' => env('BEARTROPY_UI_TEXTAREA_OUTLINE', true)
+        ],
+        'datetime' => [
+            'color' => env('BEARTROPY_UI_DATETIME_COLOR', 'beartropy'),
+            'size' => env('BEARTROPY_UI_DATETIME_SIZE', 'md'),
+            'outline' => env('BEARTROPY_UI_DATETIME_OUTLINE', true)
+        ],
+        'tag' => [
+            'color' => env('BEARTROPY_UI_TAG_COLOR', 'beartropy'),
+            'size' => env('BEARTROPY_UI_TAG_SIZE', 'md'),
+            'outline' => env('BEARTROPY_UI_TAG_OUTLINE', true)
+        ],
+        'button' => [
+            'color' => env('BEARTROPY_UI_BUTTON_COLOR', 'beartropy'),
+            'size' => env('BEARTROPY_UI_BUTTON_SIZE', 'md')
+        ],
+        'badge' => [
+            'color' => env('BEARTROPY_UI_BADGE_COLOR', 'beartropy'),
+            'size' => env('BEARTROPY_UI_BADGE_SIZE', 'sm'),
+        ],
+        'checkbox' => [
+            'color' => env('BEARTROPY_UI_CHECKBOX_COLOR', 'beartropy'),
+            'size' => env('BEARTROPY_UI_CHECKBOX_SIZE', 'md'),
+        ],
+        'radio' => [
+            'color' => env('BEARTROPY_UI_RADIO_COLOR', 'beartropy'),
+            'size' => env('BEARTROPY_UI_RADIO_SIZE', 'md'),
+        ],
+        'toggle' => [
+            'color' => env('BEARTROPY_UI_TOGGLE_COLOR', 'beartropy'),
+            'size' => env('BEARTROPY_UI_TOGGLE_SIZE', 'md'),
+        ],
+        'table' => [
+            'color' => env('BEARTROPY_UI_TABLE_COLOR', 'beartropy'),
+        ],
+    ],
 
     'presets' => [
         'sizes'        => beartropy_preset('sizes'),

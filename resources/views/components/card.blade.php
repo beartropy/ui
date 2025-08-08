@@ -1,5 +1,5 @@
 @php
-    [$colorPreset, $sizePreset, $presetNames] = $getComponentPresets('card', null);
+    [$colorPreset, $sizePreset] = $getComponentPresets('card', null);
 @endphp
 
 <div {{ $attributes->merge(['class' => $colorPreset['wrapper']]) }}>

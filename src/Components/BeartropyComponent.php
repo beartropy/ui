@@ -5,22 +5,16 @@ namespace Beartropy\Ui\Components;
 use Beartropy\Ui\Traits\HasErrorBag;
 use Beartropy\Ui\Traits\HasPresets;
 use Illuminate\View\Component;
-use Illuminate\Support\Collection;
-use PhpParser\Node\Expr\Throw_;
 
 abstract class BeartropyComponent extends Component
 {
 
     use
+        HasPresets,
         HasErrorBag
         ;
 
     public function __construct() {}
-
-/*     public function getExtraRenderData()
-    {
-        return $this->getErrorState();
-    } */
 
     public function getErrorState($attributes = null, $errors = null, $error = null)
     {
@@ -96,116 +90,6 @@ abstract class BeartropyComponent extends Component
         $sizePreset = $sizes[$size] ?? $sizes['md'];
         return $sizePreset;
     }
-
-    public function getComponentPresets($componentName = null, $attributes = null, $defaultSize = 'md', $defaultColor = null, $defaultVariant = null)
-    {
-        $componentName = $componentName ?: $this->componentName;
-        $attributes = $attributes ?: $this->attributes->getAttributes();
-
-        $magicProps = array_keys($attributes);
-
-        // --- SIZE ---
-        $sizes = config('beartropyui.presets.sizes');
-        $size = $this->size ?? null;
-        if (!$size) {
-            foreach ($magicProps as $maybeSize) {
-                if (isset($sizes[$maybeSize])) {
-                    $size = $maybeSize;
-                    break;
-                }
-            }
-        }
-        $size = $size ?: $defaultSize;
-        $sizePreset = $sizes[$size] ?? $sizes['md'];
-
-        // --- COMPONENT PRESETS ---
-        $componentPresets = config('beartropyui.presets.' . $componentName);
-
-        // --- Detect variantes ---
-        $colorsArray = $componentPresets['colors'] ?? [];
-        $firstValue = reset($colorsArray);
-        $hasVariants = is_array($firstValue) && is_array(reset($firstValue)); // <--- Robusto
-
-        // --- VARIANT (solo si hay variantes) ---
-        $variant = property_exists($this, 'variant') ? $this->variant ?? null : null;
-        if ($hasVariants) {
-            $allVariants = array_keys($colorsArray);
-            if (!$variant) {
-                foreach ($magicProps as $maybeVariant) {
-                    if (in_array($maybeVariant, $allVariants)) {
-                        $variant = $maybeVariant;
-                        break;
-                    }
-                }
-            }
-            if (!$variant) {
-                $variant = $componentPresets['default_variant'] ?? $allVariants[0] ?? null;
-            }
-        } else {
-            $variant = null;
-        }
-
-        // --- COLOR ---
-        $color = $this->color ?? null;
-        if ($hasVariants) {
-            // Colores válidos dentro de la variante actual
-            $validColors = $variant && isset($colorsArray[$variant])
-                ? array_keys($colorsArray[$variant])
-                : [];
-
-            if (!$color) {
-                foreach ($magicProps as $maybeColor) {
-                    if (in_array($maybeColor, $validColors)) {
-                        $color = $maybeColor;
-                        break;
-                    }
-                }
-            }
-            $defaultColor = $componentPresets['default_color'] ?? $validColors[0] ?? null;
-            if (!$color || !in_array($color, $validColors)) {
-                $color = $defaultColor;
-            }
-
-            // Resuelve el preset final
-            try {
-                $colorPreset = $colorsArray[$variant][$color] ?? $colorsArray[$componentPresets['default_variant']][$componentPresets['default_color']];
-            } catch (\Throwable $th) {
-                throw new \Exception("Color preset for component '{$componentName}' not found. Variant: {$variant}, Color: {$color}");
-            }
-        } else {
-            // Sin variantes: colores de primer nivel
-            $validColors = array_keys($colorsArray);
-
-            if (!$color) {
-                foreach ($magicProps as $maybeColor) {
-                    if (in_array($maybeColor, $validColors)) {
-                        $color = $maybeColor;
-                        break;
-                    }
-                }
-            }
-            $defaultColor = $componentPresets['default_color'] ?? $validColors[0] ?? null;
-            if (!$color || !in_array($color, $validColors)) {
-                $color = $defaultColor;
-            }
-
-            // Resuelve el preset final
-            $colorPreset = $colorsArray[$color] ?? reset($colorsArray);
-        }
-
-        // --- Opcional: Sincronizá los valores resueltos a la instancia ---
-        $this->size = $size;
-        if (property_exists($this, 'variant')) $this->variant = $variant;
-        $this->color = $color;
-
-        $presetNames = [
-            'size' => $size,
-            'variant' => $variant,
-            'color' => $color
-        ];
-        return [$colorPreset, $sizePreset, $presetNames];
-    }
-
 
     public function getColorPreset($component, $color = null, $variant = null)
     {

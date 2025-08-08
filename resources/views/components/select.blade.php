@@ -1,5 +1,5 @@
 @php
-    [$colorPreset, $sizePreset, $presetNames] = $getComponentPresets('input');
+    [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('input');
     [$colorDropdown, $sizeDropdown] = $getComponentPresets('select');
     [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
     [$hasWireModel, $wireModelValue] = $getWireModelState();

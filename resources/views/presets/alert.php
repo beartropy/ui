@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'default_color' => 'beartropy',
     'colors' => [
         'beartropy' => [
             'main' => 'flex items-start gap-3 p-4 rounded-lg shadow bg-beartropy-100 text-beartropy-900',

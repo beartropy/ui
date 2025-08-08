@@ -1,9 +1,10 @@
 @php
-    [$colorPreset, $sizePreset] = $getComponentPresets('input');
+    [$colorPreset, $sizePreset, $shouldFill] = $getComponentPresets('input');
     $disabled = $attributes->get('disabled');
     $inputId = $attributes->get('id') ?? 'input-' . uniqid();
     $borderClass = $hasError ? ($colorPreset['border_error'] ?? $colorPreset['border']) : $colorPreset['border'];
     $ringClass = $hasError ? ($colorPreset['ring_error'] ?? $colorPreset['ring']) : $colorPreset['ring'];
+
 @endphp
 
 <div
@@ -32,7 +33,7 @@
 >
     <div
         class="flex items-center group w-full min-w-0 overflow-hidden rounded transition-all shadow-sm
-            {{ ($outline) ? '' : $colorPreset['bg'] }}
+            {{ ($shouldFill) ? $colorPreset['bg'] : '' }}
             {{ $borderClass ?? '' }}
             {{ $ringClass ?? '' }}
             {{ $colorPreset['disabled_bg'] ?? '' }}

@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'default_color' => 'beartropy',
     'colors' => [
         'beartropy' => [
             'wrapper'        => 'flex flex-col',

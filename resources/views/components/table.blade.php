@@ -1,5 +1,5 @@
 @php
-    [$colorPreset, $sizePreset, $presetNames] = $getComponentPresets('table');
+    [$colorPreset, $sizePreset] = $getComponentPresets('table');
 @endphp
 
 <div

@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'default_color' => 'beartropy',
     'colors' => [
         'beartropy' => [
             'bg' => 'bg-white dark:bg-gray-900/50',

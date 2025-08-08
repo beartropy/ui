@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'default_color' => 'beartropy',
     'colors' => [
         'beartropy' => [
             'searchbox'             => 'mb-1 ml-0.5 max-w-[20rem]',

@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'default_color' => 'beartropy',
     'colors' => [
         'beartropy' => [
             'bg'     => 'bg-white dark:bg-gray-900/95',
@@ -19,6 +18,5 @@ return [
             'border' => 'border border-neutral-400 dark:border-neutral-800',
             'shadow' => 'shadow-lg',
         ],
-        // ...otros colores tailwind que ya tengas
     ],
 ];

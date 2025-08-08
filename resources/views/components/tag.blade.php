@@ -1,5 +1,5 @@
 @php
-    [$colorPreset, $sizePreset] = $getComponentPresets('input');
+    [$colorPreset, $sizePreset, $shouldFill] = $getComponentPresets('input');
     [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
     [$hasWireModel, $wireModelValue] = $getWireModelState();
     $inputId = $attributes->get('id') ?? 'taginput-' . uniqid();
@@ -30,7 +30,7 @@
 
     <div
         class="flex items-center group w-full rounded transition-all shadow-sm
-            {{ ($outline) ? '' : $colorPreset['bg'] }}
+            {{ ($shouldFill) ? $colorPreset['bg'] : '' }}
             {{ $borderClass ?? '' }}
             {{ $ringClass ?? '' }}
             {{ $colorPreset['disabled_bg'] ?? '' }}

@@ -1,5 +1,5 @@
 @php
-    [$colorPreset, $sizePreset] = $getComponentPresets('input');
+    [$colorPreset, $sizePreset, $shouldFill] = $getComponentPresets('input');
     $disabled = $attributes->get('disabled');
     $inputId = $attributes->get('id') ?? 'input-trigger-' . uniqid();
 
@@ -15,7 +15,7 @@
 <div class="flex flex-col {{ $disabled ? $colorPreset['disabled'] : '' }}">
 
     <div class="flex items-center w-full group transition-all shadow-sm rounded
-        {{ ($outline) ? '' : $colorPreset['bg'] }}
+        {{ ($shouldFill) ? $colorPreset['bg'] : '' }}
         {{ $borderClass }}
         {{ $ringClass }}
         {{ $colorPreset['disabled_bg'] ?? '' }}

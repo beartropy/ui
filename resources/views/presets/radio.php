@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'default_color' => 'beartropy',
     'colors' => [
         'beartropy' => [
             'checked' => 'peer-checked:border-beartropy-600 peer-checked:bg-beartropy-600',

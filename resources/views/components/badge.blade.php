@@ -1,5 +1,5 @@
 @php
-    [$colorPreset, $sizePreset, $presetNames] = $getComponentPresets('badge', null, 'sm');
+    [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('badge', null, 'sm');
 @endphp
 <span {{ $attributes->merge(['class' => $class ?? '']) }}>
     <x-beartropy-ui::base.badge-base

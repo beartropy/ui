@@ -1,8 +1,6 @@
 <?php
 
 return [
-    'default_variant' => 'solid',
-    'default_color'   => 'beartropy',
     'colors' => [
         'solid' => [
             'beartropy' => [

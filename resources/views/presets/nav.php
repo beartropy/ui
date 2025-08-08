@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'default_color' => 'beartropy',
     'colors' => [
         'beartropy' => [
             'highlightParentText' => 'text-beartropy-600 dark:text-beartropy-400 font-bold',
