@@ -32,7 +32,7 @@ class Select extends InputTriggerBase
         $selected = null,
         $icon = null,
         $placeholder = 'Seleccionar...',
-        $searchable = false,
+        $searchable = true,
         $label = null,
         $multiple = false,
         $clearable = true,

@@ -302,18 +302,22 @@
                 x-show="open"
                 @click.away="close()"
             >
-                <div class="p-2">
-                    <x-input
-                        type="text"
-                        placeholder="Buscar..."
-                        x-model="search"
-                        autocomplete="off"
-                        color="{{$presetNames['color']}}"
-                        size="{{$presetNames['size']}}"
-                        :clearable="true"
-                        id="{{ $selectId }}-search"
-                    />
-                </div>
+                @if($searchable)
+                    {{-- Search input --}}
+                    <div class="p-2">
+                        <x-input
+                            type="text"
+                            placeholder="Buscar..."
+                            x-model="search"
+                            autocomplete="off"
+                            color="{{$presetNames['color']}}"
+                            size="{{$presetNames['size']}}"
+                            :clearable="true"
+                            id="{{ $selectId }}-search"
+                        />
+                    </div>
+                @endif
+                {{-- Options list --}}
                 <ul
                     class="max-h-60 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800 beartropy-thin-scrollbar"
                     @scroll="if($event.target.scrollTop + $event.target.clientHeight >= $event.target.scrollHeight - 10 && hasMore && !loading) { page++; fetchOptions(); }"
