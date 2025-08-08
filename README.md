@@ -16,6 +16,7 @@ Beartropy UI is a modular, customizable component system designed for real-world
 * **JS Optional:** Interactive components (modals, toasts, dropdowns) work with Alpine.js, but degrade gracefully.
 * **Easy to Extend:** Add your own components, presets or override any view.
 
+### [See full documentation here](https://beartropy.com/ui)
 ---
 
 ## 📦 Installation
