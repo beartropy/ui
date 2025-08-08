@@ -141,17 +141,17 @@
     "
     class="flex flex-col w-full"
 >
-            <label for="complex-select" class="text-red-800 dark:text-red-200 font-semibold ml-1">País</label>
+            <label for="complex-select" class="text-gray-800 dark:text-gray-100 font-semibold ml-1">País</label>
     
             <span x-ref="multiInputs"></span>
     
     <div class="flex flex-col ">
 
     <div class="flex items-center w-full group transition-all shadow-sm rounded
-        bg-red-50 dark:bg-red-950/60
-        border border-red-300 dark:border-red-600
+        bg-red-50 dark:bg-red-900/30
+        border border-red-300 dark:border-red-700
         focus-within:ring-2 focus-within:ring-red-500 focus-within:border-red-500
-        disabled:bg-red-100 dark:bg-red-950
+        disabled:bg-neutral-100 dark:disabled:bg-neutral-800
         
         px-4
         h-12
@@ -165,12 +165,12 @@
             </div>
         
         
-                    <div @click="toggle()" class="flex flex-wrap items-center gap-1 min-h-[1.6em] cursor-pointer w-full text-red-800 dark:text-red-200">
+                    <div @click="toggle()" class="flex flex-wrap items-center gap-1 min-h-[1.6em] cursor-pointer w-full text-gray-800 dark:text-gray-100">
                 
                 <template x-if="isMulti && value && value.length">
                     <template x-for="(id, idx) in visibleChips()" :key="id">
                         <span
-                            class="inline-flex items-center gap-1 rounded px-2 py-0.5 text-sm beartropy-select-chip bg-red-100 dark:bg-red-800 text-red-900 dark:text-red-200"
+                            class="inline-flex items-center gap-1 rounded px-2 py-0.5 text-sm beartropy-select-chip bg-red-100 dark:bg-red-800 text-gray-900 dark:text-gray-100"
                             :title="options[id]?.description ?? ''"
                         >
                             <!-- Avatar -->
@@ -197,7 +197,7 @@
                 
                 <span
                     x-show="isMulti && value && hiddenCount()"
-                    class="inline-flex items-center rounded px-2 py-0.5 text-xs font-semibold beartropy-select-badge bg-red-200 dark:bg-red-900 text-red-700 dark:text-red-200"
+                    class="inline-flex items-center rounded px-2 py-0.5 text-xs font-semibold beartropy-select-badge bg-red-300 dark:bg-red-700 text-red-700 dark:text-red-200"
                 >
                     +<span x-text="hiddenCount()"></span>
                 </span>
@@ -210,7 +210,7 @@
                 
                 <span
                     x-show="!isMulti && value"
-                    class="flex items-center gap-2 truncate text-red-800 dark:text-red-200"
+                    class="flex items-center gap-2 truncate text-gray-800 dark:text-gray-100"
                     :title="options[value]?.description ?? ''"
                 >
                     <!-- Avatar -->
@@ -269,18 +269,18 @@
     x-transition:leave-end="opacity-0 scale-95"
     class="absolute z-50 left-0 top-full mt-1 w-full
         rounded-lg
-        border border-red-300 dark:border-red-800
-        bg-red-50 dark:bg-red-950/90
+        border border-red-200 dark:border-red-700
+        bg-white dark:bg-gray-900/95
         shadow-xl
         origin-top beartropy-thin-scrollbar"
     style="min-width: 8rem;"
-    @click.outside="open = false"
+    @click.away="typeof onDropdownClose === 'function' ? onDropdownClose() : open = false"
 
 >
     <div class="p-2">
                     <div class="flex flex-col w-full">
     
-    <div 
+    <div
     x-data="{
         value: '',
         showPassword: false,
@@ -298,44 +298,40 @@
         },
     }"
     x-init="
-            value = $refs.input.value;
-            $refs.input.addEventListener('input', () => {
-                value = $refs.input.value;
-            });
-            $nextTick(() => {
-                value = $refs.input.value;
-            });
-        "
-    class="flex items-center w-full group relative"
+        value = $refs.input.value;
+        $refs.input.addEventListener('input', () => { value = $refs.input.value; });
+        $nextTick(() => { value = $refs.input.value; });
+    "
+    class="flex items-center w-full min-w-0 group relative"
 >
     <div
-        class="flex items-center group w-full rounded transition-all shadow-sm
-            bg-red-50 dark:bg-red-950/60
-            border border-red-300 dark:border-red-600
+        class="flex items-center group w-full min-w-0 overflow-hidden rounded transition-all shadow-sm
+            bg-red-50 dark:bg-red-900/30
+            border border-red-300 dark:border-red-700
             focus-within:ring-2 focus-within:ring-red-500 focus-within:border-red-500
-            disabled:bg-red-100 dark:bg-red-950
+            disabled:bg-neutral-100 dark:disabled:bg-neutral-800
             
             px-4
             h-12"
             >
         
         
-        <div class="w-full h-full flex items center" wire:ignore>
-            <input 
+        <div class="flex-1 min-w-0 h-full flex items-center" wire:ignore>
+            <input
                 x-ref="input"
                 x-bind:type="(typeof showPassword !== 'undefined' && showPassword) ? 'text' : 'text'"
-                class="flex-1 bg-transparent outline-none border-none shadow-none beartropy-input
+                class="w-full min-w-0 bg-transparent outline-none border-none shadow-none beartropy-input
                     text-lg
-                    text-red-800 dark:text-red-200
-                    placeholder:text-red-400 dark:placeholder:text-red-600
-                    disabled:text-red-400 dark:text-red-700"
+                    text-gray-800 dark:text-gray-100
+                    placeholder:text-gray-400 dark:placeholder:text-gray-500
+                    disabled:text-gray-400 dark:disabled:text-gray-600"
                 placeholder="Buscar..."
                 aria-invalid="false" id="complex-select-search" custom-error="" hint="" x-model="search" autocomplete="off"
             >
         </div>
 
         
-                    <div class="flex items-center h-full space-x-2 pl-1 beartropy-inputbase-end-slot">
+                    <div class="flex items-center shrink-0 h-full pl-1 gap-1 whitespace-nowrap beartropy-inputbase-end-slot">
                 <button
                     type="button"
                     x-show="value.length > 0"
@@ -349,7 +345,6 @@
                 </button>
             </div>
             </div>
-
 </div>
 
     <p class="text-sm ml-1 mt-0.5  invisible">
@@ -369,8 +364,8 @@
                             <button
                                 type="button"
                                 @click="setValue(id)"
-                                class="w-full text-left px-4 py-2 flex items-center gap-2 text-red-800 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-900"
-                                :class="isSelected(id) ? 'font-bold bg-red-100 dark:bg-red-900 bg-red-200 dark:bg-red-800 font-bold' : ''"
+                                class="w-full text-left px-4 py-2 flex items-center gap-2 text-gray-800 dark:text-gray-100 hover:bg-red-100 dark:hover:bg-red-800"
+                                :class="isSelected(id) ? 'font-bold bg-red-50 dark:bg-red-800 bg-red-50 dark:bg-red-800 font-bold' : ''"
                             >
                                 <div class="flex flex-col items-start w-full">
                                     <div class="flex items-center gap-2">
@@ -392,7 +387,7 @@
                                     </div>
                                     <!-- Descripción -->
                                     <template x-if="option.description">
-                                        <span class="text-xs text-red-600 dark:text-red-400 mt-0.5"
+                                        <span class="text-xs text-red-500 dark:text-red-400 mt-0.5"
                                             x-text="option.description"></span>
                                     </template>
                                 </div>
@@ -405,10 +400,10 @@
                         </li>
                     </template>
                     <template x-if="loading">
-                        <li class="text-xs text-red-500 p-2 text-center">Cargando...</li>
+                        <li class="text-xs text-gray-500 p-2 text-center">Cargando...</li>
                     </template>
                     <template x-if="!loading && filteredOptions().length === 0">
-                        <li class="text-xs text-red-500 p-2 text-center">No hay resultados.</li>
+                        <li class="text-xs text-gray-500 p-2 text-center">No hay resultados.</li>
                     </template>
 
                 </ul>
