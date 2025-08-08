@@ -48,20 +48,10 @@ return [
             'size' => env('BEARTROPY_UI_INPUT_SIZE', 'md'),
             'outline' => env('BEARTROPY_UI_INPUT_OUTLINE', true)
         ],
-        'select' => [
-            'color' => env('BEARTROPY_UI_SELECT_COLOR', 'beartropy'),
-            'size' => env('BEARTROPY_UI_SELECT_SIZE', 'md'),
-            'outline' => env('BEARTROPY_UI_SELECT_OUTLINE', true)
-        ],
         'textarea' => [
             'color' => env('BEARTROPY_UI_TEXTAREA_COLOR', 'beartropy'),
             'size' => env('BEARTROPY_UI_TEXTAREA_SIZE', 'md'),
             'outline' => env('BEARTROPY_UI_TEXTAREA_OUTLINE', true)
-        ],
-        'datetime' => [
-            'color' => env('BEARTROPY_UI_DATETIME_COLOR', 'beartropy'),
-            'size' => env('BEARTROPY_UI_DATETIME_SIZE', 'md'),
-            'outline' => env('BEARTROPY_UI_DATETIME_OUTLINE', true)
         ],
         'tag' => [
             'color' => env('BEARTROPY_UI_TAG_COLOR', 'beartropy'),

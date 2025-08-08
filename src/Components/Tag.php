@@ -20,7 +20,6 @@ class Tag extends BeartropyComponent
         public ?string $size = null,
         public ?string $customError = null,
         public ?string $color = null,
-        public bool $outline = false,
     ) {}
 
     public function render()

@@ -14,12 +14,10 @@ class InputTriggerBase extends BeartropyComponent
     public $hasError;
     public $name;
     public $disabled;
-    public $outline;
 
-    public function __construct($size = null, $color = null, $label = null, $placeholder = null, $type=null, $hasError=false, $name=null, $disabled=false, $outline=false)
+    public function __construct($size = null, $color = null, $label = null, $placeholder = null, $type=null, $hasError=false, $name=null, $disabled=false)
     {
         $this->size = $size;
-        $this->outline = $outline;
         $this->color = $color;
         $this->label = $label;
         $this->disabled = $disabled;

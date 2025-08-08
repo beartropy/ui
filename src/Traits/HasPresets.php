@@ -11,7 +11,7 @@ trait HasPresets
         $attributes    = $attributes ?: $this->attributes->getAttributes();
         $magicProps    = array_keys($attributes);
 
-        static $cache = [];
+        #static $cache = [];
 
         // 1) Cargar presets y defaults (robusto ante null)
         [$sizes, $componentPresets, $colorsArray, $hasVariants] = $this->loadPresets($componentName);
@@ -27,8 +27,8 @@ trait HasPresets
         [$shouldFill, $fillOrigin]                  = $this->resolveFill($supports, $attributes, $defaults);
 
         // 4) Cache key
-        $cacheKey = $this->buildCacheKey($componentName, $supports, $size, $variant, $color, $shouldFill);
-        if (isset($cache[$cacheKey])) return $cache[$cacheKey];
+        #$cacheKey = $this->buildCacheKey($componentName, $supports, $size, $variant, $color, $shouldFill);
+        #if (isset($cache[$cacheKey])) return $cache[$cacheKey];
 
         // 5) Sincronizar en la instancia (solo si existen las props)
         $this->syncInstanceProps($supports, $size, $variant, $color);
@@ -39,7 +39,8 @@ trait HasPresets
         // 7) Warnings (solo debug)
         $this->debugWarnings($supports, $sizePreset, $colorPreset, $componentName, $variant, $color);
 
-        return $cache[$cacheKey] = [$colorPreset, $sizePreset, $shouldFill, $presetNames];
+        #return $cache[$cacheKey] = [$colorPreset, $sizePreset, $shouldFill, $presetNames];
+        return [$colorPreset, $sizePreset, $shouldFill, $presetNames];
     }
 
     /* ========================
