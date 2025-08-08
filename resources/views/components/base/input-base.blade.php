@@ -24,18 +24,14 @@
         },
     }"
     x-init="
-            value = $refs.input.value;
-            $refs.input.addEventListener('input', () => {
-                value = $refs.input.value;
-            });
-            $nextTick(() => {
-                value = $refs.input.value;
-            });
-        "
-    class="flex items-center w-full group relative"
+        value = $refs.input.value;
+        $refs.input.addEventListener('input', () => { value = $refs.input.value; });
+        $nextTick(() => { value = $refs.input.value; });
+    "
+    class="flex items-center w-full min-w-0 group relative"
 >
     <div
-        class="flex items-center group w-full rounded transition-all shadow-sm
+        class="flex items-center group w-full min-w-0 overflow-hidden rounded transition-all shadow-sm
             {{ $colorPreset['bg'] ?? '' }}
             {{ $borderClass ?? '' }}
             {{ $ringClass ?? '' }}
@@ -47,16 +43,16 @@
     >
         {{-- Start slot --}}
         @if (trim($start ?? ''))
-            <div class="flex items-center space-x-2 h-full pr-2 beartropy-inputbase-start-slot">
+            <div class="flex items-center shrink-0 h-full pr-2 gap-1 beartropy-inputbase-start-slot">
                 {{ $start }}
             </div>
         @endif
 
-        <div class="w-full h-full flex items center" wire:ignore>
+        <div class="flex-1 min-w-0 h-full flex items-center" wire:ignore>
             <input
                 x-ref="input"
                 x-bind:type="(typeof showPassword !== 'undefined' && showPassword) ? 'text' : '{{ $type }}'"
-                class="flex-1 bg-transparent outline-none border-none shadow-none beartropy-input
+                class="w-full min-w-0 bg-transparent outline-none border-none shadow-none beartropy-input
                     {{ $sizePreset['font'] ?? '' }}
                     {{ $colorPreset['text'] ?? '' }}
                     {{ $colorPreset['placeholder'] ?? '' }}
@@ -71,10 +67,9 @@
 
         {{-- End slot --}}
         @if (trim($end ?? ''))
-            <div class="flex items-center h-full space-x-2 pl-1 beartropy-inputbase-end-slot">
+            <div class="flex items-center shrink-0 h-full pl-1 gap-1 whitespace-nowrap beartropy-inputbase-end-slot">
                 {{ $end }}
             </div>
         @endif
     </div>
-
 </div>
