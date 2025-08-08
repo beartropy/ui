@@ -15,8 +15,8 @@ return [
             'disabled_text' => 'disabled:text-gray-400 dark:disabled:text-gray-600',
             'label' => 'text-gray-800 dark:text-gray-100 font-semibold ml-1',
             'label_error' => 'text-red-500 font-semibold ml-1',
-            'chip_bg' => 'bg-neutral-100 dark:bg-neutral-800',
-            'chip_text' => 'text-gray-900 dark:text-gray-100',
+            'chip_bg' => 'bg-beartropy-200 dark:bg-beartropy-800',
+            'chip_text' => 'text-beartropy-900 dark:text-beartropy-100',
             'chip_close' => 'hover:text-red-500',
         ],
         'red' => [
