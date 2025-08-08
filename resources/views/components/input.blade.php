@@ -23,6 +23,34 @@
 
     [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
     $labelClass = $hasError ? ($colorPreset['label_error'] ?? $colorPreset['label']) : $colorPreset['label'];
+
+    $loadingTargetsOverride = null;
+    $wireActionTargets = collect($attributes->getAttributes())
+        ->filter(fn ($v, $k) => Str::startsWith($k, 'wire:'))
+        ->reject(fn ($v, $k) => Str::startsWith($k, 'wire:model'))
+        // Nos quedamos con el "valor" del wire:*, que es el método/prop objetivo (string)
+        ->map(function ($v) {
+            // En Blade suele venir como string directamente
+            if (is_string($v)) return $v;
+            // fallback defensivo
+            if (is_array($v)) return head($v);
+            return null;
+        })
+        ->filter()
+        ->unique()
+        ->values();
+
+    // Si el usuario pasó $loadingTargets lo usamos; sino, usamos lo detectado
+    $wireLoadingTargets = $loadingTargetsOverride
+        ? collect(is_array($loadingTargetsOverride) ? $loadingTargetsOverride : explode(',', (string) $loadingTargetsOverride))
+            ->map(fn($s) => trim($s))
+            ->filter()
+            ->unique()
+            ->values()
+        : $wireActionTargets;
+
+    // String CSV para wire:target (Livewire soporta targets separados por coma)
+    $wireLoadingTargetsCsv = $wireLoadingTargets->implode(',');
 @endphp
 
 <div class="flex flex-col w-full">
@@ -59,8 +87,20 @@
             </x-slot>
         @endif
 
-        @if(isset($end) || $clearable || $copyButton || ($type === 'password' && $togglePassword) || $iconEnd)
-        <x-slot name="end">
+        @if(isset($end) || $clearable || $copyButton || ($type === 'password' && $togglePassword) || $iconEnd || !empty($wireLoadingTargetsCsv))
+            <x-slot name="end">
+            @if(!empty($wireLoadingTargetsCsv))
+                <span
+                    wire:loading
+                    wire:target="{{ $wireLoadingTargetsCsv }}"
+                    aria-label="Cargando…"
+                    class="inline-flex items-center"
+                >
+                    @include('beartropy-ui-svg::beartropy-spinner', [
+                        'class' => 'animate-spin shrink-0 text-gray-700 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 ' . ($sizePreset['iconSize'] ?? '')
+                    ])
+                </span>
+            @endif
             {{-- Botón limpiar --}}
             @if($clearable)
                 <button
