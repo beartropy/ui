@@ -9,7 +9,7 @@ return [
     | If left empty, components will be registered as <x-button>, <x-sidebar>, etc.
     | For example, setting 'bt' will register <x-bt-button>, <x-bt-sidebar>, etc.
     */
-    'prefix' => env('BEARTROPY_UI_PREFIX', ''),
+    'prefix' => env('BEARTROPY_UI_PREFIX', 'bt'),
 
     'icons' => [
 

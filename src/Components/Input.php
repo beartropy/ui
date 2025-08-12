@@ -22,6 +22,7 @@ class Input extends InputBase
     public $color;
     public $label;
     public $placeholder;
+    public $spinner;
 
     public function __construct(
         $iconStart = null,
@@ -40,6 +41,7 @@ class Input extends InputBase
         $color = null,
         $label = null,
         $placeholder = null,
+        $spinner = true,
         ...$args
     ) {
         parent::__construct(...$args);
@@ -59,6 +61,7 @@ class Input extends InputBase
         $this->color = $color;
         $this->label = $label;
         $this->placeholder = $placeholder;
+        $this->spinner = filter_var($spinner, FILTER_VALIDATE_BOOLEAN);
     }
 
     public function render()

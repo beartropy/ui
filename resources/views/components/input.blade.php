@@ -1,5 +1,5 @@
 @php
-    [$colorPreset, $sizePreset] = $getComponentPresets();
+    [$colorPreset, $sizePreset] = $getComponentPresets('input');
 
     $inputId = $attributes->get('id') ?? 'input-' . uniqid();
     $wireModelName = $attributes->wire('model')->value();
@@ -52,6 +52,7 @@
 
     // String CSV para wire:target (Livewire soporta targets separados por coma)
     $wireLoadingTargetsCsv = $wireLoadingTargets->implode(',');
+
 @endphp
 
 <div class="flex flex-col w-full">
@@ -88,9 +89,9 @@
             </x-slot>
         @endif
 
-        @if(isset($end) || $clearable || $copyButton || ($type === 'password' && $togglePassword) || $iconEnd || !empty($wireLoadingTargetsCsv))
+        @if(isset($end) || $clearable || $copyButton || ($type === 'password' && $togglePassword) || $iconEnd || (!empty($wireLoadingTargetsCsv) && $spinner))
             <x-slot name="end">
-            @if(!empty($wireLoadingTargetsCsv))
+            @if(!empty($wireLoadingTargetsCsv) && $spinner)
                 <span
                     wire:loading
                     wire:target="{{ $wireLoadingTargetsCsv }}"
