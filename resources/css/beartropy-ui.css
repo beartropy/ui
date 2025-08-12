@@ -16,6 +16,18 @@
     width: 0;
     height: 0;
 }
+
+
+
+.beartropy-input:-webkit-autofill,
+.beartropy-input:-webkit-autofill:hover,
+.beartropy-input:-webkit-autofill:focus,
+.beartropy-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+  -webkit-text-fill-color: inherit !important;
+  background-color: transparent !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
 .beartropy-input:focus {
     outline: none !important;
     box-shadow: none !important;

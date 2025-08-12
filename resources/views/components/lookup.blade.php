@@ -1,0 +1,262 @@
+@php
+    [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('input');
+
+    $inputId = $attributes->get('id') ?? 'input-' . uniqid();
+    $wireModelName = $attributes->wire('model')->value();
+
+    // Detección de modo Alpine/Livewire
+    $alpineControlled = $attributes->has('x-model');
+    $xModel = $alpineControlled ? $attributes->get('x-model') : null;
+    $isLivewire = !!$wireModelName;
+    $isAlpineExternal = !!$xModel;
+    $isAlpineLocal = !$isLivewire && !$isAlpineExternal;
+
+
+    $extraInputAttrs = [];
+    if ($isLivewire) {
+        $inputId = $attributes->wire('model')->value();
+    } elseif ($isAlpineExternal) {
+        $extraInputAttrs['x-model'] = $xModel;
+    } elseif ($isAlpineLocal) {
+        $extraInputAttrs['x-model'] = 'value';
+        $extraInputAttrs['value'] = $value ?? '';
+    }
+    $extraInputAttrs['autocomplete'] = "off";
+
+    [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
+    $labelClass = $hasError ? ($colorPreset['label_error'] ?? $colorPreset['label']) : $colorPreset['label'];
+
+    $loadingTargetsOverride = null;
+    $wireActionTargets = collect($attributes->getAttributes())
+        ->filter(fn ($v, $k) => Str::startsWith($k, 'wire:'))
+        ->reject(fn ($v, $k) => Str::startsWith($k, 'wire:model'))
+        // Nos quedamos con el "valor" del wire:*, que es el método/prop objetivo (string)
+        ->map(function ($v) {
+            // En Blade suele venir como string directamente
+            if (is_string($v)) return $v;
+            // fallback defensivo
+            if (is_array($v)) return head($v);
+            return null;
+        })
+        ->filter()
+        ->unique()
+        ->values();
+
+    // Si el usuario pasó $loadingTargets lo usamos; sino, usamos lo detectado
+    $wireLoadingTargets = $loadingTargetsOverride
+        ? collect(is_array($loadingTargetsOverride) ? $loadingTargetsOverride : explode(',', (string) $loadingTargetsOverride))
+            ->map(fn($s) => trim($s))
+            ->filter()
+            ->unique()
+            ->values()
+        : $wireActionTargets;
+
+    // String CSV para wire:target (Livewire soporta targets separados por coma)
+    $wireLoadingTargetsCsv = $wireLoadingTargets->implode(',');
+@endphp
+
+<div class="flex flex-col w-full relative"
+     x-data="{
+        open: false,
+        options: @js($options ?? []),
+        filtered: [],
+        highlighted: -1,
+        init() {
+            // mostrar todo al inicio
+            this.filtered = this.options;
+        },
+        onInput(e) {
+            const t = (e?.target?.value ?? '').toLowerCase();
+            this.filtered = !t
+              ? this.options
+              : this.options.filter(o => (o?.name ?? '').toLowerCase().includes(t));
+            this.open = true;
+            this.highlighted = this.filtered.length ? 0 : -1;
+        },
+        move(delta) {
+            if (!this.open || !this.filtered.length) return;
+            const n = this.filtered.length;
+            this.highlighted = (this.highlighted + delta + n) % n;
+        },
+        choose(idx) {
+            const opt = this.filtered[idx];
+            if (!opt) return;
+            this.setValue(opt.name);
+            this.open = false;
+        },
+        confirm() {
+            if (this.highlighted >= 0) this.choose(this.highlighted);
+            else this.open = false;
+        },
+        close() { this.open = false; },
+        setValue(v) {
+            // usa el ID real del <input> interno de input-base
+            const el = document.getElementById('{{ $inputId }}');
+            if (!el) return;
+            el.value = v ?? '';
+            // Notifica a Livewire/Alpine
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+        },
+     }">
+
+    @if($label)
+        <label for="{{ $inputId }}" class="{{ $labelClass }}">
+            {{ $label }}
+        </label>
+    @endif
+
+    <x-base.input-base
+        x-ref="input"
+        x-on:input="onInput($event)"
+        id="{{ $inputId }}"
+        type="{{ $type }}"
+        size="{{ $size }}"
+        color="{{ $color }}"
+        placeholder="{{ $placeholder }}"
+        custom-error="{{ $customError }}"
+        hint="{{ $hint }}"
+        has-error="{{ $hasError }}"
+        @click="open = true"
+        {{ $attributes->merge($extraInputAttrs) }}
+        x-on:input="onInput"
+        x-on:keydown.down.prevent="move(1)"
+        x-on:keydown.up.prevent="move(-1)"
+        x-on:keydown.enter.prevent="confirm()"
+        x-on:keydown.tab="confirm()"
+        x-on:keydown.escape.prevent="close()"
+    >
+        {{-- START SLOT --}}
+        @if(isset($iconStart) || isset($start))
+            <x-slot name="start">
+                @if($iconStart)
+                    <span class="flex items-center {{ $colorPreset['text'] ?? '' }}">
+                        {{-- Icono --}}
+                        <x-bt-icon :name="$iconStart" size="{{ $size }}" />
+                    </span>
+                @endif
+                {{-- Slot personalizado --}}
+                @isset($start)
+                    {{ $start }}
+                @endisset
+            </x-slot>
+        @endif
+
+        @if(isset($end) || $clearable || $copyButton || ($type === 'password' && $togglePassword) || $iconEnd || !empty($wireLoadingTargetsCsv))
+            <x-slot name="end">
+            @if(!empty($wireLoadingTargetsCsv))
+                <span
+                    wire:loading
+                    wire:target="{{ $wireLoadingTargetsCsv }}"
+                    aria-label="Cargando…"
+                    class="inline-flex items-center"
+                >
+                    @include('beartropy-ui-svg::beartropy-spinner', [
+                        'class' => 'animate-spin shrink-0 text-gray-700 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 ' . ($sizePreset['iconSize'] ?? '')
+                    ])
+                </span>
+            @endif
+            {{-- Botón limpiar --}}
+            @if($clearable)
+                <button
+                    type="button"
+                    x-show="value.length > 0"
+                    x-on:click="clear"
+                    tabindex="-1"
+                    aria-label="Clear"
+                >
+                    @include('beartropy-ui-svg::beartropy-x-mark', [
+                        'class' => 'shrink-0 text-gray-700 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 ' . ($sizePreset['iconSize'] ?? '')
+                    ])
+                </button>
+            @endif
+
+            {{-- Botón copiar --}}
+            @if($copyButton)
+                <button
+                    type="button"
+                    x-on:click="copyToClipboard"
+                    x-tooltip.raw="Copiar"
+                    tabindex="-1"
+                    aria-label="Copiar al portapapeles"
+                >
+                    <span x-show="!copySuccess">
+                        @include('beartropy-ui-svg::beartropy-clipboard', [
+                            'class' => 'shrink-0 text-gray-700 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 ' . ($sizePreset['iconSize'] ?? '')
+                        ])
+                    </span>
+                    <span x-show="copySuccess" class="text-green-500">
+                        @include('beartropy-ui-svg::beartropy-check', [
+                            'class' => 'shrink-0 ' . ($sizePreset['iconSize'] ?? '')
+                        ])
+                    </span>
+                </button>
+            @endif
+
+            {{-- Toggle password --}}
+            @if($type === 'password')
+                <button
+                    type="button"
+                    x-on:click="showPassword = !showPassword"
+                    tabindex="-1"
+                    :aria-label="showPassword ? 'Hide password' : 'Show password'"
+                >
+                    <span x-show="!showPassword">
+                        @include('beartropy-ui-svg::beartropy-eye', [
+                            'class' => 'shrink-0 text-gray-700 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 ' . ($sizePreset['iconSize'] ?? '')
+                        ])
+                    </span>
+                    <span x-show="showPassword">
+                        @include('beartropy-ui-svg::beartropy-eye-slash', [
+                            'class' => 'shrink-0 text-gray-700 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 ' . ($sizePreset['iconSize'] ?? '')
+                        ])
+                    </span>
+                </button>
+            @endif
+
+            @if($iconEnd)
+                <span class="{{ $colorPreset['text'] ?? '' }}">
+                    <x-bt-icon :name="$iconEnd" size="{{ $size }}" />
+                </span>
+            @endif
+
+            {{-- Slot personalizado --}}
+            @isset($end)
+                {{ $end }}
+            @endisset
+        </x-slot>
+        @endif
+        <x-slot name="dropdown">
+            <x-base.dropdown-base
+                placement="left"
+                side="bottom"
+                color="{{ $presetNames['color'] }}"
+                preset-for="select"
+                width="w-full"
+                x-show="open"
+                @click.outside="close()" {{-- mejor que .away --}}
+            >
+                <template x-if="filtered.length">
+                    <ul class="max-h-60 overflow-auto beartropy-thin-scrollbar" role="listbox">
+                        <template x-for="(opt, idx) in filtered" :key="idx">
+                            <li
+                                role="option"
+                                class="px-3 py-2 cursor-pointer select-none text-gray-700 dark:text-gray-300"
+                                :class="idx === highlighted ? 'bg-neutral-100 dark:bg-neutral-800' : ''"
+                                @mouseenter="highlighted = idx"
+                                @mousedown.prevent="choose(idx)"
+                            >
+                                <span x-text="opt.name"></span>
+                            </li>
+                        </template>
+                    </ul>
+                </template>
+            </x-base.dropdown-base>
+        </x-slot>
+    </x-base.input-base>
+
+
+    <x-beartropy-ui::support.field-help
+        :error-message="$finalError"
+        :hint="$help ?? $hint ?? null"
+    />
+</div>

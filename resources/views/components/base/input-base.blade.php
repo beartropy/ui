@@ -12,6 +12,11 @@
         value: @js($value ?? ''),
         showPassword: false,
         copySuccess: false,
+        setValue(value) {
+            this.value = value;
+            this.$refs.input.value = value;
+            this.$refs.input.dispatchEvent(new Event('input'));
+        },
         clear() {
             this.value = '';
             this.$refs.input.value = '';
@@ -60,6 +65,7 @@
                     {{ $colorPreset['placeholder'] ?? '' }}
                     {{ $colorPreset['disabled_text'] ?? '' }}"
                 placeholder="{{ $placeholder ?? '' }}"
+                autocomplete="off"
                 {{ $attributes->merge([
                     'disabled' => $disabled,
                     'aria-invalid' => $hasError ? 'true' : 'false',
@@ -72,6 +78,11 @@
             <div class="flex items-center shrink-0 h-full pl-1 gap-1 whitespace-nowrap beartropy-inputbase-end-slot">
                 {{ $end }}
             </div>
+        @endif
+
+        {{-- Dropdown slot --}}
+        @if (trim($dropdown ?? ''))
+            {{ $dropdown }}
         @endif
     </div>
 </div>
