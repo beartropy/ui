@@ -184,7 +184,7 @@
         <span x-ref="multiInputs"></span>
     @endif
 
-    <x-base.input-trigger-base
+    <x-beartropy-ui::base.input-trigger-base
         id="{{ $selectId }}"
         color="{{ $presetNames['color'] }}"
         size="{{ $presetNames['size'] }}"
@@ -295,7 +295,7 @@
 
 
         <x-slot name="dropdown">
-            <x-base.dropdown-base
+            <x-beartropy-ui::base.dropdown-base
                 placement="left"
                 side="bottom"
                 color="{{$presetNames['color']}}"
@@ -375,9 +375,9 @@
                     </template>
 
                 </ul>
-            </x-base.dropdown-base>
+            </x-beartropy-ui::base.dropdown-base>
         </x-slot>
-    </x-base.input-trigger-base>
+    </x-beartropy-ui::base.input-trigger-base>
     <x-beartropy-ui::support.field-help
         :error-message="$finalError"
         :hint="$help ?? $hint ?? null"

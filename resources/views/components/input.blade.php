@@ -61,7 +61,7 @@
         </label>
     @endif
 
-    <x-base.input-base
+    <x-beartropy-ui::base.input-base
         id="{{ $inputId }}"
         type="{{ $type }}"
         size="{{ $size }}"
@@ -78,7 +78,7 @@
                 @if($iconStart)
                     <span class="flex items-center {{ $colorPreset['text'] ?? '' }}">
                         {{-- Icono --}}
-                        <x-bt-icon :name="$iconStart" size="{{ $size }}" />
+                        <x-beartropy-ui::icon :name="$iconStart" size="{{ $size }}" />
                     </span>
                 @endif
                 {{-- Slot personalizado --}}
@@ -162,7 +162,7 @@
 
             @if($iconEnd)
                 <span class="{{ $colorPreset['text'] ?? '' }}">
-                    <x-bt-icon :name="$iconEnd" size="{{ $size }}" />
+                    <x-beartropy-ui::icon :name="$iconEnd" size="{{ $size }}" />
                 </span>
             @endif
 
@@ -172,7 +172,7 @@
             @endisset
         </x-slot>
         @endif
-    </x-base.input-base>
+    </x-beartropy-ui::base.input-base>
 
     <x-beartropy-ui::support.field-help
         :error-message="$finalError"

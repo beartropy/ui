@@ -15,13 +15,13 @@
         <div  class="{{ $colorPreset['icon_wrapper'] ?? 'mt-0.5 flex-shrink-0' }}">
             @if(isset($icon))
                 @if(is_string($icon))
-                    <x-bt-icon :name="$icon" class="{{ $colorPreset['icon_class'] ?? 'w-7 h-7' }}" />
+                    <x-beartropy-ui::icon :name="$icon" class="{{ $colorPreset['icon_class'] ?? 'w-7 h-7' }}" />
                 @else
                     {{ $icon }}
                 @endif
             @else
                 @if(isset($colorPreset['icon']) && $colorPreset['icon'])
-                    <x-bt-icon :name="$preset->icon" class="{{ $preset->icon_class ?? 'w-7 h-7' }}" />
+                    <x-beartropy-ui::icon :name="$preset->icon" class="{{ $preset->icon_class ?? 'w-7 h-7' }}" />
                 @endif
             @endif
         </div>
@@ -47,7 +47,7 @@
             class="ml-3 rounded-full hover:bg-black/10 dark:hover:bg-white/10 p-1 transition focus:outline-none"
             aria-label="Cerrar"
         >
-            <x-bt-icon name="x-mark" class="w-5 h-5" />
+            <x-beartropy-ui::icon name="x-mark" class="w-5 h-5" />
         </button>
     @endif
 </div>

@@ -16,7 +16,7 @@
     <!-- Buscador y contador -->
     <div class="{{ $colorPreset['searchbox'] }}">
         <template x-if="searchable">
-            <x-input
+            <x-beartropy-ui::input
                 sm
                 type="text"
                 x-model="search"

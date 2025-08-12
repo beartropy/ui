@@ -68,7 +68,7 @@
         tabindex="0"
     >
         @if($icon)
-            <x-bt-icon :name="$icon" class="{{ $colorPreset['icon'] }}" />
+            <x-beartropy-ui::icon :name="$icon" class="{{ $colorPreset['icon'] }}" />
         @endif
 
         <!-- CAMBIO CLAVE: input hidden, y usamos label para click -->

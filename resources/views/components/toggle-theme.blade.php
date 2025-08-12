@@ -52,7 +52,7 @@
                 </span>
             @elseif($viewData->iconLight)
             <span x-show="!dark">
-                <x-bt-icon :name="$viewData->iconLight"
+                <x-beartropy-ui::icon :name="$viewData->iconLight"
                            :class="$viewData->iconLightClasses"
                            x-show="!dark" />
             </span>
@@ -76,7 +76,7 @@
                 </span>
             @elseif($viewData->iconDark)
             <span x-show="dark">
-                <x-bt-icon :name="$viewData->iconDark"
+                <x-beartropy-ui::icon :name="$viewData->iconDark"
                            :class="$viewData->iconDarkClasses"
                            x-show="dark" />
             </span>
@@ -105,7 +105,7 @@
                 </span>
             @elseif($viewData->iconLight)
                 <span x-show="!dark">
-                    <x-bt-icon :name="$viewData->iconLight"
+                    <x-beartropy-ui::icon :name="$viewData->iconLight"
                                :class="$viewData->iconLightClasses"
                                x-show="!dark" />
                 </span>
@@ -129,7 +129,7 @@
                 </span>
             @elseif($viewData->iconDark)
                 <span x-show="dark">
-                    <x-bt-icon :name="$viewData->iconDark"
+                    <x-beartropy-ui::icon :name="$viewData->iconDark"
                                :class="$viewData->iconDarkClasses"
                                x-show="dark" />
                 </span>
@@ -149,7 +149,7 @@
             </span>
         @elseif($viewData->iconLight)
             <div x-show="!dark">
-                <x-bt-icon :name="$viewData->iconLight"
+                <x-beartropy-ui::icon :name="$viewData->iconLight"
                         :class="$viewData->iconLightClasses"
                         @click="toggle()" style="cursor:pointer" />
             </div>
@@ -172,7 +172,7 @@
             </span>
         @elseif($viewData->iconDark)
             <span x-show="dark">
-                <x-bt-icon :name="$viewData->iconDark"
+                <x-beartropy-ui::icon :name="$viewData->iconDark"
                         :class="$viewData->iconDarkClasses"
                             @click="toggle()" style="cursor:pointer" />
             </span>

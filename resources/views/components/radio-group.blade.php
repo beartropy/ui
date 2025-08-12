@@ -21,7 +21,7 @@
 <div>
     <div class="{{ $wrapperClass }} {{ $class }}">
     @foreach ($options as $option)
-        <x-radio
+        <x-beartropy-ui::radio
             name="{{ $name }}"
             value="{{ $option['value'] }}"
             label="{{ $option['label'] ?? '' }}"

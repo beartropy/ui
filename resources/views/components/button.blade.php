@@ -1,7 +1,7 @@
 <div class="relative">
 
     {{-- El botón real --}}
-    <x-base.button-base
+    <x-beartropy-ui::base.button-base
         :type="$type"
         :href="$href"
         :disabled="$disabled"
@@ -23,5 +23,5 @@
         @endif
 
         {{ trim($slot) !== '' ? $slot : $label }}
-    </x-base.button-base>
+    </x-beartropy-ui::base.button-base>
 </div>

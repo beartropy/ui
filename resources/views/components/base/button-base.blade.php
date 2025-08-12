@@ -39,7 +39,7 @@
             {{ $start }}
         @endif
         @if (isset($iconStart))
-            <x-bt-icon name="{{$iconStart}}" class="mr-2 {{$sizePreset['iconSize']}}" />
+            <x-beartropy-ui::icon name="{{$iconStart}}" class="mr-2 {{$sizePreset['iconSize']}}" />
         @endif
 
         <span class="flex items-center">
@@ -47,7 +47,7 @@
         </span>
 
         @if (isset($iconEnd))
-            <x-bt-icon name="{{$iconEnd}}" class="ml-2 {{$sizePreset['iconSize']}}" />
+            <x-beartropy-ui::icon name="{{$iconEnd}}" class="ml-2 {{$sizePreset['iconSize']}}" />
         @endif
         @if (isset($end))
             {{ $end }}

@@ -8,13 +8,13 @@
         {{ $start }}
     @endif
     @if($iconLeft)
-        <x-bt-icon :name="$iconLeft" class="mr-1 {{ $sizePreset['iconSize'] }}" />
+        <x-beartropy-ui::icon :name="$iconLeft" class="mr-1 {{ $sizePreset['iconSize'] }}" />
     @endif
 
     {{ $slot }}
 
     @if($iconRight)
-        <x-bt-icon :name="$iconRight" class="ml-1 {{ $sizePreset['iconSize'] }}" />
+        <x-beartropy-ui::icon :name="$iconRight" class="ml-1 {{ $sizePreset['iconSize'] }}" />
     @endif
     @if(isset($end))
         {{ $end }}
