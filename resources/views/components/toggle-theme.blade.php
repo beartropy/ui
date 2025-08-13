@@ -40,7 +40,7 @@
     @if($viewData->mode === 'button')
         <button
             type="button"
-            @click="toggle()"
+            @click.stop="toggle()"
             :aria-pressed="dark"
             class="{{ $viewData->buttonClasses }} {{ $viewData->borderColorLight }}"
             :class="dark ? '{{ $viewData->borderColorDark }}' : '{{ $viewData->borderColorLight }}'"
@@ -57,7 +57,7 @@
                            x-show="!dark" />
             </span>
             @else
-                <svg x-show="!dark" @click="toggle()" style="cursor:pointer"
+                <svg x-show="!dark" @click.stop="toggle()" style="cursor:pointer"
                     :class="`{{ $viewData->iconLightClasses }}` + (rotating ? ' theme-rotate' : '')"
                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="5"/>
@@ -81,7 +81,7 @@
                            x-show="dark" />
             </span>
             @else
-                <svg x-show="dark" @click="toggle()" style="cursor:pointer"
+                <svg x-show="dark" @click.stop="toggle()" style="cursor:pointer"
                     :class="`{{ $viewData->iconDarkClasses }}` + (rotating ? ' theme-rotate' : '')"
                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path d="M21 12.79A9 9 0 1111.21 3 a7 7 0 109.79 9.79z"/>
@@ -92,7 +92,7 @@
     @elseif($viewData->mode === 'square-button')
         <button
             type="button"
-            @click="toggle()"
+            @click.stop="toggle()"
             :aria-pressed="dark"
             class="{{ $viewData->squareButtonClasses }} {{ $viewData->borderColorLight }}"
             :class="dark ? '{{ $viewData->borderColorDark }}' : '{{ $viewData->borderColorLight }}'"
@@ -110,7 +110,7 @@
                                x-show="!dark" />
                 </span>
             @else
-                <svg x-show="!dark" @click="toggle()" style="cursor:pointer"
+                <svg x-show="!dark" @click.stop="toggle()" style="cursor:pointer"
                     :class="`{{ $viewData->iconLightClasses }}` + (rotating ? ' theme-rotate' : '')"
                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="5"/>
@@ -134,7 +134,7 @@
                                x-show="dark" />
                 </span>
             @else
-                <svg x-show="dark" @click="toggle()" style="cursor:pointer"
+                <svg x-show="dark" @click.stop="toggle()" style="cursor:pointer"
                     :class="`{{ $viewData->iconDarkClasses }}` + (rotating ? ' theme-rotate' : '')"
                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path d="M21 12.79A9 9 0 1111.21 3 a7 7 0 109.79 9.79z"/>
@@ -144,17 +144,17 @@
 
     @else {{-- icon mode --}}
         @if($viewData->hasIconLightSlot)
-            <span x-show="!dark" @click="toggle()" style="cursor:pointer" :class="rotating ? 'theme-rotate' : ''">
+            <span x-show="!dark" @click.stop="toggle()" style="cursor:pointer" :class="rotating ? 'theme-rotate' : ''">
                 {!! $__data['icon-light'] !!}
             </span>
         @elseif($viewData->iconLight)
             <div x-show="!dark">
                 <x-beartropy-ui::icon :name="$viewData->iconLight"
                         :class="$viewData->iconLightClasses"
-                        @click="toggle()" style="cursor:pointer" />
+                        @click.stop="toggle()" style="cursor:pointer" />
             </div>
         @else
-            <svg x-show="!dark" @click="toggle()" style="cursor:pointer"
+            <svg x-show="!dark" @click.stop="toggle()" style="cursor:pointer"
                 :class="`{{ $viewData->iconLightClasses }}` + (rotating ? ' theme-rotate' : '')"
                 fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="5"/>
@@ -167,17 +167,17 @@
         @endif
 
         @if($viewData->hasIconDarkSlot)
-            <span x-show="dark" @click="toggle()" style="cursor:pointer" :class="rotating ? 'theme-rotate' : ''">
+            <span x-show="dark" @click.stop="toggle()" style="cursor:pointer" :class="rotating ? 'theme-rotate' : ''">
                 {!! $__data['icon-dark'] !!}
             </span>
         @elseif($viewData->iconDark)
             <span x-show="dark">
                 <x-beartropy-ui::icon :name="$viewData->iconDark"
                         :class="$viewData->iconDarkClasses"
-                            @click="toggle()" style="cursor:pointer" />
+                            @click.stop="toggle()" style="cursor:pointer" />
             </span>
         @else
-            <svg x-show="dark" @click="toggle()" style="cursor:pointer"
+            <svg x-show="dark" @click.stop="toggle()" style="cursor:pointer"
                 :class="`{{ $viewData->iconDarkClasses }}` + (rotating ? ' theme-rotate' : '')"
                 fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M21 12.79A9 9 0 1111.21 3 a7 7 0 109.79 9.79z"/>

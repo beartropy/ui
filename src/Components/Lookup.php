@@ -10,7 +10,8 @@ class Lookup extends Input
     public function __construct(
         public $options = [],
         public $optionLabel = "name",
-        public $optionValue = "id"
+        public $optionValue = "id",
+        public $label = null,
     ) {
         $this->options = collect($this->options)->map(function ($item) {
             if(!isset($item[$this->optionValue]) || !isset($item[$this->optionLabel])) {
@@ -20,8 +21,8 @@ class Lookup extends Input
                 'id' => $item[$this->optionValue],
                 'name' => $item[$this->optionLabel],
             ];
-        })->filter();
-        parent::__construct();
+        })->filter()->toArray();
+        parent::__construct(label: $label ?? null);
     }
 
 

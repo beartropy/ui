@@ -28,12 +28,12 @@
     $loadingTargetsOverride = null;
     $wireActionTargets = collect($attributes->getAttributes())
         ->filter(fn ($v, $k) => Str::startsWith($k, 'wire:'))
-        ->reject(fn ($v, $k) => Str::startsWith($k, 'wire:model'))
-        // Nos quedamos con el "valor" del wire:*, que es el método/prop objetivo (string)
+        ->reject(fn ($v, $k) => $k === 'wire:model')
+        ->reject(fn ($v, $k) => $k === 'wire:model.live')
+        ->reject(fn ($v, $k) => $k === 'wire:model.debounce')
+        
         ->map(function ($v) {
-            // En Blade suele venir como string directamente
             if (is_string($v)) return $v;
-            // fallback defensivo
             if (is_array($v)) return head($v);
             return null;
         })
@@ -41,7 +41,6 @@
         ->unique()
         ->values();
 
-    // Si el usuario pasó $loadingTargets lo usamos; sino, usamos lo detectado
     $wireLoadingTargets = $loadingTargetsOverride
         ? collect(is_array($loadingTargetsOverride) ? $loadingTargetsOverride : explode(',', (string) $loadingTargetsOverride))
             ->map(fn($s) => trim($s))
@@ -50,7 +49,6 @@
             ->values()
         : $wireActionTargets;
 
-    // String CSV para wire:target (Livewire soporta targets separados por coma)
     $wireLoadingTargetsCsv = $wireLoadingTargets->implode(',');
 
 @endphp

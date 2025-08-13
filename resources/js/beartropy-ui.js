@@ -316,9 +316,8 @@ window.$beartropy.datetimepicker = function(entangledValue, rangeMode = false, m
                 } else {
                     this.end = day.date;
                     this.endHour = '00'; this.endMinute = '00';
-                    // Cuando hay hora, sólo guardar cuando el usuario elige hora (ver más abajo)
                     if (!this.showTime) {
-                        this.value = { start: `${this.start} ${this.startHour}:${this.startMinute}`, end: `${this.end} ${this.endHour}:${this.endMinute}` };
+                        this.value = { start: this.start, end: this.end };
                         this.open = false;
                     }
                 }
@@ -326,7 +325,7 @@ window.$beartropy.datetimepicker = function(entangledValue, rangeMode = false, m
                 this.start = day.date;
                 this.startHour = '00'; this.startMinute = '00';
                 if (!this.showTime) {
-                    this.value = `${this.start}`;
+                    this.value = this.start;
                     this.open = false;
                 }
             }
@@ -341,14 +340,18 @@ window.$beartropy.datetimepicker = function(entangledValue, rangeMode = false, m
                 this.endMinute = m;
             }
             if (this.range && this.start && this.end) {
-                this.value = {
-                    start: `${this.start} ${this.startHour}:${this.startMinute}`,
-                    end:   `${this.end} ${this.endHour}:${this.endMinute}`
-                };
+                this.value = this.showTime
+                    ? {
+                        start: `${this.start} ${this.startHour}:${this.startMinute}`,
+                        end:   `${this.end} ${this.endHour}:${this.endMinute}`
+                    }
+                    : { start: this.start, end: this.end };
                 this.open = false;
             }
             if (!this.range && this.start) {
-                this.value = `${this.start} ${this.startHour}:${this.startMinute}`;
+                this.value = this.showTime
+                    ? `${this.start} ${this.startHour}:${this.startMinute}`
+                    : this.start;
                 this.open = false;
             }
             this.updateDisplay();
@@ -435,31 +438,17 @@ window.$beartropy.datetimepicker = function(entangledValue, rangeMode = false, m
         },
         onDropdownClose() {
             if (this.range) {
-                // Si hay inicio y fin
                 if (this.start && this.end) {
-                    let startHour = this.startHour || '00';
-                    let startMinute = this.startMinute || '00';
-                    let endHour = this.endHour || '00';
-                    let endMinute = this.endMinute || '00';
-
-                    // Si seleccionó solo hora, poné minutos en '00'
-                    // Si seleccionó solo fecha fin (sin hora), podés poner fin a las 23:59 (o 00:00 según preferencia)
-                    // Ejemplo: si la fecha fin existe pero hora/minuto no, podés setear a '23:59'
-                    if (this.showTime) {
-                        if (!this.endHour || this.endHour === '00') this.endHour = '00';
-                        if (!this.endMinute || this.endMinute === '00') this.endMinute = '00';
-                    }
-                    this.value = {
-                        start: `${this.start} ${this.startHour || '00'}:${this.startMinute || '00'}`,
-                        end: `${this.end} ${this.endHour || '00'}:${this.endMinute || '00'}`
-                    };
+                    this.value = this.showTime
+                        ? {
+                            start: `${this.start} ${this.startHour || '00'}:${this.startMinute || '00'}`,
+                            end: `${this.end} ${this.endHour || '00'}:${this.endMinute || '00'}`
+                        }
+                        : { start: this.start, end: this.end };
                 }
             } else if (this.start) {
-                // Single date
-                let hour = this.startHour || '00';
-                let minute = this.startMinute || '00';
                 this.value = this.showTime
-                    ? `${this.start} ${hour}:${minute}`
+                    ? `${this.start} ${this.startHour || '00'}:${this.startMinute || '00'}`
                     : this.start;
             }
             this.open = false;
