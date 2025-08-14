@@ -46,9 +46,9 @@
             </thead>
             <tbody>
                 <template x-for="(row, i) in paginatedRows" :key="i">
-                    <tr class="hover:bg-neutral-50 dark:hover:bg-neutral-800 {{ $colorPreset['row'] ?? '' }}">
+                    <tr class=" {{ $colorPreset['row'] ?? '' }}">
                         <template x-for="col in columns" :key="col">
-                            <td class="px-3 py-2 {{ $colorPreset['td'] ?? '' }}" x-text="row[col]"></td>
+                            <td class="px-3 py-2 {{ $colorPreset['td'] ?? '' }}" x-html="row[col]"></td>
                         </template>
                     </tr>
                 </template>

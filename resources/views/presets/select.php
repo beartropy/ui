@@ -5,7 +5,7 @@ return [
         'beartropy' => [
             'dropdown_bg' => 'bg-white dark:bg-gray-900/95',
             'dropdown_shadow' => 'shadow-xl',
-            'option_text' => 'text-gray-800 dark:text-gray-100',
+            'option_text' => 'text-gray-700 dark:text-gray-300',
             'option_hover' => 'hover:bg-gray-200/60 dark:hover:bg-gray-800',
             'option_active' => 'font-bold bg-beartropy-200/80 dark:bg-beartropy-800/80',
             'option_selected' => 'bg-beartropy-50 dark:bg-beartropy-800 font-bold',
