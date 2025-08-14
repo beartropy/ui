@@ -35,6 +35,7 @@ trait HasToasts
                         'type'    => $type,
                         'title'   => $title,
                         'message' => $message,
+                        'single'  => (!$message) ? true : false,
                         'duration'=> $duration,
                         'position'=> $position ?? null,
                     ];

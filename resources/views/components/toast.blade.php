@@ -143,8 +143,15 @@
                     </div>
                     <!-- Contenido -->
                     <div class="flex-1 min-w-0">
-                        <div class="font-semibold text-gray-900 dark:text-gray-100" x-text="toast.title"></div>
-                        <div class="text-gray-600 dark:text-gray-300 text-sm" x-text="toast.message"></div>
+                        <template x-if="toast.single">
+                            <div class="text-gray-600 dark:text-gray-300 mt-1 font-medium" x-text="toast.title"></div>
+                        </template>
+                        <template x-if="!toast.single">
+                            <div>
+                                <div class="font-semibold text-gray-900 dark:text-gray-100" x-text="toast.title"></div>
+                                <div class="text-gray-600 dark:text-gray-300 text-[15px]" x-text="toast.message"></div>
+                            </div>
+                        </template>
                     </div>
                     <!-- Botón cerrar -->
                     <button
