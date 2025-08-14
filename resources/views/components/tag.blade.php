@@ -29,7 +29,7 @@
     @endif
 
     <div
-        class="flex items-center group w-full rounded transition-all shadow-sm
+        class="flex items-center group w-full rounded-md dark:shadow-md transition-all shadow-sm outline-none
             {{ ($shouldFill) ? $colorPreset['bg'] : '' }}
             {{ $borderClass ?? '' }}
             {{ $ringClass ?? '' }}

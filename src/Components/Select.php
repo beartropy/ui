@@ -8,7 +8,6 @@ use Beartropy\Ui\Components\Base\InputTriggerBase;
 
 class Select extends InputTriggerBase
 {
-
     public $options;
 
     public $selected;
@@ -27,6 +26,13 @@ class Select extends InputTriggerBase
     public $customError;
     public $hint;
 
+    // 🔑 Nuevos mapeos
+    public $optionLabel;
+    public $optionValue;
+    public $optionDescription;
+    public $optionIcon;
+    public $optionAvatar;
+
     public function __construct(
         $options = [],
         $selected = null,
@@ -44,24 +50,37 @@ class Select extends InputTriggerBase
         $perPage = 15,
         $customError = null,
         $hint = null,
+
+        // 🔑 Defaults de mapeo
+        $optionLabel = 'label',
+        $optionValue = 'value',
+        $optionDescription = 'description',
+        $optionIcon = 'icon',
+        $optionAvatar = 'avatar',
     ) {
-        $this->options = $this->normalizeOptions($options);
-        $this->selected = $selected;
-        $this->icon = $icon;
-        $this->placeholder = $placeholder;
-        $this->searchable = filter_var($searchable, FILTER_VALIDATE_BOOLEAN);
-        $this->label = $label;
-        $this->multiple = filter_var($multiple, FILTER_VALIDATE_BOOLEAN);
-        $this->clearable = filter_var($clearable, FILTER_VALIDATE_BOOLEAN);
-        $this->remote = filter_var($remote, FILTER_VALIDATE_BOOLEAN);
-        $this->remoteUrl = $remoteUrl;
-        $this->size = $size;
-        $this->color = $color;
+        // Guardar mapeos primero (los usa normalizeOptions)
+        $this->optionLabel = $optionLabel ?: 'label';
+        $this->optionValue = $optionValue ?: 'value';
+        $this->optionDescription = $optionDescription ?: 'description';
+        $this->optionIcon = $optionIcon ?: 'icon';
+        $this->optionAvatar = $optionAvatar ?: 'avatar';
+
+        $this->options      = $this->normalizeOptions($options);
+        $this->selected     = $selected;
+        $this->icon         = $icon;
+        $this->placeholder  = $placeholder;
+        $this->searchable   = filter_var($searchable, FILTER_VALIDATE_BOOLEAN);
+        $this->label        = $label;
+        $this->multiple     = filter_var($multiple, FILTER_VALIDATE_BOOLEAN);
+        $this->clearable    = filter_var($clearable, FILTER_VALIDATE_BOOLEAN);
+        $this->remote       = filter_var($remote, FILTER_VALIDATE_BOOLEAN);
+        $this->remoteUrl    = $remoteUrl;
+        $this->size         = $size;
+        $this->color        = $color;
         $this->initialValue = $initialValue;
-        $this->perPage = (int)$perPage;
-        $this->remoteUrl = $remoteUrl;
-        $this->customError = $customError;
-        $this->hint = $hint;
+        $this->perPage      = (int) $perPage;
+        $this->customError  = $customError;
+        $this->hint         = $hint;
     }
 
     protected function normalizeOptions($options)
@@ -70,97 +89,125 @@ class Select extends InputTriggerBase
             $options = $options->all();
         }
 
-        // Detección de array asociativo
+        // ¿array asociativo?
         $isAssociative = false;
         if (is_array($options) && count($options)) {
             $keys = array_keys($options);
             $isAssociative = array_keys($keys) !== $keys;
         }
 
-        $isEmoji = function($icon) {
-            // Emoji unicode ranges + símbolos y pictogramas
+        $isEmoji = function ($icon) {
             return is_string($icon) && preg_match('/^[\p{Emoji}\p{S}\p{So}\x{1F600}-\x{1F64F}]{1,3}$/u', $icon);
         };
 
-        // Renderizado de icono
-        $renderIcon = function($icon) use ($isEmoji) {
+        $renderIcon = function ($icon) use ($isEmoji) {
             if (empty($icon)) return null;
-            // Emoji: no tocar
-            if ($isEmoji($icon)) {
-                return $icon;
-            }
-            // SVG crudo: dejar pasar
-            if (is_string($icon) && str_starts_with(trim($icon), '<svg')) {
-                return $icon;
-            }
+            if ($isEmoji($icon)) return $icon;
+            $trim = is_string($icon) ? trim($icon) : $icon;
+            if (is_string($trim) && str_starts_with($trim, '<svg')) return $icon;
+            if (is_string($trim) && str_starts_with($trim, '<img')) return $icon;
+            if (is_string($icon) && mb_strlen($icon) <= 2 && strip_tags($icon) === $icon) return $icon;
 
-            if (is_string($icon) && str_starts_with(trim($icon), '<img')) {
-                return $icon;
-            }
-            // Fallback: si es muy corto y no tiene tags, consideramos que es texto tipo emoji (extra safe)
-            if (mb_strlen($icon) <= 2 && strip_tags($icon) === $icon) {
-                return $icon;
-            }
-            // Si no, renderizar por Blade
             $iconComponent = new \Beartropy\Ui\Components\Icon(name: $icon, class: 'w-5 h-5');
             return Blade::renderComponent($iconComponent);
         };
 
+        // 🔍 Getter defensivo por campo
+        $get = function ($source, string $field, $fallbacks = []) {
+            // 1) Campo explícito
+            $candidates = array_filter([$field, ...$fallbacks]);
+
+            foreach ($candidates as $key) {
+                // Array
+                if (is_array($source) && array_key_exists($key, $source)) {
+                    return $source[$key];
+                }
+                // Eloquent / Model-like
+                if (is_object($source) && method_exists($source, 'getAttribute')) {
+                    $val = $source->getAttribute($key);
+                    if (!is_null($val)) return $val;
+                }
+                // Objeto simple
+                if (is_object($source) && isset($source->{$key})) {
+                    return $source->{$key};
+                }
+            }
+
+            return null;
+        };
+
         $normalized = [];
 
-        $processOption = function($id, $option) use ($renderIcon) {
-            if (is_object($option) && method_exists($option, 'getAttribute')) {
-                $label = $option->getAttribute('label') ?? $option->getAttribute('name') ?? $option->getAttribute('value') ?? null;
-                $icon  = $option->getAttribute('icon') ?? null;
-                $avatar= $option->getAttribute('avatar') ?? null;
-                $desc  = $option->getAttribute('description') ?? null;
-            } elseif (is_string($option)) {
-                // String plano: usalo como label
-                $label = $option;
-                $icon = null;
-                $avatar = null;
-                $desc = null;
-            } else {
-                $label = $option['label'] ?? $option['name'] ?? $option['value'] ?? null;
-                $icon  = $option['icon'] ?? null;
-                $avatar= $option['avatar'] ?? null;
-                $desc  = $option['description'] ?? null;
+        $processOption = function ($rawId, $option) use ($get, $renderIcon) {
+            // 🆔 ID / value
+            $id = $get($option, $this->optionValue, ['id', 'key', 'value']);
+
+            // 🏷️ Label
+            $label = $get($option, $this->optionLabel, ['label', 'name', 'text', 'value']);
+
+            // 🧾 Description
+            $desc = $get($option, $this->optionDescription, ['description', 'desc', 'subtitle']);
+
+            // 🖼️ Icon / Avatar
+            $icon = $get($option, $this->optionIcon, ['icon']);
+            $avatar = $get($option, $this->optionAvatar, ['avatar', 'image', 'photo', 'picture']);
+
+            // Fallbacks finales
+            if (is_null($label)) {
+                // Si no hay label, usar el id como label si existe
+                $label = $id ?? (is_scalar($option) ? (string)$option : null);
             }
+
             return [
-                'label' => $label,
-                'icon' => $renderIcon($icon),
-                'avatar' => $avatar,
+                '_value'      => $id ?? $rawId, // guardamos el "value" real para la vista/JS
+                'label'       => $label,
+                'icon'        => $renderIcon($icon),
+                'avatar'      => $avatar,
                 'description' => $desc,
             ];
         };
 
-
         if ($isAssociative) {
             foreach ($options as $id => $option) {
+                // Caso simple: label string
+                if (is_string($option)) {
+                    $normalized[(string)$id] = [
+                        '_value'      => $id,
+                        'label'       => $option,
+                        'icon'        => null,
+                        'avatar'      => null,
+                        'description' => null,
+                    ];
+                    continue;
+                }
+
                 $normalized[(string)$id] = $processOption($id, $option);
             }
         } else {
             foreach ($options as $index => $item) {
-                if (is_object($item) && method_exists($item, 'getAttribute')) {
-                    $id = $item->getAttribute('id') ?? null;
-                } else {
-                    $id = is_array($item) && isset($item['id']) ? $item['id'] : null;
+                if (is_string($item)) {
+                    $normalized[(string)$index] = [
+                        '_value'      => $index,
+                        'label'       => $item,
+                        'icon'        => null,
+                        'avatar'      => null,
+                        'description' => null,
+                    ];
+                    continue;
                 }
 
-                if ($id !== null) {
-                    $normalized[(string)$id] = $processOption($id, $item);
-                } else {
-                    if (is_string($item)) {
-                        $normalized[(string)$index] = [
-                            'label' => $item,
-                            'icon' => null,
-                            'avatar' => null,
-                            'description' => null,
-                        ];
-                    } else {
-                        $normalized[(string)$index] = $processOption($index, $item);
-                    }
+                $id = null;
+                // Si trae id/value, úsalo como key para consistencia
+                if (is_array($item)) {
+                    $id = $item[$this->optionValue] ?? $item['id'] ?? $item['value'] ?? null;
+                } elseif (is_object($item) && method_exists($item, 'getAttribute')) {
+                    $id = $item->getAttribute($this->optionValue) ?? $item->getAttribute('id') ?? $item->getAttribute('value');
+                } elseif (is_object($item) && isset($item->{$this->optionValue})) {
+                    $id = $item->{$this->optionValue};
                 }
+
+                $key = $id !== null ? (string)$id : (string)$index;
+                $normalized[$key] = $processOption($key, $item);
             }
         }
 

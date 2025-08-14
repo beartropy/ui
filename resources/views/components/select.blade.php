@@ -19,6 +19,9 @@
     $remoteUrl = $remoteUrl ?? null;
     $perPage = $perPage ?? 15;
 
+    $optionsKey = md5(json_encode($options));
+
+    $wrapperClass = $attributes->get('class') ?? '';
 @endphp
 
 <div
@@ -174,7 +177,8 @@
             fetchOptions(true);
         });
     "
-    class="flex flex-col w-full"
+    class="flex flex-col w-full {{ $wrapperClass }}"
+    wire:key="{{ $optionsKey }}"
 >
     @if($label)
         <label for="{{ $selectId }}" class="{{ $labelClass }}">{{ $label }}</label>
@@ -307,15 +311,15 @@
                 @if($searchable)
                     {{-- Search input --}}
                     <div class="p-2">
-                        <x-input
+                        <x-beartropy-ui::input
                             type="text"
                             placeholder="Buscar..."
                             x-model="search"
                             autocomplete="off"
                             color="{{$presetNames['color']}}"
                             size="{{$presetNames['size']}}"
-                            :clearable="true"
                             id="{{ $selectId }}-search"
+                            icon-end="magnifying-glass"
                         />
                     </div>
                 @endif
@@ -359,6 +363,13 @@
                                             x-text="option.description"></span>
                                     </template>
                                 </div>
+                                <template x-if="!isMulti && isSelected(id)">
+                                    <div class="ml-auto flex items-center">
+                                        @include('beartropy-ui-svg::beartropy-check', [
+                                            'class' => 'shrink-0 text-gray-700 dark:text-gray-400 ' . ($sizePreset['iconSize'] ?? '')
+                                        ])
+                                    </div>
+                                </template>
                                 <template x-if="isMulti">
                                     <div class="ml-auto flex items-center">
                                         <input type="checkbox" :checked="isSelected(id)" class="form-checkbox pointer-events-none" @click.prevent />

@@ -68,13 +68,13 @@
 .beartropy-select::placeholder,
 .beartropy-datetime::placeholder,
 .beartropy-placeholder {
-    color: #6b7280;
+    color: #4B5563;
     opacity: 1;
 }
 
 .beartropy-tag-input[placeholder]:empty:before {
     content: attr(placeholder);
-    color: #6b7280;
+    color: #4B5563;
     opacity: 1;
     pointer-events: none;
 }

@@ -4,7 +4,7 @@ return [
     'colors' => [
         'beartropy' => [
             'bg' => 'bg-white dark:bg-gray-900/50',
-            'border' => 'border border-neutral-300 dark:border-neutral-700',
+            'border' => 'border border-gray-300 dark:border-gray-700',
             'border_error' => 'border border-red-500',
             'ring' => 'focus-within:ring-2 focus-within:ring-beartropy-500 focus-within:border-beartropy-500',
             'ring_error' => 'focus-within:ring-2 focus-within:ring-red-500 focus-within:border-red-500',
@@ -12,7 +12,7 @@ return [
             'placeholder' => 'placeholder:text-gray-400 dark:placeholder:text-gray-500',
             'disabled_bg' => 'disabled:bg-neutral-100 dark:disabled:bg-neutral-800',
             'disabled_text' => 'disabled:text-gray-400 dark:disabled:text-gray-600',
-            'label' => 'text-gray-800 dark:text-gray-100 text-sm tracking-wide  ml-1',
+            'label' => 'text-gray-800 dark:text-gray-300 text-sm tracking-wide  ml-1',
             'label_error' => 'text-red-500 text-sm tracking-wide  ml-1',
             'chip_bg' => 'bg-beartropy-200 dark:bg-beartropy-800',
             'chip_text' => 'text-beartropy-900 dark:text-beartropy-100',

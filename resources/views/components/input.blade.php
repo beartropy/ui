@@ -31,7 +31,7 @@
         ->reject(fn ($v, $k) => $k === 'wire:model')
         ->reject(fn ($v, $k) => $k === 'wire:model.live')
         ->reject(fn ($v, $k) => $k === 'wire:model.debounce')
-        
+
         ->map(function ($v) {
             if (is_string($v)) return $v;
             if (is_array($v)) return head($v);
@@ -51,9 +51,11 @@
 
     $wireLoadingTargetsCsv = $wireLoadingTargets->implode(',');
 
+    $wrapperClass = $attributes->get('class') ?? '';
+
 @endphp
 
-<div class="flex flex-col w-full">
+<div class="flex flex-col w-full {{ $wrapperClass }}">
     @if($label)
         <label for="{{ $inputId }}" class="{{ $labelClass }}">
             {{ $label }}

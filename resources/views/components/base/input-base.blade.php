@@ -37,7 +37,7 @@
     class="flex items-center w-full min-w-0 group relative"
 >
     <div
-        class="flex items-center group w-full min-w-0 overflow-hidden rounded transition-all shadow-sm
+        class="flex items-center group w-full min-w-0 overflow-hidden rounded-md transition-all dark:shadow-md shadow-sm
             {{ ($shouldFill) ? $colorPreset['bg'] : '' }}
             {{ $borderClass ?? '' }}
             {{ $ringClass ?? '' }}
