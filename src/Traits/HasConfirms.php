@@ -42,6 +42,13 @@ trait HasConfirms
                 protected string $size = 'md';
                 protected bool $closeOnBackdrop = true;
                 protected bool $closeOnEscape = true;
+                protected string $effect = 'zoom';
+                protected int $duration = 200;
+                protected string $easing = 'ease-out';
+                protected float $overlayOpacity = 0.6;
+                protected bool $overlayBlur = false;
+                protected string $placement = 'top';
+                protected ?string $panelClass = 'mt-32';
 
                 /** Estilo por defecto del botón de confirmación */
                 protected string $defaultVariant = 'danger';
@@ -63,6 +70,13 @@ trait HasConfirms
                 public function size(string $size = 'md'): self { $this->size = $size; return $this; }
                 public function closeOnBackdrop(bool $v = true): self { $this->closeOnBackdrop = $v; return $this; }
                 public function closeOnEscape(bool $v = true): self { $this->closeOnEscape = $v; return $this; }
+                public function effect(string $e): self { $this->effect = $e; return $this; } // 'zoom','fade','slide-up','slide-down','slide-left','slide-right'
+                public function transition(int $ms): self { $this->duration = $ms; return $this; }
+                public function easing(string $e): self { $this->easing = $e; return $this; } // ej. 'cubic-bezier(0.2,0.8,0.2,1)'
+                public function overlay(float $opacity = 0.6, bool $blur = false): self { $this->overlayOpacity = $opacity; $this->overlayBlur = $blur; return $this; }
+                public function placement(string $pos = 'center'): self { $this->placement = $pos; return $this; }
+                public function panelClass(?string $cls): self { $this->panelClass = $cls; return $this; }
+                public function centered(bool $centered = false): self { ($centered) ? $this->panelClass('mt-32') : $this->panelClass(''); ($centered) ? $this->placement('center') : $this->placement('top'); return $this; }
 
                 // -------- Variantes rápidas --------
                 public function variant(string $variant): self { $this->defaultVariant = $variant; return $this; }
@@ -222,6 +236,13 @@ trait HasConfirms
                         'closeOnEscape'   => $this->closeOnEscape,
                         'buttons'         => $buttons,
                         'componentId'     => $componentId,
+                        'effect'         => $this->effect,
+                        'duration'       => $this->duration,
+                        'easing'         => $this->easing,
+                        'overlayOpacity' => $this->overlayOpacity,
+                        'overlayBlur'    => $this->overlayBlur,
+                        'placement' => $this->placement,
+                        'panelClass' => $this->panelClass,
                     ];
 
                     // Dispatch a la ventana (escuchado por el host <x-confirm>)

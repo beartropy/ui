@@ -64,7 +64,7 @@ class Confirm extends BeartropyComponent
 
     public function render()
     {
-        return view('beartropy-ui::components.confirm', [
+        return view('beartropy-ui::confirm', [
             'jsArgs' => fn(array $a) => static::jsArgs($a),
         ]);
     }

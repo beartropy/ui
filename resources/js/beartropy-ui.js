@@ -459,7 +459,6 @@ window.$beartropy.datetimepicker = function(entangledValue, rangeMode = false, m
     };
 };
 
-
 /** Tag Input **/
 window.$beartropy.tagInput = function ({ initialTags = [], unique = true, maxTags = null, disabled = false, separator = ',' }) {
     // Soporta string (",; ") o array ([';', ',', ' '])
@@ -507,3 +506,226 @@ window.$beartropy.tagInput = function ({ initialTags = [], unique = true, maxTag
         },
     };
 }
+
+/** Confirm **/
+
+window.$beartropy.confirmHost = function ({
+    id,
+    defaultPlacement = 'top',
+    defaultPanelClass = 'mt-32',
+}) {
+  function toArray(v){ return Array.isArray(v) ? v : (v != null ? [v] : []); }
+  function normalizeButtons(arr){
+    return (Array.isArray(arr) ? arr : []).map(b => ({
+      label: b?.label ?? 'OK',
+      variant: b?.variant ?? 'soft',
+      color: b?.color ?? 'gray',
+      mode: b?.mode ?? (b?.wire ? 'wire' : (b?.emit ? 'emit' : 'close')),
+      wire: b?.wire ?? null,
+      params: toArray(b?.params),
+      emit: b?.emit ?? null,
+      payload: b?.payload ?? {},
+      dismissAfter: b?.dismissAfter === true, // 👈 estricto
+      close: b?.close === true,
+      spinner: b?.spinner === true,
+      role: b?.role ?? null,
+    }));
+  }
+
+  // ====== efectos ======
+  function dialogClosed(effect){
+    switch (effect) {
+      case 'slide-up':    return 'opacity-0 translate-y-2';
+      case 'slide-down':  return 'opacity-0 -translate-y-2';
+      case 'slide-left':  return 'opacity-0 translate-x-2';
+      case 'slide-right': return 'opacity-0 -translate-x-2';
+      case 'fade':        return 'opacity-0';
+      case 'zoom':
+      default:            return 'opacity-0 scale-95';
+    }
+  }
+  function dialogOpen(effect){
+    switch (effect) {
+      case 'slide-up':
+      case 'slide-down':
+      case 'slide-left':
+      case 'slide-right': return 'opacity-100 translate-x-0 translate-y-0';
+      case 'fade':        return 'opacity-100';
+      case 'zoom':
+      default:            return 'opacity-100 scale-100';
+    }
+  }
+
+  // Mapea (variant,color) → clases para TU <x-button raw>
+  function classesFor(variant, color){
+    const v = variant || 'soft';
+    const c = color || 'gray';
+    const map = {
+      primary: {
+        red:  'bg-red-600 text-white hover:bg-red-700 focus:ring-red-400 dark:focus:ring-red-600',
+        blue: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-400 dark:focus:ring-blue-600',
+        gray: 'bg-gray-800 text-white hover:bg-gray-900 focus:ring-gray-500 dark:focus:ring-gray-500',
+      },
+      ghost: {
+        gray: 'bg-transparent text-gray-700 hover:bg-gray-100/40 focus:ring-gray-300 dark:text-gray-200',
+        red:  'bg-transparent text-red-600 hover:bg-red-50 focus:ring-red-300 dark:text-red-300',
+      },
+      outline: {
+        gray: 'bg-transparent border border-gray-400/60 text-gray-800 dark:text-gray-200 hover:bg-gray-100/40 focus:ring-gray-300',
+      },
+      soft: { gray: 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600' },
+      danger: { red: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-400 dark:focus:ring-red-600' },
+    };
+    return (map[v] && map[v][c]) ? map[v][c] : map.soft.gray;
+  }
+
+  return {
+    // ===== state =====
+    id,
+    cfg: {},
+    buttons: [],
+    btnLoading: [],
+    open: false,              // visibilidad del wrapper
+    anim: 'idle',             // 'idle' | 'enter' | 'open' | 'leave'
+
+    // flags/efectos (configurables por payload)
+    closeOnBackdrop: true,
+    closeOnEscape:   true,
+    effect:   'zoom',
+    duration: 200,           // ms
+    easing:   'ease-out',
+    overlayOpacity: 0.6,     // 0..1
+    overlayBlur: false,
+
+    placement: defaultPlacement,   // 'top' | 'center'
+    panelClass: defaultPanelClass, // ej. 'mt-32'
+
+    // ===== utils =====
+    _norm(raw){ if(!raw) return {}; if(Array.isArray(raw)) return raw[0] ?? {}; return raw; },
+    sizeClasses(){
+      switch (this.cfg.size) {
+        case 'sm': return 'max-w-sm';
+        case 'lg': return 'max-w-2xl';
+        case 'xl': return 'max-w-4xl';
+        case '2xl': return 'max-w-6xl';
+        default: return 'max-w-lg';
+      }
+    },
+    containerClass(){
+        return this.placement === 'top'
+        ? 'flex justify-center items-start'
+        : 'grid place-items-center';
+    },
+    overlayStyle(){
+    const d = Number(this.duration) || 200;
+    const e = this.easing || 'ease-out';
+    // Cuando está abierto, usa overlayOpacity; cuando entra/sale, 0
+    const o = (this.anim === 'open') ? this.overlayOpacity : 0;
+    return `opacity:${o}; transition: opacity ${d}ms ${e};`;
+    },
+    dialogStyle(){
+      const d = Number(this.duration) || 200;
+      const e = this.easing || 'ease-out';
+      return `transition: transform ${d}ms ${e}, opacity ${d}ms ${e};`;
+    },
+    dialogMotionClass(){
+      // Durante 'enter' y 'leave' usamos la pose "cerrada"
+      return (this.anim === 'open') ? dialogOpen(this.effect) : dialogClosed(this.effect);
+    },
+    btnClass(btn){ return classesFor(btn.variant, btn.color); },
+
+    // ===== core =====
+    handle(ev){
+      const d = this._norm(ev.detail);
+      const target = d.target || this.id;
+      if (target !== this.id) return;
+
+      // flags dinámicos
+      this.closeOnBackdrop = (typeof d.closeOnBackdrop === 'boolean') ? d.closeOnBackdrop : true;
+      this.closeOnEscape   = (typeof d.closeOnEscape   === 'boolean') ? d.closeOnEscape   : true;
+
+      // efectos
+      this.effect         = d.effect   || 'zoom';
+      this.duration       = (typeof d.duration === 'number') ? d.duration : 200;
+      this.easing         = d.easing   || 'ease-out';
+      this.overlayOpacity = (typeof d.overlayOpacity === 'number') ? d.overlayOpacity : 0.6;
+      this.overlayBlur    = d.overlayBlur === true;
+
+      // contenido
+      this.cfg = d;
+      const btns = normalizeButtons(d.buttons);
+      this.buttons = btns.length ? btns : normalizeButtons([{ label:'OK', mode:'close', variant:'soft' }]);
+      this.btnLoading = this.buttons.map(() => false);
+
+      this.placement = (d.placement ?? this.placement);
+      this.panelClass = (d.panelClass ?? this.panelClass);
+      console.log('CONFIRM payload -> placement:', d.placement, 'panelClass:', d.panelClass, 'default:', this.placement, this.panelClass);
+
+      // ⏯️ pipeline de animación
+      this._openWithAnimation();
+    },
+
+    _openWithAnimation(){
+      if (this.open && this.anim === 'open') return;
+      this.open = true;       // muestra el wrapper (overlay+dialog)
+      this.anim = 'enter';    // posición "cerrada" visible
+
+      // salto de frame para que el browser pinte 'enter' y luego transicione a 'open'
+      this.$nextTick(() => requestAnimationFrame(() => {
+        this.anim = 'open';   // -> transiciona a la pose "abierta"
+        // focus al primer control si existe
+        this.$nextTick(() => { try { this.$refs.first && this.$refs.first.focus(); } catch(_){} });
+      }));
+
+      document.documentElement.classList.add('overflow-hidden');
+    },
+
+    close(){
+      if (!this.open) return;
+      this.anim = 'leave'; // vuelve a pose "cerrada" y deja que la transición corra
+      const ms = Number(this.duration) || 200;
+      setTimeout(() => {
+        this.open = false;    // ahora sí ocultamos el wrapper
+        this.anim = 'idle';
+        document.documentElement.classList.remove('overflow-hidden');
+      }, ms);
+    },
+
+    onBackdrop(e){
+      if (!this.closeOnBackdrop) return;
+      if (e.target === e.currentTarget) this.close();
+    },
+
+    onKeydown(e){
+      if (!this.closeOnEscape) return;
+      if (e.key === 'Escape') { e.preventDefault(); this.close(); }
+    },
+
+    async run(btn, i){
+      const mode = btn.mode || (btn.wire ? 'wire' : (btn.emit ? 'emit' : 'close'));
+      const dismiss = btn.dismissAfter === true;
+      const compId = this.cfg.componentId;
+
+      if (mode === 'wire' && compId && btn.wire) {
+        try {
+          this.btnLoading[i] = true;
+          await Livewire.find(compId).call(btn.wire, ...(btn.params || []));
+        } finally {
+          this.btnLoading[i] = false;
+          if (dismiss) this.close();
+        }
+        return;
+      }
+
+      if (mode === 'emit' && btn.emit) {
+        if (compId) Livewire.dispatch(btn.emit, btn.payload || {}, { to: compId });
+        else         Livewire.dispatch(btn.emit, btn.payload || {});
+        if (dismiss) this.close();
+        return;
+      }
+
+      // close
+      this.close();
+    },
+  };
+};
