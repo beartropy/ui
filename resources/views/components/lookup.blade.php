@@ -58,10 +58,12 @@
 
     // String CSV para wire:target (Livewire soporta targets separados por coma)
     $wireLoadingTargetsCsv = $wireLoadingTargets->implode(',');
+
+    $wrapperClass = $attributes->get('class') ?? '';
 @endphp
 
 <div
-    class="flex flex-col w-full relative"
+    class="flex flex-col w-full relative {{ $wrapperClass }}"
     {{-- Livewire actualizará este atributo cuando :options cambie --}}
     data-options='@json($options ?? [])'
 

@@ -15,6 +15,7 @@
                 : (($locale ?? 'es') === 'es' ? 'Seleccionar fecha…' : 'Select date…')
         );
 
+    $wrapperClass = $attributes->get('class') ?? '';
 @endphp
 
 <div
@@ -31,7 +32,7 @@
         {{ ($showTime ?? false) ? 'true' : 'false' }},
     )"
     x-init="init()"
-    class="flex flex-col w-full"
+    class="flex flex-col w-full {{ $wrapperClass }}"
 >
     @if($label)
         <label for="{{ $pickerId }}" class="{{ $labelClass }}">
