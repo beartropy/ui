@@ -51,7 +51,8 @@ trait HasConfirms
                 protected ?string $panelClass = 'mt-32';
 
                 /** Estilo por defecto del botón de confirmación */
-                protected string $defaultVariant = 'danger';
+                protected string $defaultVariant = 'primary';
+                protected string $defaultColor   = 'blue';
 
                 /** @var array<int, array<string, mixed>> */
                 protected array $buttons = [];
@@ -80,10 +81,21 @@ trait HasConfirms
 
                 // -------- Variantes rápidas --------
                 public function variant(string $variant): self { $this->defaultVariant = $variant; return $this; }
-                public function danger(): self { return $this->variant('danger'); }
-                public function primary(): self { return $this->variant('primary'); }
-                public function success(): self { return $this->variant('success'); }
-                public function warning(): self { return $this->variant('warning'); }
+                public function danger(): self
+                {
+                    $this->defaultVariant = 'danger';
+                    $this->defaultColor   = 'red';
+                    return $this;
+                }
+                public function primary(string $color = 'blue'): self
+                {
+                    $this->defaultVariant = 'primary';
+                    $this->defaultColor   = $color;
+                    return $this;
+                }
+                public function success(): self   { return $this->primary('green'); }
+                public function warning(): self   { return $this->primary('amber'); }
+                public function info(): self      { return $this->primary('blue'); }
                 public function soft(): self { return $this->variant('soft'); }
 
                 // -------- Botones --------
@@ -92,6 +104,27 @@ trait HasConfirms
                  * Keys soportadas:
                  *  - label, variant, mode(wire|emit|close), wire, params[], emit, payload[], dismissAfter(bool), close(bool), spinner(bool)
                  */
+
+                protected function tokenFor(?string $variant, ?string $color): string
+                {
+                    $v = $variant ?? 'soft';
+                    $c = $color ?? 'gray';
+
+                    return match ($v) {
+                        'primary' => match ($c) {
+                            'blue'   => 'btc-primary-blue',
+                            'gray'   => 'btc-primary-gray',
+                            'green'  => 'btc-primary-green',
+                            'amber'  => 'btc-primary-amber',
+                            default  => 'btc-primary-gray',
+                        },
+                        'danger'   => 'btc-danger-red',
+                        'ghost'    => 'btc-ghost',
+                        'outline'  => 'btc-outline',
+                        default    => 'btc-soft',
+                    };
+                }
+
                 public function button(array $button): self
                 {
                     $btn = array_merge([
@@ -105,30 +138,40 @@ trait HasConfirms
                         'dismissAfter' => false,
                         'close'        => false,
                         'spinner'      => false,
+                        'token'        => null,
                     ], $button);
+
+                    if (!$btn['token']) {
+                        $btn['token'] = $this->tokenFor($btn['variant'] ?? null, $btn['color'] ?? null);
+                    }
 
                     $this->buttons[] = $btn;
                     return $this;
                 }
 
-                public function cancel(string $label = 'Cancelar', string $variant = 'ghost'): self
+                public function cancel(?string $label = null, string $variant = 'ghost', string $color = 'gray'): self
                 {
                     return $this->button([
-                        'label'   => $label,
+                        'label'   => $label ?? ($this->labels['cancel'] ?? 'Cancelar'),
                         'variant' => $variant,
+                        'color'   => $color,
                         'mode'    => 'close',
                         'close'   => true,
+                        'role'    => 'cancel',
                     ]);
                 }
 
-                public function confirmLabel(string $label = 'Confirmar', ?string $variant = null): self
+                public function confirmLabel(?string $label = null, ?string $variant = null, ?string $color = null): self
                 {
                     return $this->button([
-                        'label'   => $label,
+                        'label'   => $label ?? ($this->labels['confirm'] ?? 'Confirmar'),
                         'variant' => $variant ?? $this->defaultVariant,
+                        'color'   => $color   ?? $this->defaultColor,
                         'mode'    => 'close',
+                        'role'    => 'confirm',
                     ]);
                 }
+
 
                 public function yesNo(
                     string $yes = 'Sí',

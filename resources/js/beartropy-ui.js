@@ -515,17 +515,35 @@ window.$beartropy.confirmHost = function ({
     defaultPanelClass = 'mt-32',
 }) {
   function toArray(v){ return Array.isArray(v) ? v : (v != null ? [v] : []); }
+    function fallbackToken(variant, color) {
+    const v = variant || 'soft', c = color || 'gray';
+    if (v === 'primary' && c === 'blue')  return 'btc-primary-blue';
+    if (v === 'primary' && c === 'gray')  return 'btc-primary-gray';
+    if (v === 'primary' && c === 'green') return 'btc-primary-green';
+    if (v === 'primary' && c === 'amber') return 'btc-primary-amber';
+    if (v === 'danger')  return 'btc-danger-red';
+    if (v === 'ghost')   return 'btc-ghost';
+    if (v === 'outline') return 'btc-outline';
+    return 'btc-soft';
+    }
+
   function normalizeButtons(arr){
     return (Array.isArray(arr) ? arr : []).map(b => ({
       label: b?.label ?? 'OK',
+      // semánticos (opcionales)
       variant: b?.variant ?? 'soft',
-      color: b?.color ?? 'gray',
+      color:   b?.color   ?? 'gray',
+      // 👇 token de clase que viene del servidor (o fallback)
+      token:   b?.token   ?? fallbackToken(b?.variant, b?.color),
+
+      // acciones
       mode: b?.mode ?? (b?.wire ? 'wire' : (b?.emit ? 'emit' : 'close')),
       wire: b?.wire ?? null,
       params: toArray(b?.params),
       emit: b?.emit ?? null,
       payload: b?.payload ?? {},
-      dismissAfter: b?.dismissAfter === true, // 👈 estricto
+
+      dismissAfter: b?.dismissAfter === true,
       close: b?.close === true,
       spinner: b?.spinner === true,
       role: b?.role ?? null,
@@ -556,28 +574,6 @@ window.$beartropy.confirmHost = function ({
     }
   }
 
-  // Mapea (variant,color) → clases para TU <x-button raw>
-  function classesFor(variant, color){
-    const v = variant || 'soft';
-    const c = color || 'gray';
-    const map = {
-      primary: {
-        red:  'bg-red-600 text-white hover:bg-red-700 focus:ring-red-400 dark:focus:ring-red-600',
-        blue: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-400 dark:focus:ring-blue-600',
-        gray: 'bg-gray-800 text-white hover:bg-gray-900 focus:ring-gray-500 dark:focus:ring-gray-500',
-      },
-      ghost: {
-        gray: 'bg-transparent text-gray-700 hover:bg-gray-100/40 focus:ring-gray-300 dark:text-gray-200',
-        red:  'bg-transparent text-red-600 hover:bg-red-50 focus:ring-red-300 dark:text-red-300',
-      },
-      outline: {
-        gray: 'bg-transparent border border-gray-400/60 text-gray-800 dark:text-gray-200 hover:bg-gray-100/40 focus:ring-gray-300',
-      },
-      soft: { gray: 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600' },
-      danger: { red: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-400 dark:focus:ring-red-600' },
-    };
-    return (map[v] && map[v][c]) ? map[v][c] : map.soft.gray;
-  }
 
   return {
     // ===== state =====
@@ -635,34 +631,39 @@ window.$beartropy.confirmHost = function ({
     btnClass(btn){ return classesFor(btn.variant, btn.color); },
 
     // ===== core =====
-    handle(ev){
-      const d = this._norm(ev.detail);
-      const target = d.target || this.id;
-      if (target !== this.id) return;
+    handle(ev) {
+    const d = this._norm(ev.detail);
+    const target = d.target ?? this.id;
+    if (target !== this.id) return;
 
-      // flags dinámicos
-      this.closeOnBackdrop = (typeof d.closeOnBackdrop === 'boolean') ? d.closeOnBackdrop : true;
-      this.closeOnEscape   = (typeof d.closeOnEscape   === 'boolean') ? d.closeOnEscape   : true;
+    // — flags dinámicos —
+    this.closeOnBackdrop = (typeof d.closeOnBackdrop === 'boolean') ? d.closeOnBackdrop : true;
+    this.closeOnEscape   = (typeof d.closeOnEscape   === 'boolean') ? d.closeOnEscape   : true;
 
-      // efectos
-      this.effect         = d.effect   || 'zoom';
-      this.duration       = (typeof d.duration === 'number') ? d.duration : 200;
-      this.easing         = d.easing   || 'ease-out';
-      this.overlayOpacity = (typeof d.overlayOpacity === 'number') ? d.overlayOpacity : 0.6;
-      this.overlayBlur    = d.overlayBlur === true;
+    // — efectos —
+    this.effect         = d.effect   || 'zoom';
+    this.duration       = (typeof d.duration === 'number') ? d.duration : 200;
+    this.easing         = d.easing   || 'ease-out';
+    this.overlayOpacity = (typeof d.overlayOpacity === 'number') ? d.overlayOpacity : 0.6;
+    this.overlayBlur    = d.overlayBlur === true;
 
-      // contenido
-      this.cfg = d;
-      const btns = normalizeButtons(d.buttons);
-      this.buttons = btns.length ? btns : normalizeButtons([{ label:'OK', mode:'close', variant:'soft' }]);
-      this.btnLoading = this.buttons.map(() => false);
+    // — placement / offset (defaults ya seteados en la factory) —
+    this.placement  = (d.placement  ?? this.placement);
+    this.panelClass = (d.panelClass ?? this.panelClass);
 
-      this.placement = (d.placement ?? this.placement);
-      this.panelClass = (d.panelClass ?? this.panelClass);
-      console.log('CONFIRM payload -> placement:', d.placement, 'panelClass:', d.panelClass, 'default:', this.placement, this.panelClass);
+    // — autofocus (opcional, si lo estás usando) —
+    this.autofocus = d.autofocus || this.autofocus; // 'dialog' | 'cancel' | 'confirm' | 'none'
 
-      // ⏯️ pipeline de animación
-      this._openWithAnimation();
+    // — contenido / botones (con token desde PHP) —
+    this.cfg = d;
+    const btns = normalizeButtons(d.buttons);
+    this.buttons = btns.length ? btns : normalizeButtons([{ label:'OK', mode:'close' }]);
+    this.btnLoading = this.buttons.map(() => false);
+console.log('buttons:', (d.buttons || []).map(b => ({
+  label: b.label, variant: b.variant, color: b.color, token: b.token
+})));
+    // ⏯️ pipeline de animación
+    this._openWithAnimation();
     },
 
     _openWithAnimation(){

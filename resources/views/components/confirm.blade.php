@@ -46,28 +46,17 @@
 
           <div class="flex items-center justify-end gap-2 p-4 border-t border-black/10 dark:border-white/10">
             <template x-for="(btn,i) in buttons" :key="i">
-              @if (view()->exists('components.button'))
-                <x-button raw
-                  :disabled="true" x-bind:disabled="btnLoading[i]"
-                  @click="run(btn,i)"
-                  x-bind:class="btnClass(btn)"
-                  x-ref="first"
-                >
-                  <span x-text="btn.label ?? 'OK'"></span>
-                </x-button>
-              @else
                 <button
                   type="button"
                   class="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm transition
                          focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                  :class="btnClass(btn)"
+                  x-bind:class="btn.token || 'btc-soft'"
                   :disabled="btnLoading[i]"
                   @click="run(btn,i)"
                   x-ref="first"
                 >
                   <span x-text="btn.label ?? 'OK'"></span>
                 </button>
-              @endif
             </template>
           </div>
         </div>

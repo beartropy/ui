@@ -78,3 +78,129 @@
     opacity: 1;
     pointer-events: none;
 }
+
+/* === BASE (sin Tailwind) =============================================== */
+:root {
+  /* color del borde externo del ring */
+  --btc-ring-color: rgba(59, 130, 246, .5);   /* azul por defecto */
+  /* color de “offset” detrás del ring (el fondo de tu app) */
+  --btc-ring-offset-color: #ffffff;
+}
+
+/* Si usás dark mode por clase .dark en <html> */
+.dark {
+  --btc-ring-offset-color: #0a0a0a; /* ajustá a tu fondo dark */
+}
+
+/* Botón base */
+.btc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;                   /* ~ gap-2 */
+  border-radius: .75rem;        /* ~ rounded-xl */
+  padding: .5rem .75rem;        /* ~ py-2 px-3 */
+  font-size: .875rem;           /* ~ text-sm */
+  line-height: 1.25rem;
+  transition:
+    background-color .15s ease,
+    color .15s ease,
+    border-color .15s ease,
+    box-shadow .15s ease,
+    opacity .15s ease;
+  border: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.btc-btn:focus {
+  outline: 0;
+  /* ring-2 + ring-offset-2 */
+  box-shadow:
+    0 0 0 2px var(--btc-ring-color),
+    0 0 0 4px var(--btc-ring-offset-color);
+}
+
+.btc-btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* === VARIANTES NEUTRALES =============================================== */
+
+/* soft gris */
+.btc-soft {
+  background-color: #e5e7eb;    /* gray-200 */
+  color: #111827;               /* gray-900 */
+}
+.btc-soft:hover { background-color: #d1d5db; } /* gray-300 */
+.dark .btc-soft {
+  background-color: #374151;    /* gray-700 */
+  color: #ffffff;
+}
+.dark .btc-soft:hover { background-color: #4b5563; } /* gray-600 */
+
+/* ghost */
+.btc-ghost {
+  background-color: transparent;
+  color: #374151;               /* gray-700 */
+}
+.btc-ghost:hover { background-color: rgba(0,0,0,.06); }
+.dark .btc-ghost {
+  color: #e5e7eb;               /* gray-200 */
+}
+.dark .btc-ghost:hover { background-color: rgba(255,255,255,.08); }
+
+/* outline gris */
+.btc-outline {
+  background-color: transparent;
+  border: 1px solid rgba(156,163,175,.6); /* gray-400/60 */
+  color: #1f2937;                         /* gray-800 */
+}
+.btc-outline:hover { background-color: rgba(0,0,0,.06); }
+.dark .btc-outline {
+  color: #e5e7eb;
+  border-color: rgba(156,163,175,.6);
+}
+.dark .btc-outline:hover { background-color: rgba(255,255,255,.08); }
+
+/* === VARIANTES “FUERTES” POR COLOR ===================================== */
+
+/* primary (azul) */
+.btc-primary-blue {
+  background-color: #2563eb;    /* blue-600 */
+  color: #ffffff;
+  --btc-ring-color: rgba(59,130,246,.5); /* azul */
+}
+.btc-primary-blue:hover { background-color: #1d4ed8; } /* blue-700 */
+
+/* primary (gris oscuro) */
+.btc-primary-gray {
+  background-color: #1f2937;    /* gray-800 */
+  color: #ffffff;
+  --btc-ring-color: rgba(107,114,128,.5); /* gray */
+}
+.btc-primary-gray:hover { background-color: #111827; } /* gray-900 */
+
+/* danger (rojo) */
+.btc-danger-red {
+  background-color: #dc2626;    /* red-600 */
+  color: #ffffff;
+  --btc-ring-color: rgba(239,68,68,.5); /* red */
+}
+.btc-danger-red:hover { background-color: #b91c1c; } /* red-700 */
+
+/* primary (verde) */
+.btc-primary-green {
+  background-color: #16a34a;      /* green-600 */
+  color: #ffffff;
+  --btc-ring-color: rgba(34, 197, 94, .5); /* green-500 */
+}
+.btc-primary-green:hover { background-color: #15803d; } /* green-700 */
+
+/* primary (ámbar) */
+.btc-primary-amber {
+  background-color: #d97706;      /* amber-600 */
+  color: #ffffff;
+  --btc-ring-color: rgba(245, 158, 11, .5); /* amber-500 */
+}
+.btc-primary-amber:hover { background-color: #b45309; } /* amber-700 */

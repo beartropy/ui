@@ -6,7 +6,7 @@ use Illuminate\Support\Js;
 
 class Confirm extends BeartropyComponent
 {
-    public string $id;
+    public ?string $id;
     public ?string $title;
     public ?string $message;
     public ?string $icon;
@@ -18,11 +18,11 @@ class Confirm extends BeartropyComponent
     public array $buttons;
 
     public function __construct(
-        string $id,
+        ?string $id = null,
         ?string $title = null,
         ?string $message = null,
         ?string $icon = null,
-        bool $styled = false,
+        bool $styled = true,
         string $size = 'md',
         bool $closeOnBackdrop = true,
         bool $closeOnEscape = true,
