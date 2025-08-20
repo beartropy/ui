@@ -168,17 +168,8 @@
                 requestAnimationFrame(() => {
                 let el = null;
 
-                // 1) por id (si el componente pasó el id al <input> real)
-                const byId = document.getElementById('{{ $selectId }}-search');
-                if (byId) {
-                    el = byId.matches('input,textarea')
-                    ? byId
-                    : byId.querySelector('input,textarea,[data-beartropy-input]');
-                }
-
-                // 2) por wrapper
                 if (!el && this.$refs.searchHost) {
-                    el = this.$refs.searchHost.querySelector('input,textarea,[data-beartropy-input]');
+                    el = this.$refs.searchHost.querySelector('[data-beartropy-input]');
                 }
 
                 if (el) {
