@@ -165,41 +165,41 @@
 
 /* === VARIANTES “FUERTES” POR COLOR ===================================== */
 
-/* primary (azul) */
-.btc-primary-blue {
-  background-color: #2563eb;    /* blue-600 */
-  color: #ffffff;
-  --btc-ring-color: rgba(59,130,246,.5); /* azul */
-}
-.btc-primary-blue:hover { background-color: #1d4ed8; } /* blue-700 */
-
-/* primary (gris oscuro) */
+/* ⚪️ GRAY */
 .btc-primary-gray {
-  background-color: #1f2937;    /* gray-800 */
+  background-color: #4b5563; /* gray-600 */
   color: #ffffff;
-  --btc-ring-color: rgba(107,114,128,.5); /* gray */
+  --btc-ring-color: rgba(107, 114, 128, .5); /* gray-500 */
 }
-.btc-primary-gray:hover { background-color: #111827; } /* gray-900 */
+.btc-primary-gray:hover { background-color: #374151; } /* gray-700 */
 
-/* danger (rojo) */
-.btc-danger-red {
-  background-color: #dc2626;    /* red-600 */
+/* 🔴 RED */
+.btc-primary-red {
+  background-color: #dc2626; /* red-600 */
   color: #ffffff;
-  --btc-ring-color: rgba(239,68,68,.5); /* red */
+  --btc-ring-color: rgba(239, 68, 68, .5); /* red-500 */
 }
-.btc-danger-red:hover { background-color: #b91c1c; } /* red-700 */
+.btc-primary-red:hover { background-color: #b91c1c; } /* red-700 */
 
-/* primary (verde) */
+/* 🟢 GREEN */
 .btc-primary-green {
-  background-color: #16a34a;      /* green-600 */
+  background-color: #16a34a; /* green-600 */
   color: #ffffff;
   --btc-ring-color: rgba(34, 197, 94, .5); /* green-500 */
 }
 .btc-primary-green:hover { background-color: #15803d; } /* green-700 */
 
-/* primary (ámbar) */
+/* 🔵 BLUE */
+.btc-primary-blue {
+  background-color: #2563eb; /* blue-600 */
+  color: #ffffff;
+  --btc-ring-color: rgba(59, 130, 246, .5); /* blue-500 */
+}
+.btc-primary-blue:hover { background-color: #1d4ed8; } /* blue-700 */
+
+/* 🟡 AMBER */
 .btc-primary-amber {
-  background-color: #d97706;      /* amber-600 */
+  background-color: #d97706; /* amber-600 */
   color: #ffffff;
   --btc-ring-color: rgba(245, 158, 11, .5); /* amber-500 */
 }

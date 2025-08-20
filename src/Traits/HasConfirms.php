@@ -66,7 +66,6 @@ trait HasConfirms
                 public function target(string $id): self { $this->target = $id; return $this; }
                 public function title(?string $title): self { $this->title = $title; return $this; }
                 public function message(?string $message): self { $this->message = $message; return $this; }
-                public function icon(?string $icon): self { $this->icon = $icon; return $this; }
                 public function styled(bool $styled = true): self { $this->styled = $styled; return $this; }
                 public function size(string $size = 'md'): self { $this->size = $size; return $this; }
                 public function closeOnBackdrop(bool $v = true): self { $this->closeOnBackdrop = $v; return $this; }
@@ -81,23 +80,18 @@ trait HasConfirms
 
                 // -------- Variantes rápidas --------
                 public function variant(string $variant): self { $this->defaultVariant = $variant; return $this; }
-                public function danger(): self
-                {
-                    $this->defaultVariant = 'danger';
-                    $this->defaultColor   = 'red';
-                    return $this;
-                }
                 public function primary(string $color = 'blue'): self
                 {
                     $this->defaultVariant = 'primary';
                     $this->defaultColor   = $color;
                     return $this;
                 }
-                public function success(): self   { return $this->primary('green'); }
-                public function warning(): self   { return $this->primary('amber'); }
-                public function info(): self      { return $this->primary('blue'); }
-                public function soft(): self { return $this->variant('soft'); }
+                public function success(): self   { $this->icon = "success"; return $this->primary('green'); }
+                public function warning(): self   { $this->icon = "warning"; return $this->primary('amber'); }
+                public function info(): self      { $this->icon = "info"; return $this->primary('blue'); }
+                public function danger(): self      { $this->icon = "danger"; return $this->primary('red'); }
 
+                public function icon(?string $icon): self { if($icon) { $this->icon = $icon; } return $this; }
                 // -------- Botones --------
                 /**
                  * Agrega un botón arbitrario.
@@ -107,7 +101,7 @@ trait HasConfirms
 
                 protected function tokenFor(?string $variant, ?string $color): string
                 {
-                    $v = $variant ?? 'soft';
+                    $v = $variant ?? 'primary';
                     $c = $color ?? 'gray';
 
                     return match ($v) {
@@ -115,6 +109,7 @@ trait HasConfirms
                             'blue'   => 'btc-primary-blue',
                             'gray'   => 'btc-primary-gray',
                             'green'  => 'btc-primary-green',
+                            'red'  => 'btc-primary-red',
                             'amber'  => 'btc-primary-amber',
                             default  => 'btc-primary-gray',
                         },
@@ -129,7 +124,7 @@ trait HasConfirms
                 {
                     $btn = array_merge([
                         'label'        => 'OK',
-                        'variant'      => 'soft',
+                        'variant'      => 'primary',
                         'mode'         => 'close',
                         'wire'         => null,
                         'params'       => [],
@@ -149,7 +144,7 @@ trait HasConfirms
                     return $this;
                 }
 
-                public function cancel(?string $label = null, string $variant = 'ghost', string $color = 'gray'): self
+                public function cancel(?string $label = null, string $variant = 'primary', string $color = 'gray'): self
                 {
                     return $this->button([
                         'label'   => $label ?? ($this->labels['cancel'] ?? 'Cancelar'),
@@ -177,7 +172,7 @@ trait HasConfirms
                     string $yes = 'Sí',
                     string $no = 'No',
                     string $yesVariant = 'primary',
-                    string $noVariant = 'ghost'
+                    string $noVariant = 'primary'
                 ): self {
                     $this->cancel($no, $noVariant);
                     $this->confirmLabel($yes, $yesVariant);
@@ -188,7 +183,7 @@ trait HasConfirms
                     string $proceed = 'Continuar',
                     string $cancel = 'Cancelar',
                     string $proceedVariant = 'primary',
-                    string $cancelVariant = 'ghost'
+                    string $cancelVariant = 'primary'
                 ): self {
                     $this->cancel($cancel, $cancelVariant);
                     $this->confirmLabel($proceed, $proceedVariant);
@@ -236,7 +231,7 @@ trait HasConfirms
                          ->title($title)
                          ->message($message)
                          ->cancel()
-                         ->confirmLabel('Eliminar', 'danger');
+                         ->confirmLabel('Eliminar');
 
                     if ($id !== null) {
                         $this->wire('delete', [$id]);
@@ -305,7 +300,7 @@ trait HasConfirms
                     $this->size = 'md';
                     $this->closeOnBackdrop = true;
                     $this->closeOnEscape = true;
-                    $this->defaultVariant = 'danger';
+                    $this->defaultVariant = 'primary';
                     $this->buttons = [];
                 }
             };

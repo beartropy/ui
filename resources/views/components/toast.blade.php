@@ -144,7 +144,7 @@
                     <!-- Contenido -->
                     <div class="flex-1 min-w-0">
                         <template x-if="toast.single">
-                            <div class="text-gray-600 dark:text-gray-300 mt-1 font-medium" x-text="toast.title"></div>
+                            <div class="text-gray-600 dark:text-gray-300 mt-1 font-medium p-3" x-text="toast.title"></div>
                         </template>
                         <template x-if="!toast.single">
                             <div>

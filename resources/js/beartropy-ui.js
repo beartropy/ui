@@ -659,9 +659,7 @@ window.$beartropy.confirmHost = function ({
     const btns = normalizeButtons(d.buttons);
     this.buttons = btns.length ? btns : normalizeButtons([{ label:'OK', mode:'close' }]);
     this.btnLoading = this.buttons.map(() => false);
-console.log('buttons:', (d.buttons || []).map(b => ({
-  label: b.label, variant: b.variant, color: b.color, token: b.token
-})));
+
     // ⏯️ pipeline de animación
     this._openWithAnimation();
     },
