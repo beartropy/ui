@@ -56,6 +56,7 @@
 
         <div class="flex-1 min-w-0 h-full flex items-center" wire:key="{{ $inputId }}">
             <input
+                data-beartropy-input
                 id="{{ $inputId }}"
                 x-ref="input"
                 x-bind:type="(typeof showPassword !== 'undefined' && showPassword) ? 'text' : '{{ $type }}'"

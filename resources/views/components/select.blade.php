@@ -33,12 +33,15 @@
         @endif
         open: false,
         toggle() {
-            this.open = !this.open;
-            if (this.open && this.remoteUrl && !this.initDone) {
-                this.page = 1;
-                this.fetchOptions(true);
-                this.initDone = true;
+        this.open = !this.open;
+        if (this.open) {
+            this.focusSearch();
+            if (this.remoteUrl && !this.initDone) {
+            this.page = 1;
+            this.fetchOptions(true);
+            this.initDone = true;
             }
+        }
         },
         close() { this.open = false; },
         options: @js($options),
@@ -159,6 +162,32 @@
                     this.loading = false;
                 });
         },
+        focusSearch() {
+            this.$nextTick(() => {
+                // un pequeño delay extra por si hay transición/x-show
+                requestAnimationFrame(() => {
+                let el = null;
+
+                // 1) por id (si el componente pasó el id al <input> real)
+                const byId = document.getElementById('{{ $selectId }}-search');
+                if (byId) {
+                    el = byId.matches('input,textarea')
+                    ? byId
+                    : byId.querySelector('input,textarea,[data-beartropy-input]');
+                }
+
+                // 2) por wrapper
+                if (!el && this.$refs.searchHost) {
+                    el = this.$refs.searchHost.querySelector('input,textarea,[data-beartropy-input]');
+                }
+
+                if (el) {
+                    el.focus({ preventScroll: true });
+                    try { el.select(); } catch (_) {}
+                }
+                });
+            });
+        },
     }"
     x-init="
         @if($hasWireModel)
@@ -176,6 +205,7 @@
             page = 1;
             fetchOptions(true);
         });
+        $watch('open', (v) => { if (v) focusSearch(); });
     "
     class="flex flex-col w-full {{ $wrapperClass }}"
     wire:key="{{ $optionsKey }}"
@@ -310,7 +340,7 @@
             >
                 @if($searchable)
                     {{-- Search input --}}
-                    <div class="p-2">
+                    <div class="p-2" x-ref="searchHost">
                         <x-beartropy-ui::input
                             type="text"
                             placeholder="Buscar..."

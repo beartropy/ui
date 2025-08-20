@@ -33,7 +33,7 @@
           :style="dialogStyle()"
         >
 
-            <div class="flex">
+            <div class="flex items-center">
                 <template x-if="cfg.icon">
                     <div class="pt-4 px-4">
 
