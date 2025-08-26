@@ -66,7 +66,7 @@ return [
         'trackWidth'     => 'w-10',
         'thumb'          => 'w-5 h-5',
         'thumbTranslate' => 'peer-checked:translate-x-[1.01rem]',
-        'thumbTop'       => 'top-[0.18rem]',
+        'thumbTop'       => 'top-[0.155rem]',
         'thumbLeft'      => 'left-0.5',
         'ml'          => 'ml-1',
         'iconSize'    => 'w-5 h-5',
