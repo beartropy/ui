@@ -55,8 +55,6 @@
         $wireLoadingTargetsCsv = $wireLoadingTargets->implode(',');
     }
 
-    dd($wireLoadingTargetsCsv,$inputId);
-
     $wrapperClass = $attributes->get('class') ?? '';
 
 @endphp
