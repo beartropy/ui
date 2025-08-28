@@ -26,30 +26,36 @@
     $labelClass = $hasError ? ($colorPreset['label_error'] ?? $colorPreset['label']) : $colorPreset['label'];
 
     $loadingTargetsOverride = null;
-    $wireActionTargets = collect($attributes->getAttributes())
-        ->filter(fn ($v, $k) => Str::startsWith($k, 'wire:'))
-        ->reject(fn ($v, $k) => $k === 'wire:model')
-        ->reject(fn ($v, $k) => $k === 'wire:model.live')
-        ->reject(fn ($v, $k) => $k === 'wire:model.debounce')
+    if($attributes->get('wire:target')) {
+        $wireLoadingTargetsCsv = $attributes->get('wire:target');
+    } else {
+        $wireActionTargets = collect($attributes->getAttributes())
+            ->filter(fn ($v, $k) => Str::startsWith($k, 'wire:'))
+            ->reject(fn ($v, $k) => $k === 'wire:model')
+            ->reject(fn ($v, $k) => $k === 'wire:model.live')
+            ->reject(fn ($v, $k) => $k === 'wire:model.debounce')
 
-        ->map(function ($v) {
-            if (is_string($v)) return $v;
-            if (is_array($v)) return head($v);
-            return null;
-        })
-        ->filter()
-        ->unique()
-        ->values();
-
-    $wireLoadingTargets = $loadingTargetsOverride
-        ? collect(is_array($loadingTargetsOverride) ? $loadingTargetsOverride : explode(',', (string) $loadingTargetsOverride))
-            ->map(fn($s) => trim($s))
+            ->map(function ($v) {
+                if (is_string($v)) return $v;
+                if (is_array($v)) return head($v);
+                return null;
+            })
             ->filter()
             ->unique()
-            ->values()
-        : $wireActionTargets;
+            ->values();
 
-    $wireLoadingTargetsCsv = $wireLoadingTargets->implode(',');
+        $wireLoadingTargets = $loadingTargetsOverride
+            ? collect(is_array($loadingTargetsOverride) ? $loadingTargetsOverride : explode(',', (string) $loadingTargetsOverride))
+                ->map(fn($s) => trim($s))
+                ->filter()
+                ->unique()
+                ->values()
+            : $wireActionTargets;
+
+        $wireLoadingTargetsCsv = $wireLoadingTargets->implode(',');
+    }
+
+    dd($wireLoadingTargetsCsv,$inputId);
 
     $wrapperClass = $attributes->get('class') ?? '';
 
