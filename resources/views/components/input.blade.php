@@ -56,7 +56,6 @@
     }
 
     $wrapperClass = $attributes->get('class') ?? '';
-
 @endphp
 
 <div class="flex flex-col w-full {{ $wrapperClass }}">
