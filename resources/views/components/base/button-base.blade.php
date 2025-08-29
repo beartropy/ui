@@ -42,7 +42,7 @@
             <x-beartropy-ui::icon name="{{$iconStart}}" class="mr-2 {{$sizePreset['iconSize']}}" />
         @endif
 
-        <span class="flex items-center">
+        <span class="flex items-center whitespace-nowrap">
             {{ $slot }}
         </span>
 
