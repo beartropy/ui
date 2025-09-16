@@ -45,7 +45,7 @@ return [
             'icon_class' => '!w-14 !h-14',
             'title' => 'font-bold mb-1 text-lg leading-tight',
             'slot' => 'leading-normal',
-            'icon' => 'x-mark',
+            'icon' => 'x-circle',
         ],
         'red' => [
             'main' => 'flex items-start gap-3 p-4 border rounded-lg shadow bg-red-50 text-red-800 border-red-300 dark:bg-gray-900 dark:text-red-300 dark:border-red-800',
