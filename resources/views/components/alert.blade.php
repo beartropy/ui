@@ -21,7 +21,7 @@
                 @endif
             @else
                 @if(isset($colorPreset['icon']) && $colorPreset['icon'])
-                    <x-beartropy-ui::icon :name="$preset->icon" class="{{ $preset->icon_class ?? 'w-7 h-7' }}" />
+                    <x-beartropy-ui::icon :name="$colorPreset['icon']" class="{{ $colorPreset['icon_class'] ?? 'w-7 h-7' }}" />
                 @endif
             @endif
         </div>
