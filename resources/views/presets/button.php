@@ -4,7 +4,7 @@ return [
     'colors' => [
         'solid' => [
             'beartropy' => [
-                'bg'       => 'bg-beartropy-600 dark:bg-beartropy-400',
+                'bg'       => 'bg-beartropy-600 dark:bg-beartropy-700',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-beartropy-700 dark:hover:bg-beartropy-500',
@@ -13,7 +13,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'red' => [
-                'bg'       => 'bg-red-600 dark:bg-red-500',
+                'bg'       => 'bg-red-600 dark:bg-red-700',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-red-700 dark:hover:bg-red-600',
@@ -22,7 +22,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'blue' => [
-                'bg'       => 'bg-blue-600 dark:bg-blue-500',
+                'bg'       => 'bg-blue-600 dark:bg-blue-700',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-blue-700 dark:hover:bg-blue-600',
@@ -31,7 +31,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'green' => [
-                'bg'       => 'bg-green-600 dark:bg-green-500',
+                'bg'       => 'bg-green-600 dark:bg-green-700',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-green-700 dark:hover:bg-green-600',
@@ -41,7 +41,7 @@ return [
             ],
             'yellow' => [
                 'bg'       => 'bg-yellow-400 dark:bg-yellow-300',
-                'text'     => 'text-neutral-900',
+                'text'     => 'text-neutral-800',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-yellow-500 dark:hover:bg-yellow-400',
                 'focus'    => 'focus:ring-2 focus:ring-yellow-300 focus:ring-offset-2 dark:focus:ring-yellow-200',
@@ -49,7 +49,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'purple' => [
-                'bg'       => 'bg-purple-600 dark:bg-purple-500',
+                'bg'       => 'bg-purple-600 dark:bg-purple-600',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-purple-700 dark:hover:bg-purple-600',
@@ -58,7 +58,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'pink' => [
-                'bg'       => 'bg-pink-600 dark:bg-pink-500',
+                'bg'       => 'bg-pink-600 dark:bg-pink-600',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-pink-700 dark:hover:bg-pink-600',
@@ -76,7 +76,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'orange' => [
-                'bg'       => 'bg-orange-500 dark:bg-orange-400',
+                'bg'       => 'bg-orange-500 dark:bg-orange-500',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-orange-600 dark:hover:bg-orange-500',
@@ -85,8 +85,8 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'amber' => [
-                'bg'       => 'bg-amber-400 dark:bg-amber-300',
-                'text'     => 'text-neutral-900',
+                'bg'       => 'bg-amber-400 dark:bg-amber-500',
+                'text'     => 'text-neutral-800',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-amber-500 dark:hover:bg-amber-400',
                 'focus'    => 'focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 dark:focus:ring-amber-200',
@@ -94,8 +94,8 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'lime' => [
-                'bg'       => 'bg-lime-500 dark:bg-lime-400',
-                'text'     => 'text-neutral-900',
+                'bg'       => 'bg-lime-500 dark:bg-lime-600',
+                'text'     => 'text-neutral-800',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-lime-600 dark:hover:bg-lime-500',
                 'focus'    => 'focus:ring-2 focus:ring-lime-300 focus:ring-offset-2 dark:focus:ring-lime-200',
@@ -103,7 +103,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'emerald' => [
-                'bg'       => 'bg-emerald-500 dark:bg-emerald-400',
+                'bg'       => 'bg-emerald-500 dark:bg-emerald-600',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-emerald-600 dark:hover:bg-emerald-500',
@@ -112,8 +112,8 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'teal' => [
-                'bg'       => 'bg-teal-500 dark:bg-teal-400',
-                'text'     => 'text-white',
+                'bg'       => 'bg-teal-500 dark:bg-teal-600',
+                'text'     => 'text-neutral-800',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-teal-600 dark:hover:bg-teal-500',
                 'focus'    => 'focus:ring-2 focus:ring-teal-300 focus:ring-offset-2 dark:focus:ring-teal-200',
@@ -121,7 +121,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'cyan' => [
-                'bg'       => 'bg-cyan-500 dark:bg-cyan-400',
+                'bg'       => 'bg-cyan-500 dark:bg-cyan-600',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-cyan-600 dark:hover:bg-cyan-500',
@@ -130,7 +130,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'sky' => [
-                'bg'       => 'bg-sky-500 dark:bg-sky-400',
+                'bg'       => 'bg-sky-500 dark:bg-sky-600',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-sky-600 dark:hover:bg-sky-500',
@@ -148,7 +148,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'violet' => [
-                'bg'       => 'bg-violet-600 dark:bg-violet-500',
+                'bg'       => 'bg-violet-600 dark:bg-violet-600',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-violet-700 dark:hover:bg-violet-600',
@@ -166,7 +166,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'fuchsia' => [
-                'bg'       => 'bg-fuchsia-600 dark:bg-fuchsia-500',
+                'bg'       => 'bg-fuchsia-600 dark:bg-fuchsia-600',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-fuchsia-700 dark:hover:bg-fuchsia-600',
@@ -175,7 +175,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'slate' => [
-                'bg'       => 'bg-slate-600 dark:bg-slate-500',
+                'bg'       => 'bg-slate-600 dark:bg-slate-600',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-slate-700 dark:hover:bg-slate-600',
@@ -184,7 +184,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'stone' => [
-                'bg'       => 'bg-stone-600 dark:bg-stone-500',
+                'bg'       => 'bg-stone-600 dark:bg-stone-600',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-stone-700 dark:hover:bg-stone-600',
@@ -193,7 +193,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'zinc' => [
-                'bg'       => 'bg-zinc-600 dark:bg-zinc-500',
+                'bg'       => 'bg-zinc-600 dark:bg-zinc-600',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-zinc-700 dark:hover:bg-zinc-600',
@@ -202,7 +202,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'neutral' => [
-                'bg'       => 'bg-neutral-600 dark:bg-neutral-500',
+                'bg'       => 'bg-neutral-600 dark:bg-neutral-600',
                 'text'     => 'text-white',
                 'border'   => 'border-transparent dark:ring-offset-black',
                 'hover'    => 'hover:bg-neutral-700 dark:hover:bg-neutral-600',
@@ -214,7 +214,7 @@ return [
 
         'soft' => [
             'beartropy' => [
-                'bg'       => 'bg-beartropy-50 dark:bg-beartropy-900/20',
+                'bg'       => 'bg-beartropy-200 dark:bg-beartropy-800/40',
                 'text'     => 'text-beartropy-700 dark:text-beartropy-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-beartropy-100 dark:hover:bg-beartropy-900/40',
@@ -223,7 +223,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'red' => [
-                'bg'       => 'bg-red-50 dark:bg-red-900/20',
+                'bg'       => 'bg-red-200 dark:bg-red-800/40',
                 'text'     => 'text-red-700 dark:text-red-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-red-100 dark:hover:bg-red-900/40',
@@ -232,7 +232,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'blue' => [
-                'bg'       => 'bg-blue-50 dark:bg-blue-900/20',
+                'bg'       => 'bg-blue-200 dark:bg-blue-800/40',
                 'text'     => 'text-blue-700 dark:text-blue-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-blue-100 dark:hover:bg-blue-900/40',
@@ -241,7 +241,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'green' => [
-                'bg'       => 'bg-green-50 dark:bg-green-900/20',
+                'bg'       => 'bg-green-200 dark:bg-green-800/40',
                 'text'     => 'text-green-700 dark:text-green-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-green-100 dark:hover:bg-green-900/40',
@@ -250,7 +250,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'yellow' => [
-                'bg'       => 'bg-yellow-50 dark:bg-yellow-900/20',
+                'bg'       => 'bg-yellow-200 dark:bg-yellow-800/40',
                 'text'     => 'text-yellow-700 dark:text-yellow-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-yellow-100 dark:hover:bg-yellow-900/40',
@@ -259,7 +259,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'purple' => [
-                'bg'       => 'bg-purple-50 dark:bg-purple-900/20',
+                'bg'       => 'bg-purple-200 dark:bg-purple-800/40',
                 'text'     => 'text-purple-700 dark:text-purple-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-purple-100 dark:hover:bg-purple-900/40',
@@ -268,7 +268,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'pink' => [
-                'bg'       => 'bg-pink-50 dark:bg-pink-900/20',
+                'bg'       => 'bg-pink-200 dark:bg-pink-800/40',
                 'text'     => 'text-pink-700 dark:text-pink-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-pink-100 dark:hover:bg-pink-900/40',
@@ -277,7 +277,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'gray' => [
-                'bg'       => 'bg-gray-50 dark:bg-gray-900/20',
+                'bg'       => 'bg-gray-200 dark:bg-gray-800/40',
                 'text'     => 'text-gray-700 dark:text-gray-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-gray-100 dark:hover:bg-gray-900/40',
@@ -286,7 +286,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'orange' => [
-                'bg'       => 'bg-orange-50 dark:bg-orange-900/20',
+                'bg'       => 'bg-orange-200 dark:bg-orange-800/40',
                 'text'     => 'text-orange-700 dark:text-orange-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-orange-100 dark:hover:bg-orange-900/40',
@@ -295,7 +295,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'amber' => [
-                'bg'       => 'bg-amber-50 dark:bg-amber-900/20',
+                'bg'       => 'bg-amber-200 dark:bg-amber-800/40',
                 'text'     => 'text-amber-700 dark:text-amber-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-amber-100 dark:hover:bg-amber-900/40',
@@ -304,7 +304,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'lime' => [
-                'bg'       => 'bg-lime-50 dark:bg-lime-900/20',
+                'bg'       => 'bg-lime-200 dark:bg-lime-800/40',
                 'text'     => 'text-lime-700 dark:text-lime-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-lime-100 dark:hover:bg-lime-900/40',
@@ -313,7 +313,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'emerald' => [
-                'bg'       => 'bg-emerald-50 dark:bg-emerald-900/20',
+                'bg'       => 'bg-emerald-200 dark:bg-emerald-800/40',
                 'text'     => 'text-emerald-700 dark:text-emerald-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-emerald-100 dark:hover:bg-emerald-900/40',
@@ -322,7 +322,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'teal' => [
-                'bg'       => 'bg-teal-50 dark:bg-teal-900/20',
+                'bg'       => 'bg-teal-200 dark:bg-teal-800/40',
                 'text'     => 'text-teal-700 dark:text-teal-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-teal-100 dark:hover:bg-teal-900/40',
@@ -331,7 +331,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'cyan' => [
-                'bg'       => 'bg-cyan-50 dark:bg-cyan-900/20',
+                'bg'       => 'bg-cyan-200 dark:bg-cyan-800/40',
                 'text'     => 'text-cyan-700 dark:text-cyan-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-cyan-100 dark:hover:bg-cyan-900/40',
@@ -340,7 +340,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'sky' => [
-                'bg'       => 'bg-sky-50 dark:bg-sky-900/20',
+                'bg'       => 'bg-sky-200 dark:bg-sky-800/40',
                 'text'     => 'text-sky-700 dark:text-sky-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-sky-100 dark:hover:bg-sky-900/40',
@@ -349,7 +349,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'indigo' => [
-                'bg'       => 'bg-indigo-50 dark:bg-indigo-900/20',
+                'bg'       => 'bg-indigo-200 dark:bg-indigo-800/40',
                 'text'     => 'text-indigo-700 dark:text-indigo-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-indigo-100 dark:hover:bg-indigo-900/40',
@@ -358,7 +358,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'violet' => [
-                'bg'       => 'bg-violet-50 dark:bg-violet-900/20',
+                'bg'       => 'bg-violet-200 dark:bg-violet-800/40',
                 'text'     => 'text-violet-700 dark:text-violet-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-violet-100 dark:hover:bg-violet-900/40',
@@ -367,7 +367,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'rose' => [
-                'bg'       => 'bg-rose-50 dark:bg-rose-900/20',
+                'bg'       => 'bg-rose-200 dark:bg-rose-800/40',
                 'text'     => 'text-rose-700 dark:text-rose-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-rose-100 dark:hover:bg-rose-900/40',
@@ -376,7 +376,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'fuchsia' => [
-                'bg'       => 'bg-fuchsia-50 dark:bg-fuchsia-900/20',
+                'bg'       => 'bg-fuchsia-200 dark:bg-fuchsia-800/40',
                 'text'     => 'text-fuchsia-700 dark:text-fuchsia-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-fuchsia-100 dark:hover:bg-fuchsia-900/40',
@@ -385,7 +385,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'slate' => [
-                'bg'       => 'bg-slate-50 dark:bg-slate-900/20',
+                'bg'       => 'bg-slate-200 dark:bg-slate-800/40',
                 'text'     => 'text-slate-700 dark:text-slate-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-slate-100 dark:hover:bg-slate-900/40',
@@ -394,7 +394,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'stone' => [
-                'bg'       => 'bg-stone-50 dark:bg-stone-900/20',
+                'bg'       => 'bg-stone-200 dark:bg-stone-800/40',
                 'text'     => 'text-stone-700 dark:text-stone-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-stone-100 dark:hover:bg-stone-900/40',
@@ -403,7 +403,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'zinc' => [
-                'bg'       => 'bg-zinc-50 dark:bg-zinc-900/20',
+                'bg'       => 'bg-zinc-200 dark:bg-zinc-800/40',
                 'text'     => 'text-zinc-700 dark:text-zinc-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-zinc-100 dark:hover:bg-zinc-900/40',
@@ -412,7 +412,7 @@ return [
                 'disabled' => 'opacity-60 cursor-not-allowed'
             ],
             'neutral' => [
-                'bg'       => 'bg-neutral-50 dark:bg-neutral-900/20',
+                'bg'       => 'bg-neutral-200 dark:bg-neutral-800/40',
                 'text'     => 'text-neutral-700 dark:text-neutral-200',
                 'border'   => 'border-none dark:ring-offset-black',
                 'hover'    => 'hover:bg-neutral-100 dark:hover:bg-neutral-900/40',
