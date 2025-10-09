@@ -163,22 +163,27 @@
                 });
         },
         focusSearch() {
+            // Espera a que se renderice y a que x-show quite display:none
             this.$nextTick(() => {
-                // un pequeño delay extra por si hay transición/x-show
                 requestAnimationFrame(() => {
-                let el = null;
+                    // 1) intento directo por ID (ya lo tienes)
+                    let el = document.getElementById('{{ $selectId }}-search');
 
-                if (!el && this.$refs.searchHost) {
-                    el = this.$refs.searchHost.querySelector('[data-beartropy-input]');
-                }
+                    // 2) si falla, buscamos dentro del host del search
+                    if (!el && this.$refs.searchHost) {
+                        el = this.$refs.searchHost.querySelector(
+                            '[data-beartropy-input]'
+                        );
+                    }
 
-                if (el) {
-                    el.focus({ preventScroll: true });
-                    try { el.select(); } catch (_) {}
-                }
+                    if (el) {
+                        el.focus({ preventScroll: true });
+                        try { el.select?.(); } catch (_) {}
+                    }
                 });
             });
-        },
+        }
+
     }"
     x-init="
         @if($hasWireModel)
@@ -341,6 +346,7 @@
                             size="{{$presetNames['size']}}"
                             id="{{ $selectId }}-search"
                             icon-end="magnifying-glass"
+                            data-beartropy-input
                         />
                     </div>
                 @endif
