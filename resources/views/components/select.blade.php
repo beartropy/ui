@@ -163,25 +163,27 @@
                 });
         },
         focusSearch() {
-            // Espera a que se renderice y a que x-show quite display:none
-            this.$nextTick(() => {
-                requestAnimationFrame(() => {
-                    // 1) intento directo por ID (ya lo tienes)
-                    let el = document.getElementById('{{ $selectId }}-search');
+        this.$nextTick(() => {
+            requestAnimationFrame(() => {
+            // 1) Directo por x-ref, si llegó al input real
+            let el = this.$refs.searchInput;
 
-                    // 2) si falla, buscamos dentro del host del search
-                    if (!el && this.$refs.searchHost) {
-                        el = this.$refs.searchHost.querySelector(
-                            '[data-beartropy-input]'
-                        );
-                    }
+            // 2) Dentro del host del buscador
+            if (!el && this.$refs.searchHost) {
+                el = this.$refs.searchHost.querySelector('[data-beartropy-input]');
+            }
 
-                    if (el) {
-                        el.focus({ preventScroll: true });
-                        try { el.select?.(); } catch (_) {}
-                    }
-                });
+            // 3) Como fallback, pero SIEMPRE scoped al componente actual
+            if (!el) {
+                el = this.$root.querySelector('[data-beartropy-input]');
+            }
+
+            if (el) {
+                el.focus({ preventScroll: true });
+                try { el.select?.(); } catch (_) {}
+            }
             });
+        });
         }
 
     }"
