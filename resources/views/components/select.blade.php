@@ -23,7 +23,6 @@
 
     $wrapperClass = $attributes->get('class') ?? '';
 @endphp
-
 <div
     x-data="{
         @if($hasWireModel)
