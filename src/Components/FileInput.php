@@ -7,25 +7,18 @@ use Illuminate\View\View;
 
 class FileInput extends BeartropyComponent
 {
-    /** Identificador del input */
     public string $id;
 
-    /** Nombre del campo (name=...) */
     public ?string $name;
 
-    /** Placeholder/etiqueta inicial */
     public string $placeholder;
 
-    /** Muestra botón Limpiar */
     public bool $clearable;
 
-    /** Deshabilitado */
     public bool $disabled;
 
-    /** Permite selección múltiple */
     public bool $multiple;
 
-    /** Tipos aceptados (accept=...) */
     public ?string $accept;
 
     public ?string $label = null;
