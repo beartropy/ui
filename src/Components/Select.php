@@ -186,8 +186,8 @@ class Select extends InputTriggerBase
         } else {
             foreach ($options as $index => $item) {
                 if (is_string($item)) {
-                    $normalized[(string)$index] = [
-                        '_value'      => $index,
+                    $normalized[(string)$item] = [
+                        '_value'      => $item,
                         'label'       => $item,
                         'icon'        => null,
                         'avatar'      => null,
