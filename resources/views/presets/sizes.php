@@ -27,6 +27,9 @@ return [
         // Icons
         'iconSize'    => 'w-3 h-3',
         'avatar' => 'w-6 h-6 text-xs',
+
+        //Dropdown
+        'dropdownWidth'       => 'w-40',
     ],
     'sm' => [
         // Inputs, Selects, Textarea, Button, TagInput
@@ -53,6 +56,9 @@ return [
 
         'iconSize'    => 'w-4 h-4',
         'avatar' => 'w-8 h-8 text-sm',
+
+        //Dropdown
+        'dropdownWidth'       => 'w-48',
     ],
     'md' => [
         'height'      => 'h-10',   // [Input, Select, Textarea, Button]
@@ -71,6 +77,8 @@ return [
         'ml'          => 'ml-1',
         'iconSize'    => 'w-5 h-5',
         'avatar' => 'w-10 h-10 text-base',
+        //Dropdown
+        'dropdownWidth'       => 'w-64',
     ],
     'lg' => [
         'height'      => 'h-12',   // [Input, Select, Textarea, Button]
@@ -91,6 +99,8 @@ return [
         'ml'          => 'ml-2',
         'iconSize'    => 'w-6 h-6',
         'avatar' => 'w-12 h-12 text-lg',
+        //Dropdown
+        'dropdownWidth'       => 'w-80',
     ],
     'xl' => [
         'height'      => 'h-14',   // [Input, Select, Textarea, Button]
@@ -109,5 +119,7 @@ return [
         'ml'          => 'ml-2',
         'iconSize'    => 'w-7 h-7',
         'avatar' => 'w-16 h-16 text-xl',
+        //Dropdown
+        'dropdownWidth'       => 'w-96',
     ],
 ];

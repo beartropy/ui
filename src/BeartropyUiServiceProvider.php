@@ -75,7 +75,7 @@ class BeartropyUiServiceProvider extends ServiceProvider
                 if (!class_exists($class)) continue;
 
                 $basename = $file->getBasename('.php');
-                
+
                 if ($basename === 'BeartropyComponent') {
                     continue;
                 }
@@ -88,6 +88,10 @@ class BeartropyUiServiceProvider extends ServiceProvider
                 Blade::component($class, $alias);
             }
         }
+
+        \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.item', 'dropdown.item');
+        \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.header', 'dropdown.header');
+        \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.separator', 'dropdown.separator');
     }
 
     public function register()

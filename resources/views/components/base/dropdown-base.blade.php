@@ -1,3 +1,17 @@
+{{-- resources/views/components/base/dropdown-base.blade.php --}}
+@props([
+    'placement' => 'left',
+    'side'      => 'bottom',
+    'width'     => '',           // ej: 'min-w-[12rem]' o 'w-64'
+    'presetFor' => 'dropdown',
+
+    // ⚙️ Nuevos props configurables
+    'autoFit'   => true,         // ✅ default = se adapta al viewport y hace flip (como antes)
+    'autoFlip'  => true,         // permite invertir top/bottom según espacio
+    'maxHeight' => null,         // altura ideal si se usa autoFit, o fija si autoFit=false
+    'overflow'  => null,         // null => se resuelve según autoFit/maxHeight, o 'visible'|'auto'|'scroll'
+])
+
 @php
     [$colorPreset, $sizePreset] = $getComponentPresets($presetFor ?? 'dropdown');
 
@@ -7,16 +21,37 @@
         default  => 'left-0',
     };
 
-    // lado preferido si entra (fallback)
     $preferredSide = ($side ?? 'bottom') === 'top' ? 'top' : 'bottom';
+
+    // 🧭 Resolver overflow automáticamente
+    // autoFit=true  => overflow:auto (scroll si hace falta)
+    // autoFit=false => visible salvo que haya maxHeight
+    $resolvedOverflow = $overflow
+        ?? ($autoFit ? 'auto' : ($maxHeight ? 'auto' : 'visible'));
+
+    $overflowClass = match($resolvedOverflow) {
+        'auto'   => 'overflow-y-auto',
+        'scroll' => 'overflow-y-scroll',
+        default  => 'overflow-visible',
+    };
+
+    $thinScrollbar = in_array($resolvedOverflow, ['auto','scroll'], true)
+        ? 'beartropy-thin-scrollbar'
+        : '';
+
+    // estilo inicial si no hay autoFit
+    $initialStyle = (!$autoFit && $maxHeight)
+        ? "max-height:{$maxHeight}px;"
+        : '';
 @endphp
 
 <div
     x-data="{
         sideLocal: '{{ $preferredSide }}',
-        maxStyle: '',
+        maxStyle: '{{ $initialStyle }}',
         _reposition() {
-            // anchor = contenedor del trigger (padre inmediato del dropdown)
+            if (!{{ $autoFit ? 'true' : 'false' }}) return;
+
             const anchor = $el.parentElement;
             if (!anchor) return;
 
@@ -25,22 +60,24 @@
 
             const spaceBelow = vh - rect.bottom;
             const spaceAbove = rect.top;
-            const margin = 16;           // respiración
-            const ideal  = 300;          // alto deseado
+            const margin = 16;
+            const ideal  = {{ $maxHeight ? (int) $maxHeight : 300 }};
             const need   = Math.min(ideal, $el.scrollHeight || ideal);
 
-            // Elegir lado: respetar preferencia si hay espacio razonable; si no, flip
-            if (this.sideLocal === 'bottom') {
-                this.sideLocal = (spaceBelow < 160 && spaceAbove > spaceBelow) ? 'top' : 'bottom';
-            } else {
-                this.sideLocal = (spaceAbove < 160 && spaceBelow > spaceAbove) ? 'bottom' : 'top';
+            if ({{ $autoFlip ? 'true' : 'false' }}) {
+                if (this.sideLocal === 'bottom') {
+                    this.sideLocal = (spaceBelow < 160 && spaceAbove > spaceBelow) ? 'top' : 'bottom';
+                } else {
+                    this.sideLocal = (spaceAbove < 160 && spaceBelow > spaceAbove) ? 'bottom' : 'top';
+                }
             }
 
             const room = this.sideLocal === 'bottom' ? spaceBelow : spaceAbove;
             const maxH = Math.max(140, Math.min(need, room - margin));
-            this.maxStyle = `max-height:${maxH}px; overflow:auto;`;
+            this.maxStyle = `max-height:${maxH}px;`;
         },
         _bindListeners() {
+            if (!{{ $autoFit ? 'true' : 'false' }}) return;
             const cb = () => { if (this.$data.open) this._reposition(); };
             window.addEventListener('resize', cb, { passive:true });
             window.addEventListener('scroll', cb, { passive:true });
@@ -61,7 +98,8 @@
            {{ $colorPreset['dropdown_border'] ?? '' }}
            {{ $colorPreset['dropdown_bg'] }}
            {{ $colorPreset['dropdown_shadow'] }}
-           beartropy-thin-scrollbar"
+           {{ $overflowClass }}
+           {{ $thinScrollbar }}"
     :class="sideLocal === 'top' ? 'bottom-full mb-1 origin-bottom' : 'top-full mt-1 origin-top'"
     :style="`min-width:8rem; ${maxStyle}`"
 >
