@@ -1,6 +1,7 @@
 {
     "name": "beartropy/ui",
     "description": "UI components for Laravel/Livewire",
+    "version": "0.7.0",
     "type": "library",
     "autoload": {
         "psr-4": {
