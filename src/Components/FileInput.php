@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Components;
+namespace Beartropy\Ui\Components;
 
 use Beartropy\Ui\Components\BeartropyComponent;
 use Illuminate\View\View;
