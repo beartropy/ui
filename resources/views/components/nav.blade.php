@@ -384,10 +384,20 @@
                                                     $childBadge        = $child['badge'] ?? null;
                                                     $childBadgeVar     = $customBadges[$child['id'] ?? ''] ?? null;
                                                     $childSlotBadgeVar = $__data['badge-' . ($child['id'] ?? '')] ?? null;
+                                                    $childHref = '#';
+                                                    if (!empty($child['routeName'])) {
+                                                        try {
+                                                            $childHref = route($child['routeName'], $child['routeParams'] ?? []);
+                                                        } catch (\Throwable $e) {
+                                                            $childHref = '#';
+                                                        }
+                                                    } elseif (!empty($child['route'])) {
+                                                        $childHref = $child['route'];
+                                                    }
                                                 @endphp
 
                                                 <a
-                                                    href="{{ $child['route'] ?? '#' }}"
+                                                    href="{{ $childHref }}"
                                                     class="{{ $finalChildClass }} flex items-center gap-2 px-3 py-2 whitespace-nowrap"
                                                     title="{{ $child['tooltip'] ?? '' }}"
                                                     role="menuitem"
