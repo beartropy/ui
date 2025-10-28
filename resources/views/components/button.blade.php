@@ -1,4 +1,4 @@
-<div class="relative">
+<div class="">
 
     {{-- El botón real --}}
     <x-beartropy-ui::base.button-base
