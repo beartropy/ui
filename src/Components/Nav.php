@@ -309,7 +309,7 @@ class Nav extends BeartropyComponent
 
 
     public function navId($item) {
-        return md5(($item['routeName'] ?? '') . ($item['route'] ?? '') . ($item['label'] ?? '') . json_encode($item['children'] ?? []) . Str::random(5));
+        return md5(($item['routeName'] ?? '') . ($item['route'] ?? '') . ($item['label'] ?? '') . json_encode($item['children'] ?? []));
     }
 
     public function render()

@@ -2,8 +2,8 @@
 @props([
     'icon' => null,
     'disabled' => false,
-    'as' => 'button', // 'a' o 'button'
-    'closeOnClick' => true,      // 👈 NUEVA PROP
+    'as' => 'a', // 'a' o 'button'
+    'closeOnClick' => true,
     'color' => null
 ])
 
