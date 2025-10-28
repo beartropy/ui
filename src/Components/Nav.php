@@ -117,51 +117,77 @@ class Nav extends BeartropyComponent
         return [];
     }
 
-/*     public function isActive($item)
-    {
-        $request = request();
-        if (!empty($item['match'])) {
-            $matches = is_array($item['match']) ? $item['match'] : [$item['match']];
-            foreach ($matches as $pattern) {
-                if ($request->is(ltrim($pattern, '/'))) return true;
-            }
-        }
-        if (!empty($item['route']) && $item['route'] !== '/' && !$item['external'] ?? true) {
-            if (str_starts_with($item['route'], 'http')) {
-                // nunca marcar como activo si es external
-            } elseif ($request->is(ltrim($item['route'], '/'))) {
-                return true;
-            }
-        }
-        if (!empty($item['children'])) {
-            foreach ($item['children'] as $child) {
-                if ($this->isActive($child)) return true;
-            }
-        }
-        return false;
-    } */
-
     public function isItemActive($item)
     {
-        $request = request();
+        $request     = request();
+        $route       = $request->route();
+        $currentName = $route?->getName();
+        // Normalizamos el path actual (sin query)
+        $currentPath = '/'.ltrim($request->path(), '/');
+
+        // 1) match: patrones de PATH (como antes)
         if (!empty($item['match'])) {
-            $matches = is_array($item['match']) ? $item['match'] : [$item['match']];
-            foreach ($matches as $pattern) {
-                if ($request->is(ltrim($pattern, '/'))) return true;
+            $patterns = is_array($item['match']) ? $item['match'] : [$item['match']];
+            foreach ($patterns as $pattern) {
+                if ($request->is(ltrim($pattern, '/'))) {
+                    return true;
+                }
             }
         }
-        if (!empty($item['route']) && $item['route'] !== '/' && (!isset($item['external']) || !$item['external'])) {
-            if (is_string($item['route']) && !str_starts_with($item['route'], 'http')) {
-                if ($request->is(ltrim($item['route'], '/'))) return true;
+
+        // 2) routeNameMatch: patrones de NOMBRE de ruta (users.*)
+        if (!empty($item['routeNameMatch'])) {
+            $namePatterns = is_array($item['routeNameMatch']) ? $item['routeNameMatch'] : [$item['routeNameMatch']];
+            foreach ($namePatterns as $pat) {
+                if ($request->routeIs($pat)) {
+                    return true;
+                }
             }
         }
+
+        // 3) routeName: nombre de ruta exacto
+        if (!empty($item['routeName'])) {
+            // a) Coincidencia directa por nombre (y soporta wildcards si las usan accidentalmente)
+            if ($currentName && ($currentName === $item['routeName'] || $request->routeIs($item['routeName']))) {
+                return true;
+            }
+
+            // b) Fallback por PATH: generamos la URL relativa y comparamos paths
+            try {
+                // false => genera relativa (sin dominio); ignoramos querystrings
+                $url = route($item['routeName'], $item['routeParams'] ?? [], false);
+                $urlPath = '/'.ltrim(parse_url($url, PHP_URL_PATH) ?: $url, '/');
+                if (rtrim($urlPath, '/') === rtrim($currentPath, '/')) {
+                    return true;
+                }
+            } catch (\Throwable $e) {
+                // ruta inexistente: ignoramos
+            }
+        }
+
+        // 4) route: path/URL relativo (sin http externo) como antes
+        if (!empty($item['route']) && (!isset($item['external']) || !$item['external'])) {
+            if (is_string($item['route']) && !Str::startsWith($item['route'], ['http://', 'https://'])) {
+                $itemPath = '/'.ltrim(parse_url($item['route'], PHP_URL_PATH) ?: $item['route'], '/');
+                if (rtrim($itemPath, '/') === rtrim($currentPath, '/')) {
+                    return true;
+                }
+                if ($request->is(ltrim($itemPath, '/'))) {
+                    return true;
+                }
+            }
+        }
+
+        // 5) Algún hijo activo → padre activo
         if (!empty($item['children'])) {
             foreach ($item['children'] as $child) {
                 if ($this->isItemActive($child)) return true;
             }
         }
+
         return false;
     }
+
 
     public function renderIcon($icon, $iconClass = '')
     {

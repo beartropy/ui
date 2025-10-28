@@ -11,6 +11,8 @@
     'childBorderClass' => '',
     'customBadges' => [],
 
+    'hideCategories' => false,          // Oculta los títulos de las categorías
+
     // Collapse button (opcional)
     'collapseButtonAsItem' => true,
     'collapseButtonLabelCollapse' => 'Collapse',
@@ -137,12 +139,13 @@
     <div class="flex-1 overflow-y-auto pl-1.5 py-4 space-y-6 overflow-x-hidden">
         @foreach($items as $category)
             <div class="overflow-x-hidden">
-                <div class="{{ $categoryClass }} transition-all duration-500"
-                     x-show="!sidebarIsCollapsed"
-                     :class="{ 'hidden': sidebarIsCollapsed }">
-                    {{ $category['category'] }}
-                </div>
-
+                @if(!$hideCategories)
+                    <div class="{{ $categoryClass }} transition-all duration-500"
+                        x-show="!sidebarIsCollapsed"
+                        :class="{ 'hidden': sidebarIsCollapsed }">
+                        {{ $category['category'] }}
+                    </div>
+                @endif
                 <div class="space-y-1">
                     @foreach($category['items'] as $item)
                         @if(!empty($item['divider']))
@@ -173,11 +176,25 @@
                                     $finalItemClass = trim($itemClass . ' ' . $itemHover);
                                 }
                             }
+
+                            // Nueva lógica para obtener el href
+                            $href = '#';
+                            if (!$hasChildren) {
+                                if (!empty($item['routeName'])) {
+                                    try {
+                                        $href = route($item['routeName'], $item['routeParams'] ?? []);
+                                    } catch (\Throwable $e) {
+                                        $href = '#';
+                                    }
+                                } elseif (!empty($item['route'])) {
+                                    $href = $item['route'];
+                                }
+                            }
                         @endphp
 
                         <div>
                             <a
-                                href="{{ $hasChildren ? '#' : ($item['route'] ?? '#') }}"
+                                href="{{ $hasChildren ? '#' : $href }}"
 
                                 {{-- CLICK: solo togglea si NO está colapsado; si está colapsado, no hace nada --}}
                                 @if($hasChildren)
@@ -270,10 +287,20 @@
                                                     $finalChildClass = trim($childItemClass . ' ' . $childHover);
                                                 }
                                             }
+                                            $childHref = '#';
+                                            if (!empty($child['routeName'])) {
+                                                try {
+                                                    $childHref = route($child['routeName'], $child['routeParams'] ?? []);
+                                                } catch (\Throwable $e) {
+                                                    $childHref = '#';
+                                                }
+                                            } elseif (!empty($child['route'])) {
+                                                $childHref = $child['route'];
+                                            }
                                         @endphp
 
                                         <a
-                                            href="{{ $child['route'] ?? '#' }}"
+                                            href="{{ $childHref }}"
                                             class="{{ $finalChildClass }}{{ $childDisabled ? ' opacity-60 pointer-events-none' : '' }}"
                                             title="{{ $child['tooltip'] ?? '' }}"
                                             :class="{ 'justify-center': sidebarIsCollapsed, 'justify-start': !sidebarIsCollapsed }"
