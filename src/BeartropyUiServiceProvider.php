@@ -89,9 +89,9 @@ class BeartropyUiServiceProvider extends ServiceProvider
             }
         }
 
-        \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.item', 'dropdown.item');
-        \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.header', 'dropdown.header');
-        \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.separator', 'dropdown.separator');
+        \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.item', $prefix . 'dropdown.item');
+        \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.header', $prefix . 'dropdown.header');
+        \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.separator', $prefix . 'dropdown.separator');
     }
 
     public function register()
