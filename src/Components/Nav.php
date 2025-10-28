@@ -2,6 +2,7 @@
 
 namespace Beartropy\Ui\Components;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Blade;
 
 class Nav extends BeartropyComponent
@@ -168,7 +169,7 @@ class Nav extends BeartropyComponent
         if (str_starts_with($icon, '<svg') || str_starts_with($icon, '<img') || str_starts_with($icon, '<i')) {
             return $icon;
         } else{
-            $iconComponent = new \Beartropy\Ui\Components\Icon(name: $icon, class: 'w-6 h-6');
+            $iconComponent = new \Beartropy\Ui\Components\Icon(name: $icon, class: 'w-4 h-4 shrink-0');
             return Blade::renderComponent($iconComponent);
         }
         return '';
@@ -178,6 +179,7 @@ class Nav extends BeartropyComponent
     {
         $user = $user ?: auth()->user();
 
+        // can(string|array): OR si es array (comportamiento original)
         $canAccess = function ($can) use ($user) {
             if (!$can) return true;
             if (is_array($can)) {
@@ -189,14 +191,60 @@ class Nav extends BeartropyComponent
             return $user && $user->can($can);
         };
 
-        $filter = function ($items) use (&$filter, $canAccess) {
+        // canAny(string|array): OR explícito
+        $canAnyAccess = function ($canAny) use ($user) {
+            if (!$canAny) return true;
+            $list = is_array($canAny) ? $canAny : [$canAny];
+            foreach ($list as $perm) {
+                if ($user && $user->can($perm)) return true;
+            }
+            return false;
+        };
+
+        // canMatch(string|array): hace match por wildcard contra los permisos del usuario
+        $canMatchAccess = function ($patterns) use ($user) {
+            if (!$patterns) return true;
+            if (!$user) return false;
+
+            $patterns = is_array($patterns) ? $patterns : [$patterns];
+
+            // Spatie: obtiene todos los permisos del usuario (names)
+            // getAllPermissions() existe en HasRoles. Si no existiera, caemos a vacío.
+            $userPerms = method_exists($user, 'getAllPermissions')
+                ? $user->getAllPermissions()->pluck('name')->all()
+                : [];
+
+            if (empty($userPerms)) return false;
+
+            foreach ($patterns as $pat) {
+                // Si cualquiera de los permisos del user matchea el patrón, habilita.
+                foreach ($userPerms as $permName) {
+                    if (Str::is($pat, $permName)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+
+        $filter = function ($items) use (&$filter, $canAccess, $canAnyAccess, $canMatchAccess) {
             $out = [];
             foreach ($items as $item) {
+                // 1) can (igual que antes)
                 if (isset($item['can']) && !$canAccess($item['can'])) continue;
+
+                // 2) canAny (nuevo)
+                if (isset($item['canAny']) && !$canAnyAccess($item['canAny'])) continue;
+
+                // 3) canMatch (nuevo: wildcards)
+                if (isset($item['canMatch']) && !$canMatchAccess($item['canMatch'])) continue;
+
+                // 4) hijos (recursivo)
                 if (!empty($item['children'])) {
                     $item['children'] = $filter($item['children']);
                     if (empty($item['children'])) continue;
                 }
+
                 $out[] = $item;
             }
             return $out;
@@ -204,6 +252,7 @@ class Nav extends BeartropyComponent
 
         return $filter($items);
     }
+
 
 
     public function navId($item) {
