@@ -73,7 +73,10 @@ class Nav extends BeartropyComponent
         $this->categoryClass = $preset['categoryClass'] ?? $categoryClass;
         $this->iconClass = $preset['iconClass'] ?? $iconClass;
         $this->childBorderClass = $preset['childBorderClass'] ?? $childBorderClass;
-        $this->items = $this->resolveItems($items);
+        $resolved = $this->resolveItems($items);
+        $this->items = $this->filterNavCategories($resolved);
+
+
     }
 
 
@@ -201,7 +204,31 @@ class Nav extends BeartropyComponent
         return '';
     }
 
-    public static function filterNavItems($items, $user = null)
+    protected function filterNavCategories(array $categories, $user = null): array
+    {
+        // Si te pasan directamente una lista de items (sin categorías),
+        // lo envolvemos en una categoría “anónima” para no romper.
+        $isCategories = !empty($categories) && array_key_exists('category', $categories[0] ?? []);
+
+        if (!$isCategories) {
+            return [[
+                'category' => $categories['category'] ?? null,
+                'items'    => $this->filterNavItems($categories, $user),
+            ]];
+        }
+
+        $out = [];
+        foreach ($categories as $cat) {
+            $cat['items'] = $this->filterNavItems($cat['items'] ?? [], $user);
+            if (!empty($cat['items'])) {
+                $out[] = $cat;
+            }
+        }
+        return $out;
+    }
+
+
+    public function filterNavItems($items, $user = null)
     {
         $user = $user ?: auth()->user();
 
@@ -282,7 +309,7 @@ class Nav extends BeartropyComponent
 
 
     public function navId($item) {
-        return md5(($item['route'] ?? '') . ($item['label'] ?? '') . json_encode($item['children'] ?? []));
+        return md5(($item['routeName'] ?? '') . ($item['route'] ?? '') . ($item['label'] ?? '') . json_encode($item['children'] ?? []) . Str::random(5));
     }
 
     public function render()

@@ -12,6 +12,7 @@
     'customBadges' => [],
 
     'hideCategories' => false,          // Oculta los títulos de las categorías
+    'singleOpenExpanded' => false,
 
     // Collapse button (opcional)
     'collapseButtonAsItem' => true,
@@ -49,7 +50,7 @@
     x-data="{
         open: {},
         sidebarIsCollapsed: false,
-
+        singleOpenExpanded: {{ $singleOpenExpanded ? 'true' : 'false' }},
         // ---- config de recordatorio ----
         remember: {{ ($rememberCollapse === null ? ($collapseButtonAsItem ? 'true' : 'false') : ($rememberCollapse ? 'true' : 'false')) }},
         rememberKey: @js($rememberCollapseKey),
@@ -127,16 +128,29 @@
             @endif
         },
 
-        toggle(id) { this.open[id] = !this.open[id]; },
+        toggle(id) {
+        // En colapsado no hay inline (se maneja por hover), no hacemos nada
+        if (this.sidebarIsCollapsed) return;
+
+        if (this.singleOpenExpanded) {
+            const willOpen = !this.open[id];
+            // cerrar todos
+            Object.keys(this.open).forEach(k => this.open[k] = false);
+            // abrir solo el actual si corresponde
+            this.open[id] = willOpen;
+        } else {
+            this.open[id] = !this.open[id];
+        }
+        },
         isOpen(id) { return !!this.open[id]; }
     }"
-    class="flex flex-col h-full overflow-hidden overflow-x-hidden"
+    class="flex flex-col h-full overflow-hidden overflow-x-hidden beartropy-thin-scrollbar"
     @click.stop
     @mousedown.stop
 >
 
     {{-- ÁREA SCROLLABLE: categorías + items --}}
-    <div class="flex-1 overflow-y-auto pl-1.5 py-4 space-y-6 overflow-x-hidden">
+    <div class="flex-1 overflow-y-auto pl-1.5 py-4 space-y-6 overflow-x-hidden beartropy-thin-scrollbar">
         @foreach($items as $category)
             <div class="overflow-x-hidden">
                 @if(!$hideCategories)
@@ -341,19 +355,18 @@
                             {{-- SUBMENU FLOTANTE (solo colapsado, hover) --}}
                             @if($hasChildren)
                                 <template x-teleport="body">
-                                    <div
-                                        x-show="sidebarIsCollapsed && hoverId === '{{ $itemId }}'"
-                                        @mouseenter="keepHoverOpen()"
-                                        @mouseleave="closeHoverSoon()"
-                                        x-transition
-                                        class="z-[1000] fixed shadow-xl rounded-lg border border-gray-200 dark:border-gray-700
-                                               bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm
-                                               max-h-[70vh] overflow-auto"
-                                        :style="`top:${submenuPos.top}px; left:${submenuPos.left}px; min-width:${submenuPos.minWidth}px`"
-                                        style="display: none;"
-                                        role="menu"
-                                        aria-label="Submenú {{ $item['label'] ?? '' }}"
-                                    >
+                                    <template x-if="sidebarIsCollapsed && hoverId === '{{ $itemId }}'">
+                                        <div
+                                            @mouseenter="keepHoverOpen()"
+                                            @mouseleave="closeHoverSoon()"
+                                            x-transition
+                                            class="z-[1000] fixed shadow-xl rounded-lg border border-gray-200 dark:border-gray-700
+                                                bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm
+                                                max-h-[70vh] overflow-auto"
+                                            :style="`top:${submenuPos.top}px; left:${submenuPos.left}px; min-width:${submenuPos.minWidth}px`"
+                                            role="menu"
+                                            aria-label="Submenú {{ $item['label'] ?? '' }}"
+                                        >
                                         {{-- HEADER DEL SUBMENÚ FLOTANTE --}}
                                         @if($hoverMenuShowHeader)
                                             <div class="{{ $hoverMenuHeaderClass }}">
@@ -418,6 +431,7 @@
                                             @endforeach
                                         </div>
                                     </div>
+                                </template>
                                 </template>
                             @endif
                         </div>
