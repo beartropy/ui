@@ -232,8 +232,31 @@ class Nav extends BeartropyComponent
     {
         $user = $user ?: auth()->user();
 
-        // can(string|array): OR si es array (comportamiento original)
-        $canAccess = function ($can) use ($user) {
+        // --- helpers ---
+        $isAdmin = function ($user) {
+            if (!$user) return false;
+
+            $roles = config('beartropyui.admin_roles', ['admin','super-admin','root']);
+
+            // Soporta Spatie\HasRoles o una flag booleana convencional
+            if (method_exists($user, 'hasAnyRole') && $user->hasAnyRole($roles)) return true;
+            if (method_exists($user, 'hasRole')) {
+                foreach ($roles as $r) {
+                    if ($user->hasRole($r)) return true;
+                }
+            }
+            if (property_exists($user, 'is_admin') && $user->is_admin) return true;
+
+            return false;
+        };
+
+        $adminBypass = function () use ($user, $isAdmin) {
+            return config('beartropyui.admin_bypass_nav', true) && $isAdmin($user);
+        };
+
+        // can(string|array): OR si es array
+        $canAccess = function ($can) use ($user, $adminBypass) {
+            if ($adminBypass()) return true;
             if (!$can) return true;
             if (is_array($can)) {
                 foreach ($can as $perm) {
@@ -245,7 +268,8 @@ class Nav extends BeartropyComponent
         };
 
         // canAny(string|array): OR explícito
-        $canAnyAccess = function ($canAny) use ($user) {
+        $canAnyAccess = function ($canAny) use ($user, $adminBypass) {
+            if ($adminBypass()) return true;
             if (!$canAny) return true;
             $list = is_array($canAny) ? $canAny : [$canAny];
             foreach ($list as $perm) {
@@ -254,15 +278,15 @@ class Nav extends BeartropyComponent
             return false;
         };
 
-        // canMatch(string|array): hace match por wildcard contra los permisos del usuario
-        $canMatchAccess = function ($patterns) use ($user) {
+        // canMatch(string|array): wildcard contra permisos del usuario
+        $canMatchAccess = function ($patterns) use ($user, $adminBypass) {
+            if ($adminBypass()) return true;
             if (!$patterns) return true;
             if (!$user) return false;
 
             $patterns = is_array($patterns) ? $patterns : [$patterns];
 
-            // Spatie: obtiene todos los permisos del usuario (names)
-            // getAllPermissions() existe en HasRoles. Si no existiera, caemos a vacío.
+            // Spatie: names de permisos
             $userPerms = method_exists($user, 'getAllPermissions')
                 ? $user->getAllPermissions()->pluck('name')->all()
                 : [];
@@ -270,9 +294,8 @@ class Nav extends BeartropyComponent
             if (empty($userPerms)) return false;
 
             foreach ($patterns as $pat) {
-                // Si cualquiera de los permisos del user matchea el patrón, habilita.
                 foreach ($userPerms as $permName) {
-                    if (Str::is($pat, $permName)) {
+                    if (\Illuminate\Support\Str::is($pat, $permName)) {
                         return true;
                     }
                 }
@@ -283,18 +306,14 @@ class Nav extends BeartropyComponent
         $filter = function ($items) use (&$filter, $canAccess, $canAnyAccess, $canMatchAccess) {
             $out = [];
             foreach ($items as $item) {
-                // 1) can (igual que antes)
-                if (isset($item['can']) && !$canAccess($item['can'])) continue;
-
-                // 2) canAny (nuevo)
-                if (isset($item['canAny']) && !$canAnyAccess($item['canAny'])) continue;
-
-                // 3) canMatch (nuevo: wildcards)
+                if (isset($item['can'])      && !$canAccess($item['can'])) continue;
+                if (isset($item['canAny'])   && !$canAnyAccess($item['canAny'])) continue;
                 if (isset($item['canMatch']) && !$canMatchAccess($item['canMatch'])) continue;
 
-                // 4) hijos (recursivo)
                 if (!empty($item['children'])) {
                     $item['children'] = $filter($item['children']);
+                    // si querés conservar padres con link aunque queden sin hijos,
+                    // cambiá esta línea según tu regla:
                     if (empty($item['children'])) continue;
                 }
 
@@ -305,6 +324,7 @@ class Nav extends BeartropyComponent
 
         return $filter($items);
     }
+
 
 
 
