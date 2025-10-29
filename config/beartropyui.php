@@ -101,5 +101,6 @@ return [
         'card'         => beartropy_preset('card'),
         'nav'          => beartropy_preset('nav'),
         'avatar'       => beartropy_preset('avatar'),
+        'command-palette' => beartropy_preset('command-palette'),
     ],
 ];
