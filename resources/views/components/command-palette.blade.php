@@ -30,7 +30,7 @@
         <div @click="open = true">
             <x-beartropy-ui::input
                 id="{{ $id }}"
-                color="{{ $presetNames['color'] }}"
+                color="{{ $presetNames['color'] ?? 'beartropy' }}"
                 size="{{ $presetNames['size'] ?? 'md' }}"
                 icon-start="magnifying-glass"
                 placeholder="Buscar en el sitio... (⌘ K / Ctrl K)"
