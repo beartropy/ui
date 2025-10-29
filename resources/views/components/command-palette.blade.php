@@ -19,7 +19,7 @@
     })"
     @keydown.window.prevent.cmd.k="open = true"
     @keydown.window.prevent.ctrl.k="open = true"
-    {{$attributes->merge(['class' => 'relative'])}}
+    {{ $attributes->merge(['class' => 'relative']) }}
 >
     {{-- Trigger --}}
     @if(trim($slot))
@@ -39,7 +39,7 @@
         </div>
     @endif
 
-    {{-- Modal Overlay con animación doble --}}
+    {{-- Modal Overlay --}}
     <template x-teleport="body">
         <div
             x-show="open"
@@ -49,20 +49,17 @@
             x-transition:leave="transition ease-in duration-150"
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
-            class="fixed inset-0 bg-black/40 backdrop-blur-xl z-50 flex items-start justify-center p-6"
+            class="fixed inset-0 bg-black/40 backdrop-blur-xl z-[9999] flex items-start justify-center p-6"
             x-init="
                 $watch('open', value => {
                     if (value) {
                         setTimeout(() => {
                             const el = document.getElementById('{{ $id }}-input');
                             if (el) el.focus();
-                        }, 300); // espera a que la animación termine y el input exista
+                        }, 300);
                     }
                 })
             "
-
-
-
         >
             <!-- Contenedor principal -->
             <div
@@ -77,6 +74,12 @@
                 :class="open ? '{{ $colorPreset['modal_bg'] ?? 'bg-white/80 dark:bg-gray-800/80' }}' : ''"
                 @click.outside="open = false"
                 @keydown.escape.window="open = false"
+                @keydown.arrow-down.prevent="handleKey($event)"
+                @keydown.arrow-up.prevent="handleKey($event)"
+                @keydown.enter.prevent="handleKey($event)"
+                @keydown.tab.prevent="handleKey($event)"
+                @keydown.shift.tab.prevent="handleKey($event)"
+                x-init="$watch('open', v => { if (v) selectedIndex = 0 })"
             >
                 <!-- Input -->
                 <div class="p-3 border-b border-gray-200 dark:border-gray-700">
@@ -93,20 +96,22 @@
 
                 <!-- Resultados -->
                 <ul class="max-h-96 overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 beartropy-thin-scrollbar">
-                    <!-- Lista de resultados -->
+                    <!-- Lista -->
                     <template x-if="filtered && filtered.length">
                         <template x-for="(item, index) in filtered" :key="item.action + '-' + index">
                             <li
+                                :data-cp-index="index"
                                 @click="execute(item)"
                                 class="p-3 cursor-pointer transition-colors flex flex-col gap-1"
                                 :class="{
-                                    '{{ $colorPreset['hover_bg'] ?? 'hover:bg-gray-100 dark:hover:bg-gray-700' }}': true
+                                    '{{ $colorPreset['hover_bg'] ?? 'hover:bg-gray-100 dark:hover:bg-gray-700' }}': true,
+                                    'bg-beartropy-500/10 dark:bg-beartropy-400/20 ring-1 ring-beartropy-400/30': index === selectedIndex
                                 }"
                             >
                                 <!-- Encabezado -->
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2">
-                                        <span class="text-sm font-medium {{$colorPreset['text']}}" x-text="item.title"></span>
+                                        <span class="text-sm font-medium {{ $colorPreset['text'] }}" x-text="item.title"></span>
                                     </div>
 
                                     <!-- Tags -->
@@ -134,22 +139,20 @@
                         <li class="p-3 text-sm text-gray-400">Sin resultados</li>
                     </template>
 
-                    <!-- Footer cuando muestra top 5 -->
+                    <!-- Footer -->
                     <template x-if="!query && filtered && filtered.length === 5">
                         <li class="p-3 text-xs text-gray-400 text-center">
                             Mostrando los primeros 5 resultados
                         </li>
                     </template>
                 </ul>
-
-
             </div>
         </div>
     </template>
 </div>
+
 @if(auth()->check())
     <script>
-        // Inyectar permisos y roles del usuario si aún no existen
         window.__btUserPermissions = window.__btUserPermissions || @json(auth()->user()->getAllPermissions()->pluck('name'));
         window.__btUserRoles = window.__btUserRoles || @json(auth()->user()->getRoleNames());
     </script>
@@ -157,12 +160,14 @@
 @if(class_exists(\Tighten\Ziggy\BladeRouteGenerator::class))
     {!! app(\Tighten\Ziggy\BladeRouteGenerator::class)->generate() !!}
 @endif
+
 <script>
 function btCommandPalette({ items, src, cache, cacheKey }) {
     return {
         open: false,
         query: '',
         all: items || [],
+        selectedIndex: 0,
         debounce: null,
 
         async init() {
@@ -180,7 +185,6 @@ function btCommandPalette({ items, src, cache, cacheKey }) {
                 try {
                     const res = await fetch(src, { cache: 'no-store' });
                     const data = await res.json();
-                    // 🔒 Filtrar ítems sin permiso
                     this.all = data.filter(i => !i.permission || window.btCan(i.permission));
                     if (cache) {
                         localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: Date.now() }));
@@ -189,41 +193,56 @@ function btCommandPalette({ items, src, cache, cacheKey }) {
                     console.error('Error al cargar JSON del command palette:', err);
                 }
             } else {
-                // 🔒 También filtrar si los items vienen inline
                 this.all = this.all.filter(i => !i.permission || window.btCan(i.permission));
             }
         },
-get filtered() {
-    const q = this.query?.toLowerCase().trim() || '';
 
-    // 🔒 Filtrar por permisos antes de cualquier búsqueda
-    const allowed = this.all.filter(i => !i.permission || window.btCan(i.permission));
+        get filtered() {
+            const q = this.query?.toLowerCase().trim() || '';
+            const allowed = this.all.filter(i => !i.permission || window.btCan(i.permission));
 
-    // 🧠 Si no hay texto de búsqueda → mostrar primeros 5
-    if (!q) {
-        return allowed.slice(0, 5);
-    }
+            if (!q) return allowed.slice(0, 5);
 
-    // 🧩 Dividir la búsqueda en palabras ("solicitud alta" → ["solicitud", "alta"])
-    const terms = q.split(/\s+/);
+            const terms = q.split(/\s+/);
+            const results = allowed.filter(i => {
+                const text = [
+                    i.title ?? '',
+                    i.description ?? '',
+                    Array.isArray(i.tags) ? i.tags.join(' ') : '',
+                    i.action ?? '',
+                    Array.isArray(i.permission) ? i.permission.join(' ') : (i.permission ?? '')
+                ].join(' ').toLowerCase();
+                return terms.every(t => text.includes(t));
+            });
 
-    // 🔍 Filtrar por coincidencia de texto (todas las palabras deben aparecer)
-    const results = allowed.filter(i => {
-        const text = [
-            i.title ?? '',
-            i.description ?? '',
-            Array.isArray(i.tags) ? i.tags.join(' ') : '',
-            i.action ?? '',
-            Array.isArray(i.permission) ? i.permission.join(' ') : (i.permission ?? '')
-        ].join(' ').toLowerCase();
+            if (results.length && this.selectedIndex >= results.length) this.selectedIndex = 0;
+            return results;
+        },
 
-        return terms.every(t => text.includes(t));
-    });
+        scrollIntoView() {
+            this.$nextTick(() => {
+                const el = document.querySelector(`[data-cp-index="${this.selectedIndex}"]`);
+                if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            });
+        },
 
-    // ✅ Si no hay resultados, mostrar vacío (deja que el template muestre “Sin resultados”)
-    return results.length ? results : [];
-},
+        handleKey(e) {
+            if (!this.filtered.length) return;
 
+            if (['ArrowDown', 'Tab'].includes(e.key) && !e.shiftKey) {
+                e.preventDefault();
+                this.selectedIndex = (this.selectedIndex + 1) % this.filtered.length;
+                this.scrollIntoView();
+            } else if (['ArrowUp'].includes(e.key) || (e.key === 'Tab' && e.shiftKey)) {
+                e.preventDefault();
+                this.selectedIndex = (this.selectedIndex - 1 + this.filtered.length) % this.filtered.length;
+                this.scrollIntoView();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                const item = this.filtered[this.selectedIndex];
+                if (item) this.execute(item);
+            }
+        },
 
         execute(item) {
             if (item.permission && !window.btCan(item.permission)) return;
@@ -231,37 +250,21 @@ get filtered() {
             const action = item.action || '';
             const routes = this.routes || {};
 
-            // 🔹 1. Rutas nombradas (Ziggy o fallback)
             if (action.startsWith('route:')) {
                 const name = action.replace('route:', '').trim();
-
-                if (typeof window.route === 'function') {
-                    window.location.href = route(name);
-                } else if (routes[name]) {
-                    window.location.href = routes[name];
-                } else {
-                    console.warn(`No se pudo resolver la ruta "${name}". Instala Ziggy o define un mapa de rutas.`);
-                }
-            }
-            // 🔹 2. URLs directas
-            else if (action.startsWith('url:')) {
-                const url = action.replace('url:', '').trim();
-                window.location.href = url;
-            }
-            // 🔹 3. Eventos Livewire
-            else if (action.startsWith('emit:')) {
-                const event = action.replace('emit:', '').trim();
-                window.livewire?.emit(event);
-            }
-            // 🔹 4. Código JS inline
-            else if (action.startsWith('js:')) {
-                const code = action.replace('js:', '');
-                try { eval(code); } catch (e) { console.error(e); }
+                if (typeof window.route === 'function') window.location.href = route(name);
+                else if (routes[name]) window.location.href = routes[name];
+                else console.warn(`No se pudo resolver la ruta "${name}".`);
+            } else if (action.startsWith('url:')) {
+                window.location.href = action.replace('url:', '').trim();
+            } else if (action.startsWith('emit:')) {
+                window.livewire?.emit(action.replace('emit:', '').trim());
+            } else if (action.startsWith('js:')) {
+                try { eval(action.replace('js:', '')); } catch (e) { console.error(e); }
             }
 
             this.open = false;
         },
-
     }
 }
 
@@ -270,23 +273,12 @@ window.btCan = (permission) => {
     try {
         const userRoles = window.__btUserRoles || [];
         const userPerms = window.__btUserPermissions || [];
-
-        // 🚨 Rol admin siempre puede todo
         if (userRoles.includes('admin')) return true;
-
-        // Si no hay permisos cargados, fallback optimista
         if (!userPerms.length) return true;
-
-        // Si el permiso es un array → canany (alguno debe coincidir)
-        if (Array.isArray(permission)) {
-            return permission.some(p => userPerms.includes(p));
-        }
-
-        // Si es string → can (exact match)
+        if (Array.isArray(permission)) return permission.some(p => userPerms.includes(p));
         return userPerms.includes(permission);
     } catch {
-        return true; // fallback por seguridad
+        return true;
     }
 };
-
 </script>
