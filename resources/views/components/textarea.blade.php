@@ -6,6 +6,7 @@
     $labelClass = $hasError ? ($colorPreset['label_error'] ?? $colorPreset['label']) : $colorPreset['label'];
 
     $id = $id ?? $name ?? uniqid('textarea-');
+    $name = $name ?? $id;
 
     $resizeClass = $resize
 
