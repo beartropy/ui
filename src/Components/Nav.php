@@ -236,7 +236,7 @@ class Nav extends BeartropyComponent
         $isAdmin = function ($user) {
             if (!$user) return false;
 
-            $roles = config('beartropyui.admin_roles', ['admin','super-admin','root']);
+            $roles = config('beartropyui.admin_roles', []);
 
             // Soporta Spatie\HasRoles o una flag booleana convencional
             if (method_exists($user, 'hasAnyRole') && $user->hasAnyRole($roles)) return true;

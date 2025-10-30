@@ -36,6 +36,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Permissions
+    |--------------------------------------------------------------------------
+    | Mainly for spatie integration, you can define de superuser role name here
+    | in order to allow components calculate permissions correctly when needed.
+    | This is particularly useful for components that rely on user roles and
+    | permissions to determine visibility and access.
+    */
+    'admin_roles' => array_map('trim', explode(',', env('BEARTROPY_UI_SUPERUSER_ROLES', 'super-admin,admin,root,superuser,administrator'))),
+
+
+    /*
+    |--------------------------------------------------------------------------
     | Component Defaults
     |--------------------------------------------------------------------------
     | Here you can set the default values for each component.

@@ -1,28 +1,22 @@
-@props([
-    'items' => [],
-    'src' => null,
-    'cache' => true,
-    'cacheKey' => 'bt-command-palette',
-])
-
 @php
     $id = $attributes->get('id') ?? 'bt-cp-' . uniqid();
     [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('command-palette');
 @endphp
 
+@if(class_exists(\Tighten\Ziggy\BladeRouteGenerator::class))
+    {!! app(\Tighten\Ziggy\BladeRouteGenerator::class)->generate() !!}
+@endif
+
 <div
     x-data="btCommandPalette({
-        items: @js($items),
-        src: @js($src),
-        cache: {{ $cache ? 'true' : 'false' }},
-        cacheKey: @js($cacheKey)
+        initial: @js($bt_cp_data) // ítems ya filtrados y seguros
     })"
     @keydown.window.prevent.cmd.k="open = true"
     @keydown.window.prevent.ctrl.k="open = true"
     {{ $attributes->merge(['class' => 'relative']) }}
 >
     {{-- Trigger --}}
-    @if(trim($slot))
+    @if (trim($slot))
         <div @click="open = true">
             {{ $slot }}
         </div>
@@ -30,7 +24,7 @@
         <div @click="open = true">
             <x-beartropy-ui::input
                 id="{{ $id }}"
-                color="{{ $presetNames['color'] ?? 'beartropy' }}"
+                color="{{ $presetNames['color'] }}"
                 size="{{ $presetNames['size'] ?? 'md' }}"
                 icon-start="magnifying-glass"
                 placeholder="Buscar en el sitio... (⌘ K / Ctrl K)"
@@ -56,12 +50,11 @@
                         setTimeout(() => {
                             const el = document.getElementById('{{ $id }}-input');
                             if (el) el.focus();
-                        }, 300);
+                        }, 200);
                     }
                 })
             "
         >
-            <!-- Contenedor principal -->
             <div
                 x-show="open"
                 x-transition:enter="transition transform ease-[cubic-bezier(0.16,1,0.3,1)] duration-300"
@@ -81,12 +74,10 @@
                 @keydown.shift.tab.prevent="handleKey($event)"
                 x-init="$watch('open', v => { if (v) selectedIndex = 0 })"
             >
-                <!-- Input -->
                 <div class="p-3 border-b border-gray-200 dark:border-gray-700">
                     <x-beartropy-ui::input
                         id="{{ $id }}-input"
                         color="{{ $presetNames['color'] }}"
-                        x-ref="search"
                         x-model="query"
                         placeholder="Buscar..."
                         icon-start="magnifying-glass"
@@ -94,11 +85,9 @@
                     />
                 </div>
 
-                <!-- Resultados -->
                 <ul class="max-h-96 overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 beartropy-thin-scrollbar">
-                    <!-- Lista -->
                     <template x-if="filtered && filtered.length">
-                        <template x-for="(item, index) in filtered" :key="item.action + '-' + index">
+                        <template x-for="(item, index) in filtered" :key="(item.action || 'item') + '-' + index">
                             <li
                                 :data-cp-index="index"
                                 @click="execute(item)"
@@ -108,16 +97,14 @@
                                     'bg-beartropy-500/10 dark:bg-beartropy-400/20 ring-1 ring-beartropy-400/30': index === selectedIndex
                                 }"
                             >
-                                <!-- Encabezado -->
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2">
                                         <span class="text-sm font-medium {{ $colorPreset['text'] }}" x-text="item.title"></span>
                                     </div>
 
-                                    <!-- Tags -->
                                     <template x-if="item.tags && item.tags.length">
                                         <div class="flex flex-wrap gap-1">
-                                            <template x-for="(tag, tindex) in item.tags" :key="item.action + '-tag-' + tindex">
+                                            <template x-for="(tag, tindex) in item.tags" :key="(item.action || 'item') + '-tag-' + tindex">
                                                 <span
                                                     @click.stop="query = tag"
                                                     class="text-[10px] px-2 py-0.5 rounded-full bg-gray-200/60 dark:bg-gray-700/60 text-gray-600 dark:text-gray-300 hover:bg-gray-300/60 dark:hover:bg-gray-600/60 hover:text-gray-800 dark:hover:text-gray-200 cursor-pointer transition-colors"
@@ -128,18 +115,15 @@
                                     </template>
                                 </div>
 
-                                <!-- Descripción -->
                                 <div class="text-xs text-gray-500 dark:text-gray-400 line-clamp-1" x-text="item.description"></div>
                             </li>
                         </template>
                     </template>
 
-                    <!-- Sin resultados -->
                     <template x-if="filtered && filtered.length === 0">
                         <li class="p-3 text-sm text-gray-400">Sin resultados</li>
                     </template>
 
-                    <!-- Footer -->
                     <template x-if="!query && filtered && filtered.length === 5">
                         <li class="p-3 text-xs text-gray-400 text-center">
                             Mostrando los primeros 5 resultados
@@ -151,66 +135,25 @@
     </template>
 </div>
 
-@if(auth()->check())
-    <script>
-        window.__btUserPermissions = window.__btUserPermissions || @json(auth()->user()->getAllPermissions()->pluck('name'));
-        window.__btUserRoles = window.__btUserRoles || @json(auth()->user()->getRoleNames());
-    </script>
-@endif
-@if(class_exists(\Tighten\Ziggy\BladeRouteGenerator::class))
-    {!! app(\Tighten\Ziggy\BladeRouteGenerator::class)->generate() !!}
-@endif
-
 <script>
-function btCommandPalette({ items, src, cache, cacheKey }) {
+function btCommandPalette({ initial }) {
     return {
         open: false,
         query: '',
-        all: items || [],
+        all: initial || [],
         selectedIndex: 0,
-        debounce: null,
-
-        async init() {
-            if (src) {
-                const cached = localStorage.getItem(cacheKey);
-                if (cache && cached) {
-                    try {
-                        const parsed = JSON.parse(cached);
-                        if (Date.now() - parsed.timestamp < 86400000) {
-                            this.all = parsed.data.filter(i => !i.permission || window.btCan(i.permission));
-                        }
-                    } catch {}
-                }
-
-                try {
-                    const res = await fetch(src, { cache: 'no-store' });
-                    const data = await res.json();
-                    this.all = data.filter(i => !i.permission || window.btCan(i.permission));
-                    if (cache) {
-                        localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: Date.now() }));
-                    }
-                } catch (err) {
-                    console.error('Error al cargar JSON del command palette:', err);
-                }
-            } else {
-                this.all = this.all.filter(i => !i.permission || window.btCan(i.permission));
-            }
-        },
 
         get filtered() {
-            const q = this.query?.toLowerCase().trim() || '';
-            const allowed = this.all.filter(i => !i.permission || window.btCan(i.permission));
-
-            if (!q) return allowed.slice(0, 5);
+            const q = (this.query || '').toLowerCase().trim();
+            if (!q) return (this.all || []).slice(0, 5);
 
             const terms = q.split(/\s+/);
-            const results = allowed.filter(i => {
+            const results = (this.all || []).filter(i => {
                 const text = [
                     i.title ?? '',
                     i.description ?? '',
                     Array.isArray(i.tags) ? i.tags.join(' ') : '',
-                    i.action ?? '',
-                    Array.isArray(i.permission) ? i.permission.join(' ') : (i.permission ?? '')
+                    i.action ?? ''
                 ].join(' ').toLowerCase();
                 return terms.every(t => text.includes(t));
             });
@@ -245,8 +188,6 @@ function btCommandPalette({ items, src, cache, cacheKey }) {
         },
 
         execute(item) {
-            if (item.permission && !window.btCan(item.permission)) return;
-
             const action = item.action || '';
             const routes = this.routes || {};
 
@@ -257,8 +198,8 @@ function btCommandPalette({ items, src, cache, cacheKey }) {
                 else console.warn(`No se pudo resolver la ruta "${name}".`);
             } else if (action.startsWith('url:')) {
                 window.location.href = action.replace('url:', '').trim();
-            } else if (action.startsWith('emit:')) {
-                window.livewire?.emit(action.replace('emit:', '').trim());
+            } else if (action.startsWith('dispatch:')) {
+                this.$dispatch(action.replace('dispatch:', '').trim());
             } else if (action.startsWith('js:')) {
                 try { eval(action.replace('js:', '')); } catch (e) { console.error(e); }
             }
@@ -267,18 +208,4 @@ function btCommandPalette({ items, src, cache, cacheKey }) {
         },
     }
 }
-
-// Helper global de permisos con soporte array (canany)
-window.btCan = (permission) => {
-    try {
-        const userRoles = window.__btUserRoles || [];
-        const userPerms = window.__btUserPermissions || [];
-        if (userRoles.includes('admin')) return true;
-        if (!userPerms.length) return true;
-        if (Array.isArray(permission)) return permission.some(p => userPerms.includes(p));
-        return userPerms.includes(permission);
-    } catch {
-        return true;
-    }
-};
 </script>
