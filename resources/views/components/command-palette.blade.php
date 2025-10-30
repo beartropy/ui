@@ -188,24 +188,57 @@ function btCommandPalette({ initial }) {
         },
 
         execute(item) {
-            const action = item.action || '';
-            const routes = this.routes || {};
+            const action  = (item.action || '').trim();
+            const routes  = this.routes || {};
+            const target  = (item.target || item?.options?.target || '_self').toLowerCase();
+
+            const openUrl = (url) => {
+                if (!url) return;
+                if (target === '_blank') {
+                    // seguridad + nueva pestaña
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                } else {
+                    window.location.href = url;
+                }
+            };
 
             if (action.startsWith('route:')) {
                 const name = action.replace('route:', '').trim();
-                if (typeof window.route === 'function') window.location.href = route(name);
-                else if (routes[name]) window.location.href = routes[name];
-                else console.warn(`No se pudo resolver la ruta "${name}".`);
+                let url = null;
+
+                // Soporte route() de Ziggy / Laravel
+                if (typeof window.route === 'function') {
+                    // opcional: params desde item.params / item.route_params
+                    const params = item.params || item.route_params || {};
+                    url = route(name, params);
+                } else if (routes[name]) {
+                    // routes puede ser string o función builder
+                    url = typeof routes[name] === 'function'
+                        ? routes[name](item.params || item.route_params || {})
+                        : routes[name];
+                } else {
+                    console.warn(`No se pudo resolver la ruta "${name}".`);
+                }
+
+                openUrl(url);
+
             } else if (action.startsWith('url:')) {
-                window.location.href = action.replace('url:', '').trim();
+                openUrl(action.replace('url:', '').trim());
+
+            } else if (/^(https?:\/\/|\/)/i.test(action)) {
+                // Permite pasar directamente una URL absoluta o relativa sin prefijo
+                openUrl(action);
+
             } else if (action.startsWith('dispatch:')) {
                 this.$dispatch(action.replace('dispatch:', '').trim());
+
             } else if (action.startsWith('js:')) {
                 try { eval(action.replace('js:', '')); } catch (e) { console.error(e); }
             }
 
             this.open = false;
         },
+
     }
 }
 </script>

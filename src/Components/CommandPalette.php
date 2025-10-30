@@ -107,7 +107,9 @@ class CommandPalette extends BeartropyComponent
                 'description' => $i['description'] ?? '',
                 'tags'        => array_values(array_filter($i['tags'] ?? [], fn($t) => is_string($t) && $t !== '')),
                 'action'      => $i['action'] ?? '',
-                'permission'  => $i['permission'] ?? null, // se eliminará luego
+                'permission'  => $i['permission'] ?? null,
+                'roles'       => $i['roles'] ?? null,
+                'target'      => $i['target'] ?? null,
             ];
         }, $items));
     }
