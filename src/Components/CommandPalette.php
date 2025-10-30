@@ -123,19 +123,25 @@ class CommandPalette extends BeartropyComponent
     {
         $user = Auth::user();
 
+        // Invitados
         if (!$user) {
             if ($this->allowGuests) return $items;
-            return array_values(array_filter($items, fn($i) => empty($i['permission'])));
+
+            // Solo ítems sin restricciones (ni permission ni role)
+            return array_values(array_filter($items, function ($i) {
+                return empty($i['permission']) && empty($i['role']);
+            }));
         }
 
-        // 🔹 NUEVO: admin_roles desde config
+        // Bypass por admin_roles (Spatie hasAnyRole)
         $adminRoles = config('beartropy-ui.admin_roles', []);
-        if (method_exists($user, 'hasAnyRole') && $user->hasAnyRole($adminRoles)) {
+        if (!empty($adminRoles) && method_exists($user, 'hasAnyRole') && $user->hasAnyRole($adminRoles)) {
             return $items;
         }
 
-        $can = function ($perm) use ($user) {
-            if (empty($perm)) return true;
+        // Helper: match de permisos (string|array) con OR interno
+        $matchesPermission = function ($perm) use ($user) {
+            if (empty($perm)) return false; // no condiciona si no está
             if (is_array($perm)) {
                 foreach ($perm as $p) {
                     if ($p && $user->can($p)) return true;
@@ -145,8 +151,29 @@ class CommandPalette extends BeartropyComponent
             return $user->can($perm);
         };
 
-        return array_values(array_filter($items, fn($i) => $can($i['permission'] ?? null)));
+        // Helper: match de roles (string|array) con OR interno (requiere Spatie)
+        $matchesRole = function ($role) use ($user) {
+            if (empty($role)) return false; // no condiciona si no está
+            if (!method_exists($user, 'hasAnyRole')) return false; // sin Spatie, ignora roles
+            if (is_array($role)) {
+                return $user->hasAnyRole($role);
+            }
+            return $user->hasAnyRole([$role]);
+        };
+
+        // Regla final:
+        // - Si no hay ni permission ni role => visible
+        // - Si hay al menos uno => visible si (permission OK) OR (role OK)
+        return array_values(array_filter($items, function ($i) use ($matchesPermission, $matchesRole) {
+            $perm = $i['permission'] ?? null;
+            $role = $i['role'] ?? null;
+
+            if (empty($perm) && empty($role)) return true;
+
+            return $matchesPermission($perm) || $matchesRole($role);
+        }));
     }
+
 
     /** Remueve 'permission' antes de enviar al cliente. */
     protected function stripPermissions(array $items): array
