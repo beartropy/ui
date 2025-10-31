@@ -93,7 +93,7 @@ class Select extends InputTriggerBase
         $isAssociative = false;
         if (is_array($options) && count($options)) {
             $keys = array_keys($options);
-            $isAssociative = array_keys($keys) !== $keys;
+            $isAssociative = count(array_filter($keys, 'is_string')) > 0;
         }
 
         $isEmoji = function ($icon) {
