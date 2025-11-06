@@ -94,6 +94,7 @@
                 preset-for="datetime"
                 width="w-full max-w-[25rem]"
                 x-show="open"
+                triggerLabel="{{ $label }}"
                 x-transition
             >
                 <div class="p-3 select-none bg-transparent">

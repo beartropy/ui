@@ -17,7 +17,9 @@ class DropdownBase extends BeartropyComponent
     public $maxHeight;
     public $overflow;
 
-    public function __construct($color=null, $placement = null, $side = null, $width = null, $presetFor = null, $autoFit = null, $autoFlip = null, $maxHeight = null, $overflow = null)
+    public $triggerLabel;
+
+    public function __construct($color=null, $placement = null, $side = null, $width = null, $presetFor = null, $autoFit = null, $autoFlip = null, $maxHeight = null, $overflow = null, $triggerLabel = null)
     {
         $this->color = $color;
         $this->placement = $placement;
@@ -28,6 +30,7 @@ class DropdownBase extends BeartropyComponent
         $this->autoFlip = $autoFlip;
         $this->maxHeight = $maxHeight;
         $this->overflow = $overflow;
+        $this->triggerLabel = $triggerLabel;
     }
 
     public function render()

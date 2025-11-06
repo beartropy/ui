@@ -332,6 +332,7 @@
                 preset-for="select"
                 width="w-full"
                 x-show="open"
+                triggerLabel="{{ $label }}"
                 @click.away="close()"
             >
                 @if($searchable)
@@ -352,7 +353,7 @@
                 @endif
                 {{-- Options list --}}
                 <ul
-                    class="max-h-60 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800 beartropy-thin-scrollbar"
+                    class="overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800 beartropy-thin-scrollbar"
                     @scroll="if($event.target.scrollTop + $event.target.clientHeight >= $event.target.scrollHeight - 10 && hasMore && !loading) { page++; fetchOptions(); }"
                 >
                     <template
