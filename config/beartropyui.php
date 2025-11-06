@@ -114,5 +114,6 @@ return [
         'nav'          => beartropy_preset('nav'),
         'avatar'       => beartropy_preset('avatar'),
         'command-palette' => beartropy_preset('command-palette'),
+        'fab'          => beartropy_preset('fab'),
     ],
 ];
