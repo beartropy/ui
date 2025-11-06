@@ -4,11 +4,11 @@
     $label = $label ?? 'Nuevo';
     $onlyMobile = $onlyMobile ?? false;
     $zIndex = $zIndex ?? 50;
-    $right = $right ?? 8;
-    $bottom = $bottom ?? 8;
+    $right = $right ?? "1rem";
+    $bottom = $bottom ?? "1rem";
 @endphp
 
-<div class="fixed bottom-{{ $bottom }} right-{{ $right }} z-{{ $zIndex }} {{ $onlyMobile ? '' : 'md:hidden' }}">
+<div class="fixed {{ $onlyMobile ? 'md:hidden' : '' }}" style="right: {{ $right }}; bottom: {{ $bottom }}; z-index: {{ $zIndex }};">
   <button
     type="button"
     {{ $attributes->merge([
