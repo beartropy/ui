@@ -204,3 +204,50 @@
   --btc-ring-color: rgba(245, 158, 11, .5); /* amber-500 */
 }
 .btc-primary-amber:hover { background-color: #b45309; } /* amber-700 */
+
+
+/* === Estado OK (verde) === */
+.bt-trigger-base[data-state="ok"],
+.bt-trigger-base[data-state="ok"]:focus-within {
+  border-color: #10b981;           /* emerald-500 */
+  box-shadow: 0 0 0 1px #34d399;   /* emerald-400 */
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* === Estado ERROR (rojo) === */
+.bt-trigger-base[data-state="error"],
+.bt-trigger-base[data-state="error"]:focus-within {
+  border-color: #ef4444;           /* red-500 */
+  box-shadow: 0 0 0 1px #f87171;   /* red-400 */
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* === Estado SAVING (gris suave) === */
+.bt-trigger-base[data-state="saving"],
+.bt-trigger-base[data-state="saving"]:focus-within {
+  border-color: #9ca3af;           /* gray-400 */
+  box-shadow: 0 0 0 1px rgba(156, 163, 175, 0.5);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* === Estado IDLE (restaurar) === */
+/* .bt-trigger-base[data-state="idle"],
+.bt-trigger-base[data-state="idle"]:focus-within {
+  border-color: #d1d5db;
+  box-shadow: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+} */
+
+/* Modo oscuro (opcional, si usás dark:) */
+.dark .bt-trigger-base[data-state="ok"] {
+  border-color: #34d399;
+  box-shadow: 0 0 0 1px #059669;
+}
+.dark .bt-trigger-base[data-state="error"] {
+  border-color: #f87171;
+  box-shadow: 0 0 0 1px #dc2626;
+}
+/* .dark .bt-trigger-base[data-state="saving"] {
+  border-color: #4b5563;
+  box-shadow: 0 0 0 1px rgba(75, 85, 99, 0.5);
+} */

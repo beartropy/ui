@@ -22,6 +22,12 @@
     $optionsKey = md5(json_encode($options));
 
     $wrapperClass = $attributes->get('class') ?? '';
+
+    $autosave          = $autosave          ?? false;          // bool: activa autosave
+    $autosaveMethod    = $autosaveMethod    ?? 'savePreference'; // nombre del método Livewire
+    $autosaveKey       = $autosaveKey       ?? ($wireModelValue ?? null); // clave del setting (por defecto el "name")
+    $autosaveDebounce  = $autosaveDebounce  ?? 300;            // ms
+
 @endphp
 <div
     x-data="{
@@ -53,6 +59,27 @@
         loading: false,
         remoteUrl: '{{ $remoteUrl }}',
         initDone: false,
+        autosave: {{ $autosave ? 'true' : 'false' }},
+        autosaveMethod: '{{ $autosaveMethod }}',
+        autosaveKey: '{{ $autosaveKey }}',
+        autosaveDebounce: {{ $autosaveDebounce }},
+        saveState: 'idle', // idle | saving | ok | error
+        _saveT: null,
+        hasFieldError: {{ $hasError ? 'true' : 'false' }},
+
+        triggerAutosave() {
+            if (!this.autosave || !this.autosaveMethod || !this.autosaveKey) return;
+
+            this.saveState = 'saving';
+
+            $wire.call(this.autosaveMethod, this.value, this.autosaveKey)
+                .then(() => {
+                    this.saveState = 'ok'; // queda fijo
+                })
+                .catch(() => {
+                    this.saveState = 'error'; // queda fijo
+                });
+        },
 
         filteredOptions() {
             // Si remote: las opciones ya se filtran en backend
@@ -119,6 +146,7 @@
 
             @if($hasWireModel)
                 $wire.set('{{ $name }}', this.value);
+                this.triggerAutosave();
             @endif
         },
         visibleChips() {
@@ -223,13 +251,17 @@
         hint="{{ $hint }}"
         has-error="{{ $hasError }}"
         {{ $attributes->only(['fill', 'outline']) }}
+        x-bind:data-state="hasFieldError ? 'error' : saveState"
     >
         @isset($start)
             <x-slot name="start">{!! $start !!}</x-slot>
         @endisset
 
         <x-slot name="button">
-            <div @click="toggle()" class="flex flex-wrap items-center gap-1 min-h-[1.6em] cursor-pointer w-full {{ $colorDropdown['option_text'] ?? '' }}">
+            <div
+                @click="toggle()"
+                class="relative flex flex-wrap items-center gap-1 min-h-[1.6em] cursor-pointer w-full pr-2 md:pr-3 {{ $colorDropdown['option_text'] ?? '' }}"
+            >
                 {{-- MULTI SELECT: chips truncados --}}
                 <template x-if="isMulti && value && value.length">
                     <template x-for="(id, idx) in visibleChips()" :key="id">
@@ -258,6 +290,7 @@
 
                     </template>
                 </template>
+
                 {{-- Badge +N --}}
                 <span
                     x-show="isMulti && value && hiddenCount()"
@@ -271,6 +304,7 @@
                     x-show="!((isMulti && value && value.length) || (!isMulti && value))"
                     class="beartropy-placeholder"
                 >{{ $placeholder }}</span>
+
                 {{-- SINGLE SELECT: label --}}
                 <span
                     x-show="!isMulti && value"
@@ -281,12 +315,12 @@
                     <template x-if="options[value]?.avatar">
                         <span class="inline-flex w-5 h-5 rounded-full overflow-hidden justify-center items-center bg-neutral-200 dark:bg-neutral-700">
                             <img :src="options[value].avatar"
-                                 alt=""
-                                 class="w-5 h-5 object-cover"
-                                 x-show="options[value].avatar && options[value].avatar.startsWith('http')" />
+                                alt=""
+                                class="w-5 h-5 object-cover"
+                                x-show="options[value].avatar && options[value].avatar.startsWith('http')" />
                             <span x-show="options[value].avatar && !options[value].avatar.startsWith('http')"
-                                  x-text="options[value].avatar"
-                                  class="text-base"></span>
+                                x-text="options[value].avatar"
+                                class="text-base"></span>
                         </span>
                     </template>
                     <!-- Icono, solo si no hay avatar -->
@@ -301,27 +335,66 @@
             </div>
         </x-slot>
 
+
         <x-slot name="end">
-            @if($clearable)
-                <span
-                    x-show="(isMulti && value && value.length) || (!isMulti && value)"
-                    @click.stop="clearValue()"
-                    class="mr-1 cursor-pointer text-neutral-400 hover:text-red-500 transition"
-                    title="Limpiar selección"
+            {{-- Contenedor relativo para posicionar todo a la derecha sin depender del ancho --}}
+            <div class="relative w-full h-0">
+                {{-- Grupo absoluto: CLEAR + INDICADOR, alineados justo a la izquierda del chevron --}}
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
+                    @if($clearable)
+                        <button
+                            type="button"
+                            @click.stop="clearValue()"
+                            class="grid place-items-center w-5 h-5 rounded transition hover:bg-gray-100 dark:hover:bg-white/5"
+                            :class="((isMulti && value && value.length) || (!isMulti && value))
+                                ? 'opacity-100 pointer-events-auto'
+                                : 'opacity-0 pointer-events-none'"
+                            title="Limpiar selección"
+                            aria-label="Limpiar selección"
+                        >
+                            @include('beartropy-ui-svg::beartropy-x-mark', [
+                                'class' => 'shrink-0 text-gray-700 dark:text-gray-400 ' . ($sizePreset['iconSize'] ?? '')
+                            ])
+                        </button>
+                    @endif
+
+                    {{-- Indicador autosave: aparece ENTRE el clear y el chevron, sin empujar nada --}}
+                    <template x-if="autosave && saveState !== 'idle'">
+                        <span class="grid place-items-center w-5 h-5">
+                            <!-- saving -->
+                            <svg x-show="saveState==='saving'" class="w-4 h-4 animate-spin text-gray-400" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity=".25"/>
+                                <path d="M21 12a9 9 0 0 1-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <!-- ok -->
+                            <svg x-show="saveState==='ok'" class="w-5 h-5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <!-- error -->
+                            <svg x-show="saveState==='error'" class="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </span>
+                    </template>
+                </div>
+
+                {{-- Chevron SIEMPRE fijo al borde derecho --}}
+                <button
+                    type="button"
+                    @click="toggle()"
+                    class="absolute -right-1 top-1/2 -translate-y-1/2 grid place-items-center w-5 h-5 shrink-0"
                 >
-                    @include('beartropy-ui-svg::beartropy-x-mark', [
-                        'class' => 'shrink-0 text-gray-700 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 ' . ($sizePreset['iconSize'] ?? '')
-                    ])
-                </span>
-            @endif
-            <span @click="toggle()" class="cursor-pointer w-full">
-                <svg class="w-5 h-5 pl-1 transition-transform duration-200 {{ $colorDropdown['option_icon'] ?? '' }}"
-                    :class="{ 'rotate-180': open }"
-                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                </svg>
-            </span>
+                    <svg
+                        class="w-4.5 h-4.5 transition-transform duration-200 {{ $colorDropdown['option_icon'] ?? '' }}"
+                        :class="{ 'rotate-180': open }"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+            </div>
         </x-slot>
+
 
 
         <x-slot name="dropdown">

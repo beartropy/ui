@@ -14,16 +14,18 @@
 
 <div class="flex flex-col {{ $disabled ? $colorPreset['disabled'] : '' }}">
 
-    <div class="flex items-center w-full group transition-all shadow-sm rounded-md outline-none
-        {{ ($shouldFill) ? $colorPreset['bg'] : '' }}
-        {{ $borderClass }}
-        {{ $ringClass }}
-        {{ $colorPreset['disabled_bg'] ?? '' }}
-        {{ $disabled ? 'opacity-60 cursor-not-allowed' : '' }}
-        {{ $sizePreset['px'] ?? '' }}
-        {{ $sizePreset['height'] ?? '' }}
-        min-w-0"
-        tabindex="0"
+    <div
+        {{ $attributes->merge(['tabindex' => 0])->class([
+            'flex items-center w-full group transition-all shadow-sm rounded-md outline-none bt-trigger-base',
+            $shouldFill ? $colorPreset['bg'] : '',
+            $borderClass,
+            $ringClass,
+            $colorPreset['disabled_bg'] ?? '',
+            $disabled ? 'opacity-60 cursor-not-allowed' : '',
+            $sizePreset['px'] ?? '',
+            $sizePreset['height'] ?? '',
+            'min-w-0',
+        ]) }}
     >
 
         {{-- Start slot --}}

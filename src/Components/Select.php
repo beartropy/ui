@@ -33,6 +33,11 @@ class Select extends InputTriggerBase
     public $optionIcon;
     public $optionAvatar;
 
+    public $autosave;
+    public $autosaveMethod;
+    public $autosaveKey;
+    public $autosaveDebounce;
+
     public function __construct(
         $options = [],
         $selected = null,
@@ -50,6 +55,10 @@ class Select extends InputTriggerBase
         $perPage = 15,
         $customError = null,
         $hint = null,
+        $autosave = false,
+        $autosaveMethod = 'savePreference',
+        $autosaveKey = null,
+        $autosaveDebounce = 300,
 
         // 🔑 Defaults de mapeo
         $optionLabel = 'label',
@@ -81,6 +90,10 @@ class Select extends InputTriggerBase
         $this->perPage      = (int) $perPage;
         $this->customError  = $customError;
         $this->hint         = $hint;
+        $this->autosave          = filter_var($autosave, FILTER_VALIDATE_BOOLEAN);
+        $this->autosaveMethod    = $autosaveMethod;
+        $this->autosaveKey       = $autosaveKey;
+        $this->autosaveDebounce  = (int) $autosaveDebounce;
     }
 
     protected function normalizeOptions($options)
