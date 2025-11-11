@@ -20,6 +20,7 @@ class Nav extends BeartropyComponent
     public $childBorderClass;
     public $hoverTextClass;
     public $hoverTextChildClass;
+    public $withnavigate;
 
 
     public function __construct(
@@ -36,6 +37,7 @@ class Nav extends BeartropyComponent
         $hoverTextClass = null,
         $hoverTextChildClass = null,
         $color = 'beartropy',
+        $withnavigate = false
     ) {
         $this->sidebarBind = $sidebarBind;
         $this->highlightMode = $highlightMode;
@@ -75,7 +77,7 @@ class Nav extends BeartropyComponent
         $this->childBorderClass = $preset['childBorderClass'] ?? $childBorderClass;
         $resolved = $this->resolveItems($items);
         $this->items = $this->filterNavCategories($resolved);
-
+        $this->withnavigate = $withnavigate;
 
     }
 

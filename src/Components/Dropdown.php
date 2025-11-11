@@ -10,6 +10,7 @@ class Dropdown extends BeartropyComponent
         public string $side = 'left',
         public ?string $color = null,
         public ?string $size = null,
+        public ?bool $withnavigate = null
     ) {
         parent::__construct();
     }

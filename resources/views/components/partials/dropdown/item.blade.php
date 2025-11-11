@@ -1,4 +1,4 @@
-@aware(['color' => 'neutral'])
+@aware(['color' => 'neutral', 'withnavigate' => false])
 @props([
     'icon' => null,
     'disabled' => false,
@@ -26,6 +26,7 @@
         {{ $attributes->merge(['class' => "$classes first:rounded-t-md last:rounded-b-md", 'role' => 'menuitem']) }}
         {{ $disabled ? 'aria-disabled=true' : '' }}
         {!! $closeAttr !!}
+        {{ $withnavigate ? "wire:navigate" : "" }}
     >
         @if ($icon)
             <x-beartropy-ui::icon name="{{ $icon }}" class="w-4 h-4 mr-2" />

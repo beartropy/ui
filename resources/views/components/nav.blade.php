@@ -208,7 +208,7 @@
 
                         <div>
                             <a
-                                href="{{ $hasChildren ? '#' : $href }}"
+                                href="{{ $hasChildren ? '#' : $href }}" {{ $withnavigate && !$hasChildren ? "wire:navigate" : "" }}
 
                                 {{-- CLICK: solo togglea si NO está colapsado; si está colapsado, no hace nada --}}
                                 @if($hasChildren)
@@ -314,7 +314,7 @@
                                         @endphp
 
                                         <a
-                                            href="{{ $childHref }}"
+                                            href="{{ $childHref }}" {{ $withnavigate ? "wire:navigate" : "" }}
                                             class="{{ $finalChildClass }}{{ $childDisabled ? ' opacity-60 pointer-events-none' : '' }}"
                                             title="{{ $child['tooltip'] ?? '' }}"
                                             :class="{ 'justify-center': sidebarIsCollapsed, 'justify-start': !sidebarIsCollapsed }"
@@ -410,7 +410,7 @@
                                                 @endphp
 
                                                 <a
-                                                    href="{{ $childHref }}"
+                                                    href="{{ $childHref }}" {{ $withnavigate ? "wire:navigate" : "" }}
                                                     class="{{ $finalChildClass }} flex items-center gap-2 px-3 py-2 whitespace-nowrap"
                                                     title="{{ $child['tooltip'] ?? '' }}"
                                                     role="menuitem"
