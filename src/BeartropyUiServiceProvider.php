@@ -33,7 +33,13 @@ class BeartropyUiServiceProvider extends ServiceProvider
         $this->publishIndividualPresets();
 
         Blade::directive('BeartropyAssets', function () {
-            return "<?php echo app('beartropy.assets')->render(); ?>";
+            $ziggyUrl = route('beartropy.assets.ziggy');
+            return <<<BLADE
+        <?php
+            echo app('beartropy.assets')->render();
+        ?>
+        <script src="{$ziggyUrl}" defer data-navigate-once></script>
+        BLADE;
         });
     }
 

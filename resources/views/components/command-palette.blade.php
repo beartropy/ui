@@ -3,9 +3,9 @@
     [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('command-palette');
 @endphp
 
-@if(class_exists(\Tighten\Ziggy\BladeRouteGenerator::class))
+{{-- @if(class_exists(\Tighten\Ziggy\BladeRouteGenerator::class))
     {!! app(\Tighten\Ziggy\BladeRouteGenerator::class)->generate() !!}
-@endif
+@endif --}}
 
 <div
     x-data="btCommandPalette({

@@ -27,6 +27,7 @@
     'hoverMenuShowHeader'   => true,
     'hoverMenuHeaderClass'  => 'sticky top-0 z-10 px-3 py-2 border-b border-gray-200/80 dark:border-gray-700/70 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm',
     'hoverMenuHeaderTextClass' => 'font-bold text-sm text-gray-700 dark:text-gray-400',
+
 ])
 
 @php
@@ -44,6 +45,7 @@
     $bindExpr   = trim($sidebarBind ?? '');
     $bindVar    = ltrim($bindExpr, '! ');
     $isNegated  = str_starts_with($bindExpr, '!');
+
 @endphp
 
 <nav
@@ -69,6 +71,191 @@
         },
         closeHoverSoon() { clearTimeout(this.hoverTimer); this.hoverTimer = setTimeout(() => this.hoverId = null, 120); },
         keepHoverOpen()  { clearTimeout(this.hoverTimer); },
+
+        // ---- ACTIVE por Alpine ----
+        activePath: window.location.pathname + window.location.search,
+_norm(u) {
+  try {
+    const url = new URL(u, window.location.origin);
+    let path = url.pathname.replace(/\/+$/, '');
+    if (path === '') path = '/';
+    const query = url.search; // conserva query si querés distinguir filtros
+    return path + query;
+  } catch (e) {
+    let s = (u || '').replace(/\/+$/, '');
+    if (s === '') s = '/';
+    return s;
+  }
+},
+
+isActiveHref(href, mode = 'exact') {
+  if (!href || href === '#' || href.startsWith('javascript')) return false;
+  const here  = this._norm(this.activePath);
+  const there = this._norm(href);
+  if (!there) return false; // evita que '' haga match con todo
+  return mode === 'startsWith' ? here.startsWith(there) : here === there;
+},
+hrefFromEl(el) {
+  // 1) data-href renderizado por Blade
+  if (el?.dataset?.href) return el.dataset.href;
+
+  // 2) Ziggy por routeName/params
+  const name = el?.dataset?.routeName;
+  if (name && typeof window.route === 'function') {
+    let params = {};
+    try { params = JSON.parse(el.dataset.routeParams || '{}'); } catch (e) {}
+    try { return route(name, params); } catch (e) {}
+  }
+
+  // 3) atributo href tal cual
+  const attr = el?.getAttribute?.('href');
+  if (attr) return attr;
+
+  // 4) href resuelto por el navegador (absoluto)
+  if (el?.href) return el.href;
+
+  return '#';
+},
+isActiveEl(el, startsWith = false) {
+  const href = this.hrefFromEl(el);
+  return this.isActiveHref(href, startsWith ? 'startsWith' : 'exact');
+},
+_path(u) {
+  // ignorar anchors y javascript
+  if (!u || u === '#' || String(u).startsWith('javascript')) return '';
+  try {
+    let p = new URL(u, window.location.origin).pathname.replace(/\/+$/, '');
+    if (p === '') p = '/';
+    return p;
+  } catch (e) {
+    let s = String(u || '').replace(/\/+$/, '');
+    if (s === '') s = '/';
+    return s;
+  }
+},
+
+_pathStartsWith(herePath, prefix) {
+  if (prefix === '/') return herePath === '/';
+  return (herePath === prefix) || herePath.startsWith(prefix + '/');
+},
+parentMatches(el) {
+  const here = this._path(this.activePath);
+
+  // Si es padre con hijos: SOLO chequeamos los prefijos de hijos
+  if (el?.dataset?.hasChildren === '1') {
+    if (el?.dataset?.childPrefixes) {
+      try {
+        const arr = JSON.parse(el.dataset.childPrefixes) || [];
+        for (const raw of arr) {
+          const p = this._path(raw);
+          if (p && this._pathStartsWith(here, p)) return true;
+        }
+      } catch (e) {}
+    }
+    // Opcional: si este padre tiene realmente un link propio (data-href verdadero),
+    // también lo dejamos matchear. Pero evitamos '#' o 'javascript'.
+    const dh = el?.dataset?.href;
+    if (dh && dh !== '#' && !String(dh).startsWith('javascript')) {
+      const p = this._path(dh);
+      if (p && this._pathStartsWith(here, p)) return true;
+    }
+    return false;
+  }
+
+  // Si NO tiene hijos: activo exacto por su propio href (solo path)
+  const herePath = here;
+  const p = this._path(this.hrefFromEl(el));
+  return herePath === p;
+},
+
+isActiveParent(el) {
+  if (el?.dataset?.hasChildren === '1') return this.parentMatches(el);
+  // sin hijos: activo exacto (path + query no; usamos solo path)
+  const here = this._path(this.activePath);
+  const p = this._path(this.hrefFromEl(el));
+  return here === p;
+},
+
+
+getActiveParentIds() {
+  const set = new Set();
+  document.querySelectorAll('a[data-nav-id]').forEach((el) => {
+    if (el.dataset.hasChildren === '1' && this.parentMatches(el)) {
+      set.add(el.dataset.navId);
+    }
+  });
+  return Array.from(set);
+},
+
+
+updateActiveState() {
+  this.activePath = window.location.pathname + window.location.search;
+
+  const activeParents = this.getActiveParentIds();
+
+  if (activeParents.length === 0) {
+    // no tocar 'open' aún; esperamos al próximo frame (dom ya montado)
+    requestAnimationFrame(() => {
+      const retry = this.getActiveParentIds();
+      if (retry.length > 0) this._reconcileOpen(retry);
+    });
+    return;
+  }
+
+  this._reconcileOpen(activeParents);
+},
+
+
+_reconcileOpen(activeParents) {
+  const shouldOpen = new Set(activeParents);
+
+  if (this.singleOpenExpanded) {
+    // Cerrar solo lo que NO debe estar abierto
+    Object.keys(this.open).forEach(id => {
+      if (this.open[id] && !shouldOpen.has(id)) this.open[id] = false;
+    });
+    // Abrir solo lo necesario
+    shouldOpen.forEach(id => { if (!this.open[id]) this.open[id] = true; });
+  } else {
+    // No colapsivo: solo garantizar abiertas las activas actuales
+    shouldOpen.forEach(id => { if (!this.open[id]) this.open[id] = true; });
+  }
+  this.$nextTick(() => {});
+},
+
+
+        openActiveBranches() {
+            // (compat) mantener llamada desde init; ahora delega en updateActiveState
+            this.updateActiveState();
+        },
+
+_installLocationListeners() {
+  let t = null;
+  const notify = () => {
+    clearTimeout(t);
+    t = setTimeout(() => this.updateActiveState(), 30); // pequeño debounce
+  };
+
+  window.addEventListener('popstate', notify);
+
+  const _push = history.pushState;
+  const _replace = history.replaceState;
+  history.pushState = function(...args){
+    const r = _push.apply(this, args);
+    window.dispatchEvent(new Event('locationchange'));
+    return r;
+  };
+  history.replaceState = function(...args){
+    const r = _replace.apply(this, args);
+    window.dispatchEvent(new Event('locationchange'));
+    return r;
+  };
+  window.addEventListener('locationchange', notify);
+
+  document.addEventListener('livewire:navigated', notify);
+},
+
+
 
         // ---- helpers persistencia ----
         loadRemembered() {
@@ -126,21 +313,25 @@
                 this.sidebarIsCollapsed = remembered !== null ? remembered : false;
                 $watch('sidebarIsCollapsed', v => this.saveRemembered(v));
             @endif
+
+            // ---- ACTIVAR listeners y abrir ramas segun URL actual ----
+            this._installLocationListeners();
+            this.openActiveBranches();
         },
 
         toggle(id) {
-        // En colapsado no hay inline (se maneja por hover), no hacemos nada
-        if (this.sidebarIsCollapsed) return;
+            // En colapsado no hay inline (se maneja por hover), no hacemos nada
+            if (this.sidebarIsCollapsed) return;
 
-        if (this.singleOpenExpanded) {
-            const willOpen = !this.open[id];
-            // cerrar todos
-            Object.keys(this.open).forEach(k => this.open[k] = false);
-            // abrir solo el actual si corresponde
-            this.open[id] = willOpen;
-        } else {
-            this.open[id] = !this.open[id];
-        }
+            if (this.singleOpenExpanded) {
+                const willOpen = !this.open[id];
+                // cerrar todos
+                Object.keys(this.open).forEach(k => this.open[k] = false);
+                // abrir solo el actual si corresponde
+                this.open[id] = willOpen;
+            } else {
+                this.open[id] = !this.open[id];
+            }
         },
         isOpen(id) { return !!this.open[id]; }
     }"
@@ -183,12 +374,8 @@
                             if ($itemClassOverride) {
                                 $finalItemClass = trim($itemClassOverride);
                             } else {
-                                if ($isActive) {
-                                    $cleanClass     = preg_replace('/text-gray-\d{3}|dark:text-gray-\d{3}/', '', $itemClass);
-                                    $finalItemClass = trim($cleanClass . ' ' . $highlightParentClass);
-                                } else {
-                                    $finalItemClass = trim($itemClass . ' ' . $itemHover);
-                                }
+                                // NUNCA marcamos active desde PHP (lo maneja Alpine)
+                                $finalItemClass = trim($itemClass . ' ' . $itemHover);
                             }
 
                             // Nueva lógica para obtener el href
@@ -207,25 +394,77 @@
                         @endphp
 
                         <div>
+                            @php
+                                $routeName   = $item['routeName']   ?? null;
+                                $routeParams = $item['routeParams'] ?? [];
+
+                                $parentPrefixes = [];
+                                if ($hasChildren) {
+                                    foreach (($item['children'] ?? []) as $c) {
+                                        $chref = '#';
+                                        if (!empty($c['routeName'])) {
+                                            try { $chref = route($c['routeName'], $c['routeParams'] ?? []); } catch (\Throwable $e) { $chref = '#'; }
+                                        } elseif (!empty($c['route'])) {
+                                            $chref = $c['route'];
+                                        }
+                                        try {
+                                            $p = parse_url($chref, PHP_URL_PATH) ?? '/';
+                                            if ($p === '') $p = '/';
+                                            $parentPrefixes[] = $p;
+                                        } catch (\Throwable $e) {}
+                                    }
+
+                                    // también considerar el path del propio padre si tiene routeName/route
+                                    $parentSelfHref = null;
+                                    if (!empty($item['routeName'])) {
+                                        try { $parentSelfHref = route($item['routeName'], $item['routeParams'] ?? []); } catch (\Throwable $e) {}
+                                    } elseif (!empty($item['route'])) {
+                                        $parentSelfHref = $item['route'];
+                                    }
+                                    if ($parentSelfHref) {
+                                        try {
+                                            $pp = parse_url($parentSelfHref, PHP_URL_PATH) ?? '/';
+                                            if ($pp === '') $pp = '/';
+                                            $parentPrefixes[] = $pp;
+                                        } catch (\Throwable $e) {}
+                                    }
+
+                                    $parentPrefixes = array_values(array_unique($parentPrefixes));
+                                }
+                            @endphp
+
                             <a
+                                data-nav-id="{{ $itemId }}"
+                                data-has-children="{{ $hasChildren ? '1' : '0' }}"
+                                data-href="{{ !$hasChildren ? $href : '' }}"
+                                @if($routeName)
+                                    data-route-name="{{ $routeName }}"
+                                    data-route-params='@json($routeParams)'
+                                @endif
+                                @if($hasChildren)
+                                data-child-prefixes='@json($parentPrefixes)'
+                                @endif
+                                x-effect="if (!sidebarIsCollapsed && isActiveParent($el)) { open['{{ $itemId }}'] = true }"
                                 href="{{ $hasChildren ? '#' : $href }}" {{ $withnavigate && !$hasChildren ? "wire:navigate" : "" }}
 
-                                {{-- CLICK: solo togglea si NO está colapsado; si está colapsado, no hace nada --}}
                                 @if($hasChildren)
                                     @click.prevent="if (!sidebarIsCollapsed) toggle('{{ $itemId }}')"
                                 @endif
-
-                                {{-- HOVER: cuando está colapsado, abre dropdown flotante --}}
                                 @mouseenter="if (sidebarIsCollapsed && {{ $hasChildren ? 'true' : 'false' }}) openHover('{{ $itemId }}', $el)"
                                 @mouseleave="if (sidebarIsCollapsed && {{ $hasChildren ? 'true' : 'false' }}) closeHoverSoon()"
 
                                 class="{{ $finalItemClass }}{{ $disabled ? ' opacity-60 pointer-events-none' : '' }}"
+                                :class="[
+                                    isActiveParent($el) ? ' {{ $highlightParentClass }} ' : '',
+                                    (sidebarIsCollapsed ? 'justify-center gap-0 px-2' : 'justify-start gap-2 px-2.5')
+                                ]"
                                 title="{{ $item['tooltip'] ?? '' }}"
                                 @if(!empty($item['tooltip'])) x-tooltip="'{{ $item['tooltip'] }}'" @endif
                                 @if($external) target="_blank" rel="noopener" @endif
                                 style="cursor: pointer;"
-                                :class="sidebarIsCollapsed ? 'justify-center gap-0 px-2' : 'justify-start gap-2 px-2.5'"
                             >
+
+
                                 {!! $iconHtml !!}
 
                                 <span class="truncate {{ $itemLabelClass }} transition-all duration-500"
@@ -272,7 +511,7 @@
                                     x-show="!sidebarIsCollapsed && isOpen('{{ $itemId }}')"
                                     x-transition
                                     x-collapse
-                                    style="display: none;"
+                                    x-cloak
                                 >
                                     @foreach($item['children'] as $child)
                                         @if(!empty($child['divider']))
@@ -291,36 +530,51 @@
                                             $childBadgeVar      = $customBadges[$child['id'] ?? ''] ?? null;
                                             $childSlotBadgeVar  = $__data['badge-' . ($child['id'] ?? '')] ?? null;
 
-                                            if ($childClassOverride) {
-                                                $finalChildClass = trim($childClassOverride);
-                                            } else {
-                                                if ($childIsActive) {
-                                                    $cleanChildClass = preg_replace('/text-gray-\d{3}|dark:text-gray-\d{3}/', '', $childItemClass);
-                                                    $finalChildClass = trim($cleanChildClass . ' ' . $highlightChildClass);
-                                                } else {
-                                                    $finalChildClass = trim($childItemClass . ' ' . $childHover);
-                                                }
-                                            }
-                                            $childHref = '#';
-                                            if (!empty($child['routeName'])) {
-                                                try {
-                                                    $childHref = route($child['routeName'], $child['routeParams'] ?? []);
-                                                } catch (\Throwable $e) {
-                                                    $childHref = '#';
-                                                }
-                                            } elseif (!empty($child['route'])) {
-                                                $childHref = $child['route'];
-                                            }
+                        if ($childClassOverride) {
+                            $finalChildClass = trim($childClassOverride);
+                        } else {
+                            // NUNCA marcamos active desde PHP (lo maneja Alpine)
+                            $finalChildClass = trim($childItemClass . ' ' . $childHover);
+                        }
+
+                        $childHref = '#';
+                        if (!empty($child['routeName'])) {
+                            try {
+                                $childHref = route($child['routeName'], $child['routeParams'] ?? []);
+                            } catch (\Throwable $e) {
+                                $childHref = '#';
+                            }
+                        } elseif (!empty($child['route'])) {
+                            $childHref = $child['route'];
+                        }
                                         @endphp
 
-                                        <a
+                                        @php
+                                            $cName   = $child['routeName']   ?? null;
+                                            $cParams = $child['routeParams'] ?? [];
+                                        @endphp
+
+                                            <a
+                                            data-parent-id="{{ $itemId }}"
+                                            data-href="{{ $childHref }}"
+                                            @if($cName)
+                                                data-route-name="{{ $cName }}"
+                                                data-route-params='@json($cParams)'
+                                            @endif
+
                                             href="{{ $childHref }}" {{ $withnavigate ? "wire:navigate" : "" }}
                                             class="{{ $finalChildClass }}{{ $childDisabled ? ' opacity-60 pointer-events-none' : '' }}"
+                                            :class="[
+                                                // highlight: hijos con startsWith para que /users/123 active /users
+                                                isActiveEl($el, true) ? ' {{ $highlightChildClass }} ' : '',
+                                                // layout
+                                                (sidebarIsCollapsed ? 'justify-center' : 'justify-start')
+                                            ]"
                                             title="{{ $child['tooltip'] ?? '' }}"
-                                            :class="{ 'justify-center': sidebarIsCollapsed, 'justify-start': !sidebarIsCollapsed }"
                                             @if(!empty($child['tooltip'])) x-tooltip="'{{ $child['tooltip'] }}'" @endif
                                             @if($childExternal) target="_blank" rel="noopener" @endif
-                                        >
+                                            >
+
                                             {!! $childIcon !!}
                                             <span class="truncate {{ $childLabelClass }} transition-all duration-500"
                                                   x-show="!sidebarIsCollapsed"
@@ -390,9 +644,7 @@
                                                     $childIsActive   = $isItemActive($child);
                                                     $childIcon       = $renderIcon($child['icon'] ?? '', $iconClass);
                                                     $childClassBase  = $childItemClass . ' ' . $childHover;
-                                                    $finalChildClass = $childIsActive
-                                                        ? trim(preg_replace('/text-gray-\d{3}|dark:text-gray-\d{3}/', '', $childItemClass) . ' ' . $highlightChildClass)
-                                                        : trim($childClassBase);
+                                                    $finalChildClass = trim($childClassBase);
 
                                                     $childBadge        = $child['badge'] ?? null;
                                                     $childBadgeVar     = $customBadges[$child['id'] ?? ''] ?? null;
@@ -409,14 +661,28 @@
                                                     }
                                                 @endphp
 
+                                                @php
+                                                    $cName   = $child['routeName']   ?? null;
+                                                    $cParams = $child['routeParams'] ?? [];
+                                                @endphp
+
                                                 <a
+                                                    data-parent-id="{{ $itemId }}"
+                                                    data-href="{{ $childHref }}"
+                                                    @if($cName)
+                                                        data-route-name="{{ $cName }}"
+                                                        data-route-params='@json($cParams)'
+                                                    @endif
+
                                                     href="{{ $childHref }}" {{ $withnavigate ? "wire:navigate" : "" }}
                                                     class="{{ $finalChildClass }} flex items-center gap-2 px-3 py-2 whitespace-nowrap"
+                                                    :class="isActiveEl($el, true) ? ' {{ $highlightChildClass }} ' : ''"
                                                     title="{{ $child['tooltip'] ?? '' }}"
                                                     role="menuitem"
                                                     @if(!empty($child['tooltip'])) x-tooltip="'{{ $child['tooltip'] }}'" @endif
                                                     @if(!empty($child['external'])) target="_blank" rel="noopener" @endif
                                                 >
+
                                                     {!! $childIcon !!}
                                                     <span class="truncate {{ $child['label_class'] ?? '' }}">{{ $child['label'] }}</span>
 

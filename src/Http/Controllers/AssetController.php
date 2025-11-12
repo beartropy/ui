@@ -2,6 +2,7 @@
 
 namespace Beartropy\Ui\Http\Controllers;
 
+use Tighten\Ziggy\BladeRouteGenerator;
 use Illuminate\Support\Facades\Response;
 
 class AssetController
@@ -39,6 +40,33 @@ class AssetController
         return Response::file($path, [
             'Content-Type' => $contentTypes[$extension] ?? 'text/plain',
             'Cache-Control' => 'public, max-age=604800, immutable',
+        ]);
+    }
+
+    public function ziggy()
+    {
+        if (!class_exists(BladeRouteGenerator::class)) {
+            abort(500, 'Ziggy is not installed.');
+        }
+
+        // 1) Generamos el blob que normalmente Ziggy imprime dentro de <script>...</script>
+        $html = app(BladeRouteGenerator::class)->generate();
+
+        // 2) Le quitamos las etiquetas <script> envolventes para quedarnos con JS puro
+        $js = preg_replace('#^\s*<script[^>]*>|</script>\s*$#i', '', trim($html));
+
+        // 3) Envolvemos con un guard para que viva una sola vez en window
+        $wrapped = <<<JS
+;(function(){
+  if (window.__ziggy_loaded) return;
+  window.__ziggy_loaded = true;
+  {$js}
+})();
+JS;
+
+        return Response::make($wrapped, 200, [
+            'Content-Type'  => 'application/javascript; charset=UTF-8',
+            'Cache-Control' => 'public, max-age=31536000, immutable',
         ]);
     }
 }
