@@ -15,6 +15,10 @@ class Toggle extends BeartropyComponent
         public ?bool $disabled = false,
         public ?string $hint = null,
         public ?string $help = null,
+        public $autosave = false,
+        public $autosaveMethod = 'savePreference',
+        public $autosaveKey = null,
+        public $autosaveDebounce = 300
     ){}
 
     public function render()
