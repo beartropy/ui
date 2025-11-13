@@ -67,7 +67,7 @@
     {{-- Livewire actualizará este atributo cuando :options cambie --}}
     data-options='@json($options ?? [])'
 
-    x-data="{
+x-data="{
         // --- estado ---
         open: false,
         highlighted: -1,
@@ -79,6 +79,7 @@
         isLivewire: {{ $isLivewire ? 'true' : 'false' }},
         labelKey: @js($attributes->get('option-label', 'name')),
         valueKey: @js($attributes->get('option-value', 'id')),
+        wireModelName: @js($wireModelName),
 
         // --- lifecycle ---
         init() {
@@ -95,6 +96,13 @@
             });
             obs.observe(this.$el, { attributes: true });
             this._obs = obs;
+
+            // 3) cada vez que Livewire procesa un mensaje, re-sincronizamos
+            if (window.Livewire && window.Livewire.hook) {
+                window.Livewire.hook('message.processed', () => {
+                    this._syncFromLivewire();
+                });
+            }
         },
 
         // --- helpers de datos ---
@@ -110,16 +118,51 @@
             if (this.highlighted >= this.filtered.length) {
                 this.highlighted = this.filtered.length ? 0 : -1;
             }
-            this._reconcileFromVisible();
+
+            if (this.isLivewire) {
+                this._syncFromLivewire();
+            } else {
+                this._reconcileFromVisible();
+            }
         },
+
+        _syncFromLivewire() {
+            // Si no estamos en Livewire o no sabemos el nombre del modelo, nada que hacer
+            if (!this.isLivewire || !this.wireModelName || !this.$wire) return;
+
+            const current = this.$wire.get(this.wireModelName) ?? '';
+
+            if (!current) {
+                this.setVisibleValue('');
+                return;
+            }
+
+            // Buscamos la opción cuyo value matchee con el wire:model
+            const match = this.options.find(
+                o => String(this.getValue(o)) === String(current)
+            );
+
+            // Si encontramos opción, usamos su label, sino mostramos el valor crudo
+            const label = match ? this.getLabel(match) : current;
+            this.setVisibleValue(label);
+        },
+
+
         normalize(s) {
             if (!s) return '';
             return s.toString()
                 .normalize('NFD').replace(/\p{Diacritic}/gu, '')
                 .trim().toLowerCase();
         },
-        getLabel(o) { return o?.[this.labelKey] ?? ''; },
-        getValue(o) { return o?.[this.valueKey] ?? ''; },
+
+        getLabel(o) {
+            return o?.[this.labelKey] ?? '';
+        },
+
+        getValue(o) {
+            return o?.[this.valueKey] ?? '';
+        },
+
         exactMatch(txt) {
             const t = this.normalize(txt);
             return this.options.find(o => this.normalize(this.getLabel(o)) === t) || null;
@@ -140,21 +183,27 @@
             // match exacto => id, sino => texto libre
             this._setHiddenFromRawOrMatch(raw);
         },
+
         move(delta) {
             if (!this.open || !this.filtered.length) return;
             const n = this.filtered.length;
             this.highlighted = (this.highlighted + delta + n) % n;
         },
+
         choose(idx) {
             const opt = this.filtered[idx];
             if (!opt) return;
+
             this.setVisibleValue(this.getLabel(opt));
+
             if (this.isLivewire && this.$refs.livewireValue) {
                 this.$refs.livewireValue.value = this.getValue(opt);
                 this.$refs.livewireValue.dispatchEvent(new Event('input', { bubbles: true }));
             }
+
             this.open = false;
         },
+
         confirm() {
             if (this.highlighted >= 0) {
                 this.choose(this.highlighted);
@@ -164,7 +213,10 @@
                 this.open = false;
             }
         },
-        close() { this.open = false; },
+
+        close() {
+            this.open = false;
+        },
 
         setVisibleValue(v) {
             const el = document.getElementById(this.inputId);
@@ -172,22 +224,28 @@
             el.value = v ?? '';
             el.dispatchEvent(new Event('input', { bubbles: true }));
         },
+
         clearBoth() {
             this.setVisibleValue('');
+
             if (this.isLivewire && this.$refs.livewireValue) {
                 this.$refs.livewireValue.value = '';
                 this.$refs.livewireValue.dispatchEvent(new Event('input', { bubbles: true }));
             }
+
             this.filtered = this.options;
             this.highlighted = -1;
             this.open = false;
         },
+
         _setHiddenFromRawOrMatch(raw) {
             if (!this.isLivewire || !this.$refs.livewireValue) return;
+
             const match = this.exactMatch(raw);
             this.$refs.livewireValue.value = match ? this.getValue(match) : raw;
             this.$refs.livewireValue.dispatchEvent(new Event('input', { bubbles: true }));
         },
+
         _reconcileFromVisible() {
             const el = document.getElementById(this.inputId);
             if (!el) return;
@@ -210,7 +268,6 @@
 
     <x-beartropy-ui::base.input-base
         x-ref="input"
-        x-on:input="onInput($event)"
         id="{{ $inputId }}"
         type="{{ $type }}"
         size="{{ $size }}"
@@ -221,7 +278,7 @@
         has-error="{{ $hasError }}"
         @click="open = true"
         {{ $attributes->whereDoesntStartWith('wire:model')->merge($extraInputAttrs) }}
-        x-on:input="onInput"
+        x-on:input="onInput($event)"
         x-on:keydown.down.prevent="move(1)"
         x-on:keydown.up.prevent="move(-1)"
         x-on:keydown.enter.prevent="confirm()"

@@ -41,7 +41,14 @@
                             ? window.crypto.randomUUID()
                             : 'toast-' + Math.random().toString(36).slice(2) + Date.now()
                     );
-                    toast.duration = toast.duration ?? 4000;
+
+                    // Normalizar duration: default 4000, pero respetar 0 como 'sticky'
+                    if (toast.duration === undefined || toast.duration === null) {
+                        toast.duration = 4000;
+                    } else {
+                        toast.duration = Number(toast.duration);
+                    }
+
                     toast.position = toast.position || '{{$position}}';
                     this.items.push(toast);
                 },
@@ -88,27 +95,50 @@
                     <div
                         x-data="{
                             show: true,
-                            timer: null, start: null, remaining: toast.duration,
-                            pause(){ clearTimeout(this.timer); if(this.start) this.remaining -= Date.now()-this.start; $refs.progress.style.transition='none'; },
-                            resume(){
-                                if(this.remaining<=0){ this.show=false; Alpine.store('toasts').remove(toast.id); return; }
+                            timer: null,
+                            start: null,
+                            remaining: toast.duration,
+                            isSticky: toast.duration <= 0,
+                            pause() {
+                                if (this.isSticky) return;
+                                clearTimeout(this.timer);
+                                if (this.start) this.remaining -= Date.now() - this.start;
+                                $refs.progress.style.transition = 'none';
+                            },
+                            resume() {
+                                if (this.isSticky) return;
+                                if (this.remaining <= 0) {
+                                    this.show = false;
+                                    Alpine.store('toasts').remove(toast.id);
+                                    return;
+                                }
                                 this.start = Date.now();
                                 $refs.progress.style.transition = 'width ' + this.remaining + 'ms linear';
                                 $refs.progress.style.width = '0%';
-                                this.timer = setTimeout(()=>{ this.show=false; Alpine.store('toasts').remove(toast.id); }, this.remaining);
+                                this.timer = setTimeout(() => {
+                                    this.show = false;
+                                    Alpine.store('toasts').remove(toast.id);
+                                }, this.remaining);
                             }
                         }"
                         x-init="
-                            $refs.progress.style.width = '100%';
-                            $nextTick(() => {
-                                $refs.progress.style.transition = 'width ' + toast.duration + 'ms linear';
-                                $refs.progress.style.width = '0%';
-                            });
-                            start = Date.now();
-                            timer = setTimeout(() => {
-                                show = false;
-                                Alpine.store('toasts').remove(toast.id);
-                            }, toast.duration);
+                            if (toast.duration > 0) {
+                                $refs.progress.style.width = '100%';
+                                $nextTick(() => {
+                                    $refs.progress.style.transition = 'width ' + toast.duration + 'ms linear';
+                                    $refs.progress.style.width = '0%';
+                                });
+                                start = Date.now();
+                                timer = setTimeout(() => {
+                                    show = false;
+                                    Alpine.store('toasts').remove(toast.id);
+                                }, toast.duration);
+                            } else {
+                                // Sticky: sin animación ni timeout
+                                if ($refs.progress) {
+                                    $refs.progress.style.width = '0%';
+                                }
+                            }
                         "
                         x-show="show"
                         @mouseenter="pause" @mouseleave="resume"
@@ -186,6 +216,7 @@
                                 'bg-yellow-500': toast.type === 'warning',
                             }"
                             x-ref="progress"
+                            x-show="toast.duration > 0"
                             style="width: 100%;"
                         ></div>
                     </div>
@@ -204,21 +235,44 @@
             <template x-for="toast in toasts" :key="toast.id">
                 <div
                     x-data="{
-                        show: true, timer: null, start: null, remaining: toast.duration,
-                        pause(){ clearTimeout(this.timer); if(this.start) this.remaining -= Date.now()-this.start; $refs.progress.style.transition='none'; },
-                        resume(){
-                            if(this.remaining<=0){ this.show=false; Alpine.store('toasts').remove(toast.id); return; }
+                        show: true,
+                        timer: null,
+                        start: null,
+                        remaining: toast.duration,
+                        isSticky: toast.duration <= 0,
+                        pause() {
+                            if (this.isSticky) return;
+                            clearTimeout(this.timer);
+                            if (this.start) this.remaining -= Date.now() - this.start;
+                            $refs.progress.style.transition = 'none';
+                        },
+                        resume() {
+                            if (this.isSticky) return;
+                            if (this.remaining <= 0) {
+                                this.show = false;
+                                Alpine.store('toasts').remove(toast.id);
+                                return;
+                            }
                             this.start = Date.now();
                             $refs.progress.style.transition = 'width ' + this.remaining + 'ms linear';
                             $refs.progress.style.width = '0%';
-                            this.timer = setTimeout(()=>{ this.show=false; Alpine.store('toasts').remove(toast.id); }, this.remaining);
+                            this.timer = setTimeout(() => {
+                                this.show = false;
+                                Alpine.store('toasts').remove(toast.id);
+                            }, this.remaining);
                         }
                     }"
                     x-init="
-                        $refs.progress.style.width='100%';
-                        $nextTick(()=>{ $refs.progress.style.transition='width '+toast.duration+'ms linear'; $refs.progress.style.width='0%'; });
-                        start=Date.now();
-                        timer=setTimeout(()=>{ show=false; Alpine.store('toasts').remove(toast.id); }, toast.duration);
+                        if (toast.duration > 0) {
+                            $refs.progress.style.width='100%';
+                            $nextTick(()=>{ $refs.progress.style.transition='width '+toast.duration+'ms linear'; $refs.progress.style.width='0%'; });
+                            start=Date.now();
+                            timer=setTimeout(()=>{ show=false; Alpine.store('toasts').remove(toast.id); }, toast.duration);
+                        } else {
+                            if ($refs.progress) {
+                                $refs.progress.style.width = '0%';
+                            }
+                        }
                     "
                     x-show="show"
                     @mouseenter="pause" @mouseleave="resume"
@@ -296,6 +350,7 @@
                             'bg-yellow-400': toast.type === 'warning',
                         }"
                         x-ref="progress"
+                        x-show="toast.duration > 0"
                         style="width:100%"
                     ></div>
                 </div>
