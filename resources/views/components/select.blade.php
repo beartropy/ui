@@ -38,15 +38,15 @@
         @endif
         open: false,
         toggle() {
-        this.open = !this.open;
-        if (this.open) {
-            this.focusSearch();
-            if (this.remoteUrl && !this.initDone) {
-            this.page = 1;
-            this.fetchOptions(true);
-            this.initDone = true;
+            this.open = !this.open;
+            if (this.open) {
+                this.focusSearch();
+                if (this.remoteUrl && !this.initDone) {
+                this.page = 1;
+                this.fetchOptions(true);
+                this.initDone = true;
+                }
             }
-        }
         },
         close() { this.open = false; },
         options: @js($options),
@@ -231,6 +231,7 @@
             fetchOptions(true);
         });
         $watch('open', (v) => { if (v) focusSearch(); });
+        console.log('select scope', $data);
     "
     class="flex flex-col w-full {{ $wrapperClass }}"
     wire:key="{{ $optionsKey }}"
@@ -252,6 +253,7 @@
         has-error="{{ $hasError }}"
         {{ $attributes->only(['fill', 'outline']) }}
         x-bind:data-state="hasFieldError ? 'error' : saveState"
+        bind="open"
     >
         @isset($start)
             <x-slot name="start">{!! $start !!}</x-slot>
@@ -398,6 +400,7 @@
 
 
         <x-slot name="dropdown">
+            <div wire:key="{{ $hasError }}">
             <x-beartropy-ui::base.dropdown-base
                 placement="left"
                 side="bottom"
@@ -407,6 +410,7 @@
                 x-show="open"
                 triggerLabel="{{ $label }}"
                 @click.away="close()"
+                wire:key="{{ $optionsKey }}"
             >
                 @if($searchable)
                     {{-- Search input --}}
@@ -488,6 +492,7 @@
 
                 </ul>
             </x-beartropy-ui::base.dropdown-base>
+            </div>
         </x-slot>
     </x-beartropy-ui::base.input-trigger-base>
     <x-beartropy-ui::support.field-help
