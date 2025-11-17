@@ -41,7 +41,7 @@
     x-on:bt-dialog.window="openDialog($event.detail)"
     x-show="open"
     x-cloak
-    class="fixed inset-0 z-[9999] flex justify-center items-start"
+    class="fixed inset-0 z-[9999] grid place-items-center md:flex md:justify-center md:items-start"
     aria-modal="true"
     role="dialog"
 >
@@ -52,7 +52,7 @@
     ></div>
 
     {{-- Wrapper para 1/3 top --}}
-    <div class="relative w-full flex justify-center pt-[15vh] md:pt-[18vh] px-4">
+    <div class="relative w-full flex justify-center px-4 md:pt-[18vh]">
         {{-- Panel --}}
         <div
             x-trap.noscroll.inert="open"
