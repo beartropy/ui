@@ -10,6 +10,10 @@ class Card extends BeartropyComponent
         public ?string $footer = null,
         public ?string $color = null,
         public ?string $size = null,
+        public ?bool $collapsable = false,
+        public ?bool $noBorder = false,
+        public ?bool $defaultOpen = true,
+
     ) {
         parent::__construct();
     }
