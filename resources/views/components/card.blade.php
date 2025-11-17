@@ -17,10 +17,10 @@
 >
     @if (!empty($title))
         <div
-            class="{{ $colorPreset['title'] }} {{ $collapsable ? 'cursor-pointer select-none flex items-center justify-between gap-2' : 'pb-2 mb-4' }}"
+            class="{{ $colorPreset['title'] }} {{ $collapsable ? 'cursor-pointer select-none flex items-center justify-between gap-2' : '' }}"
             @if($collapsable)
                 @click="open = !open"
-                :class="open ? 'border-b pb-2 mb-4' : 'border-b-0 pb-0 mb-0'"
+                :class="open ? '' : ''"
             @endif
         >
             <div class="flex-1">
@@ -51,21 +51,26 @@
         class="{{ $colorPreset['slot'] }}"
         @if($collapsable)
             x-show="open"
-            x-collapse
+            x-transition.duration.200ms
+            x-collapse.duration.200ms
         @endif
     >
+        <hr class="h-px my-2 bg-gray-300 dark:bg-gray-700 border-0">
         {!! $slot !!}
     </div>
 
     @if (!empty($footer))
         <div
-            class="{{ $colorPreset['footer'] }}"
             @if($collapsable)
                 x-show="open"
-                x-collapse
+                x-transition.duration.200ms
+                x-collapse.duration.200ms
             @endif
         >
-            {!! $footer !!}
+            <hr class="h-px my-2 bg-gray-300 dark:bg-gray-700 border-0">
+            <div class="{{ $colorPreset['footer'] }}">
+                {!! $footer !!}
+            </div>
         </div>
     @endif
 </div>
