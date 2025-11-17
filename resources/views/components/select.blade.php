@@ -231,7 +231,6 @@
             fetchOptions(true);
         });
         $watch('open', (v) => { if (v) focusSearch(); });
-        console.log('select scope', $data);
     "
     class="flex flex-col w-full {{ $wrapperClass }}"
     wire:key="{{ $optionsKey }}"

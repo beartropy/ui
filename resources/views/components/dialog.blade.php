@@ -39,7 +39,7 @@
 <div
     x-data="btDialog()"
     x-on:bt-dialog.window="openDialog($event.detail)"
-    x-show="open"
+    x-show="isOpen"
     x-cloak
     class="fixed inset-0 z-[9999] grid place-items-center md:flex md:justify-center md:items-start"
     aria-modal="true"
@@ -55,7 +55,7 @@
     <div class="relative w-full flex justify-center px-4 md:pt-[18vh]">
         {{-- Panel --}}
         <div
-            x-trap.noscroll.inert="open"
+            x-trap.noscroll.inert="isOpen"
             class="relative w-full rounded-2xl shadow-2xl border border-slate-200/60 dark:border-slate-800/80
                 bg-white dark:bg-slate-900/95 overflow-hidden
                 transition-transform duration-200 ease-out transform"
@@ -234,7 +234,7 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('btDialog', () => ({
-            open: false,
+            isOpen: false,
             type: 'info',
             title: '',
             description: '',
@@ -321,7 +321,7 @@
                 this.allowOutsideClick = payload.allowOutsideClick ?? false;
                 this.allowEscape       = payload.allowEscape ?? false;
 
-                this.open = true;
+                this.isOpen = true;
 
                 this.$nextTick(() => {
                     const primary = this.$el.querySelector('[x-on\\:click="clickAccept()"]');
@@ -330,7 +330,7 @@
             },
 
             close() {
-                this.open = false;
+                this.isOpen = false;
             },
 
             backdropClick() {
@@ -420,7 +420,7 @@
 
             init() {
                 window.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && this.open && this.allowEscape) {
+                    if (e.key === 'Escape' && this.isOpen && this.allowEscape) {
                         e.preventDefault();
                         this.close();
                     }
