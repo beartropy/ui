@@ -122,13 +122,14 @@
                             <path
                                 x-show="icon === 'information-circle'"
                                 stroke-linecap="round" stroke-linejoin="round"
-                                d="M13 16h-1v-4h-1m1-4h.01M12 3a9 9 0 100 18 9 9 0 000-18z"
+                                d="M12 4H12.01M12.01 10L12 20"
+
                             />
                             {{-- question-mark-circle / question --}}
                             <path
                                 x-show="icon === 'question-mark-circle' || icon === 'question'"
                                 stroke-linecap="round" stroke-linejoin="round"
-                                d="M8 10a4 4 0 118 0c0 1.657-1.343 3-3 3v1m0 2h.01M12 3a9 9 0 100 18 9 9 0 000-18z"
+                                d="M12 17.75a.75.75 0 1 0 0 1.5a.75.75 0 1 0 0-1.5zm0-13c-2.485 0-4.5 1.79-4.5 4h1.5c0-1.513 1.235-2.5 3-2.5s3 1.103 3 2.5c0 1.085-.667 1.627-1.602 2.253c-.233.155-.48.32-.728.503c-.94.695-1.67 1.45-1.67 2.994V15h1.5v-.5c0-.89.476-1.34 1.22-1.873c.17-.123.347-.249.528-.378C15.46 11.3 16.5 10.3 16.5 8.75c0-2.485-2.015-4-4.5-4z"
                             />
                         </svg>
                     </div>
@@ -159,10 +160,27 @@
                             px-4 py-1.5 text-sm font-medium text-slate-700 bg-white
                             hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-600
                             dark:hover:bg-slate-800"
+                        :disabled="rejectBusy"
                         @click="clickReject()"
-                        x-text="reject.label ?? 'Cancelar'"
-                    ></button>
+                    >
+                        <span class="flex items-center gap-2">
+                            <svg
+                                x-show="rejectBusy && reject.method"
+                                class="h-4 w-4 animate-spin"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <circle class="opacity-25" cx="12" cy="12" r="10"></circle>
+                                <path class="opacity-75" d="M4 12a8 8 0 018-8"></path>
+                            </svg>
+
+                            <span x-text="reject.label ?? 'Cancelar'"></span>
+                        </span>
+                    </button>
                 </template>
+
 
                 {{-- Botón ACCEPT (Confirmar / Eliminar) --}}
                 <template x-if="accept && accept.method">
@@ -171,12 +189,29 @@
                         class="inline-flex items-center justify-center rounded-lg px-4 py-1.5 text-sm font-medium
                             text-white"
                         :class="type === 'danger'
-                            ? 'bg-rose-700 hover:bg-rose-600 dark:bg-rose-800 dark:hover:bg-rose-700 '
-                            : 'bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600'"
+                            ? 'bg-rose-700 hover:bg-rose-600 dark:bg-rose-800 dark:hover:bg-rose-700 text-white'
+                            : 'bg-beartropy-700 hover:bg-beartropy-600 dark:bg-beartropy-800 dark:hover:bg-beartropy-700'"
+                        :disabled="acceptBusy"
                         @click="clickAccept()"
-                        x-text="accept.label ?? 'OK'"
-                    ></button>
+                    >
+                        <span class="flex items-center gap-2">
+                            <svg
+                                x-show="acceptBusy"
+                                class="h-4 w-4 animate-spin"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <circle class="opacity-25" cx="12" cy="12" r="10"></circle>
+                                <path class="opacity-75" d="M4 12a8 8 0 018-8"></path>
+                            </svg>
+
+                            <span x-text="accept.label ?? 'OK'"></span>
+                        </span>
+                    </button>
                 </template>
+
 
                 {{-- Botón único (success/info/warning/error) --}}
                 <template x-if="isSingleButton">
@@ -210,6 +245,9 @@
             panelSizeClass: '',
             globalSize: @js($size),
 
+            acceptBusy: false,
+            rejectBusy: false,
+
             allowOutsideClick: false,
             allowEscape: false,
 
@@ -237,7 +275,7 @@
                 success: 'bg-emerald-700 hover:bg-emerald-600 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white',
                 warning: 'bg-amber-700 hover:bg-amber-600 dark:bg-amber-800 dark:hover:bg-amber-700 text-white',
                 error:   'bg-rose-700 hover:bg-rose-600 dark:bg-rose-800 dark:hover:bg-rose-700 text-white',
-                danger:  'bg-red-700 hover:bg-red-600 dark:bg-red-800 dark:hover:bg-red-700 text-white',
+                danger:  'bg-rose-700 hover:bg-rose-600 dark:bg-rose-800 dark:hover:bg-rose-700 text-white',
             },
 
             defaultIconForType(type) {
@@ -255,6 +293,9 @@
             openDialog(raw) {
                 // Livewire manda detail = [payload]
                 const payload = Array.isArray(raw) ? (raw[0] ?? {}) : (raw ?? {});
+
+                this.acceptBusy = false;
+                this.rejectBusy = false;
 
                 const size = payload.size ?? this.globalSize ?? 'md';
 
@@ -300,30 +341,81 @@
 
             clickAccept() {
                 if (this.accept && this.accept.method && this.componentId && window.Livewire) {
+                    if (this.acceptBusy) return;
+
+                    this.acceptBusy = true;
+
                     const params = Array.isArray(this.accept.params)
                         ? this.accept.params
                         : (this.accept.params !== undefined ? [this.accept.params] : []);
 
                     const comp = window.Livewire.find(this.componentId);
+
+                    const finish = () => {
+                        this.acceptBusy = false;
+                        this.close();
+                    };
+
                     if (comp) {
-                        comp.call(this.accept.method, ...params);
+                        try {
+                            const result = comp.call(this.accept.method, ...params);
+
+                            if (result && typeof result.then === 'function') {
+                                result.then(finish).catch(finish);
+                            } else {
+                                finish();
+                            }
+                        } catch (e) {
+                            console.error('[Dialog] accept method error', e);
+                            finish();
+                        }
+                    } else {
+                        finish();
                     }
+                } else {
+                    // Sin método: solo cerrar
+                    this.close();
                 }
-                this.close();
             },
 
             clickReject() {
+                // Si hay método, tratamos igual que accept
                 if (this.reject && this.reject.method && this.componentId && window.Livewire) {
+                    if (this.rejectBusy) return;
+
+                    this.rejectBusy = true;
+
                     const params = Array.isArray(this.reject.params)
                         ? this.reject.params
                         : (this.reject.params !== undefined ? [this.reject.params] : []);
 
                     const comp = window.Livewire.find(this.componentId);
+
+                    const finish = () => {
+                        this.rejectBusy = false;
+                        this.close();
+                    };
+
                     if (comp) {
-                        comp.call(this.reject.method, ...params);
+                        try {
+                            const result = comp.call(this.reject.method, ...params);
+
+                            if (result && typeof result.then === 'function') {
+                                result.then(finish).catch(finish);
+                            } else {
+                                finish();
+                            }
+                        } catch (e) {
+                            console.error('[Dialog] reject method error', e);
+                            finish();
+                        }
+                    } else {
+                        finish();
                     }
+                } else {
+                    // Sin método: solo cerrar
+                    this.close();
                 }
-                this.close();
             },
 
             init() {
