@@ -234,6 +234,7 @@
     "
     class="flex flex-col w-full {{ $wrapperClass }}"
     wire:key="{{ $optionsKey }}"
+
 >
     @if($label)
         <label for="{{ $selectId }}" class="{{ $labelClass }}">{{ $label }}</label>
@@ -294,6 +295,7 @@
 
                 {{-- Badge +N --}}
                 <span
+                    x-cloak
                     x-show="isMulti && value && hiddenCount()"
                     class="inline-flex items-center rounded px-2 py-0.5 text-xs font-semibold beartropy-select-badge {{ $colorDropdown['badge_bg'] ?? '' }} {{ $colorDropdown['badge_text'] ?? '' }}"
                 >
@@ -352,6 +354,7 @@
                                 : 'opacity-0 pointer-events-none'"
                             title="Limpiar selección"
                             aria-label="Limpiar selección"
+                            x-cloak
                         >
                             @include('beartropy-ui-svg::beartropy-x-mark', [
                                 'class' => 'shrink-0 text-gray-700 dark:text-gray-400 ' . ($sizePreset['iconSize'] ?? '')
