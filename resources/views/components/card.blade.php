@@ -2,7 +2,7 @@
     [$colorPreset, $sizePreset] = $getComponentPresets('card', null);
 
     $wrapperClasses = $colorPreset['wrapper']
-        . ($noBorder ? ' border-0 shadow-none' : '');
+        . ($noBorder ? ' border-0 shadow-none' : ' border border-gray-200 dark:border-gray-700');
 
     $initialOpen = $defaultOpen ? 'true' : 'false';
 @endphp
@@ -17,10 +17,10 @@
 >
     @if (!empty($title))
         <div
-            class="{{ $colorPreset['title'] }} {{ $collapsable ? 'cursor-pointer select-none flex items-center justify-between gap-2' : '' }}"
+            class="{{ $colorPreset['title'] }} py-1 {{ $collapsable ? 'cursor-pointer select-none flex items-center justify-between gap-2' : 'border-b border-gray-200 dark:border-gray-700' }}"
             @if($collapsable)
                 @click="open = !open"
-                :class="open ? '' : ''"
+                :class="open ? 'border-b border-gray-200 dark:border-gray-700' : 'border-b-0'"
             @endif
         >
             <div class="flex-1">
@@ -29,10 +29,9 @@
 
             @if($collapsable)
                 <span
-                    class="inline-flex shrink-0 transition-transform duration-200"
+                    class="inline-flex shrink-0 transition-transform duration-150"
                     :class="{ 'rotate-180': open }"
                 >
-                    {{-- Chevron down --}}
                     <svg viewBox="0 0 20 20" class="w-6 h-6" fill="none">
                         <path
                             d="M5.25 7.75L10 12.25L14.75 7.75"
@@ -47,27 +46,30 @@
         </div>
     @endif
 
+    {{-- CONTENIDO PRINCIPAL --}}
     <div
-        class="{{ $colorPreset['slot'] }}"
+        class="{{ $colorPreset['slot'] }} py-2 overflow-hidden"
         @if($collapsable)
+            x-cloak
             x-show="open"
-            x-transition.duration.200ms
-            x-collapse.duration.200ms
+            x-transition.opacity.duration.120ms
+            x-collapse.duration.120ms
         @endif
     >
-        <hr class="h-px my-2 bg-gray-300 dark:bg-gray-700 border-0">
         {!! $slot !!}
     </div>
 
+    {{-- FOOTER --}}
     @if (!empty($footer))
         <div
+            class="border-t border-gray-200 dark:border-gray-700 pt-1 overflow-hidden"
             @if($collapsable)
+                x-cloak
                 x-show="open"
-                x-transition.duration.200ms
-                x-collapse.duration.200ms
+                x-transition.opacity.duration.120ms
+                x-collapse.duration.120ms
             @endif
         >
-            <hr class="h-px my-2 bg-gray-300 dark:bg-gray-700 border-0">
             <div class="{{ $colorPreset['footer'] }}">
                 {!! $footer !!}
             </div>
