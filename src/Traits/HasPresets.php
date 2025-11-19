@@ -50,7 +50,7 @@ trait HasPresets
     protected function loadPresets(string $componentName): array
     {
         $sizes            = (array) config('beartropyui.presets.sizes', []);
-        $componentPresets = (array) config("beartropyui.presets.$componentName", []);
+        $componentPresets = (array) config("beartropyui.presets.$componentName", beartropy_preset($componentName, []));
         $colorsArray      = (isset($componentPresets['colors']) && is_array($componentPresets['colors']))
             ? $componentPresets['colors'] : [];
         $hasVariants      = $this->detectHasVariants($colorsArray);

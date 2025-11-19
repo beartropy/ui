@@ -2,7 +2,7 @@
 
 namespace Beartropy\Ui\Components;
 
-class ButtonCircle extends BeartropyComponent
+class ButtonIcon extends BeartropyComponent
 {
 
     public function __construct(
@@ -10,13 +10,14 @@ class ButtonCircle extends BeartropyComponent
         public ?string $label = null,
         public ?string $color = null,
         public ?string $size = null,
-        public ?bool $spinner = true
+        public ?bool $spinner = true,
+        public ?string $rounded = 'full'
     ) {
         parent::__construct();
     }
 
     public function render()
     {
-        return view('beartropy-ui::button-circle');
+        return view('beartropy-ui::button-icon');
     }
 }

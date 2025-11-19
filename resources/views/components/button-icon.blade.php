@@ -1,5 +1,5 @@
 @php
-    [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('fab');
+    [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('button-circle');
     $icon = $icon ?? 'plus';
     $label = $label ?? 'Nuevo';
     $isLink = $attributes->has('href');
@@ -12,12 +12,14 @@
         $wireTarget = $attributes->get('wire:click') ?? null;
     }
 
+    $rounded ??= 'full';
+
 @endphp
 
 <div class="relative">
   <{{ $tag }}
     {{ $attributes->merge([
-      'class' => 'flex items-center justify-center  rounded-full shadow-lg transition '.$colorPreset['bg'] . ' ' . $colorPreset['text'] . ' ' . $colorPreset['bg_hover'] . ' ' . $sizePreset['fabButton']
+      'class' => 'flex items-center justify-center rounded-'.$rounded.' shadow-lg transition '.$colorPreset['bg'] . ' ' . $colorPreset['text'] . ' ' . $colorPreset['bg_hover'] . ' ' . $sizePreset['fabButton']
     ]) }}
     @if($spinner && $wireTarget)
         wire:target="{{ $wireTarget }}"
