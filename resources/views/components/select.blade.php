@@ -312,7 +312,7 @@
                 {{-- Placeholder --}}
                 <span
                     x-show="!((isMulti && value && value.length) || (!isMulti && value))"
-                    class="beartropy-placeholder"
+                    class="beartropy-placeholder text-sm text-gray-400 dark:text-gray-500"
                 >{{ $placeholder }}</span>
 
                 {{-- SINGLE SELECT: label --}}
