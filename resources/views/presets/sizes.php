@@ -38,7 +38,7 @@ return [
         'fabIcon' => 'w-4 h-4',
         'fabButton' => 'w-10 h-10',
         'buttonIcon' => 'w-7 h-7',
-        'buttonIconIcon' => 'w-4 h-4',
+        'buttonIconIcon' => 'w-2 h-2',
     ],
     'sm' => [
         // Inputs, Selects, Textarea, Button, TagInput
@@ -71,7 +71,7 @@ return [
         'fabIcon' => 'w-6 h-6',
         'fabButton' => 'w-12 h-12',
         'buttonIcon' => 'w-8 h-8',
-        'buttonIconIcon' => 'w-5 h-5',
+        'buttonIconIcon' => 'w-3 h-3',
     ],
     'md' => [
         'height'      => 'h-10',   // [Input, Select, Textarea, Button]
