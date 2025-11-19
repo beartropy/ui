@@ -1,5 +1,5 @@
 @php
-    [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('button-circle');
+    [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('button-icon');
     $icon = $icon ?? 'plus';
     $label = $label ?? 'Nuevo';
     $isLink = $attributes->has('href');
