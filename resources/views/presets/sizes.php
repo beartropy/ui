@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'misc_needed_options' => [
+        'rounded-2xl',
+        'rounded-3xl',
+        'rounded-none',
+    ],
     'xs' => [
         // Inputs, Selects, Textarea, Button, TagInput
         'height'      => 'h-7',    // [Input, Select, Textarea, Button]
@@ -32,6 +37,8 @@ return [
         'dropdownWidth'       => 'w-40',
         'fabIcon' => 'w-4 h-4',
         'fabButton' => 'w-10 h-10',
+        'buttonIcon' => 'w-7 h-7',
+        'buttonIconIcon' => 'w-4 h-4',
     ],
     'sm' => [
         // Inputs, Selects, Textarea, Button, TagInput
@@ -63,6 +70,8 @@ return [
         'dropdownWidth'       => 'w-48',
         'fabIcon' => 'w-6 h-6',
         'fabButton' => 'w-12 h-12',
+        'buttonIcon' => 'w-8 h-8',
+        'buttonIconIcon' => 'w-5 h-5',
     ],
     'md' => [
         'height'      => 'h-10',   // [Input, Select, Textarea, Button]
@@ -85,6 +94,8 @@ return [
         'dropdownWidth'       => 'w-64',
         'fabIcon' => 'w-8 h-8',
         'fabButton' => 'w-14 h-14',
+        'buttonIcon' => 'w-10 h-10',
+        'buttonIconIcon' => 'w-5 h-5',
     ],
     'lg' => [
         'height'      => 'h-12',   // [Input, Select, Textarea, Button]
@@ -109,6 +120,8 @@ return [
         'dropdownWidth'       => 'w-80',
         'fabIcon' => 'w-10 h-10',
         'fabButton' => 'w-16 h-16',
+        'buttonIcon' => 'w-12 h-12',
+        'buttonIconIcon' => 'w-6 h-6',
     ],
     'xl' => [
         'height'      => 'h-14',   // [Input, Select, Textarea, Button]
@@ -131,5 +144,7 @@ return [
         'dropdownWidth'       => 'w-96',
         'fabIcon' => 'w-12 h-12',
         'fabButton' => 'w-18 h-18',
+        'buttonIcon' => 'w-14 h-14',
+        'buttonIconIcon' => 'w-7 h-7',
     ],
 ];

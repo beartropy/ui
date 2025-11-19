@@ -19,7 +19,7 @@
 <div class="relative">
   <{{ $tag }}
     {{ $attributes->merge([
-      'class' => 'flex items-center justify-center rounded-'.$rounded.' shadow-lg transition '.$colorPreset['bg'] . ' ' . $colorPreset['text'] . ' ' . $colorPreset['bg_hover'] . ' ' . $sizePreset['fabButton']
+      'class' => 'flex items-center justify-center rounded-'.$rounded.' shadow-lg transition '.$colorPreset['bg'] . ' ' . $colorPreset['text'] . ' ' . $colorPreset['bg_hover'] . ' ' . $sizePreset['buttonIcon']
     ]) }}
     @if($spinner && $wireTarget)
         wire:target="{{ $wireTarget }}"
@@ -39,14 +39,14 @@
             @if ($slot->isNotEmpty())
             {!! $slot !!}
             @else
-                <x-beartropy-ui::icon name="{{$icon}}" class="{{$sizePreset['fabIcon']}}" />
+                <x-beartropy-ui::icon name="{{$icon}}" class="{{$sizePreset['buttonIconIcon']}}" />
             @endif
         </div>
     @else
         @if ($slot->isNotEmpty())
             {!! $slot !!}
         @else
-            <x-beartropy-ui::icon name="{{$icon}}" class="{{$sizePreset['fabIcon']}}" />
+            <x-beartropy-ui::icon name="{{$icon}}" class="{{$sizePreset['buttonIconIcon']}}" />
         @endif
     @endif
   </{{ $tag }}>
