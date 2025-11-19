@@ -489,7 +489,7 @@
                         <li class="{{ $colorDropdown['loading_text'] ?? 'text-center text-xs text-gray-500 p-2' }}">Cargando...</li>
                     </template>
                     <template x-if="!loading && filteredOptions().length === 0">
-                        <li class="{{ $colorDropdown['loading_text'] ?? 'text-center text-xs text-gray-500 p-2' }}">No hay resultados.</li>
+                        <li class="{{ $isEmpty ? 'p-2 text-base text-gray-700 dark:text-gray-300' : $colorDropdown['loading_text'] ?? 'text-center text-xs text-gray-500 p-2' }}">{{ $isEmpty ? $emptyMessage : 'No hay resultados.' }}</li>
                     </template>
 
                 </ul>

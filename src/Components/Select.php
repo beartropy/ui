@@ -38,8 +38,11 @@ class Select extends InputTriggerBase
     public $autosaveKey;
     public $autosaveDebounce;
 
+    public $emptyMessage = 'No se encontraron opciones';
+    public $isEmpty = false;
+
     public function __construct(
-        $options = [],
+        $options = null,
         $selected = null,
         $icon = null,
         $placeholder = 'Seleccionar...',
@@ -66,6 +69,8 @@ class Select extends InputTriggerBase
         $optionDescription = 'description',
         $optionIcon = 'icon',
         $optionAvatar = 'avatar',
+
+        $emptyMessage = 'No se encontraron opciones'
     ) {
         // Guardar mapeos primero (los usa normalizeOptions)
         $this->optionLabel = $optionLabel ?: 'label';
@@ -74,7 +79,14 @@ class Select extends InputTriggerBase
         $this->optionIcon = $optionIcon ?: 'icon';
         $this->optionAvatar = $optionAvatar ?: 'avatar';
 
-        $this->options      = $this->normalizeOptions($options);
+        if(empty($options) || is_null($options)) {
+            $this->isEmpty = true;
+            $clearable = false;
+            $searchable = false;
+            $options = [];
+        } else {
+            $this->options      = $this->normalizeOptions($options);
+        }
         $this->selected     = $selected;
         $this->icon         = $icon;
         $this->placeholder  = $placeholder;
@@ -94,6 +106,7 @@ class Select extends InputTriggerBase
         $this->autosaveMethod    = $autosaveMethod;
         $this->autosaveKey       = $autosaveKey;
         $this->autosaveDebounce  = (int) $autosaveDebounce;
+        $this->emptyMessage     = $emptyMessage;
     }
 
     protected function normalizeOptions($options)
