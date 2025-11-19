@@ -24,13 +24,7 @@
     };
 @endphp
 
-<{{ $tagName }}
-    @if($method)
-        wire:init="{{ $method }}"
-    @endif
-    {{ $attributes->class(['relative']) }}
->
-    {{-- Mientras carga --}}
+
 <{{ $tagName }}
     @if($method)
         wire:init="{{ $method }}"

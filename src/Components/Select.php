@@ -40,6 +40,7 @@ class Select extends InputTriggerBase
 
     public $emptyMessage = 'No se encontraron opciones';
     public $isEmpty = false;
+    public $spinner;
 
     public function __construct(
         $options = null,
@@ -70,7 +71,8 @@ class Select extends InputTriggerBase
         $optionIcon = 'icon',
         $optionAvatar = 'avatar',
 
-        $emptyMessage = 'No se encontraron opciones'
+        $emptyMessage = 'No se encontraron opciones',
+        $spinner = true,
     ) {
         // Guardar mapeos primero (los usa normalizeOptions)
         $this->optionLabel = $optionLabel ?: 'label';
@@ -107,6 +109,7 @@ class Select extends InputTriggerBase
         $this->autosaveKey       = $autosaveKey;
         $this->autosaveDebounce  = (int) $autosaveDebounce;
         $this->emptyMessage     = $emptyMessage;
+        $this->spinner          = $spinner;
     }
 
     protected function normalizeOptions($options)

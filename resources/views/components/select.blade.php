@@ -28,6 +28,12 @@
     $autosaveKey       = $autosaveKey       ?? ($wireModelValue ?? null); // clave del setting (por defecto el "name")
     $autosaveDebounce  = $autosaveDebounce  ?? 300;            // ms
 
+    $spinner = $spinner ?? false;
+
+    if($hasWireModel && $spinner != false && $autosave == false) {
+        $showSpinner = true;
+    }
+
 @endphp
 <div
     x-data="{
@@ -66,6 +72,7 @@
         saveState: 'idle', // idle | saving | ok | error
         _saveT: null,
         hasFieldError: {{ $hasError ? 'true' : 'false' }},
+        showSpinner: {{ isset($showSpinner) && $showSpinner ? 'true' : 'false' }},
 
         triggerAutosave() {
             if (!this.autosave || !this.autosaveMethod || !this.autosaveKey) return;
@@ -380,6 +387,16 @@
                             </svg>
                         </span>
                     </template>
+
+                    {{-- Spinner Livewire --}}
+                    <template x-if="showSpinner">
+                        <span class="grid place-items-center w-5 h-5" wire:loading wire:target="{{ $wireModelValue }}">
+                            <svg class="w-4 h-4 animate-spin text-gray-400" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity=".25"/>
+                                <path d="M21 12a9 9 0 0 1-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                    </template>
                 </div>
 
                 {{-- Chevron SIEMPRE fijo al borde derecho --}}
@@ -435,6 +452,11 @@
                     class="overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800 beartropy-thin-scrollbar"
                     @scroll="if($event.target.scrollTop + $event.target.clientHeight >= $event.target.scrollHeight - 10 && hasMore && !loading) { page++; fetchOptions(); }"
                 >
+                    @if(isset($beforeOptions))
+                        <div class="{{$beforeOptions->attributes->get('class') ?? 'p-2'}}">
+                            {!! $beforeOptions !!}
+                        </div>
+                    @endif
                     <template
                         x-for="[id, option] in filteredOptions()"
                         :key="id"
@@ -489,7 +511,13 @@
                         <li class="{{ $colorDropdown['loading_text'] ?? 'text-center text-xs text-gray-500 p-2' }}">Cargando...</li>
                     </template>
                     <template x-if="!loading && filteredOptions().length === 0">
-                        <li class="{{ $isEmpty ? 'p-2 text-base text-gray-700 dark:text-gray-300' : $colorDropdown['loading_text'] ?? 'text-center text-xs text-gray-500 p-2' }}">{{ $isEmpty ? $emptyMessage : 'No hay resultados.' }}</li>
+                        @if(isset($afterOptions))
+                            <div class="{{$afterOptions->attributes->get('class') ?? 'p-2'}}">
+                                {!! $afterOptions !!}
+                            </div>
+                        @else
+                            <li class="{{ $isEmpty ? 'p-2 text-base text-gray-700 dark:text-gray-300' : $colorDropdown['loading_text'] ?? 'text-center text-xs text-gray-500 p-2' }}">{{ $isEmpty ? $emptyMessage : 'No hay resultados.' }}</li>
+                        @endif
                     </template>
 
                 </ul>
