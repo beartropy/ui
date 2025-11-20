@@ -533,6 +533,59 @@ window.$beartropy.datetimepicker = function(entangledValue, rangeMode = false, m
     };
 };
 
+/** Time Picker **/
+window.$beartropy.timepicker = function(entangledValue, format = 'H:i') {
+    return {
+        value: entangledValue,
+        open: false,
+        hour: '00',
+        minute: '00',
+        format: format,
+        displayLabel: '',
+
+        init() {
+            this.setFromValue();
+            this.updateDisplay();
+            this.$watch('value', () => {
+                this.setFromValue();
+                this.updateDisplay();
+            });
+        },
+
+        setFromValue() {
+            if (!this.value) {
+                this.hour = '00';
+                this.minute = '00';
+                return;
+            }
+            let [h, m] = this.value.split(':');
+            this.hour = h?.padStart(2, '0') || '00';
+            this.minute = m?.padStart(2, '0') || '00';
+        },
+
+        updateTime() {
+            this.value = `${this.hour}:${this.minute}`;
+            this.updateDisplay();
+        },
+
+        updateDisplay() {
+            if (!this.value) {
+                this.displayLabel = '';
+                return;
+            }
+            this.displayLabel = `${this.hour}:${this.minute}`;
+        },
+
+        clear() {
+            this.value = null;
+            this.hour = '00';
+            this.minute = '00';
+            this.displayLabel = '';
+            this.open = false;
+        }
+    };
+};
+
 /** Tag Input **/
 window.$beartropy.tagInput = function ({ initialTags = [], unique = true, maxTags = null, disabled = false, separator = ',' }) {
     // Soporta string (",; ") o array ([';', ',', ' '])
