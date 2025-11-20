@@ -25,5 +25,11 @@ return [
         'dropdown_wrapper' => 'absolute z-50 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-2',
         'select' => 'block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-beartropy-500 focus:border-beartropy-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white',
         'option_text' => 'text-gray-900 dark:text-gray-100',
+
+        // List UI
+        'list_wrapper' => 'flex items-start justify-center gap-2 h-56',
+        'list_column' => 'flex flex-col h-full overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+        'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+        'list_item_active' => 'bg-beartropy-500 text-white font-bold hover:bg-beartropy-600 dark:hover:bg-beartropy-600',
     ],
 ];

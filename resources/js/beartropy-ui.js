@@ -75,18 +75,18 @@ window.$beartropy.dialog.delete = function (title, description = '', config = {}
 };
 
 /** Modals **/
-window.$beartropy.openModal = function(id) {
+window.$beartropy.openModal = function (id) {
     id = id.toLowerCase();
     window.dispatchEvent(new CustomEvent(`open-modal-${id}`));
 };
 
-window.$beartropy.closeModal = function(id) {
+window.$beartropy.closeModal = function (id) {
     id = id.toLowerCase();
     window.dispatchEvent(new CustomEvent(`close-modal-${id}`));
 };
 
 /** Toasts **/
-window.$beartropy.toast = function(type, title, message = '', duration = 4000, position = 'top-right') {
+window.$beartropy.toast = function (type, title, message = '', duration = 4000, position = 'top-right') {
     const toast = {
         id: (window.crypto && window.crypto.randomUUID)
             ? window.crypto.randomUUID()
@@ -119,7 +119,7 @@ window.$beartropy.toast = function(type, title, message = '', duration = 4000, p
 
 
 /** Table **/
-window.$beartropy.beartropyTable = function({ data, columns, perPage, sortable, searchable, paginated  }) {
+window.$beartropy.beartropyTable = function ({ data, columns, perPage, sortable, searchable, paginated }) {
     return {
         original: data,
         columns: Array.isArray(columns) ? columns : Object.keys(columns),
@@ -200,7 +200,7 @@ window.$beartropy.beartropyTable = function({ data, columns, perPage, sortable, 
 
             // Si pocas páginas, muestro todas
             if (total <= 7) {
-                return Array.from({length: total}, (_, i) => i + 1);
+                return Array.from({ length: total }, (_, i) => i + 1);
             }
 
             let pages = [];
@@ -242,23 +242,23 @@ window.$beartropy.beartropyTable = function({ data, columns, perPage, sortable, 
 /** DateTime Picker **/
 window.beartropyI18n = {
     es: {
-        months: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
-        monthsLong: ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],
+        months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthsLong: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'],
         weekdays: ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'],
         from: 'Desde',
         to: 'Hasta',
         placeholder: 'Seleccionar fecha…'
     },
     en: {
-        months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
-        monthsLong: ['january','february','march','april','may','june','july','august','september','october','november','december'],
-        weekdays: ['Mo','Tu','We','Th','Fr','Sa','Su'],
+        months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        monthsLong: ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'],
+        weekdays: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
         from: 'From',
         to: 'To',
         placeholder: 'Select date…'
     },
 };
-window.$beartropy.datetimepicker = function(entangledValue, rangeMode = false, min = '', max = '', formatDisplay = '{d}/{m}/{Y}', showTime = false) {
+window.$beartropy.datetimepicker = function (entangledValue, rangeMode = false, min = '', max = '', formatDisplay = '{d}/{m}/{Y}', showTime = false) {
     return {
         value: entangledValue,
         open: false,
@@ -417,7 +417,7 @@ window.$beartropy.datetimepicker = function(entangledValue, rangeMode = false, m
                 this.value = this.showTime
                     ? {
                         start: `${this.start} ${this.startHour}:${this.startMinute}`,
-                        end:   `${this.end} ${this.endHour}:${this.endMinute}`
+                        end: `${this.end} ${this.endHour}:${this.endMinute}`
                     }
                     : { start: this.start, end: this.end };
                 this.open = false;
@@ -459,12 +459,12 @@ window.$beartropy.datetimepicker = function(entangledValue, rangeMode = false, m
             // Timestamps (10 dígitos, segundos)
             if (/^\d{10}$/.test(str)) {
                 const d = new Date(Number(str) * 1000);
-                return d.toISOString().slice(0,10);
+                return d.toISOString().slice(0, 10);
             }
             // Timestamps milisegundos (13 dígitos)
             if (/^\d{13}$/.test(str)) {
                 const d = new Date(Number(str));
-                return d.toISOString().slice(0,10);
+                return d.toISOString().slice(0, 10);
             }
             // ISO completo: 2025-08-04T23:10:00.000Z
             let m = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
@@ -496,12 +496,12 @@ window.$beartropy.datetimepicker = function(entangledValue, rangeMode = false, m
             out = out.replace(/{d}/g, d);
             // Nombre mes corto/largo
             if (out.includes('{M}')) {
-                let meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-                out = out.replace(/{M}/g, meses[parseInt(m,10)-1] || m);
+                let meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                out = out.replace(/{M}/g, meses[parseInt(m, 10) - 1] || m);
             }
             if (out.includes('{MMMM}')) {
-                let mesesL = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-                out = out.replace(/{MMMM}/g, mesesL[parseInt(m,10)-1] || m);
+                let mesesL = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                out = out.replace(/{MMMM}/g, mesesL[parseInt(m, 10) - 1] || m);
             }
             // ⚡️ Soporte HORA Y MINUTO
             hour = (hour || '').padStart(2, '0');
@@ -534,7 +534,7 @@ window.$beartropy.datetimepicker = function(entangledValue, rangeMode = false, m
 };
 
 /** Time Picker **/
-window.$beartropy.timepicker = function(entangledValue, format = 'H:i') {
+window.$beartropy.timepicker = function (entangledValue, format = 'H:i') {
     return {
         value: entangledValue,
         open: false,
@@ -582,6 +582,22 @@ window.$beartropy.timepicker = function(entangledValue, format = 'H:i') {
             this.minute = '00';
             this.displayLabel = '';
             this.open = false;
+        },
+
+        scrollToSelected() {
+            if (!this.open) return;
+            this.$nextTick(() => {
+                const scroll = (refName, value) => {
+                    const container = this.$refs[refName];
+                    if (!container) return;
+                    const selected = container.querySelector(`[data-value="${value}"]`);
+                    if (selected) {
+                        container.scrollTop = selected.offsetTop - container.offsetTop - (container.clientHeight / 2) + (selected.clientHeight / 2);
+                    }
+                };
+                scroll('hoursColumn', this.hour);
+                scroll('minutesColumn', this.minute);
+            });
         }
     };
 };
@@ -641,217 +657,217 @@ window.$beartropy.confirmHost = function ({
     defaultPlacement = 'top',
     defaultPanelClass = 'mt-32',
 }) {
-  function toArray(v){ return Array.isArray(v) ? v : (v != null ? [v] : []); }
+    function toArray(v) { return Array.isArray(v) ? v : (v != null ? [v] : []); }
     function fallbackToken(variant, color) {
-    const v = variant || 'soft', c = color || 'gray';
-    if (v === 'primary' && c === 'blue')  return 'btc-primary-blue';
-    if (v === 'primary' && c === 'gray')  return 'btc-primary-gray';
-    if (v === 'primary' && c === 'green') return 'btc-primary-green';
-    if (v === 'primary' && c === 'amber') return 'btc-primary-amber';
-    if (v === 'danger')  return 'btc-danger-red';
-    if (v === 'ghost')   return 'btc-ghost';
-    if (v === 'outline') return 'btc-outline';
-    return 'btc-soft';
+        const v = variant || 'soft', c = color || 'gray';
+        if (v === 'primary' && c === 'blue') return 'btc-primary-blue';
+        if (v === 'primary' && c === 'gray') return 'btc-primary-gray';
+        if (v === 'primary' && c === 'green') return 'btc-primary-green';
+        if (v === 'primary' && c === 'amber') return 'btc-primary-amber';
+        if (v === 'danger') return 'btc-danger-red';
+        if (v === 'ghost') return 'btc-ghost';
+        if (v === 'outline') return 'btc-outline';
+        return 'btc-soft';
     }
 
-  function normalizeButtons(arr){
-    return (Array.isArray(arr) ? arr : []).map(b => ({
-      label: b?.label ?? 'OK',
-      // semánticos (opcionales)
-      variant: b?.variant ?? 'soft',
-      color:   b?.color   ?? 'gray',
-      // 👇 token de clase que viene del servidor (o fallback)
-      token:   b?.token   ?? fallbackToken(b?.variant, b?.color),
+    function normalizeButtons(arr) {
+        return (Array.isArray(arr) ? arr : []).map(b => ({
+            label: b?.label ?? 'OK',
+            // semánticos (opcionales)
+            variant: b?.variant ?? 'soft',
+            color: b?.color ?? 'gray',
+            // 👇 token de clase que viene del servidor (o fallback)
+            token: b?.token ?? fallbackToken(b?.variant, b?.color),
 
-      // acciones
-      mode: b?.mode ?? (b?.wire ? 'wire' : (b?.emit ? 'emit' : 'close')),
-      wire: b?.wire ?? null,
-      params: toArray(b?.params),
-      emit: b?.emit ?? null,
-      payload: b?.payload ?? {},
+            // acciones
+            mode: b?.mode ?? (b?.wire ? 'wire' : (b?.emit ? 'emit' : 'close')),
+            wire: b?.wire ?? null,
+            params: toArray(b?.params),
+            emit: b?.emit ?? null,
+            payload: b?.payload ?? {},
 
-      dismissAfter: b?.dismissAfter === true,
-      close: b?.close === true,
-      spinner: b?.spinner === true,
-      role: b?.role ?? null,
-    }));
-  }
-
-  // ====== efectos ======
-  function dialogClosed(effect){
-    switch (effect) {
-      case 'slide-up':    return 'opacity-0 translate-y-2';
-      case 'slide-down':  return 'opacity-0 -translate-y-2';
-      case 'slide-left':  return 'opacity-0 translate-x-2';
-      case 'slide-right': return 'opacity-0 -translate-x-2';
-      case 'fade':        return 'opacity-0';
-      case 'zoom':
-      default:            return 'opacity-0 scale-95';
+            dismissAfter: b?.dismissAfter === true,
+            close: b?.close === true,
+            spinner: b?.spinner === true,
+            role: b?.role ?? null,
+        }));
     }
-  }
-  function dialogOpen(effect){
-    switch (effect) {
-      case 'slide-up':
-      case 'slide-down':
-      case 'slide-left':
-      case 'slide-right': return 'opacity-100 translate-x-0 translate-y-0';
-      case 'fade':        return 'opacity-100';
-      case 'zoom':
-      default:            return 'opacity-100 scale-100';
-    }
-  }
 
-
-  return {
-    // ===== state =====
-    id,
-    cfg: {},
-    buttons: [],
-    btnLoading: [],
-    open: false,              // visibilidad del wrapper
-    anim: 'idle',             // 'idle' | 'enter' | 'open' | 'leave'
-
-    // flags/efectos (configurables por payload)
-    closeOnBackdrop: true,
-    closeOnEscape:   true,
-    effect:   'zoom',
-    duration: 200,           // ms
-    easing:   'ease-out',
-    overlayOpacity: 0.6,     // 0..1
-    overlayBlur: false,
-
-    placement: defaultPlacement,   // 'top' | 'center'
-    panelClass: defaultPanelClass, // ej. 'mt-32'
-
-    // ===== utils =====
-    _norm(raw){ if(!raw) return {}; if(Array.isArray(raw)) return raw[0] ?? {}; return raw; },
-    sizeClasses(){
-      switch (this.cfg.size) {
-        case 'sm': return 'max-w-sm';
-        case 'lg': return 'max-w-2xl';
-        case 'xl': return 'max-w-4xl';
-        case '2xl': return 'max-w-6xl';
-        default: return 'max-w-lg';
-      }
-    },
-    containerClass(){
-        return this.placement === 'top'
-        ? 'flex justify-center items-start'
-        : 'grid place-items-center';
-    },
-    overlayStyle(){
-    const d = Number(this.duration) || 200;
-    const e = this.easing || 'ease-out';
-    // Cuando está abierto, usa overlayOpacity; cuando entra/sale, 0
-    const o = (this.anim === 'open') ? this.overlayOpacity : 0;
-    return `opacity:${o}; transition: opacity ${d}ms ${e};`;
-    },
-    dialogStyle(){
-      const d = Number(this.duration) || 200;
-      const e = this.easing || 'ease-out';
-      return `transition: transform ${d}ms ${e}, opacity ${d}ms ${e};`;
-    },
-    dialogMotionClass(){
-      // Durante 'enter' y 'leave' usamos la pose "cerrada"
-      return (this.anim === 'open') ? dialogOpen(this.effect) : dialogClosed(this.effect);
-    },
-    btnClass(btn){ return classesFor(btn.variant, btn.color); },
-
-    // ===== core =====
-    handle(ev) {
-    const d = this._norm(ev.detail);
-    const target = d.target ?? this.id;
-    if (target !== this.id) return;
-
-    // — flags dinámicos —
-    this.closeOnBackdrop = (typeof d.closeOnBackdrop === 'boolean') ? d.closeOnBackdrop : true;
-    this.closeOnEscape   = (typeof d.closeOnEscape   === 'boolean') ? d.closeOnEscape   : true;
-
-    // — efectos —
-    this.effect         = d.effect   || 'zoom';
-    this.duration       = (typeof d.duration === 'number') ? d.duration : 200;
-    this.easing         = d.easing   || 'ease-out';
-    this.overlayOpacity = (typeof d.overlayOpacity === 'number') ? d.overlayOpacity : 0.6;
-    this.overlayBlur    = d.overlayBlur === true;
-
-    // — placement / offset (defaults ya seteados en la factory) —
-    this.placement  = (d.placement  ?? this.placement);
-    this.panelClass = (d.panelClass ?? this.panelClass);
-
-    // — autofocus (opcional, si lo estás usando) —
-    this.autofocus = d.autofocus || this.autofocus; // 'dialog' | 'cancel' | 'confirm' | 'none'
-
-    // — contenido / botones (con token desde PHP) —
-    this.cfg = d;
-    const btns = normalizeButtons(d.buttons);
-    this.buttons = btns.length ? btns : normalizeButtons([{ label:'OK', mode:'close' }]);
-    this.btnLoading = this.buttons.map(() => false);
-
-    // ⏯️ pipeline de animación
-    this._openWithAnimation();
-    },
-
-    _openWithAnimation(){
-      if (this.open && this.anim === 'open') return;
-      this.open = true;       // muestra el wrapper (overlay+dialog)
-      this.anim = 'enter';    // posición "cerrada" visible
-
-      // salto de frame para que el browser pinte 'enter' y luego transicione a 'open'
-      this.$nextTick(() => requestAnimationFrame(() => {
-        this.anim = 'open';   // -> transiciona a la pose "abierta"
-        // focus al primer control si existe
-        this.$nextTick(() => { try { this.$refs.first && this.$refs.first.focus(); } catch(_){} });
-      }));
-
-      document.documentElement.classList.add('overflow-hidden');
-    },
-
-    close(){
-      if (!this.open) return;
-      this.anim = 'leave'; // vuelve a pose "cerrada" y deja que la transición corra
-      const ms = Number(this.duration) || 200;
-      setTimeout(() => {
-        this.open = false;    // ahora sí ocultamos el wrapper
-        this.anim = 'idle';
-        document.documentElement.classList.remove('overflow-hidden');
-      }, ms);
-    },
-
-    onBackdrop(e){
-      if (!this.closeOnBackdrop) return;
-      if (e.target === e.currentTarget) this.close();
-    },
-
-    onKeydown(e){
-      if (!this.closeOnEscape) return;
-      if (e.key === 'Escape') { e.preventDefault(); this.close(); }
-    },
-
-    async run(btn, i){
-      const mode = btn.mode || (btn.wire ? 'wire' : (btn.emit ? 'emit' : 'close'));
-      const dismiss = btn.dismissAfter === true;
-      const compId = this.cfg.componentId;
-
-      if (mode === 'wire' && compId && btn.wire) {
-        try {
-          this.btnLoading[i] = true;
-          await Livewire.find(compId).call(btn.wire, ...(btn.params || []));
-        } finally {
-          this.btnLoading[i] = false;
-          if (dismiss) this.close();
+    // ====== efectos ======
+    function dialogClosed(effect) {
+        switch (effect) {
+            case 'slide-up': return 'opacity-0 translate-y-2';
+            case 'slide-down': return 'opacity-0 -translate-y-2';
+            case 'slide-left': return 'opacity-0 translate-x-2';
+            case 'slide-right': return 'opacity-0 -translate-x-2';
+            case 'fade': return 'opacity-0';
+            case 'zoom':
+            default: return 'opacity-0 scale-95';
         }
-        return;
-      }
+    }
+    function dialogOpen(effect) {
+        switch (effect) {
+            case 'slide-up':
+            case 'slide-down':
+            case 'slide-left':
+            case 'slide-right': return 'opacity-100 translate-x-0 translate-y-0';
+            case 'fade': return 'opacity-100';
+            case 'zoom':
+            default: return 'opacity-100 scale-100';
+        }
+    }
 
-      if (mode === 'emit' && btn.emit) {
-        if (compId) Livewire.dispatch(btn.emit, btn.payload || {}, { to: compId });
-        else         Livewire.dispatch(btn.emit, btn.payload || {});
-        if (dismiss) this.close();
-        return;
-      }
 
-      // close
-      this.close();
-    },
-  };
+    return {
+        // ===== state =====
+        id,
+        cfg: {},
+        buttons: [],
+        btnLoading: [],
+        open: false,              // visibilidad del wrapper
+        anim: 'idle',             // 'idle' | 'enter' | 'open' | 'leave'
+
+        // flags/efectos (configurables por payload)
+        closeOnBackdrop: true,
+        closeOnEscape: true,
+        effect: 'zoom',
+        duration: 200,           // ms
+        easing: 'ease-out',
+        overlayOpacity: 0.6,     // 0..1
+        overlayBlur: false,
+
+        placement: defaultPlacement,   // 'top' | 'center'
+        panelClass: defaultPanelClass, // ej. 'mt-32'
+
+        // ===== utils =====
+        _norm(raw) { if (!raw) return {}; if (Array.isArray(raw)) return raw[0] ?? {}; return raw; },
+        sizeClasses() {
+            switch (this.cfg.size) {
+                case 'sm': return 'max-w-sm';
+                case 'lg': return 'max-w-2xl';
+                case 'xl': return 'max-w-4xl';
+                case '2xl': return 'max-w-6xl';
+                default: return 'max-w-lg';
+            }
+        },
+        containerClass() {
+            return this.placement === 'top'
+                ? 'flex justify-center items-start'
+                : 'grid place-items-center';
+        },
+        overlayStyle() {
+            const d = Number(this.duration) || 200;
+            const e = this.easing || 'ease-out';
+            // Cuando está abierto, usa overlayOpacity; cuando entra/sale, 0
+            const o = (this.anim === 'open') ? this.overlayOpacity : 0;
+            return `opacity:${o}; transition: opacity ${d}ms ${e};`;
+        },
+        dialogStyle() {
+            const d = Number(this.duration) || 200;
+            const e = this.easing || 'ease-out';
+            return `transition: transform ${d}ms ${e}, opacity ${d}ms ${e};`;
+        },
+        dialogMotionClass() {
+            // Durante 'enter' y 'leave' usamos la pose "cerrada"
+            return (this.anim === 'open') ? dialogOpen(this.effect) : dialogClosed(this.effect);
+        },
+        btnClass(btn) { return classesFor(btn.variant, btn.color); },
+
+        // ===== core =====
+        handle(ev) {
+            const d = this._norm(ev.detail);
+            const target = d.target ?? this.id;
+            if (target !== this.id) return;
+
+            // — flags dinámicos —
+            this.closeOnBackdrop = (typeof d.closeOnBackdrop === 'boolean') ? d.closeOnBackdrop : true;
+            this.closeOnEscape = (typeof d.closeOnEscape === 'boolean') ? d.closeOnEscape : true;
+
+            // — efectos —
+            this.effect = d.effect || 'zoom';
+            this.duration = (typeof d.duration === 'number') ? d.duration : 200;
+            this.easing = d.easing || 'ease-out';
+            this.overlayOpacity = (typeof d.overlayOpacity === 'number') ? d.overlayOpacity : 0.6;
+            this.overlayBlur = d.overlayBlur === true;
+
+            // — placement / offset (defaults ya seteados en la factory) —
+            this.placement = (d.placement ?? this.placement);
+            this.panelClass = (d.panelClass ?? this.panelClass);
+
+            // — autofocus (opcional, si lo estás usando) —
+            this.autofocus = d.autofocus || this.autofocus; // 'dialog' | 'cancel' | 'confirm' | 'none'
+
+            // — contenido / botones (con token desde PHP) —
+            this.cfg = d;
+            const btns = normalizeButtons(d.buttons);
+            this.buttons = btns.length ? btns : normalizeButtons([{ label: 'OK', mode: 'close' }]);
+            this.btnLoading = this.buttons.map(() => false);
+
+            // ⏯️ pipeline de animación
+            this._openWithAnimation();
+        },
+
+        _openWithAnimation() {
+            if (this.open && this.anim === 'open') return;
+            this.open = true;       // muestra el wrapper (overlay+dialog)
+            this.anim = 'enter';    // posición "cerrada" visible
+
+            // salto de frame para que el browser pinte 'enter' y luego transicione a 'open'
+            this.$nextTick(() => requestAnimationFrame(() => {
+                this.anim = 'open';   // -> transiciona a la pose "abierta"
+                // focus al primer control si existe
+                this.$nextTick(() => { try { this.$refs.first && this.$refs.first.focus(); } catch (_) { } });
+            }));
+
+            document.documentElement.classList.add('overflow-hidden');
+        },
+
+        close() {
+            if (!this.open) return;
+            this.anim = 'leave'; // vuelve a pose "cerrada" y deja que la transición corra
+            const ms = Number(this.duration) || 200;
+            setTimeout(() => {
+                this.open = false;    // ahora sí ocultamos el wrapper
+                this.anim = 'idle';
+                document.documentElement.classList.remove('overflow-hidden');
+            }, ms);
+        },
+
+        onBackdrop(e) {
+            if (!this.closeOnBackdrop) return;
+            if (e.target === e.currentTarget) this.close();
+        },
+
+        onKeydown(e) {
+            if (!this.closeOnEscape) return;
+            if (e.key === 'Escape') { e.preventDefault(); this.close(); }
+        },
+
+        async run(btn, i) {
+            const mode = btn.mode || (btn.wire ? 'wire' : (btn.emit ? 'emit' : 'close'));
+            const dismiss = btn.dismissAfter === true;
+            const compId = this.cfg.componentId;
+
+            if (mode === 'wire' && compId && btn.wire) {
+                try {
+                    this.btnLoading[i] = true;
+                    await Livewire.find(compId).call(btn.wire, ...(btn.params || []));
+                } finally {
+                    this.btnLoading[i] = false;
+                    if (dismiss) this.close();
+                }
+                return;
+            }
+
+            if (mode === 'emit' && btn.emit) {
+                if (compId) Livewire.dispatch(btn.emit, btn.payload || {}, { to: compId });
+                else Livewire.dispatch(btn.emit, btn.payload || {});
+                if (dismiss) this.close();
+                return;
+            }
+
+            // close
+            this.close();
+        },
+    };
 };

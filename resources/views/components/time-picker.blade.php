@@ -77,35 +77,41 @@
                 triggerLabel="{{ $label }}"
                 x-transition
             >
-                <div class="p-3 select-none bg-transparent flex items-center justify-center gap-2">
-                    <!-- Hora -->
-                    <div class="flex flex-col items-center">
-                        <label class="text-xs text-gray-500 mb-1">Hora</label>
-                        <select
-                            x-model="hour"
-                            @change="updateTime()"
-                            class="{{ $colorDropdown['select'] ?? '' }} beartropy-thin-scrollbar"
-                            size="5"
-                        >
-                            <template x-for="h in 24" :key="h">
-                                <option :value="String(h-1).padStart(2,'0')" x-text="String(h-1).padStart(2,'0')"></option>
-                            </template>
-                        </select>
-                    </div>
-                    <span class="text-xl font-bold opacity-60 pt-4">:</span>
-                    <!-- Minuto -->
-                    <div class="flex flex-col items-center">
-                        <label class="text-xs text-gray-500 mb-1">Min</label>
-                        <select
-                            x-model="minute"
-                            @change="updateTime()"
-                            class="{{ $colorDropdown['select'] ?? '' }} beartropy-thin-scrollbar"
-                            size="5"
-                        >
-                            <template x-for="m in 60" :key="m">
-                                <option :value="String(m-1).padStart(2,'0')" x-text="String(m-1).padStart(2,'0')"></option>
-                            </template>
-                        </select>
+                <div class="p-3 select-none bg-transparent" x-init="$watch('open', value => value && scrollToSelected())">
+                    <div class="{{ $colorDropdown['list_wrapper'] ?? 'flex items-start justify-center gap-2 h-56' }}">
+                        <!-- Hora -->
+                        <div class="flex flex-col items-center h-full">
+                            <label class="text-xs text-gray-500 mb-1 font-medium">Hora</label>
+                            <ul x-ref="hoursColumn" class="{{ $colorDropdown['list_column'] ?? 'flex flex-col h-full overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth' }}">
+                                <template x-for="h in 24" :key="h">
+                                    <li
+                                        @click="hour = String(h-1).padStart(2,'0'); updateTime()"
+                                        :data-value="String(h-1).padStart(2,'0')"
+                                        class="{{ $colorDropdown['list_item'] ?? 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors' }}"
+                                        :class="{ '{{ $colorDropdown['list_item_active'] ?? 'bg-beartropy-500 text-white font-bold hover:bg-beartropy-600 dark:hover:bg-beartropy-600' }}': hour === String(h-1).padStart(2,'0') }"
+                                        x-text="String(h-1).padStart(2,'0')"
+                                    ></li>
+                                </template>
+                            </ul>
+                        </div>
+
+                        <span class="text-xl font-bold opacity-30 pt-8">:</span>
+
+                        <!-- Minuto -->
+                        <div class="flex flex-col items-center h-full">
+                            <label class="text-xs text-gray-500 mb-1 font-medium">Min</label>
+                            <ul x-ref="minutesColumn" class="{{ $colorDropdown['list_column'] ?? 'flex flex-col h-full overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth' }}">
+                                <template x-for="m in 60" :key="m">
+                                    <li
+                                        @click="minute = String(m-1).padStart(2,'0'); updateTime()"
+                                        :data-value="String(m-1).padStart(2,'0')"
+                                        class="{{ $colorDropdown['list_item'] ?? 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors' }}"
+                                        :class="{ '{{ $colorDropdown['list_item_active'] ?? 'bg-beartropy-500 text-white font-bold hover:bg-beartropy-600 dark:hover:bg-beartropy-600' }}': minute === String(m-1).padStart(2,'0') }"
+                                        x-text="String(m-1).padStart(2,'0')"
+                                    ></li>
+                                </template>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </x-beartropy-ui::base.dropdown-base>
