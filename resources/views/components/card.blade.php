@@ -15,6 +15,7 @@
     @endif
     {{ $attributes->merge(['class' => $wrapperClasses]) }}
 >
+
     @if (!empty($title))
         <div
             class="{{ $colorPreset['title'] }} py-1 {{ $collapsable ? 'cursor-pointer select-none flex items-center justify-between gap-2' : 'border-b border-gray-200 dark:border-gray-700' }}"
@@ -48,7 +49,7 @@
 
     {{-- CONTENIDO PRINCIPAL --}}
     <div
-        class="{{ $colorPreset['slot'] }} py-2 overflow-hidden"
+        class="{{ $colorPreset['slot'] }} py-2 "
         @if($collapsable)
             x-cloak
             x-show="open"
