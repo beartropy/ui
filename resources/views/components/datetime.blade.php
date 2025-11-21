@@ -142,7 +142,7 @@
                                 <ul
                                     class="{{ $colorDropdown['list_column'] ?? 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth' }}">
                                     <template x-for="h in 24" :key="h">
-                                        <li @click="startHour = String(h-1).padStart(2,'0')"
+                                        <li @click="startHour = String(h-1).padStart(2,'0'); setTime('start', String(h-1).padStart(2,'0'), startMinute)"
                                             class="{{ $colorDropdown['list_item'] ?? 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors' }}"
                                             :class="{
                                                 '{{ $colorDropdown['list_item_active'] ?? 'bg-beartropy-500 text-white font-bold hover:bg-beartropy-600 dark:hover:bg-beartropy-600' }}': startHour ===
@@ -159,7 +159,7 @@
                                 <ul
                                     class="{{ $colorDropdown['list_column'] ?? 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth' }}">
                                     <template x-for="m in 60" :key="m">
-                                        <li @click="startMinute = String(m-1).padStart(2,'0'); setTime('start', startHour, startMinute)"
+                                        <li @click="startMinute = String(m-1).padStart(2,'0'); setTime('start', startHour, String(m-1).padStart(2,'0'))"
                                             class="{{ $colorDropdown['list_item'] ?? 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors' }}"
                                             :class="{
                                                 '{{ $colorDropdown['list_item_active'] ?? 'bg-beartropy-500 text-white font-bold hover:bg-beartropy-600 dark:hover:bg-beartropy-600' }}': startMinute ===
@@ -179,7 +179,7 @@
                                 <ul
                                     class="{{ $colorDropdown['list_column'] ?? 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth' }}">
                                     <template x-for="h in 24" :key="h">
-                                        <li @click="endHour = String(h-1).padStart(2,'0')"
+                                        <li @click="endHour = String(h-1).padStart(2,'0'); setTime('end', String(h-1).padStart(2,'0'), endMinute)"
                                             class="{{ $colorDropdown['list_item'] ?? 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors' }}"
                                             :class="{
                                                 '{{ $colorDropdown['list_item_active'] ?? 'bg-beartropy-500 text-white font-bold hover:bg-beartropy-600 dark:hover:bg-beartropy-600' }}': endHour ===
@@ -196,7 +196,7 @@
                                 <ul
                                     class="{{ $colorDropdown['list_column'] ?? 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth' }}">
                                     <template x-for="m in 60" :key="m">
-                                        <li @click="endMinute = String(m-1).padStart(2,'0'); setTime('end', endHour, endMinute)"
+                                        <li @click="endMinute = String(m-1).padStart(2,'0'); setTime('end', endHour, String(m-1).padStart(2,'0'))"
                                             class="{{ $colorDropdown['list_item'] ?? 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors' }}"
                                             :class="{
                                                 '{{ $colorDropdown['list_item_active'] ?? 'bg-beartropy-500 text-white font-bold hover:bg-beartropy-600 dark:hover:bg-beartropy-600' }}': endMinute ===
