@@ -422,7 +422,7 @@
         }
         this.updateDisplay();
       },
-      setTime(type, h, m) {
+      setTime(type, h, m, autoAdvance = false) {
         if (type === "start") {
           this.startHour = h;
           this.startMinute = m;
@@ -432,21 +432,23 @@
           this.endMinute = m;
           this.endTimeSet = true;
         }
-        if (this.range && this.start && this.end) {
-          this.value = this.showTime ? {
-            start: `${this.start} ${this.startHour}:${this.startMinute}`,
-            end: `${this.end} ${this.endHour}:${this.endMinute}`
-          } : { start: this.start, end: this.end };
-          this.open = false;
-          this.panel = "date-start";
-        }
-        if (this.range && type === "start" && this.start) {
-          this.panel = this.end ? "time-end" : "date-end";
-        }
-        if (!this.range && this.start) {
-          this.value = this.showTime ? `${this.start} ${this.startHour}:${this.startMinute}` : this.start;
-          this.open = false;
-          this.panel = "date-start";
+        if (autoAdvance) {
+          if (this.range && this.start && this.end) {
+            this.value = this.showTime ? {
+              start: `${this.start} ${this.startHour}:${this.startMinute}`,
+              end: `${this.end} ${this.endHour}:${this.endMinute}`
+            } : { start: this.start, end: this.end };
+            this.open = false;
+            this.panel = "date-start";
+          }
+          if (this.range && type === "start" && this.start) {
+            this.panel = this.end ? "time-end" : "date-end";
+          }
+          if (!this.range && this.start) {
+            this.value = this.showTime ? `${this.start} ${this.startHour}:${this.startMinute}` : this.start;
+            this.open = false;
+            this.panel = "date-start";
+          }
         }
         this.updateDisplay();
       },
