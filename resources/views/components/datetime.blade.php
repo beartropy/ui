@@ -70,8 +70,8 @@
 
         <x-slot name="dropdown">
             <x-beartropy-ui::base.dropdown-base placement="right" side="bottom" color="{{ $presetNames['color'] }}"
-                preset-for="datetime" width="w-full max-w-[25rem]" x-show="open" triggerLabel="{{ $label }}"
-                x-transition>
+                preset-for="datetime" width="w-full max-w-[25rem]" overflow="visible" x-show="open"
+                triggerLabel="{{ $label }}" x-transition>
                 <div x-show="showCalendarPane()" class="p-3 select-none bg-transparent">
                     <!-- Header: Mes y ano -->
                     <div
