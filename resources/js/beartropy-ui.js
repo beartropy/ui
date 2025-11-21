@@ -205,7 +205,7 @@
       weekdays: ["Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"],
       from: "Desde",
       to: "Hasta",
-      placeholder: "Seleccionar fecha\uFFFD"
+      placeholder: "Seleccionar fecha."
     },
     en: {
       months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -213,7 +213,7 @@
       weekdays: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
       from: "From",
       to: "To",
-      placeholder: "Select date\uFFFD"
+      placeholder: "Select date."
     }
   };
   function datetimepicker(entangledValue, rangeMode = false, min = "", max = "", formatDisplay = "{d}/{m}/{Y}", showTime = false) {
@@ -229,6 +229,9 @@
       endHour: "00",
       endMinute: "00",
       formatDisplay: formatDisplay || "{d}/{m}/{Y}",
+      panel: "date-start",
+      startTimeSet: false,
+      endTimeSet: false,
       hovered: null,
       month: (/* @__PURE__ */ new Date()).getMonth(),
       year: (/* @__PURE__ */ new Date()).getFullYear(),
@@ -247,34 +250,48 @@
         this.year = refDate.getFullYear();
         this.updateCalendar();
         this.updateDisplay();
+        this.setInitialPanel();
+        this.$watch("open", (isOpen) => {
+          if (isOpen) {
+            this.setInitialPanel();
+          }
+        });
         this.$watch("value", () => {
           this.setFromValue();
           this.updateDisplay();
-          let refDate2 = this.start ? new Date(this.start) : /* @__PURE__ */ new Date();
+          let refDateWatch = this.start ? new Date(this.start) : /* @__PURE__ */ new Date();
           if (this.start && /^\d{4}-\d{2}-\d{2}$/.test(this.start)) {
             let [y, m, d] = this.start.split("-");
-            refDate2 = new Date(Number(y), Number(m) - 1, Number(d));
+            refDateWatch = new Date(Number(y), Number(m) - 1, Number(d));
           }
-          this.month = refDate2.getMonth();
-          this.year = refDate2.getFullYear();
+          this.month = refDateWatch.getMonth();
+          this.year = refDateWatch.getFullYear();
           this.updateCalendar();
+          this.setInitialPanel();
         });
       },
       setFromValue() {
         if (!this.range) {
           let [date, time] = (this.value || "").split(" ");
           this.start = this.normalizeDate(date);
+          this.startTimeSet = this.showTime && !!time;
           if (this.showTime && time) {
             let [h, m] = time.split(":");
             this.startHour = h?.padStart(2, "0") || "00";
             this.startMinute = m?.padStart(2, "0") || "00";
+          } else if (this.showTime) {
+            this.startHour = "00";
+            this.startMinute = "00";
           }
           this.end = null;
+          this.endTimeSet = false;
         } else if (this.value && typeof this.value === "object" && this.value.start && this.value.end) {
           let [date1, time1] = (this.value.start || "").split(" ");
           let [date2, time2] = (this.value.end || "").split(" ");
           this.start = this.normalizeDate(date1);
           this.end = this.normalizeDate(date2);
+          this.startTimeSet = this.showTime && !!time1;
+          this.endTimeSet = this.showTime && !!time2;
           if (this.showTime) {
             let [h1, m1] = time1 ? time1.split(":") : [];
             let [h2, m2] = time2 ? time2.split(":") : [];
@@ -282,7 +299,15 @@
             this.startMinute = m1?.padStart(2, "0") || "00";
             this.endHour = h2?.padStart(2, "0") || "00";
             this.endMinute = m2?.padStart(2, "0") || "00";
+          } else {
+            this.startHour = "00";
+            this.startMinute = "00";
+            this.endHour = "00";
+            this.endMinute = "00";
           }
+        } else {
+          this.startTimeSet = false;
+          this.endTimeSet = false;
         }
       },
       updateDisplay() {
@@ -294,9 +319,9 @@
             this.showTime ? this.startMinute : ""
           );
         } else if (this.start && this.end) {
-          this.displayLabel = this.formatForDisplay(this.start, this.formatDisplay, this.showTime ? this.startHour : "", this.showTime ? this.startMinute : "") + " \u2014 " + this.formatForDisplay(this.end, this.formatDisplay, this.showTime ? this.endHour : "", this.showTime ? this.endMinute : "");
+          this.displayLabel = this.formatForDisplay(this.start, this.formatDisplay, this.showTime ? this.startHour : "", this.showTime ? this.startMinute : "") + " - " + this.formatForDisplay(this.end, this.formatDisplay, this.showTime ? this.endHour : "", this.showTime ? this.endMinute : "");
         } else if (this.start) {
-          this.displayLabel = this.formatForDisplay(this.start, this.formatDisplay, this.showTime ? this.startHour : "", this.showTime ? this.startMinute : "") + " \u2014 \uFFFD";
+          this.displayLabel = this.formatForDisplay(this.start, this.formatDisplay, this.showTime ? this.startHour : "", this.showTime ? this.startMinute : "") + " - ...";
         } else {
           this.displayLabel = "";
         }
@@ -327,14 +352,41 @@
       },
       selectDay(day) {
         if (this.isDisabled(day)) return;
+        this.hovered = null;
         if (this.range) {
-          if (!this.start || this.start && this.end) {
+          const selectingEnd = this.panel === "date-end";
+          if (selectingEnd) {
+            if (day.date < this.start) {
+              this.start = day.date;
+              this.startHour = "00";
+              this.startMinute = "00";
+              this.startTimeSet = false;
+              this.end = "";
+              this.endHour = "00";
+              this.endMinute = "00";
+              this.endTimeSet = false;
+              this.panel = this.showTime ? "time-start" : "date-end";
+            } else {
+              this.end = day.date;
+              this.endHour = "00";
+              this.endMinute = "00";
+              this.endTimeSet = false;
+              this.panel = this.showTime ? "time-end" : this.panel;
+              if (!this.showTime) {
+                this.value = { start: this.start, end: this.end };
+                this.open = false;
+              }
+            }
+          } else if (!this.start || this.start && this.end) {
             this.start = day.date;
             this.startHour = "00";
             this.startMinute = "00";
             this.end = "";
             this.endHour = "00";
             this.endMinute = "00";
+            this.startTimeSet = false;
+            this.endTimeSet = false;
+            this.panel = this.showTime ? "time-start" : "date-end";
           } else if (day.date < this.start) {
             this.start = day.date;
             this.startHour = "00";
@@ -342,10 +394,15 @@
             this.end = "";
             this.endHour = "00";
             this.endMinute = "00";
+            this.startTimeSet = false;
+            this.endTimeSet = false;
+            this.panel = this.showTime ? "time-start" : "date-end";
           } else {
             this.end = day.date;
             this.endHour = "00";
             this.endMinute = "00";
+            this.endTimeSet = false;
+            this.panel = this.showTime ? "time-end" : this.panel;
             if (!this.showTime) {
               this.value = { start: this.start, end: this.end };
               this.open = false;
@@ -355,9 +412,12 @@
           this.start = day.date;
           this.startHour = "00";
           this.startMinute = "00";
+          this.startTimeSet = false;
           if (!this.showTime) {
             this.value = this.start;
             this.open = false;
+          } else {
+            this.panel = "time-start";
           }
         }
         this.updateDisplay();
@@ -366,9 +426,11 @@
         if (type === "start") {
           this.startHour = h;
           this.startMinute = m;
+          this.startTimeSet = true;
         } else {
           this.endHour = h;
           this.endMinute = m;
+          this.endTimeSet = true;
         }
         if (this.range && this.start && this.end) {
           this.value = this.showTime ? {
@@ -376,10 +438,15 @@
             end: `${this.end} ${this.endHour}:${this.endMinute}`
           } : { start: this.start, end: this.end };
           this.open = false;
+          this.panel = "date-start";
+        }
+        if (this.range && type === "start" && this.start) {
+          this.panel = this.end ? "time-end" : "date-end";
         }
         if (!this.range && this.start) {
           this.value = this.showTime ? `${this.start} ${this.startHour}:${this.startMinute}` : this.start;
           this.open = false;
+          this.panel = "date-start";
         }
         this.updateDisplay();
       },
@@ -392,8 +459,8 @@
           return day.date > this.start && day.date < this.end;
         }
         if (this.hovered && this.start && this.hovered !== this.start) {
-          let [min2, max2] = [this.start, this.hovered].sort();
-          return day.date > min2 && day.date < max2;
+          let [minRange, maxRange] = [this.start, this.hovered].sort();
+          return day.date > minRange && day.date < maxRange;
         }
         return false;
       },
@@ -444,12 +511,12 @@
         out = out.replace(/{m}/g, m);
         out = out.replace(/{d}/g, d);
         if (out.includes("{M}")) {
-          let meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-          out = out.replace(/{M}/g, meses[parseInt(m, 10) - 1] || m);
+          let monthsShort = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+          out = out.replace(/{M}/g, monthsShort[parseInt(m, 10) - 1] || m);
         }
         if (out.includes("{MMMM}")) {
-          let mesesL = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-          out = out.replace(/{MMMM}/g, mesesL[parseInt(m, 10) - 1] || m);
+          let monthsLong = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+          out = out.replace(/{MMMM}/g, monthsLong[parseInt(m, 10) - 1] || m);
         }
         hour = (hour || "").padStart(2, "0");
         minute = (minute || "").padStart(2, "0");
@@ -469,7 +536,59 @@
           this.value = this.showTime ? `${this.start} ${this.startHour || "00"}:${this.startMinute || "00"}` : this.start;
         }
         this.open = false;
+        this.panel = "date-start";
         this.updateDisplay();
+      },
+      setInitialPanel() {
+        if (!this.showTime) {
+          this.panel = "date-start";
+          return;
+        }
+        if (this.range) {
+          if (!this.start) {
+            this.panel = "date-start";
+          } else if (!this.startTimeSet) {
+            this.panel = "time-start";
+          } else if (!this.end) {
+            this.panel = "date-end";
+          } else if (!this.endTimeSet) {
+            this.panel = "time-end";
+          } else {
+            this.panel = "date-start";
+          }
+          return;
+        }
+        if (!this.start) {
+          this.panel = "date-start";
+        } else if (!this.startTimeSet) {
+          this.panel = "time-start";
+        } else {
+          this.panel = "date-start";
+        }
+      },
+      showCalendarPane() {
+        if (!this.showTime) return true;
+        return this.panel === "date-start" || this.panel === "date-end";
+      },
+      isPickingStartTime() {
+        return this.showTime && this.panel === "time-start";
+      },
+      isPickingEndTime() {
+        return this.showTime && this.panel === "time-end";
+      },
+      clearSelection() {
+        this.value = "";
+        this.start = "";
+        this.end = "";
+        this.startHour = "00";
+        this.startMinute = "00";
+        this.endHour = "00";
+        this.endMinute = "00";
+        this.displayLabel = "";
+        this.panel = "date-start";
+        this.startTimeSet = false;
+        this.endTimeSet = false;
+        this.hovered = null;
       }
     };
   }

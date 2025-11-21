@@ -1,4 +1,4 @@
-@php
+﻿@php
     [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('input');
     [$colorDropdown, $sizeDropdown] = $getComponentPresets('datetime');
     [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
@@ -12,11 +12,11 @@
         $placeholder ??
         ($range ?? false
             ? (($locale ?? 'es') === 'es'
-                ? 'Seleccionar rango…'
-                : 'Select range…')
+                ? 'Seleccionar rango...'
+                : 'Select range...')
             : (($locale ?? 'es') === 'es'
-                ? 'Seleccionar fecha…'
-                : 'Select date…'));
+                ? 'Seleccionar fecha...'
+                : 'Select date...'));
 
     $wrapperClass = $attributes->get('class') ?? '';
 @endphp
@@ -50,16 +50,7 @@
         <x-slot name="end">
             @if ($clearable ?? true)
                 <span x-show="value"
-                    @click.stop="
-                        value = '';
-                        start = '';
-                        end = '';
-                        startHour = '00';
-                        startMinute = '00';
-                        endHour = '00';
-                        endMinute = '00';
-                        displayLabel = '';
-                    "
+                    @click.stop="clearSelection()"
                     class="mr-1 cursor-pointer text-neutral-400 hover:text-red-500 transition" title="Limpiar">
                     @include('beartropy-ui-svg::beartropy-x-mark', [
                         'class' =>
@@ -81,8 +72,8 @@
             <x-beartropy-ui::base.dropdown-base placement="right" side="bottom" color="{{ $presetNames['color'] }}"
                 preset-for="datetime" width="w-full max-w-[25rem]" x-show="open" triggerLabel="{{ $label }}"
                 x-transition>
-                <div x-show="!showTime || !start || (range && !end)" class="p-3 select-none bg-transparent">
-                    <!-- Header: Mes y año -->
+                <div x-show="showCalendarPane()" class="p-3 select-none bg-transparent">
+                    <!-- Header: Mes y ano -->
                     <div
                         class="flex items-center justify-between mb-2 gap-2 {{ $colorDropdown['header_text'] ?? '' }}">
                         <button @click="prevMonth()" class="p-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800">
@@ -97,11 +88,11 @@
                             </svg>
                         </button>
                     </div>
-                    <!-- Días de la semana -->
+                    <!-- Dias de la semana -->
                     <div class="grid grid-cols-7 text-xs text-center mb-1 {{ $colorDropdown['weekday_text'] ?? '' }}">
-                        <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span>
+                        <span>Lun</span><span>Mar</span><span>Mie</span><span>Jue</span><span>Vie</span><span>Sab</span><span>Dom</span>
                     </div>
-                    <!-- Días -->
+                    <!-- Dias -->
                     <div class="grid grid-cols-7 text-center {{ $colorDropdown['grid_bg'] ?? '' }}">
                         <template x-for="(day, i) in days" :key="i">
                             <button type="button" @click="selectDay(day)"
@@ -109,8 +100,7 @@
                                 @mouseleave="if (range && !end && start) hovered = null" :disabled="isDisabled(day)"
                                 :class="{
                                     '{{ $colorDropdown['option_active'] ?? '' }}': isSelected(day),
-                                    '{{ $colorDropdown['option_range'] ?? 'bg-beartropy-100 dark:bg-beartropy-800' }}': isInRange(
-                                        day),
+                                    '{{ $colorDropdown['option_range'] ?? 'bg-beartropy-100 dark:bg-beartropy-800' }}': isInRange(day),
                                     '{{ $colorDropdown['option_hover'] ?? '' }} rounded-lg': day.inMonth && !
                                         isSelected(day) && !isInRange(day) && !isDisabled(day),
                                     'opacity-40 cursor-not-allowed': isDisabled(day),
@@ -124,17 +114,19 @@
                     </div>
                 </div>
                 <!-- Header when calendar is hidden (showTime mode) -->
-                <div x-show="showTime && start && (!range || (range && end))"
+                <div x-show="showTime && !showCalendarPane()"
                     class="p-3 pb-2 flex items-center justify-between {{ $colorDropdown['header_text'] ?? '' }}">
-                    <span class="text-sm font-medium" x-text="formatForDisplay(start, formatDisplay)"></span>
-                    <button @click="start = null; end = null" type="button"
+                    <span class="text-sm font-medium"
+                        x-text="formatForDisplay(panel === 'time-end' && end ? end : start, formatDisplay)"></span>
+                    <button @click="panel = panel === 'time-end' ? 'date-end' : 'date-start'; hovered = null" type="button"
                         class="text-xs px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
                         Cambiar fecha
                     </button>
                 </div>
-                <!-- Selección de hora/minuto -->
-                <div class="flex w-full items-center justify-center gap-4 mb-2 bg-transparent">
-                    <template x-if="showTime && start && (!range || (range && !end))">
+                <!-- Seleccion de hora/minuto -->
+                <div class="flex w-full items-center justify-center gap-4 mb-2 bg-transparent"
+                    x-show="showTime && (isPickingStartTime() || isPickingEndTime())">
+                    <template x-if="isPickingStartTime()">
                         <div class="flex items-center gap-2 justify-center">
                             <!-- Hora inicio -->
                             <div class="flex flex-col items-center">
@@ -171,7 +163,7 @@
                             </div>
                         </div>
                     </template>
-                    <template x-if="showTime && end">
+                    <template x-if="isPickingEndTime()">
                         <div class="flex items-center gap-2 justify-center">
                             <!-- Hora fin -->
                             <div class="flex flex-col items-center">
