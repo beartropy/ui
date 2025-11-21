@@ -1,0 +1,38 @@
+# --- Dependencias del Sistema (Las mayores consumidoras de tokens) ---
+/vendor
+/node_modules
+
+# --- Archivos de Bloqueo (Son enormes y rara vez necesitas que la IA los lea) ---
+composer.lock
+package-lock.json
+yarn.lock
+
+# --- Archivos Compilados y de Build (Laravel Mix / Vite) ---
+/public/build
+/public/hot
+/public/js
+/public/css
+mix-manifest.json
+manifest.json
+
+# --- Cache y Almacenamiento Interno de Laravel ---
+/bootstrap/cache
+/storage/framework
+/storage/logs
+/storage/debugbar
+
+# --- Assets Estáticos Pesados (La IA no necesita ver todos tus iconos/imágenes) ---
+# Mantén tus SVGs si estás trabajando en ellos, pero excluye binarios
+*.png
+*.jpg
+*.jpeg
+*.ico
+*.woff
+*.woff2
+*.ttf
+
+# --- Archivos de Configuración del IDE y Git ---
+.git
+.idea
+.vscode
+.phpunit.result.cache
