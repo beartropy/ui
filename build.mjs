@@ -7,7 +7,6 @@ const config = {
     bundle: true,
     outfile: 'resources/js/beartropy-ui.js',
     format: 'iife',
-    globalName: '$beartropy',
     platform: 'browser',
     target: 'es2020',
     minify: false,

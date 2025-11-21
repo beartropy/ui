@@ -1,6 +1,6 @@
 // Beartropy UI - Bundled with esbuild
 
-var $beartropy = (() => {
+(() => {
   // resources/js/modules/dialog.js
   function dialog(payload) {
     if (typeof payload === "string") {
