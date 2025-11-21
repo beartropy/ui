@@ -208,4 +208,5 @@
     </x-beartropy-ui::base.input-trigger-base>
 
     <x-beartropy-ui::support.field-help :error-message="$finalError" :hint="$help ?? ($hint ?? null)" />
+    <input type="hidden" name="{{ $name }}" :value="value">
 </div>
