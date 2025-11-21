@@ -19,7 +19,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-beartropy-500 text-white font-bold hover:bg-beartropy-600 dark:hover:bg-beartropy-600',
         ],
@@ -40,7 +40,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-red-500 text-white font-bold hover:bg-red-600 dark:hover:bg-red-600',
         ],
@@ -61,7 +61,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-blue-500 text-white font-bold hover:bg-blue-600 dark:hover:bg-blue-600',
         ],
@@ -82,7 +82,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-green-500 text-white font-bold hover:bg-green-600 dark:hover:bg-green-600',
         ],
@@ -103,7 +103,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-yellow-500 text-white font-bold hover:bg-yellow-600 dark:hover:bg-yellow-600',
         ],
@@ -124,7 +124,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-purple-500 text-white font-bold hover:bg-purple-600 dark:hover:bg-purple-600',
         ],
@@ -145,7 +145,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-pink-500 text-white font-bold hover:bg-pink-600 dark:hover:bg-pink-600',
         ],
@@ -166,7 +166,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-gray-500 text-white font-bold hover:bg-gray-600 dark:hover:bg-gray-600',
         ],
@@ -187,7 +187,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-orange-500 text-white font-bold hover:bg-orange-600 dark:hover:bg-orange-600',
         ],
@@ -208,7 +208,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-amber-500 text-white font-bold hover:bg-amber-600 dark:hover:bg-amber-600',
         ],
@@ -229,7 +229,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-lime-500 text-white font-bold hover:bg-lime-600 dark:hover:bg-lime-600',
         ],
@@ -250,7 +250,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-emerald-500 text-white font-bold hover:bg-emerald-600 dark:hover:bg-emerald-600',
         ],
@@ -271,7 +271,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-teal-500 text-white font-bold hover:bg-teal-600 dark:hover:bg-teal-600',
         ],
@@ -292,7 +292,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-cyan-500 text-white font-bold hover:bg-cyan-600 dark:hover:bg-cyan-600',
         ],
@@ -313,7 +313,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-sky-500 text-white font-bold hover:bg-sky-600 dark:hover:bg-sky-600',
         ],
@@ -334,7 +334,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-indigo-500 text-white font-bold hover:bg-indigo-600 dark:hover:bg-indigo-600',
         ],
@@ -355,7 +355,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-violet-500 text-white font-bold hover:bg-violet-600 dark:hover:bg-violet-600',
         ],
@@ -376,7 +376,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-rose-500 text-white font-bold hover:bg-rose-600 dark:hover:bg-rose-600',
         ],
@@ -397,7 +397,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-fuchsia-500 text-white font-bold hover:bg-fuchsia-600 dark:hover:bg-fuchsia-600',
         ],
@@ -418,7 +418,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-slate-500 text-white font-bold hover:bg-slate-600 dark:hover:bg-slate-600',
         ],
@@ -439,7 +439,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-stone-500 text-white font-bold hover:bg-stone-600 dark:hover:bg-stone-600',
         ],
@@ -460,7 +460,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-zinc-500 text-white font-bold hover:bg-zinc-600 dark:hover:bg-zinc-600',
         ],
@@ -481,7 +481,7 @@ return [
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
             // List UI for time selection
-            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_column' => 'flex flex-col max-h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
             'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
             'list_item_active' => 'bg-neutral-500 text-white font-bold hover:bg-neutral-600 dark:hover:bg-neutral-600',
         ],
