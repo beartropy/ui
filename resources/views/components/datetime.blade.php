@@ -81,7 +81,7 @@
             <x-beartropy-ui::base.dropdown-base placement="right" side="bottom" color="{{ $presetNames['color'] }}"
                 preset-for="datetime" width="w-full max-w-[25rem]" x-show="open" triggerLabel="{{ $label }}"
                 x-transition>
-                <div x-show="!showTime || !start" class="p-3 select-none bg-transparent">
+                <div x-show="!showTime || !start || (range && !end)" class="p-3 select-none bg-transparent">
                     <!-- Header: Mes y año -->
                     <div
                         class="flex items-center justify-between mb-2 gap-2 {{ $colorDropdown['header_text'] ?? '' }}">
@@ -124,7 +124,7 @@
                     </div>
                 </div>
                 <!-- Header when calendar is hidden (showTime mode) -->
-                <div x-show="showTime && start"
+                <div x-show="showTime && start && (!range || (range && end))"
                     class="p-3 pb-2 flex items-center justify-between {{ $colorDropdown['header_text'] ?? '' }}">
                     <span class="text-sm font-medium" x-text="formatForDisplay(start, formatDisplay)"></span>
                     <button @click="start = null; end = null" type="button"

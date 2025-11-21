@@ -205,7 +205,7 @@
       weekdays: ["Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"],
       from: "Desde",
       to: "Hasta",
-      placeholder: "Seleccionar fecha\xE2\u20AC\xA6"
+      placeholder: "Seleccionar fecha\uFFFD"
     },
     en: {
       months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -213,7 +213,7 @@
       weekdays: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
       from: "From",
       to: "To",
-      placeholder: "Select date\xE2\u20AC\xA6"
+      placeholder: "Select date\uFFFD"
     }
   };
   function datetimepicker(entangledValue, rangeMode = false, min = "", max = "", formatDisplay = "{d}/{m}/{Y}", showTime = false) {
@@ -294,9 +294,9 @@
             this.showTime ? this.startMinute : ""
           );
         } else if (this.start && this.end) {
-          this.displayLabel = this.formatForDisplay(this.start, this.formatDisplay, this.showTime ? this.startHour : "", this.showTime ? this.startMinute : "") + " \xE2\u20AC\u201D " + this.formatForDisplay(this.end, this.formatDisplay, this.showTime ? this.endHour : "", this.showTime ? this.endMinute : "");
+          this.displayLabel = this.formatForDisplay(this.start, this.formatDisplay, this.showTime ? this.startHour : "", this.showTime ? this.startMinute : "") + " \u2014 " + this.formatForDisplay(this.end, this.formatDisplay, this.showTime ? this.endHour : "", this.showTime ? this.endMinute : "");
         } else if (this.start) {
-          this.displayLabel = this.formatForDisplay(this.start, this.formatDisplay, this.showTime ? this.startHour : "", this.showTime ? this.startMinute : "") + " \xE2\u20AC\u201D \xE2\u20AC\xA6";
+          this.displayLabel = this.formatForDisplay(this.start, this.formatDisplay, this.showTime ? this.startHour : "", this.showTime ? this.startMinute : "") + " \u2014 \uFFFD";
         } else {
           this.displayLabel = "";
         }

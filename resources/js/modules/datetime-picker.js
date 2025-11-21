@@ -1,4 +1,4 @@
-﻿// DateTime Picker Module
+// DateTime Picker Module
 export const beartropyI18n = {
     es: {
         months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
@@ -6,7 +6,7 @@ export const beartropyI18n = {
         weekdays: ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'],
         from: 'Desde',
         to: 'Hasta',
-        placeholder: 'Seleccionar fechaâ€¦'
+        placeholder: 'Seleccionar fecha�'
     },
     en: {
         months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -14,7 +14,7 @@ export const beartropyI18n = {
         weekdays: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
         from: 'From',
         to: 'To',
-        placeholder: 'Select dateâ€¦'
+        placeholder: 'Select date�'
     },
 };
 export function datetimepicker(entangledValue, rangeMode = false, min = '', max = '', formatDisplay = '{d}/{m}/{Y}', showTime = false) {
@@ -39,10 +39,10 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
         displayLabel: '',
         init() {
             this.setFromValue();
-            // âš¡ï¸ Esto es lo importante:
+            // ⚡️ Esto es lo importante:
             let refDate = this.start ? new Date(this.start) : new Date();
             // Para fechas YYYY-MM-DD, new Date() a veces asume UTC y puede fallar un mes.
-            // Â¡RecomendaciÃ³n pro! ParseÃ¡ a mano:
+            // ¡Recomendación pro! Parseá a mano:
             if (this.start && /^\d{4}-\d{2}-\d{2}$/.test(this.start)) {
                 let [y, m, d] = this.start.split('-');
                 refDate = new Date(Number(y), Number(m) - 1, Number(d));
@@ -54,7 +54,7 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
             this.$watch('value', () => {
                 this.setFromValue();
                 this.updateDisplay();
-                // TambiÃ©n actualizar mes/aÃ±o cuando cambia el valor externo
+                // También actualizar mes/año cuando cambia el valor externo
                 let refDate = this.start ? new Date(this.start) : new Date();
                 if (this.start && /^\d{4}-\d{2}-\d{2}$/.test(this.start)) {
                     let [y, m, d] = this.start.split('-');
@@ -99,12 +99,12 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
             } else if (this.start && this.end) {
                 this.displayLabel =
                     this.formatForDisplay(this.start, this.formatDisplay, this.showTime ? this.startHour : '', this.showTime ? this.startMinute : '') +
-                    ' â€” ' +
+                    ' — ' +
                     this.formatForDisplay(this.end, this.formatDisplay, this.showTime ? this.endHour : '', this.showTime ? this.endMinute : '');
             } else if (this.start) {
                 this.displayLabel =
                     this.formatForDisplay(this.start, this.formatDisplay, this.showTime ? this.startHour : '', this.showTime ? this.startMinute : '') +
-                    ' â€” â€¦';
+                    ' — �';
             } else {
                 this.displayLabel = '';
             }
@@ -215,12 +215,12 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
         },
         normalizeDate(str) {
             if (!str) return '';
-            // Timestamps (10 dÃ­gitos, segundos)
+            // Timestamps (10 dígitos, segundos)
             if (/^\d{10}$/.test(str)) {
                 const d = new Date(Number(str) * 1000);
                 return d.toISOString().slice(0, 10);
             }
-            // Timestamps milisegundos (13 dÃ­gitos)
+            // Timestamps milisegundos (13 dígitos)
             if (/^\d{13}$/.test(str)) {
                 const d = new Date(Number(str));
                 return d.toISOString().slice(0, 10);
@@ -262,7 +262,7 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
                 let mesesL = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                 out = out.replace(/{MMMM}/g, mesesL[parseInt(m, 10) - 1] || m);
             }
-            // âš¡ï¸ Soporte HORA Y MINUTO
+            // ⚡️ Soporte HORA Y MINUTO
             hour = (hour || '').padStart(2, '0');
             minute = (minute || '').padStart(2, '0');
             out = out.replace(/{H}/g, hour);
