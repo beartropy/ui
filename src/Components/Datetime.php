@@ -20,9 +20,11 @@ class Datetime extends BeartropyComponent
         public $range = false,
         public $initialValue = null,
         public $format = 'Y-m-d',
-        public $formatDisplay = '{d}/{m}/{Y} {H}:{i}',
+        public $formatDisplay = null,
         public $showTime = false,
-    ) {}
+    ) {
+        $this->formatDisplay = $formatDisplay ?? ($showTime ? '{d}/{m}/{Y} {H}:{i}' : '{d}/{m}/{Y}');
+    }
 
     public function render()
     {
