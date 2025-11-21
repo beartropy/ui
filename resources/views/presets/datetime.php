@@ -18,6 +18,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-beartropy-500 focus:border-beartropy-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-beartropy-500 text-white font-bold hover:bg-beartropy-600 dark:hover:bg-beartropy-600',
         ],
         'red' => [
             'dropdown_bg' => 'bg-red-100/80 dark:bg-red-900/80',
@@ -35,6 +39,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-red-500 text-white font-bold hover:bg-red-600 dark:hover:bg-red-600',
         ],
         'blue' => [
             'dropdown_bg' => 'bg-blue-100/80 dark:bg-blue-900/80',
@@ -52,6 +60,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-blue-500 text-white font-bold hover:bg-blue-600 dark:hover:bg-blue-600',
         ],
         'green' => [
             'dropdown_bg' => 'bg-green-100/80 dark:bg-green-900/80',
@@ -69,6 +81,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-green-500 text-white font-bold hover:bg-green-600 dark:hover:bg-green-600',
         ],
         'yellow' => [
             'dropdown_bg' => 'bg-yellow-100/80 dark:bg-yellow-900/80',
@@ -86,6 +102,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-yellow-500 text-white font-bold hover:bg-yellow-600 dark:hover:bg-yellow-600',
         ],
         'purple' => [
             'dropdown_bg' => 'bg-purple-100/80 dark:bg-purple-900/80',
@@ -103,6 +123,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-purple-500 text-white font-bold hover:bg-purple-600 dark:hover:bg-purple-600',
         ],
         'pink' => [
             'dropdown_bg' => 'bg-pink-100/80 dark:bg-pink-900/80',
@@ -120,6 +144,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-pink-500 text-white font-bold hover:bg-pink-600 dark:hover:bg-pink-600',
         ],
         'gray' => [
             'dropdown_bg' => 'bg-gray-100/80 dark:bg-gray-900/80',
@@ -137,6 +165,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-gray-500 text-white font-bold hover:bg-gray-600 dark:hover:bg-gray-600',
         ],
         'orange' => [
             'dropdown_bg' => 'bg-orange-100/80 dark:bg-orange-900/80',
@@ -154,6 +186,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-orange-500 text-white font-bold hover:bg-orange-600 dark:hover:bg-orange-600',
         ],
         'amber' => [
             'dropdown_bg' => 'bg-amber-100/80 dark:bg-amber-900/80',
@@ -171,6 +207,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-amber-500 text-white font-bold hover:bg-amber-600 dark:hover:bg-amber-600',
         ],
         'lime' => [
             'dropdown_bg' => 'bg-lime-100/80 dark:bg-lime-900/80',
@@ -188,6 +228,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-lime-500 text-white font-bold hover:bg-lime-600 dark:hover:bg-lime-600',
         ],
         'emerald' => [
             'dropdown_bg' => 'bg-emerald-100/80 dark:bg-emerald-900/80',
@@ -205,6 +249,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-emerald-500 text-white font-bold hover:bg-emerald-600 dark:hover:bg-emerald-600',
         ],
         'teal' => [
             'dropdown_bg' => 'bg-teal-100/80 dark:bg-teal-900/80',
@@ -222,6 +270,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-teal-500 text-white font-bold hover:bg-teal-600 dark:hover:bg-teal-600',
         ],
         'cyan' => [
             'dropdown_bg' => 'bg-cyan-100/80 dark:bg-cyan-900/80',
@@ -239,6 +291,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-cyan-500 text-white font-bold hover:bg-cyan-600 dark:hover:bg-cyan-600',
         ],
         'sky' => [
             'dropdown_bg' => 'bg-sky-100/80 dark:bg-sky-900/80',
@@ -256,6 +312,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-sky-500 text-white font-bold hover:bg-sky-600 dark:hover:bg-sky-600',
         ],
         'indigo' => [
             'dropdown_bg' => 'bg-indigo-100/80 dark:bg-indigo-900/80',
@@ -273,6 +333,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-indigo-500 text-white font-bold hover:bg-indigo-600 dark:hover:bg-indigo-600',
         ],
         'violet' => [
             'dropdown_bg' => 'bg-violet-100/80 dark:bg-violet-900/80',
@@ -290,6 +354,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-violet-500 text-white font-bold hover:bg-violet-600 dark:hover:bg-violet-600',
         ],
         'rose' => [
             'dropdown_bg' => 'bg-rose-100/80 dark:bg-rose-900/80',
@@ -307,6 +375,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-rose-500 text-white font-bold hover:bg-rose-600 dark:hover:bg-rose-600',
         ],
         'fuchsia' => [
             'dropdown_bg' => 'bg-fuchsia-100/80 dark:bg-fuchsia-900/80',
@@ -324,6 +396,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-fuchsia-500 focus:border-fuchsia-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-fuchsia-500 text-white font-bold hover:bg-fuchsia-600 dark:hover:bg-fuchsia-600',
         ],
         'slate' => [
             'dropdown_bg' => 'bg-slate-100/80 dark:bg-slate-900/80',
@@ -341,6 +417,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-slate-500 text-white font-bold hover:bg-slate-600 dark:hover:bg-slate-600',
         ],
         'stone' => [
             'dropdown_bg' => 'bg-stone-100/80 dark:bg-stone-900/80',
@@ -358,6 +438,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-stone-500 text-white font-bold hover:bg-stone-600 dark:hover:bg-stone-600',
         ],
         'zinc' => [
             'dropdown_bg' => 'bg-zinc-100/80 dark:bg-zinc-900/80',
@@ -375,6 +459,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-zinc-500 focus:border-zinc-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-zinc-500 text-white font-bold hover:bg-zinc-600 dark:hover:bg-zinc-600',
         ],
         'neutral' => [
             'dropdown_bg' => 'bg-neutral-100/80 dark:bg-neutral-900/80',
@@ -392,6 +480,10 @@ return [
             'select' => 'bg-white dark:bg-neutral-900 border border-gray-300 dark:border-gray-700 min-w-[3.5rem] text-gray-800 dark:text-gray-200 text-center h-9 rounded-xl focus:ring-2 focus:ring-neutral-500 focus:border-neutral-500 transition',
             'trigger_text' => 'text-neutral-800 dark:text-neutral-100',
             'placeholder_text' => 'text-neutral-400 dark:text-neutral-500',
+            // List UI for time selection
+            'list_column' => 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
+            'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
+            'list_item_active' => 'bg-neutral-500 text-white font-bold hover:bg-neutral-600 dark:hover:bg-neutral-600',
         ],
     ],
 ];

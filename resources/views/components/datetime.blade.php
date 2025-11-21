@@ -139,58 +139,68 @@
                 <!-- Selección de hora/minuto -->
                 <div class="flex w-full items-center justify-center gap-4 mb-2 bg-transparent">
                     <template x-if="showTime && start && (!range || (range && !end))">
-                        <div class="flex items-center gap-2 justify-center ">
+                        <div class="flex items-center gap-2 justify-center">
                             <!-- Hora inicio -->
-                            <div class="relative">
-                                <select
-                                    x-model="startHour"
-                                    class="{{ $colorDropdown['select'] ?? '' }} beartropy-thin-scrollbar"
-                                >
+                            <div class="flex flex-col items-center">
+                                <label class="text-xs text-gray-500 mb-1 font-medium">Hora</label>
+                                <ul class="{{ $colorDropdown['list_column'] ?? 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth' }}">
                                     <template x-for="h in 24" :key="h">
-                                        <option :value="String(h-1).padStart(2,'0')" x-text="String(h-1).padStart(2,'0')"></option>
+                                        <li
+                                            @click="startHour = String(h-1).padStart(2,'0')"
+                                            class="{{ $colorDropdown['list_item'] ?? 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors' }}"
+                                            :class="{ '{{ $colorDropdown['list_item_active'] ?? 'bg-beartropy-500 text-white font-bold hover:bg-beartropy-600 dark:hover:bg-beartropy-600' }}': startHour === String(h-1).padStart(2,'0') }"
+                                            x-text="String(h-1).padStart(2,'0')"
+                                        ></li>
                                     </template>
-                                </select>
+                                </ul>
                             </div>
-                            <span class="text-lg opacity-60">:</span>
+                            <span class="text-xl font-bold opacity-30 pt-6">:</span>
                             <!-- Minuto inicio -->
-                            <div class="relative">
-                                <select
-                                    x-model="startMinute"
-                                    @change="setTime('start', startHour, startMinute)"
-                                    class="{{ $colorDropdown['select'] ?? '' }} beartropy-thin-scrollbar"
-                                >
+                            <div class="flex flex-col items-center">
+                                <label class="text-xs text-gray-500 mb-1 font-medium">Min</label>
+                                <ul class="{{ $colorDropdown['list_column'] ?? 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth' }}">
                                     <template x-for="m in 60" :key="m">
-                                        <option :value="String(m-1).padStart(2,'0')" x-text="String(m-1).padStart(2,'0')"></option>
+                                        <li
+                                            @click="startMinute = String(m-1).padStart(2,'0'); setTime('start', startHour, startMinute)"
+                                            class="{{ $colorDropdown['list_item'] ?? 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors' }}"
+                                            :class="{ '{{ $colorDropdown['list_item_active'] ?? 'bg-beartropy-500 text-white font-bold hover:bg-beartropy-600 dark:hover:bg-beartropy-600' }}': startMinute === String(m-1).padStart(2,'0') }"
+                                            x-text="String(m-1).padStart(2,'0')"
+                                        ></li>
                                     </template>
-                                </select>
+                                </ul>
                             </div>
                         </div>
                     </template>
                     <template x-if="showTime && end">
                         <div class="flex items-center gap-2 justify-center">
                             <!-- Hora fin -->
-                            <div class="relative">
-                                <select
-                                    x-model="endHour"
-                                    class="{{ $colorDropdown['select'] ?? '' }} beartropy-thin-scrollbar"
-                                >
+                            <div class="flex flex-col items-center">
+                                <label class="text-xs text-gray-500 mb-1 font-medium">Hora</label>
+                                <ul class="{{ $colorDropdown['list_column'] ?? 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth' }}">
                                     <template x-for="h in 24" :key="h">
-                                        <option :value="String(h-1).padStart(2,'0')" x-text="String(h-1).padStart(2,'0')"></option>
+                                        <li
+                                            @click="endHour = String(h-1).padStart(2,'0')"
+                                            class="{{ $colorDropdown['list_item'] ?? 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors' }}"
+                                            :class="{ '{{ $colorDropdown['list_item_active'] ?? 'bg-beartropy-500 text-white font-bold hover:bg-beartropy-600 dark:hover:bg-beartropy-600' }}': endHour === String(h-1).padStart(2,'0') }"
+                                            x-text="String(h-1).padStart(2,'0')"
+                                        ></li>
                                     </template>
-                                </select>
+                                </ul>
                             </div>
-                            <span class="text-lg opacity-60">:</span>
+                            <span class="text-xl font-bold opacity-30 pt-6">:</span>
                             <!-- Minuto fin -->
-                            <div class="relative">
-                                <select
-                                    x-model="endMinute"
-                                    @change="setTime('end', endHour, endMinute)"
-                                    class="{{ $colorDropdown['select'] ?? '' }} beartropy-thin-scrollbar"
-                                >
+                            <div class="flex flex-col items-center">
+                                <label class="text-xs text-gray-500 mb-1 font-medium">Min</label>
+                                <ul class="{{ $colorDropdown['list_column'] ?? 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth' }}">
                                     <template x-for="m in 60" :key="m">
-                                        <option :value="String(m-1).padStart(2,'0')" x-text="String(m-1).padStart(2,'0')"></option>
+                                        <li
+                                            @click="endMinute = String(m-1).padStart(2,'0'); setTime('end', endHour, endMinute)"
+                                            class="{{ $colorDropdown['list_item'] ?? 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors' }}"
+                                            :class="{ '{{ $colorDropdown['list_item_active'] ?? 'bg-beartropy-500 text-white font-bold hover:bg-beartropy-600 dark:hover:bg-beartropy-600' }}': endMinute === String(m-1).padStart(2,'0') }"
+                                            x-text="String(m-1).padStart(2,'0')"
+                                        ></li>
                                     </template>
-                                </select>
+                                </ul>
                             </div>
                         </div>
                     </template>
