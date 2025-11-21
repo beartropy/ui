@@ -19,8 +19,8 @@ const config = {
 if (isWatch) {
     const ctx = await esbuild.context(config);
     await ctx.watch();
-    console.log('👀 Watching for changes...');
+    console.log('[beartropy-ui] Watching for changes...');
 } else {
     await esbuild.build(config);
-    console.log('✅ Build complete!');
+    console.log('[beartropy-ui] Build complete.');
 }
