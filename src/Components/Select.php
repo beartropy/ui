@@ -83,8 +83,13 @@ class Select extends InputTriggerBase
 
         if(empty($options) || is_null($options)) {
             $this->isEmpty = true;
-            $clearable = false;
-            $searchable = false;
+            
+            // Fix: Don't disable search/clear if it's a remote select
+            if (!filter_var($remote, FILTER_VALIDATE_BOOLEAN) && empty($remoteUrl)) {
+                $clearable = false;
+                $searchable = false;
+            }
+            
             $options = [];
         } else {
             $this->options      = $this->normalizeOptions($options);
