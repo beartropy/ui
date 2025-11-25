@@ -39,14 +39,14 @@
             @if ($slot->isNotEmpty())
             {!! $slot !!}
             @else
-                <x-beartropy-ui::icon name="{{$icon}}" class="{{$sizePreset['buttonIconIcon']}}" />
+                <x-beartropy-ui::icon name="{{$icon}}" class="{{$sizePreset['buttonIconIcon']}}" set="{{$iconSet}}" variant="{{$iconVariant}}" />
             @endif
         </div>
     @else
         @if ($slot->isNotEmpty())
             {!! $slot !!}
         @else
-            <x-beartropy-ui::icon name="{{$icon}}" class="{{$sizePreset['buttonIconIcon']}}" />
+            <x-beartropy-ui::icon name="{{$icon}}" class="{{$sizePreset['buttonIconIcon']}}" set="{{$iconSet}}" variant="{{$iconVariant}}" />
         @endif
     @endif
   </{{ $tag }}>
