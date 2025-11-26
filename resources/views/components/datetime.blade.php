@@ -1,4 +1,4 @@
-﻿@php
+@php
     [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('input');
     [$colorDropdown, $sizeDropdown] = $getComponentPresets('datetime');
     [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
