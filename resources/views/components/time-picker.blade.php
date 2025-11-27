@@ -43,7 +43,7 @@
         <x-slot name="button">
             <div @click="open = !open" class="flex items-center gap-2 min-h-[1.6em] cursor-pointer w-full truncate ">
                 <span x-text="displayLabel || '{{ $placeholder }}'"
-                    :class="!displayLabel ? 'beartropy-placeholder' : '{{$colorDropdown['option_text']}}'"></span>
+                    :class="!displayLabel ? 'beartropy-placeholder text-sm text-gray-400 dark:text-gray-500' : '{{$colorDropdown['option_text']}}'"></span>
             </div>
         </x-slot>
         <x-slot name="end">
