@@ -15,6 +15,8 @@ class ButtonIcon extends BeartropyComponent
         public ?string $iconVariant = null,
     ) {
         parent::__construct();
+        $this->iconSet = $iconSet ?? config('beartropyui.icons.set', 'heroicons');
+        $this->iconVariant = $iconVariant ?? config('beartropyui.icons.variant', 'outline');
     }
 
     public function render()
