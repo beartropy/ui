@@ -5,8 +5,7 @@
 
     $wrapperClasses = $colorPreset['wrapper']
         . ($noBorder ? ' border-0 shadow-none' : ' border border-gray-200 dark:border-gray-700')
-        . ($hasWireTarget ? ' relative' : '');
-
+        . ($hasWireTarget ? ' relative' : ' relative'); // lo dejo siempre relative, no molesta
     $initialOpen = $defaultOpen ? 'true' : 'false';
 @endphp
 
@@ -18,10 +17,10 @@
     @endif
     {{ $attributes->merge(['class' => $wrapperClasses]) }}
 >
-
     @if (!empty($title))
         <div
             class="{{ $colorPreset['title'] }} py-1 {{ $collapsable ? 'cursor-pointer select-none flex items-center justify-between gap-2' : 'border-b border-gray-200 dark:border-gray-700' }}"
+
             @if($collapsable)
                 @click="open = !open"
                 :class="open ? 'border-b border-gray-200 dark:border-gray-700' : 'border-b-0'"
@@ -52,7 +51,7 @@
 
     {{-- CONTENIDO PRINCIPAL --}}
     <div
-        class="{{ $colorPreset['slot'] }} py-2 "
+        class="{{ $colorPreset['slot'] }} py-2"
         @if($collapsable)
             x-cloak
             x-show="open"
@@ -84,9 +83,47 @@
         <div
             wire:loading.flex
             wire:target="{{ $attributes->wire('target')->value() }}"
-            class="absolute inset-0 bg-white/50 dark:bg-gray-900/50 rounded-xl items-center justify-center z-10"
+            class="absolute inset-0 z-20 flex items-center justify-center rounded-xl pointer-events-none"
         >
-            <x-beartropy-ui::svg.beartropy-spinner class="w-10 h-10 text-primary-600" />
+            <div class="absolute inset-0 bg-white/70 dark:bg-gray-900/70 rounded-xl"></div>
+
+            <div class="relative">
+                <svg
+                    class="w-10 h-10 animate-spin text-black dark:text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <defs>
+                        {{-- Definimos el gradiente para la "cola" del spinner --}}
+                        <linearGradient id="spinner-mix-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="currentColor" stop-opacity="0" />
+                            <stop offset="100%" stop-color="currentColor" stop-opacity="1" />
+                        </linearGradient>
+                    </defs>
+
+                    {{-- Fondo: Anillo segmentado (tech) sutil --}}
+                    <circle
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-dasharray="3 5" {{-- Guiones cortos y espacios --}}
+                        class="opacity-20"
+                    />
+
+                    {{-- Frente: Arco suave con gradiente --}}
+                    {{-- Usamos un path para tener control total del inicio y fin del arco --}}
+                    <path
+                        d="M12 2 A10 10 0 0 1 21.5 9.5"
+                        stroke="url(#spinner-mix-gradient)"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                    />
+                </svg>
+            </div>
         </div>
     @endif
+
 </div>
