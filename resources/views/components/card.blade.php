@@ -1,8 +1,11 @@
 @php
     [$colorPreset, $sizePreset] = $getComponentPresets('card', null);
 
+    $hasWireTarget = $attributes->whereStartsWith('wire:target')->isNotEmpty();
+
     $wrapperClasses = $colorPreset['wrapper']
-        . ($noBorder ? ' border-0 shadow-none' : ' border border-gray-200 dark:border-gray-700');
+        . ($noBorder ? ' border-0 shadow-none' : ' border border-gray-200 dark:border-gray-700')
+        . ($hasWireTarget ? ' relative' : '');
 
     $initialOpen = $defaultOpen ? 'true' : 'false';
 @endphp
@@ -74,6 +77,16 @@
             <div class="{{ $colorPreset['footer'] }}">
                 {!! $footer !!}
             </div>
+        </div>
+    @endif
+
+    @if($hasWireTarget)
+        <div
+            wire:loading.flex
+            wire:target="{{ $attributes->wire('target')->value() }}"
+            class="absolute inset-0 bg-white/50 dark:bg-gray-900/50 rounded-xl items-center justify-center z-10"
+        >
+            <x-beartropy-ui::svg.beartropy-spinner class="w-10 h-10 text-primary-600" />
         </div>
     @endif
 </div>
