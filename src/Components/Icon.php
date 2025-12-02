@@ -4,7 +4,6 @@ namespace Beartropy\Ui\Components;
 
 class Icon extends BeartropyComponent
 {
-
     public function __construct(
         public string $name,
         public ?string $size = null,
@@ -16,19 +15,19 @@ class Icon extends BeartropyComponent
         public ?string $sizeClass = null,
     ) {}
 
-    public function getClasses($iconSize) {
-
+    public function getClasses($iconSize)
+    {
         // Icon set: primero el override, si no, el default
         $this->set = $this->set ?? config('beartropyui.icons.set', 'heroicons');
-
-
+        $this->variant = $this->variant;
         // Variante: primero override, si no, el default
-        if ($this->solid) {
+
+        if (is_null($this->variant) && $this->solid) {
             $this->variant = 'solid';
-        } elseif ($this->outline) {
+        } elseif (is_null($this->variant) && $this->outline) {
             $this->variant = 'outline';
         } else {
-            $this->variant = config('beartropyui.icons.variant', 'outline');
+            $this->variant = $this->variant ?? config('beartropyui.icons.variant', 'outline');
         }
 
         if ($this->set === 'heroicons') {
@@ -41,16 +40,16 @@ class Icon extends BeartropyComponent
             }
         }
 
-        $allClasses = trim(($iconSize ?? '') . ' ' . ($this->class ?? ''));
+        $allClasses = trim(($iconSize ?? '').' '.($this->class ?? ''));
 
         if ($this->set === 'heroicons') {
             $iconComponent = $this->variant === 'solid'
-                ? 'heroicon-s-' . $this->name
-                : 'heroicon-o-' . $this->name;
+                ? 'heroicon-s-'.$this->name
+                : 'heroicon-o-'.$this->name;
         } elseif ($this->set === 'lucide') {
-            $iconComponent = 'lucide-' . $this->name;
+            $iconComponent = 'lucide-'.$this->name;
         } elseif ($this->set === 'fontawesome') {
-            $fa = $this->name . ' ' . $allClasses;
+            $fa = $this->name.' '.$allClasses;
         } else {
             $iconComponent = null;
         }

@@ -8,6 +8,8 @@
         :iconStart="$iconStart"
         :iconEnd="$iconEnd"
         :spinner="$spinner"
+        :iconSet="$iconSet"
+        :iconVariant="$iconVariant"
         {{ $attributes }}
     >
         @if(isset($start))

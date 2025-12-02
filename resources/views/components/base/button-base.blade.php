@@ -3,6 +3,7 @@
     $tag = $tag ?? ($href ? 'a' : 'button');
     $wireTarget = $getWireTarget();
 
+    
 @endphp
 
 <{{ $tag }}
@@ -39,7 +40,7 @@
             {{ $start }}
         @endif
         @if (isset($iconStart))
-            <x-beartropy-ui::icon name="{{$iconStart}}" class="mr-2 {{$sizePreset['iconSize']}}" />
+            <x-beartropy-ui::icon name="{{$iconStart}}" class="inline-flex items-center {{$sizePreset['iconSize']}} {{ $iconSet == 'fontawesome' ? 'mr-0' : 'mr-2' }}" set="{{$iconSet}}" variant="{{$iconVariant}}" />
         @endif
 
         <span class="flex items-center whitespace-nowrap">
@@ -47,7 +48,7 @@
         </span>
 
         @if (isset($iconEnd))
-            <x-beartropy-ui::icon name="{{$iconEnd}}" class="ml-2 {{$sizePreset['iconSize']}}" />
+            <x-beartropy-ui::icon name="{{$iconEnd}}" class="inline-flex items-center ml-2 {{$sizePreset['iconSize']}}" set="{{$iconSet}}" variant="{{$iconVariant}}" />
         @endif
         @if (isset($end))
             {{ $end }}

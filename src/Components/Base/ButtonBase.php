@@ -7,17 +7,30 @@ use Beartropy\Ui\Components\BeartropyComponent;
 class ButtonBase extends BeartropyComponent
 {
     public $iconStart = null;
+
     public $iconEnd = null;
+
     public $spinner = null;
+
     public $tag = 'button';
+
     public $type = 'button';
+
     public $href = null;
+
     public $disabled = false;
+
     public $size = null;
+
     public $color = null;
+
     public $variant = null;
 
-    public function __construct($iconStart = null, $iconEnd = null, $spinner = null, $tag = null, $type = null, $href = null, $disabled = false, $size = null, $color = null, $variant = null)
+    public $iconSet = null;
+
+    public $iconVariant = null;
+
+    public function __construct($iconStart = null, $iconEnd = null, $spinner = null, $tag = null, $type = null, $href = null, $disabled = null, $size = null, $color = null, $variant = null, $iconSet = null, $iconVariant = null)
     {
         $this->iconStart = $iconStart;
         $this->iconEnd = $iconEnd;
@@ -29,9 +42,12 @@ class ButtonBase extends BeartropyComponent
         $this->size = $size;
         $this->color = $color;
         $this->variant = $variant;
+        $this->iconSet = $iconSet ?? config('beartropyui.icons.set', 'heroicons');
+        $this->iconVariant = $iconVariant ?? config('beartropyui.icons.variant', 'outline');
     }
 
-    public function getTag() {
+    public function getTag()
+    {
         if ($this->attributes->has('href')) {
             return 'a';
         } else {
@@ -39,14 +55,16 @@ class ButtonBase extends BeartropyComponent
         }
     }
 
-    public function getWireTarget() {
+    public function getWireTarget()
+    {
         $wireTarget = $this->attributes->get('wire:target');
-        if (!$wireTarget && $this->attributes->has('wire:click')) {
+        if (! $wireTarget && $this->attributes->has('wire:click')) {
             $wireClick = $this->attributes->get('wire:click');
             if (preg_match('/^\s*([a-zA-Z0-9_]+)/', $wireClick, $matches)) {
                 $wireTarget = $matches[1];
             }
         }
+
         return $wireTarget;
     }
 
@@ -54,5 +72,4 @@ class ButtonBase extends BeartropyComponent
     {
         return view('beartropy-ui::base.button-base');
     }
-
 }
