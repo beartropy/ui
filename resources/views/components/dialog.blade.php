@@ -138,13 +138,13 @@
                     <div class="flex-1 min-w-0 text-left">
                         <h2
                             class="text-lg font-semibold text-slate-900 dark:text-slate-50"
-                            x-text="title"
+                            x-html="title"
                         ></h2>
 
                         <p
                             x-show="description"
                             class="mt-1 text-base text-slate-600 dark:text-slate-300 whitespace-pre-line"
-                            x-text="description"
+                            x-html="description"
                         ></p>
                     </div>
                 </div>
