@@ -935,10 +935,17 @@
   window.$beartropy.openModal = openModal;
   window.$beartropy.closeModal = closeModal;
   window.$beartropy.toast = toast;
-  window.$beartropy.beartropyTable = beartropyTable;
-  window.$beartropy.datetimepicker = datetimepicker;
-  window.$beartropy.timepicker = timepicker;
-  window.$beartropy.tagInput = tagInput;
-  window.$beartropy.confirmHost = confirmHost;
   window.beartropyI18n = beartropyI18n;
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("beartropyTable", beartropyTable);
+    Alpine.data("datetimepicker", datetimepicker);
+    Alpine.data("timepicker", timepicker);
+    Alpine.data("tagInput", tagInput);
+    Alpine.data("confirmHost", confirmHost);
+    window.$beartropy.beartropyTable = beartropyTable;
+    window.$beartropy.datetimepicker = datetimepicker;
+    window.$beartropy.timepicker = timepicker;
+    window.$beartropy.tagInput = tagInput;
+    window.$beartropy.confirmHost = confirmHost;
+  });
 })();
