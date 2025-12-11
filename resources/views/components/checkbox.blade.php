@@ -20,7 +20,7 @@
 
 @endphp
 
-<div class="flex flex-col min-h-full justify-center">
+<div {{ $attributes->only(['class', 'style'])->merge(['class' => 'flex flex-col min-h-full justify-center']) }}>
     <label class="relative inline-flex items-center cursor-pointer select-none gap-1 {{ $disabled ? $colorPreset['disabled'] : '' }}">
         @if($labelPosition === 'left')
             <span class="{{ $sizePreset['font'] }} {{ $labelSpacing }} {{ $labelClass }}">
@@ -31,7 +31,7 @@
         <div class="relative">
             <input
                 type="checkbox"
-                {{ $attributes->merge(['class' => 'peer sr-only', 'disabled' => $disabled]) }}
+                {{ $attributes->except(['class', 'style'])->merge(['class' => 'peer sr-only', 'disabled' => $disabled, 'checked' => $checked, 'value' => $value]) }}
             >
             <span class="{{ $sizePreset['box'] }} {{ in_array($size ?? 'md', ['xs','sm', 'md']) ? 'rounded-sm' : 'rounded-md' }}
                         {{ $borderClass }}
