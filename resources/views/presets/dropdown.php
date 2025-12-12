@@ -4,7 +4,7 @@ return [
     'colors' => [
         'beartropy' => [
             'dropdown_bg' => 'bg-white dark:bg-gray-900',
-            'dropdown_border' => 'border border-beartropy-300 dark:border-beartropy-600',
+            'dropdown_border' => 'border border-gray-300 dark:border-gray-600',
             'dropdown_shadow' => 'shadow-lg',
             'item_hover_bg' => 'hover:bg-beartropy-50 dark:hover:bg-beartropy-900',
             'item_active_bg' => 'active:bg-beartropy-100 dark:active:bg-beartropy-800',
