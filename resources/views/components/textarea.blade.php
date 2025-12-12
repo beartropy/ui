@@ -74,7 +74,7 @@
             x-ref="textarea"
             {{ $attributes->merge([
                 // Solo pr-2 acá, para evitar que el scroll se meta en el padding
-                'class' => $colorPreset['input'] . '  beartropy-thin-scrollbar pr-3 ' . $resizeClass
+                'class' => $colorPreset['input'] . '  beartropy-thin-scrollbar ' . ($showCopyButton ? 'pr-12' : 'pr-3') . ' ' . $resizeClass
             ]) }}
             @if($autoResize)
                 x-init="$el.style.height = $el.scrollHeight + 'px'"
