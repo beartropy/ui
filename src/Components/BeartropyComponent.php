@@ -38,8 +38,15 @@ abstract class BeartropyComponent extends Component
         $wireModelValue = $attributes->wire('model')->value();
 
         $hasWireModel = ($wireModelValue) ? true : false;
+        $hasDotNotation = false;
+        $parsedDotNotationValue = null;
 
-        return [$hasWireModel, $wireModelValue];
+        if ($hasWireModel && preg_match('/\.(\d+)/', $wireModelValue)) {
+            $hasDotNotation = true;
+            $parsedDotNotationValue = preg_replace('/\.(\d+)/', '[$1]', $wireModelValue);
+        }
+
+        return [$hasWireModel, $wireModelValue, $hasDotNotation, $parsedDotNotationValue];
 
     }
 
