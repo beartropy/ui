@@ -63,3 +63,5 @@ docs/.vitepress/dist/
 # NPM production build
 /public/js
 /public/css
+
+.agent
