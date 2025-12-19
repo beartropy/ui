@@ -99,11 +99,40 @@
                             start: null,
                             remaining: toast.duration,
                             isSticky: toast.duration <= 0,
+                            init() {
+                                window.bt_toast_timers = window.bt_toast_timers || {};
+                                if (window.bt_toast_timers[toast.id]) {
+                                    clearTimeout(window.bt_toast_timers[toast.id]);
+                                }
+                                if (this.isSticky) {
+                                    if (this.$refs.progress) this.$refs.progress.style.width = '0%';
+                                    return;
+                                }
+                                if (this.$refs.progress) {
+                                    this.$refs.progress.style.width = '100%';
+                                    this.$nextTick(() => {
+                                        this.$refs.progress.style.transition = 'width ' + this.remaining + 'ms linear';
+                                        this.$refs.progress.style.width = '0%';
+                                    });
+                                }
+                                this.start = Date.now();
+                                window.bt_toast_timers[toast.id] = setTimeout(() => {
+                                    this.show = false;
+                                    Alpine.store('toasts').remove(toast.id);
+                                    delete window.bt_toast_timers[toast.id];
+                                }, this.remaining);
+                            },
                             pause() {
                                 if (this.isSticky) return;
-                                clearTimeout(this.timer);
-                                if (this.start) this.remaining -= Date.now() - this.start;
-                                $refs.progress.style.transition = 'none';
+                                clearTimeout(window.bt_toast_timers[toast.id]);
+                                delete window.bt_toast_timers[toast.id];
+                                if (this.start) {
+                                    this.remaining -= Date.now() - this.start;
+                                    this.start = null;
+                                }
+                                const w = window.getComputedStyle(this.$refs.progress).width;
+                                this.$refs.progress.style.transition = 'none';
+                                this.$refs.progress.style.width = w;
                             },
                             resume() {
                                 if (this.isSticky) return;
@@ -113,33 +142,15 @@
                                     return;
                                 }
                                 this.start = Date.now();
-                                $refs.progress.style.transition = 'width ' + this.remaining + 'ms linear';
-                                $refs.progress.style.width = '0%';
-                                this.timer = setTimeout(() => {
+                                this.$refs.progress.style.transition = 'width ' + this.remaining + 'ms linear';
+                                this.$refs.progress.style.width = '0%';
+                                window.bt_toast_timers[toast.id] = setTimeout(() => {
                                     this.show = false;
                                     Alpine.store('toasts').remove(toast.id);
+                                    delete window.bt_toast_timers[toast.id];
                                 }, this.remaining);
                             }
                         }"
-                        x-init="
-                            if (toast.duration > 0) {
-                                $refs.progress.style.width = '100%';
-                                $nextTick(() => {
-                                    $refs.progress.style.transition = 'width ' + toast.duration + 'ms linear';
-                                    $refs.progress.style.width = '0%';
-                                });
-                                start = Date.now();
-                                timer = setTimeout(() => {
-                                    show = false;
-                                    Alpine.store('toasts').remove(toast.id);
-                                }, toast.duration);
-                            } else {
-                                // Sticky: sin animación ni timeout
-                                if ($refs.progress) {
-                                    $refs.progress.style.width = '0%';
-                                }
-                            }
-                        "
                         x-show="show"
                         @mouseenter="pause" @mouseleave="resume"
                         x-transition:enter="transition-all ease-out duration-300"
@@ -240,11 +251,40 @@
                         start: null,
                         remaining: toast.duration,
                         isSticky: toast.duration <= 0,
+                        init() {
+                            window.bt_toast_timers = window.bt_toast_timers || {};
+                            if (window.bt_toast_timers[toast.id]) {
+                                clearTimeout(window.bt_toast_timers[toast.id]);
+                            }
+                            if (this.isSticky) {
+                                if (this.$refs.progress) this.$refs.progress.style.width = '0%';
+                                return;
+                            }
+                            if (this.$refs.progress) {
+                                this.$refs.progress.style.width = '100%';
+                                this.$nextTick(() => {
+                                    this.$refs.progress.style.transition = 'width ' + this.remaining + 'ms linear';
+                                    this.$refs.progress.style.width = '0%';
+                                });
+                            }
+                            this.start = Date.now();
+                            window.bt_toast_timers[toast.id] = setTimeout(() => {
+                                this.show = false;
+                                Alpine.store('toasts').remove(toast.id);
+                                delete window.bt_toast_timers[toast.id];
+                            }, this.remaining);
+                        },
                         pause() {
                             if (this.isSticky) return;
-                            clearTimeout(this.timer);
-                            if (this.start) this.remaining -= Date.now() - this.start;
-                            $refs.progress.style.transition = 'none';
+                            clearTimeout(window.bt_toast_timers[toast.id]);
+                            delete window.bt_toast_timers[toast.id];
+                            if (this.start) {
+                                this.remaining -= Date.now() - this.start;
+                                this.start = null;
+                            }
+                            const w = window.getComputedStyle(this.$refs.progress).width;
+                            this.$refs.progress.style.transition = 'none';
+                            this.$refs.progress.style.width = w;
                         },
                         resume() {
                             if (this.isSticky) return;
@@ -254,26 +294,15 @@
                                 return;
                             }
                             this.start = Date.now();
-                            $refs.progress.style.transition = 'width ' + this.remaining + 'ms linear';
-                            $refs.progress.style.width = '0%';
-                            this.timer = setTimeout(() => {
+                            this.$refs.progress.style.transition = 'width ' + this.remaining + 'ms linear';
+                            this.$refs.progress.style.width = '0%';
+                            window.bt_toast_timers[toast.id] = setTimeout(() => {
                                 this.show = false;
                                 Alpine.store('toasts').remove(toast.id);
+                                delete window.bt_toast_timers[toast.id];
                             }, this.remaining);
                         }
                     }"
-                    x-init="
-                        if (toast.duration > 0) {
-                            $refs.progress.style.width='100%';
-                            $nextTick(()=>{ $refs.progress.style.transition='width '+toast.duration+'ms linear'; $refs.progress.style.width='0%'; });
-                            start=Date.now();
-                            timer=setTimeout(()=>{ show=false; Alpine.store('toasts').remove(toast.id); }, toast.duration);
-                        } else {
-                            if ($refs.progress) {
-                                $refs.progress.style.width = '0%';
-                            }
-                        }
-                    "
                     x-show="show"
                     @mouseenter="pause" @mouseleave="resume"
                     x-transition:enter="transition-all ease-in-out duration-500"
