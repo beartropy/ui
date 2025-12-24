@@ -5,9 +5,9 @@ $iconData = $getClasses($iconSize);
 @endphp
 
 @if(isset($iconData->iconComponent))
-    <x-dynamic-component :component="$iconData->iconComponent" :class="$iconData->allClasses" />
+    <x-dynamic-component :component="$iconData->iconComponent" :class="$iconData->allClasses" {{ $attributes }} />
 @elseif($iconData->set === 'fontawesome')
-    <i class="{{ $iconData->fa }}"></i>
+    <i class="{{ $iconData->fa }}" {{ $attributes }}></i>
 @else
-    <span class="text-red-600">?</span>
+    <span class="text-red-600" {{ $attributes }}>?</span>
 @endif
