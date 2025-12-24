@@ -93,6 +93,11 @@ return [
         'table' => [
             'color' => env('BEARTROPY_UI_TABLE_COLOR', 'beartropy'),
         ],
+        'chat-input' => [
+            'color' => env('BEARTROPY_UI_CHAT_INPUT_COLOR', 'beartropy'),
+            'size' => env('BEARTROPY_UI_CHAT_INPUT_SIZE', 'md'),
+            'outline' => env('BEARTROPY_UI_CHAT_INPUT_OUTLINE', true)
+        ],
     ],
 
     'presets' => [
@@ -107,7 +112,7 @@ return [
         'datetime'     => beartropy_preset('datetime'),
         'table'        => beartropy_preset('table'),
         'textarea'     => beartropy_preset('textarea'),
-        'file-dropzone'=> beartropy_preset('file-dropzone'),
+        'file-dropzone' => beartropy_preset('file-dropzone'),
         'alert'        => beartropy_preset('alert'),
         'badge'        => beartropy_preset('badge'),
         'card'         => beartropy_preset('card'),
@@ -115,5 +120,6 @@ return [
         'avatar'       => beartropy_preset('avatar'),
         'command-palette' => beartropy_preset('command-palette'),
         'fab'          => beartropy_preset('fab'),
+        'chat-input'   => beartropy_preset('chat-input'),
     ],
 ];

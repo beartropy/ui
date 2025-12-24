@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.10.0] - 2025-12-24
+
+### Added
+- Added `ChatInput` component.
+
 ## [v0.9.44] - 2025-12-24
 
 ### Fixed
