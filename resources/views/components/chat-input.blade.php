@@ -20,40 +20,44 @@
 
     <div class="{{ $wrapperClass }} {{ $colorPreset['main'] ?? '' }}"
         x-data='{
-        val: $el.querySelector("textarea").value,
+        val: @if ($hasWireModel) $wire.entangle("{{ $wireModelValue }}") @else $el.querySelector("textarea").value @endif,
         isSingleLine: @json(!$stacked),
         stacked: @json($stacked),
         action: @json($action),
         submitOnEnter: @json($submitOnEnter),
         baseHeight: 0,
         init() {
-            this.resize();
-            if (!this.stacked) {
-                this.$nextTick(() => {
+            this.$nextTick(() => {
+                if (!this.stacked) {
                     this.baseHeight = $refs.textarea.clientHeight;
+                }
+                this.resize();
+                if (!this.stacked) {
                     this.checkLine();
-                });
-            }
+                }
+            });
+            this.$watch("val",
+        ()=> {
+        this.$nextTick(() => this.resize());
+        });
         },
         resize() {
-            $refs.textarea.style.height = "auto";
-            $refs.textarea.style.height = $refs.textarea.scrollHeight + "px";
-            if (!this.stacked) {
-                this.checkLine();
-            }
+        $refs.textarea.style.height = "auto";
+        $refs.textarea.style.height = $refs.textarea.scrollHeight + "px";
+        if (!this.stacked) {
+        this.checkLine();
+        }
         },
         checkLine() {
+            if (!this.val) {
+                this.isSingleLine = true;
+                return;
+            }
             if (this.baseHeight > 0) {
                 this.isSingleLine = $refs.textarea.scrollHeight <= (this.baseHeight + 10);
             }
-        },
-        handleEnter(e) {
-            if (this.submitOnEnter && this.action && !e.shiftKey) {
-                e.preventDefault();
-                $wire.call(this.action);
-            }
-        }
-    }'
+        }, handleEnter(e) { if
+            (this.submitOnEnter && this.action && !e.shiftKey) { e.preventDefault(); $wire.call(this.action); } } }'
         :class="isSingleLine && !stacked ? 'grid grid-cols-[auto_1fr_auto] items-center gap-x-2' :
             'grid grid-cols-2 gap-y-2 items-center'">
 
@@ -69,8 +73,9 @@
             @if ($disabled) disabled @endif @if ($readonly) readonly @endif
             @if ($required) required @endif
             @if ($maxLength) maxlength="{{ $maxLength }}" @endif x-ref="textarea" x-model="val"
-            class="{{ $colorPreset['input'] }} py-2 min-w-0" :class="isSingleLine && !stacked ? 'col-start-2' : 'col-span-2'"
-            x-init="init()" x-on:input="resize()" x-on:keydown.enter="handleEnter($event)"
+            class="{{ $colorPreset['input'] }} py-2 min-w-0 max-h-60 overflow-y-auto beartropy-textarea beartropy-thin-scrollbar"
+            :class="isSingleLine && !stacked ? 'col-start-2' : 'col-span-2'" x-init="init()" x-on:input="resize()"
+            x-on:keydown.enter="handleEnter($event)"
             {{ $attributes->whereDoesntStartWith('wire:model')->whereDoesntStartWith('wire:click')->whereDoesntStartWith('wire:keydown') }}
             @if ($hasWireModel) wire:model="{{ $wireModelValue }}" @endif>{{ old($name, $slot) }}</textarea>
 

@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.1] - 2025-12-26
+
+### Changed
+- Fixed chat input layout clearing issue 
+
 ## [v0.11.0] - 2025-12-25
 
 ### Added
