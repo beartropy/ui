@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.0] - 2025-12-25
+
+### Added
+- **ChatInput**: Added `tools` and `actions` slots for enhanced customization.
+- **ChatInput**: Added `stacked`, `submitOnEnter`, and `action` props for layout control and behavior.
+- **ChatInput**: Implemented auto-expanding textarea with dynamic single-line/stacked layout state.
+- **Icon**: Added support for `beartropy` custom icon set.
+
+### Changed
+- Refactored internal Livewire setup.
+
 ## [v0.10.0] - 2025-12-24
 
 ### Added

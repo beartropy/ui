@@ -17,6 +17,9 @@ class ChatInput extends BeartropyComponent
         public $help = null,
         public $customError = null,
         public $maxLength = null,
+        public $stacked = false,
+        public $submitOnEnter = true,
+        public $action = null,
     ) {}
 
     public function render()

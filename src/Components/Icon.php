@@ -40,16 +40,18 @@ class Icon extends BeartropyComponent
             }
         }
 
-        $allClasses = trim(($iconSize ?? '').' '.($this->class ?? ''));
+        $allClasses = trim(($iconSize ?? '') . ' ' . ($this->class ?? ''));
 
         if ($this->set === 'heroicons') {
             $iconComponent = $this->variant === 'solid'
-                ? 'heroicon-s-'.$this->name
-                : 'heroicon-o-'.$this->name;
+                ? 'heroicon-s-' . $this->name
+                : 'heroicon-o-' . $this->name;
         } elseif ($this->set === 'lucide') {
-            $iconComponent = 'lucide-'.$this->name;
+            $iconComponent = 'lucide-' . $this->name;
         } elseif ($this->set === 'fontawesome') {
-            $fa = $this->name.' '.$allClasses;
+            $fa = $this->name . ' ' . $allClasses;
+        } elseif ($this->set === 'beartropy') {
+            $iconComponent = 'beartropy-ui-svg::beartropy-' . $this->name;
         } else {
             $iconComponent = null;
         }
