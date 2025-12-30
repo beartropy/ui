@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.2] - 2025-12-30
+
+### Changed
+- **Modal**: Enabled attribute merging for `title` and `footer` slots to allow custom classes and attributes.
+- **Modal**: Refactored `modal-root` component for better attribute handling and cleaner code.
+
 ## [v0.11.1] - 2025-12-26
 
 ### Changed
