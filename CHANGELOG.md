@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.3] - 2025-12-31
+
+### Changed
+- Added docs
+
 ## [v0.11.2] - 2025-12-30
 
 ### Changed
