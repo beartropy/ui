@@ -83,6 +83,30 @@ class Select extends InputTriggerBase
      * @param string      $optionAvatar      Key/Method for avatar mapping.
      * @param string      $emptyMessage      Text to show when no options found.
      * @param bool        $spinner           Show loading spinner.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot start         Content before trigger.
+     * @slot beforeOptions Content at top of dropdown.
+     * @slot afterOptions  Content at bottom of dropdown.
+     * @slot dropdown      Dropdown content override.
+     *
+     * ### Magic Attributes (Size)
+     * @property bool $xs Extra Small.
+     * @property bool $sm Small.
+     * @property bool $md Medium (default).
+     * @property bool $lg Large.
+     * @property bool $xl Extra Large.
+     * @property bool $2xl Double Extra Large.
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
      */
     public function __construct(
         $options = null,

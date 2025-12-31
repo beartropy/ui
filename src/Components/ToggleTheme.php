@@ -41,6 +41,20 @@ class ToggleTheme extends BeartropyComponent
      * @param string      $labelPosition    Label pos.
      * @param string|null $labelClass       Label class.
      * @param string|null $ariaLabel        Aria label.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot icon-light Custom SVG/content for light mode icon.
+     * @slot icon-dark  Custom SVG/content for dark mode icon.
+     *
+     * ### Magic Attributes (Size)
+     * @property bool $xs Extra Small.
+     * @property bool $sm Small.
+     * @property bool $md Medium (default).
+     * @property bool $lg Large.
+     * @property bool $xl Extra Large.
+     * @property bool $2xl 2x Extra Large.
      */
     public function __construct(
         public string $size = 'md',

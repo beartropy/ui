@@ -50,6 +50,28 @@ class Input extends InputBase
      * @param string|null $placeholder        Placeholder text.
      * @param bool        $spinner            Show spinner on loading.
      * @param mixed       ...$args            Parent arguments.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot start Start content/icon override.
+     * @slot end   End content/icon override.
+     *
+     * ### Magic Attributes (Size)
+     * @property bool $xs Extra Small.
+     * @property bool $sm Small.
+     * @property bool $md Medium (default).
+     * @property bool $lg Large.
+     * @property bool $xl Extra Large.
+     * @property bool $2xl Double Extra Large.
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
      */
     public function __construct(
         $iconStart = null,

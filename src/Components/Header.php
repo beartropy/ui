@@ -17,6 +17,19 @@ class Header extends Component
 
     /**
      * Create a new Header component instance.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot default Main center content.
+     * @slot actions Right-side action buttons.
+     *
+     * ### View Properties
+     * @property string|null $logo   Logo URL.
+     * @property string      $title  Header title.
+     * @property bool        $fixed  Fixed positioning.
+     * @property bool        $mini   Mini sidebar mode adjustment.
+     * @property int         $zIndex Z-index value.
      */
     public function __construct() {}
 

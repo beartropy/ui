@@ -171,7 +171,7 @@ trait HasDialogs
             'title'       => $config['title'] ?? 'Are you sure?',
             'description' => $config['description'] ?? null,
             'icon'        => $config['icon'] ?? 'question-mark-circle',
-            'size'        => $options['size'] ?? null,
+            'size'        => $config['size'] ?? null,
             'accept' => [
                 'label'  => $accept['label'] ?? 'Confirm',
                 'method' => $accept['method'] ?? null,

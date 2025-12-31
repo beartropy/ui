@@ -20,7 +20,37 @@ class Button extends BeartropyComponent
      * @param string|null $label       Button text label.
      * @param bool|null   $spinner     Whether to show a loading spinner on wire:loading.
      * @param string|null $iconSet     Icon set to use.
+     * @param string|null $iconSet     Icon set to use.
      * @param string|null $iconVariant Icon variant.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot default Button content.
+     * @slot start   Prefix content/icon.
+     * @slot end     Suffix content/icon.
+     *
+     * ### Magic Attributes (Size)
+     * @property bool $xs Extra Small.
+     * @property bool $sm Small.
+     * @property bool $md Medium (default).
+     * @property bool $lg Large.
+     * @property bool $xl Extra Large.
+     * @property bool $2xl Double Extra Large.
+     *
+     * ### Magic Attributes (Variant)
+     * @property bool $solid   Solid background (default).
+     * @property bool $outline Outline style.
+     * @property bool $ghost   Ghost/Transparent style.
+     * @property bool $link    Link style.
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
      */
     public function __construct(
         public ?string $type = null,

@@ -29,6 +29,29 @@ class ButtonIcon extends BeartropyComponent
      * @param string|null $rounded     Rounded class.
      * @param string|null $iconSet     Icon set.
      * @param string|null $iconVariant Icon variant.
+     *
+     * ## Blade Props
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
+     *
+     * ### Magic Attributes (Size)
+     * @property bool $xs Extra Small.
+     * @property bool $sm Small.
+     * @property bool $md Medium (default).
+     * @property bool $lg Large.
+     * @property bool $xl Extra Large.
+     *
+     * ### Magic Attributes (Variant)
+     * @property bool $solid   Solid variant.
+     * @property bool $outline Outline variant.
+     * @property bool $ghost   Ghost variant.
+     * @property bool $light   Light variant.
      */
     public function __construct(
         public ?string $icon = null,

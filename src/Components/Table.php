@@ -28,6 +28,21 @@ class Table extends BeartropyComponent
      * @param bool                                 $searchable Allow searching.
      * @param bool                                 $paginated  Show pagination.
      * @param string|null                          $color      Table accent color.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot header Custom header row content.
+     * @slot row    Custom row content loop.
+     * @slot footer Custom footer content.
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
      */
     public function __construct(
         $items = [],

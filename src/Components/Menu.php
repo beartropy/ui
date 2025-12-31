@@ -34,7 +34,14 @@ class Menu extends BeartropyComponent
      * @param string $titleClass  Title class.
      * @param string $itemClass   Item class.
      * @param string $liClass     LI class.
+     * @param string $liClass     LI class.
      * @param string $activeClass Active class.
+     *
+     * ## Blade Props
+     *
+     * ### View Properties
+     * @property int  $level  Recursion level (internal).
+     * @property bool $mobile Mobile mode flag.
      */
     public function __construct(
         array $items,

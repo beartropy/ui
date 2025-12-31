@@ -59,6 +59,19 @@ class Nav extends BeartropyComponent
      * @param string|null $hoverTextChildClass  Child hover text class.
      * @param string      $color                Color preset.
      * @param bool        $withnavigate         Enable wire:navigate.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot badge-{id} Custom badge content for a specific item ID.
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
      */
     public function __construct(
         $items = null,

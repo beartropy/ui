@@ -34,6 +34,22 @@ class CommandPalette extends BeartropyComponent
      * @param string|null $source      Legacy source path.
      * @param string|null $src         JSON source path.
      * @param bool        $allowGuests Allow guests to view items.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot default Custom content (less common, usually data-driven).
+     *
+     * ### View Properties
+     * @property array $bt_cp_data Filtered items injected into view.
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
      */
     public function __construct(
         public $color = null,

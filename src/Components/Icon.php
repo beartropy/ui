@@ -20,6 +20,24 @@ class Icon extends BeartropyComponent
      * @param string|null $set       Icon set override.
      * @param string|null $variant   Variant override.
      * @param string|null $sizeClass Size class? (seemingly redundant with size, but kept for legacy).
+     *
+     * ## Blade Props
+     *
+     * ### Magic Attributes (Size)
+     * @property bool $xs Extra Small.
+     * @property bool $sm Small.
+     * @property bool $md Medium (default).
+     * @property bool $lg Large.
+     * @property bool $xl Extra Large.
+     * @property bool $2xl Double Extra Large.
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
      */
     public function __construct(
         public string $name,

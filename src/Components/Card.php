@@ -20,6 +20,20 @@ class Card extends BeartropyComponent
      * @param bool|null   $collapsable Whether the card content can be toggled.
      * @param bool|null   $noBorder    Whether to remove the border.
      * @param bool|null   $defaultOpen Initial visibility state (if collapsable).
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot default Card content.
+     * @slot footer  Card footer content.
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
      */
     public function __construct(
         public ?string $title = null,

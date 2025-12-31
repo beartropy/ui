@@ -47,6 +47,26 @@ class Datetime extends BeartropyComponent
      * @param string|null $formatDisplay Display format (JS format).
      * @param bool        $showTime      Enable time picker.
      * @param string|null $color         Input color.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot default Trigger content.
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
+     *
+     * ### Magic Attributes (Size)
+     * @property bool $xs Extra Small.
+     * @property bool $sm Small.
+     * @property bool $md Medium (default).
+     * @property bool $lg Large.
+     * @property bool $xl Extra Large.
      */
     public function __construct(
         public $name = null,

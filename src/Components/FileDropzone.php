@@ -33,6 +33,16 @@ class FileDropzone extends BeartropyComponent
      * @param bool        $disabled    Disabled state.
      * @param string|null $color       Color preset.
      * @param string|null $customError Custom error message.
+     *
+     * ## Blade Props
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
      */
     public function __construct(
         public $name = null,

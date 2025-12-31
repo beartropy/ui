@@ -43,6 +43,16 @@ class ChatInput extends BeartropyComponent
      * @param bool        $stacked       Stacked layout.
      * @param bool        $submitOnEnter Submit form on Enter key.
      * @param string|null $action        Action to fire on submit.
+     *
+     * ## Blade Props
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
      */
     public function __construct(
         public $label = null,

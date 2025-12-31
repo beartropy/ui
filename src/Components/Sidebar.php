@@ -12,6 +12,16 @@ class Sidebar extends BeartropyComponent
 {
     /**
      * Create a new Sidebar component instance.
+     *
+     * ## Blade Props
+     *
+     * ### View Properties (via @props)
+     * @param string|null $logo   Logo content/HTML.
+     * @param string      $bg     Background classes (default: bg-light dark:bg-gray-900).
+     * @param string      $border Border classes (default: border-gray-200 dark:border-gray-800).
+     *
+     * ### Slots
+     * @slot default Navigation items.
      */
     public function __construct() {}
 

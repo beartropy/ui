@@ -38,7 +38,28 @@ class TimePicker extends BeartropyComponent
      * @param string|null $customError Custom error.
      * @param string      $format      Format.
      * @param int         $interval    Interval.
+     * @param int         $interval    Interval.
      * @param bool        $clearable   Clearable.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot default Trigger content.
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
+     *
+     * ### Magic Attributes (Size)
+     * @property bool $xs Extra Small.
+     * @property bool $sm Small.
+     * @property bool $md Medium (default).
+     * @property bool $lg Large.
+     * @property bool $xl Extra Large.
      */
     public function __construct(
         public $name = null,

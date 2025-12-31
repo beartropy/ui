@@ -15,6 +15,22 @@ class Layout extends BeartropyComponent
 
     /**
      * Create a new Layout component instance.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot default Main content.
+     * @slot sidebar Sidebar content.
+     * @slot header  Header content.
+     * @slot footer  Footer content.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot default Main content.
+     * @slot sidebar Sidebar content.
+     * @slot header  Header content.
+     * @slot footer  Footer content.
      */
     public function __construct() {}
 

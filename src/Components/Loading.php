@@ -21,6 +21,11 @@ class Loading extends Component
      * Create a new Loading component instance.
      *
      * @param string|null $customView Custom view path.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot default Content (unused in standard loading).
      */
     public function __construct($customView = null)
     {

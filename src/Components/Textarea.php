@@ -30,6 +30,27 @@ class Textarea extends BeartropyComponent
      * @param bool        $showCounter    Show character count.
      * @param int|null    $maxLength      Max character length.
      * @param bool        $showCopyButton Show copy to clipboard button.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot default Initial content/value.
+     *
+     * ### Magic Attributes (Size)
+     * @property bool $xs Extra Small.
+     * @property bool $sm Small.
+     * @property bool $md Medium (default).
+     * @property bool $lg Large.
+     * @property bool $xl Extra Large.
+     * @property bool $2xl Double Extra Large.
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
      */
     public function __construct(
         public $label = null,

@@ -43,6 +43,27 @@ class Tag extends BeartropyComponent
      * @param string|null $size        Size preset.
      * @param string|null $customError Custom error.
      * @param string|null $color       Color preset.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot start Prepend content/icon.
+     * @slot end   Append content/icon.
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
+     *
+     * ### Magic Attributes (Size)
+     * @property bool $xs Extra Small.
+     * @property bool $sm Small.
+     * @property bool $md Medium (default).
+     * @property bool $lg Large.
+     * @property bool $xl Extra Large.
      */
     public function __construct(
         public ?string $name = null,

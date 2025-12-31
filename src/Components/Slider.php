@@ -29,6 +29,12 @@ class Slider extends BeartropyComponent
      * @param string $maxWidth      Max width.
      * @param string $headerPadding Header padding.
      * @param bool   $static        Is static.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot default Slider body content.
+     * @slot footer  Slider footer content.
      */
     public function __construct(
         public bool $show = false,

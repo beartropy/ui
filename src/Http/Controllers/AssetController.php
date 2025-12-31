@@ -18,10 +18,10 @@ class AssetController
      *
      * Validates extension and file type before serving.
      *
-     * @param string $file Filename.
+     * @param string $file The filename including extension.
      *
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException If extension is invalid or file not found.
      */
     public function beartropyAssets($file)
     {
@@ -66,7 +66,7 @@ class AssetController
      * with appropriate headers.
      *
      * @return \Illuminate\Http\Response
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException If Ziggy is not installed.
      */
     public function ziggy()
     {

@@ -29,6 +29,26 @@ class Fab extends BeartropyComponent
      * @param string|null $bottom     Bottom position.
      * @param string|null $color      Color preset.
      * @param string|null $size       Size preset.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot default Button content (if no icon used).
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
+     *
+     * ### Magic Attributes (Size)
+     * @property bool $xs Extra Small.
+     * @property bool $sm Small.
+     * @property bool $md Medium (default).
+     * @property bool $lg Large.
+     * @property bool $xl Extra Large.
      */
     public function __construct(
         public ?string $icon = null,

@@ -19,6 +19,11 @@ class Tooltip extends BeartropyComponent
      * @param string|null $label    Label.
      * @param int|null    $delay    Delay.
      * @param string|null $position Position.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot default Trigger content.
      */
     public function __construct(
         public ?string $label = null,

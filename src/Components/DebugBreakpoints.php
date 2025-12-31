@@ -18,6 +18,10 @@ class DebugBreakpoints extends BeartropyComponent
      *
      * @param bool   $expanded Initial expansion state.
      * @param string $env      Environment setting.
+     *
+     * ## Blade Props
+     *
+     * This component has no significant slots or additional view properties involved in public API.
      */
     public function __construct(
         public $expanded = false,

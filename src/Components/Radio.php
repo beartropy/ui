@@ -27,6 +27,27 @@ class Radio extends BeartropyComponent
      * @param string|null $customError   Custom error message.
      * @param bool        $grouped       Is grouped.
      * @param bool        $groupedError  Show group error.
+     *
+     * ## Blade Props
+     *
+     * ### Slots
+     * @slot default Label content override.
+     *
+     * ### Magic Attributes (Size)
+     * @property bool $xs Extra Small.
+     * @property bool $sm Small.
+     * @property bool $md Medium (default).
+     * @property bool $lg Large.
+     * @property bool $xl Extra Large.
+     * @property bool $2xl Double Extra Large.
+     *
+     * ### Magic Attributes (Color)
+     * @property bool $primary   Primary color.
+     * @property bool $secondary Secondary color.
+     * @property bool $success   Success color.
+     * @property bool $warning   Warning color.
+     * @property bool $danger    Danger color.
+     * @property bool $info      Info color.
      */
     public function __construct(
         public $labelPosition = null,
