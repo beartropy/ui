@@ -3,10 +3,16 @@
 namespace Beartropy\Ui\Components;
 
 
+/**
+ * Sidebar component.
+ *
+ * Renders the application sidebar.
+ */
 class Sidebar extends BeartropyComponent
 {
-
-
+    /**
+     * Create a new Sidebar component instance.
+     */
     public function __construct() {}
 
 
