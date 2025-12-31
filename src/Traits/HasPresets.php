@@ -2,9 +2,23 @@
 
 namespace Beartropy\Ui\Traits;
 
+/**
+ * Trait HasPresets.
+ *
+ * The core logic for Beartropy's design system resolution.
+ * Calculates sizes, colors, variants, and other props based on configuration tables.
+ */
 trait HasPresets
 {
 
+    /**
+     * compute component presets based on context.
+     *
+     * @param string|null $componentName Component key.
+     * @param \Illuminate\View\ComponentAttributeBag|null $attributes Attributes bag.
+     *
+     * @return array{0: array, 1: array, 2: bool, 3: array} [colorPreset, sizePreset, shouldFill, presetNames]
+     */
     public function getComponentPresets($componentName = null, $attributes = null)
     {
         $componentName = $componentName ?: $this->componentName;
@@ -90,29 +104,43 @@ trait HasPresets
         return [
             'size'     => $magicHasSizeToken || ($defaults['size'] !== null) || property_exists($this, 'size'),
             'variant'  => $this->detectHasVariants($colorsArray)
-                        || ($defaults['variant'] !== null)
-                        || in_array('variant', $magicProps, true)
-                        || property_exists($this, 'variant'),
+                || ($defaults['variant'] !== null)
+                || in_array('variant', $magicProps, true)
+                || property_exists($this, 'variant'),
             'color'    => !empty($colorsArray),
             'outline'  => array_key_exists('outline', array_flip($magicProps)) // rápido
-                        || ($defaults['outline'] !== null)
-                        || property_exists($this, 'outline'),
+                || ($defaults['outline'] !== null)
+                || property_exists($this, 'outline'),
             'fill'     => in_array('fill', $magicProps, true) || property_exists($this, 'fill'),
         ];
     }
 
     protected function resolveSize(array $supports, array $sizes, array $defaults, array $magicProps): array
     {
-        $size = null; $origin = 'default';
+        $size = null;
+        $origin = 'default';
         if ($supports['size']) {
-            if (property_exists($this, 'size') && $this->size !== null) { $size = $this->size; $origin = 'prop'; }
+            if (property_exists($this, 'size') && $this->size !== null) {
+                $size = $this->size;
+                $origin = 'prop';
+            }
             if (!$size) {
                 foreach ($magicProps as $maybeSize) {
-                    if (isset($sizes[$maybeSize])) { $size = $maybeSize; $origin = 'attr'; break; }
+                    if (isset($sizes[$maybeSize])) {
+                        $size = $maybeSize;
+                        $origin = 'attr';
+                        break;
+                    }
                 }
             }
-            if (!$size && $defaults['size']) { $size = $defaults['size']; $origin = 'config'; }
-            if (!$size) { $size = 'md'; $origin = 'fallback'; }
+            if (!$size && $defaults['size']) {
+                $size = $defaults['size'];
+                $origin = 'config';
+            }
+            if (!$size) {
+                $size = 'md';
+                $origin = 'fallback';
+            }
         }
         $sizePreset = ($supports['size'] && $size && isset($sizes[$size])) ? $sizes[$size] : ($sizes['md'] ?? []);
         return [$size, $sizePreset, $origin];
@@ -120,26 +148,43 @@ trait HasPresets
 
     protected function resolveVariant(array $supports, array $colorsArray, array $componentPresets, array $defaults, array $magicProps, bool $hasVariants): array
     {
-        $variant = null; $origin = 'default';
+        $variant = null;
+        $origin = 'default';
 
         if (!$supports['variant']) return [null, $origin];
 
-        if (property_exists($this, 'variant') && $this->variant !== null) { $variant = $this->variant; $origin = 'prop'; }
+        if (property_exists($this, 'variant') && $this->variant !== null) {
+            $variant = $this->variant;
+            $origin = 'prop';
+        }
 
         if ($hasVariants) {
             $all = array_keys($colorsArray);
             if (!$variant) {
                 foreach ($magicProps as $maybe) {
-                    if (in_array($maybe, $all, true)) { $variant = $maybe; $origin = 'attr'; break; }
+                    if (in_array($maybe, $all, true)) {
+                        $variant = $maybe;
+                        $origin = 'attr';
+                        break;
+                    }
                 }
             }
             if (!$variant && $defaults['variant'] && in_array($defaults['variant'], $all, true)) {
-                $variant = $defaults['variant']; $origin = 'config';
+                $variant = $defaults['variant'];
+                $origin = 'config';
             }
-            if (!$variant) { $variant = $componentPresets['default_variant'] ?? ($all[0] ?? null); $origin = 'fallback'; }
+            if (!$variant) {
+                $variant = $componentPresets['default_variant'] ?? ($all[0] ?? null);
+                $origin = 'fallback';
+            }
         } else {
-            if (!$variant && $defaults['variant'] !== null) { $variant = $defaults['variant']; $origin = 'config'; }
-            elseif (!$variant && isset($componentPresets['default_variant'])) { $variant = $componentPresets['default_variant']; $origin = 'fallback'; }
+            if (!$variant && $defaults['variant'] !== null) {
+                $variant = $defaults['variant'];
+                $origin = 'config';
+            } elseif (!$variant && isset($componentPresets['default_variant'])) {
+                $variant = $componentPresets['default_variant'];
+                $origin = 'fallback';
+            }
         }
 
         return [$variant, $origin];
@@ -147,41 +192,62 @@ trait HasPresets
 
     protected function resolveColor(array $supports, array $colorsArray, array $componentPresets, array $defaults, array $magicProps, ?string $variant, bool $hasVariants): array
     {
-        $color = null; $origin = 'default'; $colorPreset = [];
+        $color = null;
+        $origin = 'default';
+        $colorPreset = [];
 
         if (!$supports['color']) return [null, [], $origin];
 
-        if (property_exists($this, 'color') && $this->color !== null) { $color = $this->color; $origin = 'prop'; }
+        if (property_exists($this, 'color') && $this->color !== null) {
+            $color = $this->color;
+            $origin = 'prop';
+        }
 
         if ($hasVariants) {
             $valid = ($variant && isset($colorsArray[$variant])) ? array_keys($colorsArray[$variant]) : [];
             if (!$color) {
                 foreach ($magicProps as $maybe) {
-                    if (in_array($maybe, $valid, true)) { $color = $maybe; $origin = 'attr'; break; }
+                    if (in_array($maybe, $valid, true)) {
+                        $color = $maybe;
+                        $origin = 'attr';
+                        break;
+                    }
                 }
             }
             if (!$color && $defaults['color'] && in_array($defaults['color'], $valid, true)) {
-                $color = $defaults['color']; $origin = 'config';
+                $color = $defaults['color'];
+                $origin = 'config';
             }
             $presetDefault = $componentPresets['default_color'] ?? ($valid[0] ?? null);
-            if (!$color || !in_array($color, $valid, true)) { $color = $presetDefault; $origin = $origin === 'default' ? 'fallback' : $origin; }
+            if (!$color || !in_array($color, $valid, true)) {
+                $color = $presetDefault;
+                $origin = $origin === 'default' ? 'fallback' : $origin;
+            }
 
             $colorPreset = $colorsArray[$variant][$color]
                 ?? (isset($componentPresets['default_variant'], $componentPresets['default_color'])
-                        ? ($colorsArray[$componentPresets['default_variant']][$componentPresets['default_color']] ?? [])
-                        : []);
+                    ? ($colorsArray[$componentPresets['default_variant']][$componentPresets['default_color']] ?? [])
+                    : []);
         } else {
             $valid = array_keys($colorsArray);
             if (!$color) {
                 foreach ($magicProps as $maybe) {
-                    if (in_array($maybe, $valid, true)) { $color = $maybe; $origin = 'attr'; break; }
+                    if (in_array($maybe, $valid, true)) {
+                        $color = $maybe;
+                        $origin = 'attr';
+                        break;
+                    }
                 }
             }
             if (!$color && $defaults['color'] && in_array($defaults['color'], $valid, true)) {
-                $color = $defaults['color']; $origin = 'config';
+                $color = $defaults['color'];
+                $origin = 'config';
             }
             $presetDefault = $componentPresets['default_color'] ?? ($valid[0] ?? null);
-            if (!$color || !in_array($color, $valid, true)) { $color = $presetDefault; $origin = $origin === 'default' ? 'fallback' : $origin; }
+            if (!$color || !in_array($color, $valid, true)) {
+                $color = $presetDefault;
+                $origin = $origin === 'default' ? 'fallback' : $origin;
+            }
 
             $colorPreset = $colorsArray[$color] ?? (is_array($colorsArray) ? reset($colorsArray) : []);
         }
@@ -196,32 +262,40 @@ trait HasPresets
         // 2) outline prop/attr → !outline
         // 3) outline config → !outline
         // 4) default false
-        $shouldFill = null; $origin = 'default';
+        $shouldFill = null;
+        $origin = 'default';
 
         if ($supports['fill']) {
             if (property_exists($this, 'fill') && $this->fill !== null) {
-                $shouldFill = (bool) $this->fill; $origin = 'prop';
+                $shouldFill = (bool) $this->fill;
+                $origin = 'prop';
             } elseif (array_key_exists('fill', $attributes)) {
                 $val = filter_var($attributes['fill'], FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
-                $shouldFill = $val === null ? true : $val; $origin = 'attr';
+                $shouldFill = $val === null ? true : $val;
+                $origin = 'attr';
             }
         }
 
         if ($shouldFill === null && $supports['outline']) {
             if (property_exists($this, 'outline') && $this->outline !== null) {
-                $shouldFill = !(bool) $this->outline; $origin = 'prop_outline';
+                $shouldFill = !(bool) $this->outline;
+                $origin = 'prop_outline';
             } elseif (array_key_exists('outline', $attributes)) {
                 $val = filter_var($attributes['outline'], FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
                 $val = $val === null ? true : $val;
-                $shouldFill = !$val; $origin = 'attr_outline';
+                $shouldFill = !$val;
+                $origin = 'attr_outline';
             }
         }
 
         if ($shouldFill === null && $defaults['outline'] !== null) {
-            $shouldFill = !(bool) $defaults['outline']; $origin = 'config_outline';
+            $shouldFill = !(bool) $defaults['outline'];
+            $origin = 'config_outline';
         }
 
-        if ($shouldFill === null) { $shouldFill = false; /* origin default */ }
+        if ($shouldFill === null) {
+            $shouldFill = false; /* origin default */
+        }
 
         return [$shouldFill, $origin];
     }
@@ -229,27 +303,41 @@ trait HasPresets
     protected function buildCacheKey(string $component, array $supports, ?string $size, ?string $variant, ?string $color, bool $shouldFill): string
     {
         $parts = [$component];
-        $parts[] = $supports['size']    ? "size:".($size ?? '-') : 'size:-';
-        $parts[] = $supports['variant'] ? "variant:".($variant ?? '-') : 'variant:-';
-        $parts[] = $supports['color']   ? "color:".($color ?? '-') : 'color:-';
-        $parts[] = ($supports['fill'] || $supports['outline']) ? 'fill:'.($shouldFill ? '1' : '0') : 'fill:-';
+        $parts[] = $supports['size']    ? "size:" . ($size ?? '-') : 'size:-';
+        $parts[] = $supports['variant'] ? "variant:" . ($variant ?? '-') : 'variant:-';
+        $parts[] = $supports['color']   ? "color:" . ($color ?? '-') : 'color:-';
+        $parts[] = ($supports['fill'] || $supports['outline']) ? 'fill:' . ($shouldFill ? '1' : '0') : 'fill:-';
         return implode('|', $parts);
     }
 
     protected function syncInstanceProps(array $supports, ?string $size, ?string $variant, ?string $color): void
     {
-        if ($supports['size']    && property_exists($this, 'size'))    { $this->size = $size; }
-        if ($supports['variant'] && property_exists($this, 'variant')) { $this->variant = $variant; }
-        if ($supports['color']   && property_exists($this, 'color'))   { $this->color = $color; }
+        if ($supports['size']    && property_exists($this, 'size')) {
+            $this->size = $size;
+        }
+        if ($supports['variant'] && property_exists($this, 'variant')) {
+            $this->variant = $variant;
+        }
+        if ($supports['color']   && property_exists($this, 'color')) {
+            $this->color = $color;
+        }
     }
 
     protected function buildPresetNames(array $supports, ?string $size, ?string $variant, ?string $color, bool $shouldFill, string $sizeOrigin, string $variantOrigin, string $colorOrigin, string $fillOrigin): array
     {
         $names = [];
-        if ($supports['size']    && $sizeOrigin   !== 'fallback' && $size    !== null) { $names['size']    = $size; }
-        if ($supports['variant'] && $variant                  !== null) { $names['variant'] = $variant; }
-        if ($supports['color']   && $color                    !== null) { $names['color']   = $color; }
-        if (($supports['fill'] || $supports['outline']) && $fillOrigin !== 'default') { $names['fill'] = $shouldFill; }
+        if ($supports['size']    && $sizeOrigin   !== 'fallback' && $size    !== null) {
+            $names['size']    = $size;
+        }
+        if ($supports['variant'] && $variant                  !== null) {
+            $names['variant'] = $variant;
+        }
+        if ($supports['color']   && $color                    !== null) {
+            $names['color']   = $color;
+        }
+        if (($supports['fill'] || $supports['outline']) && $fillOrigin !== 'default') {
+            $names['fill'] = $shouldFill;
+        }
         return $names;
     }
 
@@ -257,11 +345,10 @@ trait HasPresets
     {
         if (!config('app.debug')) return;
         if ($supports['color'] && empty($colorPreset)) {
-            logger()->warning("Beartropy: color preset '".($color ?? '—')."' no encontrado para '$componentName' (variant: ".($variant ?? '—').").");
+            logger()->warning("Beartropy: color preset '" . ($color ?? '—') . "' no encontrado para '$componentName' (variant: " . ($variant ?? '—') . ").");
         }
         if ($supports['size'] && empty($sizePreset)) {
-            logger()->warning("Beartropy: size preset '".($size ?? '—')."' no encontrado para '$componentName'.");
+            logger()->warning("Beartropy: size preset '" . ($size ?? '—') . "' no encontrado para '$componentName'.");
         }
     }
-
 }

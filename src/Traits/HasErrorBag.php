@@ -2,9 +2,22 @@
 
 namespace Beartropy\Ui\Traits;
 
+/**
+ * Trait HasErrorBag.
+ *
+ * Provides utilities to check for validation errors on component properties.
+ */
 trait HasErrorBag
 {
-
+    /**
+     * Retrieve the error state for a given attribute or context.
+     *
+     * @param string|null $error      Direct error message.
+     * @param \Illuminate\View\ComponentAttributeBag|null $attributes Component attributes.
+     * @param \Illuminate\Support\MessageBag|null       $errors     Global errors.
+     *
+     * @return array{__bt_wireModel: string|null, __bt_finalError: string|null, __bt_hasError: bool}
+     */
     public function getErrorState($error = null, $attributes = null, $errors = null)
     {
 

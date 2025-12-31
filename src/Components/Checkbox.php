@@ -2,6 +2,11 @@
 
 namespace Beartropy\Ui\Components;
 
+/**
+ * Checkbox Component.
+ *
+ * Renders a checkbox input with support for indeterminate state, colors, and labels.
+ */
 class Checkbox extends BeartropyComponent
 {
 
@@ -17,6 +22,21 @@ class Checkbox extends BeartropyComponent
     public $label;
     public $labelPosition;
 
+    /**
+     * Create a new Checkbox component instance.
+     *
+     * @param string|null $id            Unique identifier.
+     * @param string|null $name          Input name.
+     * @param mixed       $value         Input value.
+     * @param bool        $checked       Checked state.
+     * @param bool        $disabled      Disabled state.
+     * @param bool        $indeterminate Indeterminate state (visual only).
+     * @param string|null $color         Checkbox color.
+     * @param mixed       $error         Error state/message.
+     * @param string|null $description   Helper text/description.
+     * @param string|null $label         Label text.
+     * @param string      $labelPosition Valid values: 'left', 'right'.
+     */
     public function __construct(
         $id = null,
         $name = null,
@@ -30,7 +50,7 @@ class Checkbox extends BeartropyComponent
         $label = null,
         $labelPosition = 'right'
     ) {
-        $this->id = $id ?? 'beartropy-checkbox-'.uniqid();
+        $this->id = $id ?? 'beartropy-checkbox-' . uniqid();
         $this->name = $name;
         $this->value = $value;
         $this->checked = $checked;
@@ -44,6 +64,11 @@ class Checkbox extends BeartropyComponent
     }
 
 
+    /**
+     * Get the view / contents that represent the component.
+     *
+     * @return \Illuminate\View\View|\Closure|string
+     */
     public function render()
     {
         return view('beartropy-ui::checkbox');

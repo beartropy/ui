@@ -4,6 +4,11 @@ namespace Beartropy\Ui\Components\Base;
 
 use Beartropy\Ui\Components\BeartropyComponent;
 
+/**
+ * Base class for Button logic.
+ *
+ * Handles properties common to all button implementations, including icon, spinner, tag type (a/button), and wire:target.
+ */
 class ButtonBase extends BeartropyComponent
 {
     public $iconStart = null;
@@ -30,6 +35,22 @@ class ButtonBase extends BeartropyComponent
 
     public $iconVariant = null;
 
+    /**
+     * Create a new ButtonBase component instance.
+     *
+     * @param string|null $iconStart   Icon to show at start.
+     * @param string|null $iconEnd     Icon to show at end.
+     * @param mixed       $spinner     Loading spinner configuration.
+     * @param string|null $tag         HTML tag to render (button/a).
+     * @param string|null $type        Button type attribute.
+     * @param string|null $href        Link URL.
+     * @param bool|null   $disabled    Disabled state.
+     * @param string|null $size        Button size.
+     * @param string|null $color       Button color.
+     * @param string|null $variant     Button variant.
+     * @param string|null $iconSet     Icon set used.
+     * @param string|null $iconVariant Icon variant used.
+     */
     public function __construct($iconStart = null, $iconEnd = null, $spinner = null, $tag = null, $type = null, $href = null, $disabled = null, $size = null, $color = null, $variant = null, $iconSet = null, $iconVariant = null)
     {
         $this->iconStart = $iconStart;
@@ -46,6 +67,13 @@ class ButtonBase extends BeartropyComponent
         $this->iconVariant = $iconVariant ?? config('beartropyui.icons.variant', 'outline');
     }
 
+    /**
+     * Determine the HTML tag to use.
+     *
+     * Returns 'a' if href attribute is present, otherwise 'button'.
+     *
+     * @return string
+     */
     public function getTag()
     {
         if ($this->attributes->has('href')) {
@@ -55,6 +83,13 @@ class ButtonBase extends BeartropyComponent
         }
     }
 
+    /**
+     * Get the Livewire target for loading states.
+     *
+     * Infers target from wire:target or wire:click if not explicitly set.
+     *
+     * @return string|null
+     */
     public function getWireTarget()
     {
         $wireTarget = $this->attributes->get('wire:target');
@@ -68,6 +103,11 @@ class ButtonBase extends BeartropyComponent
         return $wireTarget;
     }
 
+    /**
+     * Get the view / contents that represent the component.
+     *
+     * @return \Illuminate\View\View|\Closure|string
+     */
     public function render()
     {
         return view('beartropy-ui::base.button-base');

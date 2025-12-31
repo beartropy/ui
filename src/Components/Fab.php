@@ -2,9 +2,34 @@
 
 namespace Beartropy\Ui\Components;
 
+/**
+ * Floating Action Button (FAB) component.
+ *
+ * Renders a floating action button, typically fixed position on screen.
+ *
+ * @property string|null $icon       Icon name.
+ * @property string|null $label      Label text (tooltip or accessible).
+ * @property string|null $onlyMobile Only show on mobile breakpoint.
+ * @property string|null $zIndex     Z-index class.
+ * @property string|null $right      Right position class.
+ * @property string|null $bottom     Bottom position class.
+ * @property string|null $color      Color preset.
+ * @property string|null $size       Size preset.
+ */
 class Fab extends BeartropyComponent
 {
-
+    /**
+     * Create a new Fab component instance.
+     *
+     * @param string|null $icon       Icon name.
+     * @param string|null $label      Label text.
+     * @param string|null $onlyMobile Only show on mobile.
+     * @param string|null $zIndex     Z-index value.
+     * @param string|null $right      Right position.
+     * @param string|null $bottom     Bottom position.
+     * @param string|null $color      Color preset.
+     * @param string|null $size       Size preset.
+     */
     public function __construct(
         public ?string $icon = null,
         public ?string $label = null,
@@ -18,6 +43,11 @@ class Fab extends BeartropyComponent
         parent::__construct();
     }
 
+    /**
+     * Get the view / contents that represent the component.
+     *
+     * @return \Illuminate\View\View|\Closure|string
+     */
     public function render()
     {
         return view('beartropy-ui::fab');

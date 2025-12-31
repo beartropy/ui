@@ -8,26 +8,42 @@ use RecursiveDirectoryIterator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Beartropy UI Service Provider.
+ *
+ * Bootstraps the UI package, registering components, views, assets, and commands.
+ */
 class BeartropyUiServiceProvider extends ServiceProvider
 {
+    /**
+     * Bootstrap any application services.
+     *
+     * - Loads routes.
+     * - Loads views (components and SVGs).
+     * - Registers custom component aliases.
+     * - Publishes configuration and presets.
+     * - Defines the 'BeartropyAssets' Blade directive for Ziggy and asset rendering.
+     *
+     * @return void
+     */
     public function boot()
     {
 
-        $this->loadRoutesFrom(__DIR__.'/routes.php');
+        $this->loadRoutesFrom(__DIR__ . '/routes.php');
 
-        $this->loadViewsFrom(__DIR__.'/../resources/views/components', 'beartropy-ui');
-        $this->loadViewsFrom(__DIR__.'/../resources/views/svg', 'beartropy-ui-svg');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views/components', 'beartropy-ui');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views/svg', 'beartropy-ui-svg');
 
         $this->registerCustomComponents();
 
         Blade::componentNamespace('Beartropy\\Ui\\Components', 'beartropy-ui');
 
         $this->publishes([
-            __DIR__.'/../config/beartropyui.php' => config_path('beartropyui.php'),
+            __DIR__ . '/../config/beartropyui.php' => config_path('beartropyui.php'),
         ], 'beartropy-ui-config');
 
         $this->publishes([
-            __DIR__.'/../resources/views/presets' => resource_path('views/vendor/beartropy/ui/presets'),
+            __DIR__ . '/../resources/views/presets' => resource_path('views/vendor/beartropy/ui/presets'),
         ], 'beartropy-ui-presets');
 
         $this->publishIndividualPresets();
@@ -43,25 +59,40 @@ class BeartropyUiServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Publish individual preset files.
+     *
+     * Iterates through available presets and registers publishable tags for each one.
+     *
+     * @return void
+     */
     protected function publishIndividualPresets()
     {
         $sourcePresets = __DIR__ . '/../resources/views/presets';
         $publishPath = resource_path('views/vendor/beartropy/ui/presets');
 
-        foreach (glob($sourcePresets.'/*.php') as $presetFile) {
+        foreach (glob($sourcePresets . '/*.php') as $presetFile) {
             $name = basename($presetFile, '.php');
             $tag = 'beartropyui-preset-' . $name;
 
             $this->publishes([
-                $presetFile => $publishPath.'/'.$name.'.php'
+                $presetFile => $publishPath . '/' . $name . '.php'
             ], $tag);
         }
     }
 
+    /**
+     * Register custom Blade components.
+     *
+     * Scans the Components directory and registers aliases based on configuration.
+     * Handles specific naming conventions for Base components and Icons.
+     *
+     * @return void
+     */
     protected function registerCustomComponents()
     {
         $prefix = config('beartropyui.prefix');
-        $prefix = $prefix ? $prefix.'-' : '';
+        $prefix = $prefix ? $prefix . '-' : '';
 
         // Paths relativos a src
         $paths = [
@@ -70,7 +101,7 @@ class BeartropyUiServiceProvider extends ServiceProvider
         ];
 
         foreach ($paths as $folder => $aliasPrefix) {
-            $dir = __DIR__.'/'.$folder; // Asumiendo que estás en src
+            $dir = __DIR__ . '/' . $folder; // Asumiendo que estás en src
             if (!is_dir($dir)) continue;
 
             $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
@@ -100,6 +131,16 @@ class BeartropyUiServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.separator', $prefix . 'dropdown.separator');
     }
 
+    /**
+     * Register the application services.
+     *
+     * - Registers the 'beartropy.assets' singleton.
+     * - Registers the 'beartropy' main class singleton.
+     * - Merges configuration.
+     * - Registers console commands.
+     *
+     * @return void
+     */
     public function register()
     {
 
@@ -112,7 +153,7 @@ class BeartropyUiServiceProvider extends ServiceProvider
         });
 
         $this->mergeConfigFrom(
-            __DIR__.'/../config/beartropyui.php',
+            __DIR__ . '/../config/beartropyui.php',
             'beartropyui'
         );
 
@@ -123,9 +164,5 @@ class BeartropyUiServiceProvider extends ServiceProvider
         if (class_exists(\Livewire\LivewireServiceProvider::class)) {
             $this->app->register(\Livewire\LivewireServiceProvider::class);
         }
-
     }
-
-
-
 }

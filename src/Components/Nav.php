@@ -5,6 +5,25 @@ namespace Beartropy\Ui\Components;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Blade;
 
+/**
+ * Nav component.
+ *
+ * Renders a navigation menu, supporting nested items, permissions, and active state detection.
+ *
+ * @property array       $items                Navigation items.
+ * @property string      $sidebarBind          Sidebar collapse binding.
+ * @property string      $highlightMode        'standard' or 'text'.
+ * @property string|null $highlightParentClass Custom highlight class for parents.
+ * @property string|null $highlightChildClass  Custom highlight class for children.
+ * @property string|null $itemClass            Base item class.
+ * @property string|null $childItemClass       Base child item class.
+ * @property string      $categoryClass        Category header class.
+ * @property string      $iconClass            Icon class.
+ * @property string      $childBorderClass     Child border class.
+ * @property string|null $hoverTextClass       Hover text class.
+ * @property string|null $hoverTextChildClass  Child hover text class.
+ * @property bool        $withnavigate         Enable Wire:navigate.
+ */
 class Nav extends BeartropyComponent
 {
 
@@ -23,6 +42,24 @@ class Nav extends BeartropyComponent
     public $withnavigate;
 
 
+    /**
+     * Create a new Nav component instance.
+     *
+     * @param mixed       $items                Array of items, or string config name.
+     * @param string      $sidebarBind          Sidebar bind variable.
+     * @param string      $highlightMode        Highlight mode.
+     * @param string|null $highlightParentClass Custom highlight parent.
+     * @param string|null $highlightChildClass  Custom highlight child.
+     * @param string|null $itemClass            Item class.
+     * @param string|null $childItemClass       Child item class.
+     * @param string      $categoryClass        Category class.
+     * @param string      $iconClass            Icon class.
+     * @param string      $childBorderClass     Child border class.
+     * @param string|null $hoverTextClass       Hover text class.
+     * @param string|null $hoverTextChildClass  Child hover text class.
+     * @param string      $color                Color preset.
+     * @param bool        $withnavigate         Enable wire:navigate.
+     */
     public function __construct(
         $items = null,
         $sidebarBind = 'sidebarCollapsed',
@@ -49,24 +86,24 @@ class Nav extends BeartropyComponent
 
         $this->highlightParentClass = $highlightParentClass ?? (
             $highlightMode === 'text'
-                ? $preset['highlightParentText']
-                : $preset['highlightParentStandard']
+            ? $preset['highlightParentText']
+            : $preset['highlightParentStandard']
         );
         $this->highlightChildClass = $highlightChildClass ?? (
             $highlightMode === 'text'
-                ? $preset['highlightChildText']
-                : $preset['highlightChildStandard']
+            ? $preset['highlightChildText']
+            : $preset['highlightChildStandard']
         );
 
         $this->itemClass = $itemClass ?? (
             $highlightMode === 'text'
-                ? $preset['itemClassText']
-                : $preset['itemClassStandard']
+            ? $preset['itemClassText']
+            : $preset['itemClassStandard']
         );
         $this->childItemClass = $childItemClass ?? (
             $highlightMode === 'text'
-                ? $preset['childItemClassText']
-                : $preset['childItemClassStandard']
+            ? $preset['childItemClassText']
+            : $preset['childItemClassStandard']
         );
 
         $this->hoverTextClass = $hoverTextClass ?? $preset['hoverText'];
@@ -78,7 +115,6 @@ class Nav extends BeartropyComponent
         $resolved = $this->resolveItems($items);
         $this->items = $this->filterNavCategories($resolved);
         $this->withnavigate = $withnavigate;
-
     }
 
 
@@ -86,6 +122,9 @@ class Nav extends BeartropyComponent
 
     /**
      * Decide de dónde sacar el array de navegación
+     *
+     * @param mixed $items
+     * @return array
      */
     protected function resolveItems($items)
     {
@@ -111,6 +150,9 @@ class Nav extends BeartropyComponent
 
     /**
      * Carga el archivo de navegación: config/beartropy/ui/navs/<nav>.php
+     *
+     * @param string $nav
+     * @return array
      */
     protected function loadConfigNav($nav = 'default')
     {
@@ -122,13 +164,21 @@ class Nav extends BeartropyComponent
         return [];
     }
 
+    /**
+     * Determine if a navigation item is active based on current request.
+     *
+     * Checks path matches, route name matches, and recursive child activation.
+     *
+     * @param array $item
+     * @return bool
+     */
     public function isItemActive($item)
     {
         $request     = request();
         $route       = $request->route();
         $currentName = $route?->getName();
         // Normalizamos el path actual (sin query)
-        $currentPath = '/'.ltrim($request->path(), '/');
+        $currentPath = '/' . ltrim($request->path(), '/');
 
         // 1) match: patrones de PATH (como antes)
         if (!empty($item['match'])) {
@@ -161,7 +211,7 @@ class Nav extends BeartropyComponent
             try {
                 // false => genera relativa (sin dominio); ignoramos querystrings
                 $url = route($item['routeName'], $item['routeParams'] ?? [], false);
-                $urlPath = '/'.ltrim(parse_url($url, PHP_URL_PATH) ?: $url, '/');
+                $urlPath = '/' . ltrim(parse_url($url, PHP_URL_PATH) ?: $url, '/');
                 if (rtrim($urlPath, '/') === rtrim($currentPath, '/')) {
                     return true;
                 }
@@ -173,7 +223,7 @@ class Nav extends BeartropyComponent
         // 4) route: path/URL relativo (sin http externo) como antes
         if (!empty($item['route']) && (!isset($item['external']) || !$item['external'])) {
             if (is_string($item['route']) && !Str::startsWith($item['route'], ['http://', 'https://'])) {
-                $itemPath = '/'.ltrim(parse_url($item['route'], PHP_URL_PATH) ?: $item['route'], '/');
+                $itemPath = '/' . ltrim(parse_url($item['route'], PHP_URL_PATH) ?: $item['route'], '/');
                 if (rtrim($itemPath, '/') === rtrim($currentPath, '/')) {
                     return true;
                 }
@@ -194,18 +244,32 @@ class Nav extends BeartropyComponent
     }
 
 
+    /**
+     * Render an icon for a navigation item.
+     *
+     * @param string $icon      Icon name or SVG string.
+     * @param string $iconClass Extra classes.
+     * @return string
+     */
     public function renderIcon($icon, $iconClass = '')
     {
         if (!$icon) return '';
         if (str_starts_with($icon, '<svg') || str_starts_with($icon, '<img') || str_starts_with($icon, '<i')) {
             return $icon;
-        } else{
+        } else {
             $iconComponent = new \Beartropy\Ui\Components\Icon(name: $icon, class: 'w-4 h-4 shrink-0');
             return Blade::renderComponent($iconComponent);
         }
         return '';
     }
 
+    /**
+     * Filter navigation categories and their items based on permissions.
+     *
+     * @param array $categories
+     * @param mixed $user
+     * @return array
+     */
     protected function filterNavCategories(array $categories, $user = null): array
     {
         // Si te pasan directamente una lista de items (sin categorías),
@@ -230,9 +294,16 @@ class Nav extends BeartropyComponent
     }
 
 
+    /**
+     * Filter a list of navigation items based on user permissions.
+     *
+     * @param array $items
+     * @param mixed $user
+     * @return array
+     */
     public function filterNavItems($items, $user = null)
     {
-        $user = $user ?: auth()->user();
+        $user = $user ?: \Illuminate\Support\Facades\Auth::user();
 
         // --- helpers ---
         $isAdmin = function ($user) {
@@ -289,6 +360,7 @@ class Nav extends BeartropyComponent
             $patterns = is_array($patterns) ? $patterns : [$patterns];
 
             // Spatie: names de permisos
+            /** @phpstan-ignore-next-line */
             $userPerms = method_exists($user, 'getAllPermissions')
                 ? $user->getAllPermissions()->pluck('name')->all()
                 : [];
@@ -330,10 +402,22 @@ class Nav extends BeartropyComponent
 
 
 
-    public function navId($item) {
+    /**
+     * Generate a unique ID for a navigation item.
+     *
+     * @param array $item
+     * @return string
+     */
+    public function navId($item)
+    {
         return md5(($item['routeName'] ?? '') . ($item['route'] ?? '') . ($item['label'] ?? '') . json_encode($item['children'] ?? []));
     }
 
+    /**
+     * Get the view / contents that represent the component.
+     *
+     * @return \Illuminate\View\View|\Closure|string
+     */
     public function render()
     {
         return view('beartropy-ui::nav');

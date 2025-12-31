@@ -2,9 +2,14 @@
 
 namespace Beartropy\Ui\Components;
 
+/**
+ * Table Component.
+ *
+ * Renders a data table with support for pagination, sorting, and search.
+ * Handles data normalization for Collections, Arrays, and associative arrays.
+ */
 class Table extends BeartropyComponent
 {
-
     public $items;
     public $columns;
     public $perPage;
@@ -13,6 +18,17 @@ class Table extends BeartropyComponent
     public $paginated;
     public $color;
 
+    /**
+     * Create a new Table component instance.
+     *
+     * @param array|\Illuminate\Support\Collection $items      Data items to display.
+     * @param array                                $columns    Columns configuration (label => key, or list of keys).
+     * @param int                                  $perPage    Number of items per page.
+     * @param bool                                 $sortable   Allow sorting (not implemented recursively currently).
+     * @param bool                                 $searchable Allow searching.
+     * @param bool                                 $paginated  Show pagination.
+     * @param string|null                          $color      Table accent color.
+     */
     public function __construct(
         $items = [],
         $columns = [],
@@ -21,7 +37,7 @@ class Table extends BeartropyComponent
         $searchable = true,
         $paginated = true,
         $color = null
-    ){
+    ) {
         $this->columns = $columns ?: (count($items) ? array_keys($items[0]) : []);
         $this->items = $this->normalizeData($items, $this->columns);
         $this->perPage = $perPage;
@@ -29,9 +45,19 @@ class Table extends BeartropyComponent
         $this->searchable = $searchable;
         $this->paginated = $paginated;
         $this->color = $color;
-
     }
 
+    /**
+     * Normalize dataset into a standard array format.
+     *
+     * Converts Collections and Models to arrays.
+     * Maps indexed arrays to associative arrays based on columns.
+     *
+     * @param mixed $items   Raw items.
+     * @param array $columns Column keys/labels.
+     *
+     * @return array The normalized data array.
+     */
     public function normalizeData($items, $columns)
     {
         // 1. Si es Collection: conviértelo a array
@@ -41,7 +67,7 @@ class Table extends BeartropyComponent
 
         // 2. Si es array de modelos Eloquent u objetos con toArray()
         if (is_array($items) && count($items) && is_object($items[0]) && method_exists($items[0], 'toArray')) {
-            $items = array_map(function($item) {
+            $items = array_map(function ($item) {
                 return $item->toArray();
             }, $items);
         }
@@ -56,7 +82,7 @@ class Table extends BeartropyComponent
             && count($items[0]) === count($columnLabels)
         ) {
             // Mapear por orden
-            return array_map(function($row) use ($columnLabels) {
+            return array_map(function ($row) use ($columnLabels) {
                 return array_combine($columnLabels, array_pad($row, count($columnLabels), null));
             }, $items);
         }

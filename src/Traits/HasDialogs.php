@@ -2,16 +2,32 @@
 
 namespace Beartropy\Ui\Traits;
 
+/**
+ * Trait HasDialogs.
+ *
+ * Provides methods to dispatch dialog events (success, info, warning, error, confirm)
+ * from Livewire components to the frontend.
+ */
 trait HasDialogs
 {
     /**
-     * Azúcar sintáctico para $this->dialog()->success(...)
+     * Fluent accessor for dialog methods.
+     *
+     * Allows usage like `$this->dialog()->success(...)`.
+     *
+     * @return static
      */
     public function dialog(): static
     {
         return $this;
     }
 
+    /**
+     * Dispatch the dialog event to the frontend.
+     *
+     * @param array $payload Dialog configuration payload.
+     * @return void
+     */
     protected function dispatchDialog(array $payload): void
     {
         $payload['componentId'] = $payload['componentId']
@@ -20,6 +36,14 @@ trait HasDialogs
         $this->dispatch('bt-dialog', $payload);
     }
 
+    /**
+     * Show a success dialog.
+     *
+     * @param string      $title       Dialog title.
+     * @param string|null $description Dialog body text.
+     * @param array       $options     Additional options (size, buttons, callbacks).
+     * @return void
+     */
     public function success(string $title, ?string $description = null, array $options = []): void
     {
         $this->dispatchDialog(array_merge([
@@ -40,6 +64,14 @@ trait HasDialogs
         ], $options));
     }
 
+    /**
+     * Show an info dialog.
+     *
+     * @param string      $title       Dialog title.
+     * @param string|null $description Dialog body text.
+     * @param array       $options     Additional options.
+     * @return void
+     */
     public function info(string $title, ?string $description = null, array $options = []): void
     {
         $this->dispatchDialog(array_merge([
@@ -59,6 +91,14 @@ trait HasDialogs
         ], $options));
     }
 
+    /**
+     * Show a warning dialog.
+     *
+     * @param string      $title       Dialog title.
+     * @param string|null $description Dialog body text.
+     * @param array       $options     Additional options.
+     * @return void
+     */
     public function warning(string $title, ?string $description = null, array $options = []): void
     {
         $this->dispatchDialog(array_merge([
@@ -78,6 +118,14 @@ trait HasDialogs
         ], $options));
     }
 
+    /**
+     * Show an error dialog.
+     *
+     * @param string      $title       Dialog title.
+     * @param string|null $description Dialog body text.
+     * @param array       $options     Additional options.
+     * @return void
+     */
     public function error(string $title, ?string $description = null, array $options = []): void
     {
         $this->dispatchDialog(array_merge([
@@ -98,22 +146,20 @@ trait HasDialogs
     }
 
     /**
-     * Confirm genérico
+     * Show a confirmation dialog.
      *
+     * Usage Example:
+     * ```php
      * $this->dialog()->confirm([
-     *     'title' => 'Are you Sure?',
-     *     'description' => 'Save the information?',
-     *     'icon' => 'question',
-     *     'accept' => [
-     *          'label' => 'Yes, save it',
-     *          'method' => 'save',
-     *          'params' => ['Saved'],
-     *     ],
-     *     'reject' => [
-     *          'label' => 'No, cancel',
-     *          'method' => 'cancel',
-     *     ],
+     *     'title'       => 'Are you sure?',
+     *     'description' => 'This action cannot be undone.',
+     *     'accept'      => ['label' => 'Yes, do it', 'method' => 'deleteParams', 'params' => [1]],
+     *     'reject'      => ['label' => 'No, cancel'],
      * ]);
+     * ```
+     *
+     * @param array $config Configuration array for approval/rejection actions.
+     * @return void
      */
     public function confirm(array $config): void
     {
@@ -143,6 +189,14 @@ trait HasDialogs
         ]);
     }
 
+    /**
+     * Show a delete confirmation dialog (Danger/Destructive style).
+     *
+     * @param string      $title       Dialog title.
+     * @param string|null $description Dialog body text.
+     * @param array       $options     Options including 'method' and 'params' for the action.
+     * @return void
+     */
     public function delete(
         string $title,
         ?string $description = null,
@@ -173,5 +227,4 @@ trait HasDialogs
             'allowEscape'       => false,
         ]);
     }
-
 }

@@ -3,6 +3,19 @@
 use Illuminate\Support\Facades\Blade;
 
 if (!function_exists('beartropy_preset')) {
+    /**
+     * Retrieve the configuration array for a specific Beartropy preset.
+     *
+     * Searches for the preset in the following order:
+     * 1. Published resources in the project (`resources/views/vendor/beartropy/ui/presets`).
+     * 2. Vendor package resources (`vendor/beartropy/ui/resources/views/presets`).
+     *
+     * @param string $name The name of the preset file (e.g., 'default').
+     *
+     * @return array<string, mixed> The preset configuration array.
+     *
+     * @throws \RuntimeException If the preset file cannot be found in either location.
+     */
     function beartropy_preset(string $name)
     {
         // 1. Busca en published (proyecto)
@@ -25,6 +38,20 @@ if (!function_exists('beartropy_preset')) {
 
 
 if (!function_exists('beartropy_parse_icon')) {
+    /**
+     * Parse and render an icon for the UI.
+     *
+     * Handles:
+     * - Emojis (unicode regex & smart detection).
+     * - Raw SVG strings.
+     * - Blade component icons via the `Icon` component.
+     *
+     * @param string|null $icon  The icon identifier, emoji, or SVG.
+     * @param string      $class CSS classes for the icon.
+     * @param string|null $set   Icon set preference.
+     *
+     * @return string|null The HTML/SVG string or null if empty.
+     */
     function beartropy_parse_icon($icon, $class = 'w-5 h-5', $set = null)
     {
         if (empty($icon)) return null;

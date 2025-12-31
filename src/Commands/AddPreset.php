@@ -6,6 +6,12 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 
+/**
+ * Artisan Command: Add Preset.
+ *
+ * Adds or modifies color presets for UI components.
+ * Can modify published views or the vendor package directly (with force option).
+ */
 class AddPreset extends Command
 {
     /*
@@ -15,6 +21,11 @@ class AddPreset extends Command
     php artisan beartropy:add-preset input cyan --name="pepe"
     */
 
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
     protected $signature = 'beartropy:add-preset
         {component : Nombre del componente (ej: input)}
         {colors* : Nombres de colores Tailwind o hexadecimales}
@@ -22,8 +33,18 @@ class AddPreset extends Command
         {--force : Sobrescribir si ya existe}
         {--force-vendor : Modificar directamente el archivo en vendor si no existe en config}';
 
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
     protected $description = 'Agrega presets de color a un componente a partir de un color existente, con soporte para hex y nombre custom';
 
+    /**
+     * Execute the console command.
+     *
+     * @return int Command exit code.
+     */
     public function handle()
     {
         $component = $this->argument('component');
@@ -89,8 +110,8 @@ class AddPreset extends Command
                 ? $customName
                 : (
                     Str::startsWith($color, '#')
-                        ? ($customName && $i == 0 ? $customName : 'hex-' . ltrim($color, '#'))
-                        : ($customName && $i == 0 ? $customName : $color)
+                    ? ($customName && $i == 0 ? $customName : 'hex-' . ltrim($color, '#'))
+                    : ($customName && $i == 0 ? $customName : $color)
                 );
 
             if (isset($presets['colors'][$presetKey]) && !$force) {
@@ -135,6 +156,11 @@ class AddPreset extends Command
      *       ...
      *   ]
      * ]
+     *
+     * @param array $array  Array to print.
+     * @param int   $indent Indentation level.
+     *
+     * @return string
      */
     protected function prettyPrintPresetArray(array $array, $indent = 0)
     {

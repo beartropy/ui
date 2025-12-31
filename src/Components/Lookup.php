@@ -2,8 +2,26 @@
 
 namespace Beartropy\Ui\Components;
 
+/**
+ * Lookup component.
+ *
+ * Extends Input component to provide autocomplete/lookup functionality.
+ *
+ * @property array  $options     List of options.
+ * @property string $optionLabel Property name for option label.
+ * @property string $optionValue Property name for option value.
+ * @property string|null $label  Label text.
+ */
 class Lookup extends Input
 {
+    /**
+     * Create a new Lookup component instance.
+     *
+     * @param array       $options     Options array.
+     * @param string      $optionLabel Label key.
+     * @param string      $optionValue Value key.
+     * @param string|null $label       Label text.
+     */
     public function __construct(
         public $options = [],
         public $optionLabel = "name",
@@ -14,6 +32,15 @@ class Lookup extends Input
         parent::__construct(label: $label ?? null);
     }
 
+    /**
+     * Normalize options into a standard format.
+     *
+     * Supports simple arrays, arrays of objects/arrays, and single key-value pairs.
+     *
+     * @param array $options Raw options.
+     *
+     * @return array Normalized options.
+     */
     public function normalizeOptions($options)
     {
         $this->options = collect($options)
@@ -47,6 +74,11 @@ class Lookup extends Input
             ->toArray();
     }
 
+    /**
+     * Get the view / contents that represent the component.
+     *
+     * @return \Illuminate\View\View|\Closure|string
+     */
     public function render()
     {
         return view('beartropy-ui::lookup');

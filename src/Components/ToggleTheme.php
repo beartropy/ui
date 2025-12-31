@@ -2,8 +2,46 @@
 
 namespace Beartropy\Ui\Components;
 
+/**
+ * ToggleTheme component.
+ *
+ * Renders a button to toggle between light and dark modes.
+ *
+ * @property string      $size             Size preset.
+ * @property string      $mode             Display mode (icon, button, square-button).
+ * @property string      $class            Additional classes.
+ * @property bool        $inheritColor     Inherit text color.
+ * @property string|null $iconColorLight   Color class for light icon.
+ * @property string|null $iconColorDark    Color class for dark icon.
+ * @property string|null $borderColorLight Border color for light mode.
+ * @property string|null $borderColorDark  Border color for dark mode.
+ * @property string|null $iconLight        Icon name for light mode.
+ * @property string|null $iconDark         Icon name for dark mode.
+ * @property string|null $label            Label text.
+ * @property string      $labelPosition    Label position (left, right).
+ * @property string|null $labelClass       Custom label class.
+ * @property string|null $ariaLabel        Aria label.
+ */
 class ToggleTheme extends BeartropyComponent
 {
+    /**
+     * Create a new ToggleTheme component instance.
+     *
+     * @param string      $size             Size.
+     * @param string      $mode             Mode.
+     * @param string      $class            Classes.
+     * @param bool        $inheritColor     Inherit color.
+     * @param string|null $iconColorLight   Light icon color.
+     * @param string|null $iconColorDark    Dark icon color.
+     * @param string|null $borderColorLight Light border color.
+     * @param string|null $borderColorDark  Dark border color.
+     * @param string|null $iconLight        Light icon.
+     * @param string|null $iconDark         Dark icon.
+     * @param string|null $label            Label.
+     * @param string      $labelPosition    Label pos.
+     * @param string|null $labelClass       Label class.
+     * @param string|null $ariaLabel        Aria label.
+     */
     public function __construct(
         public string $size = 'md',
         public string $mode = 'icon', // icon | button | square-button
@@ -23,27 +61,41 @@ class ToggleTheme extends BeartropyComponent
     ) {}
 
     /**
-     * Retorna un objeto con todas las clases, flags y props necesarias para el blade.
-     * Llamalo como $getViewData($__data) desde el blade.
+     * Get view data for the component.
+     *
+     * @param array $__data Blade data attributes.
+     * @return object View data object.
      */
     public function getViewData(array $__data = [])
     {
         // Tamaños
         $sizes = [
-            'xs' => 'w-2 h-2', 'sm' => 'w-3 h-3', 'md' => 'w-4 h-4',
-            'lg' => 'w-5 h-5', 'xl' => 'w-6 h-6', '2xl' => 'w-8 h-8',
+            'xs' => 'w-2 h-2',
+            'sm' => 'w-3 h-3',
+            'md' => 'w-4 h-4',
+            'lg' => 'w-5 h-5',
+            'xl' => 'w-6 h-6',
+            '2xl' => 'w-8 h-8',
         ];
         $iconSize = $sizes[$this->size] ?? $sizes['md'];
 
         $buttonPaddings = [
-            'xs'  => 'p-1', 'sm'  => 'p-1.5', 'md'  => 'p-2',
-            'lg'  => 'p-3', 'xl'  => 'p-4', '2xl' => 'p-5',
+            'xs'  => 'p-1',
+            'sm'  => 'p-1.5',
+            'md'  => 'p-2',
+            'lg'  => 'p-3',
+            'xl'  => 'p-4',
+            '2xl' => 'p-5',
         ];
         $buttonPadding = $buttonPaddings[$this->size] ?? $buttonPaddings['md'];
 
         $squareButtonSizes = [
-            'xs'  => 'w-7 h-7', 'sm'  => 'w-8 h-8', 'md'  => 'w-10 h-10',
-            'lg'  => 'w-12 h-12', 'xl'  => 'w-14 h-14', '2xl' => 'w-16 h-16',
+            'xs'  => 'w-7 h-7',
+            'sm'  => 'w-8 h-8',
+            'md'  => 'w-10 h-10',
+            'lg'  => 'w-12 h-12',
+            'xl'  => 'w-14 h-14',
+            '2xl' => 'w-16 h-16',
         ];
         $squareButtonSize = $squareButtonSizes[$this->size] ?? $squareButtonSizes['md'];
 
@@ -88,12 +140,17 @@ class ToggleTheme extends BeartropyComponent
             // label
             'hasLabel'             => $hasLabel,
             'label'                => $this->label,
-            'labelPosition'        => in_array($this->labelPosition, ['left','right']) ? $this->labelPosition : 'right',
+            'labelPosition'        => in_array($this->labelPosition, ['left', 'right']) ? $this->labelPosition : 'right',
             'labelClasses'         => $labelClasses . ' select-none',
             'ariaLabel'            => $ariaLabel,
         ];
     }
 
+    /**
+     * Get the view / contents that represent the component.
+     *
+     * @return \Illuminate\View\View|\Closure|string
+     */
     public function render()
     {
         return view('beartropy-ui::toggle-theme');

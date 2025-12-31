@@ -2,8 +2,25 @@
 
 namespace Beartropy\Ui\Components;
 
+/**
+ * Icon Component.
+ *
+ * Renders icons from various sets (Heroicons, Lucide, FontAwesome, etc.) or strings.
+ */
 class Icon extends BeartropyComponent
 {
+    /**
+     * Create a new Icon component instance.
+     *
+     * @param string      $name      Icon name (e.g. 'home', 'fa-home', emoji).
+     * @param string|null $size      Icon size class.
+     * @param string      $class     Additional CSS classes.
+     * @param bool        $solid     Force solid variant.
+     * @param bool        $outline   Force outline variant.
+     * @param string|null $set       Icon set override.
+     * @param string|null $variant   Variant override.
+     * @param string|null $sizeClass Size class? (seemingly redundant with size, but kept for legacy).
+     */
     public function __construct(
         public string $name,
         public ?string $size = null,
@@ -15,6 +32,15 @@ class Icon extends BeartropyComponent
         public ?string $sizeClass = null,
     ) {}
 
+    /**
+     * Resolve icon classes and component names.
+     *
+     * Logic to determine which icon set, variant, and component to render.
+     *
+     * @param string|null $iconSize Size classes.
+     *
+     * @return object{allClasses: string, iconComponent: string|null, fa: string|null, set: string|null, variant: string|null, name: string, class: string, sizeClass: string|null}
+     */
     public function getClasses($iconSize)
     {
         // Icon set: primero el override, si no, el default

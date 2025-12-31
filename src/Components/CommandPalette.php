@@ -8,29 +8,59 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use PhpParser\Node\Expr\Throw_;
 
+/**
+ * CommandPalette component.
+ *
+ * A searchable command palette for navigation and actions.
+ * Supports loading items from an array or a JSON file.
+ * Includes permission filtering via Spatie Permissions if available.
+ *
+ * @property string|null $color       Component color.
+ * @property array|null  $items       Items definition array.
+ * @property string|null $source      Legacy source path (unused).
+ * @property string|null $src         JSON source path in storage/app.
+ * @property bool        $allowGuests Allow guests to view items.
+ */
 class CommandPalette extends BeartropyComponent
 {
-    /** Ítems ya filtrados (inyectados al Blade) */
+    /** @var array Filtered items injected into the view. */
     public array $bt_cp_data = [];
 
+    /**
+     * Create a new CommandPalette component instance.
+     *
+     * @param string|null $color       Component color.
+     * @param array|null  $items       Items definition array.
+     * @param string|null $source      Legacy source path.
+     * @param string|null $src         JSON source path.
+     * @param bool        $allowGuests Allow guests to view items.
+     */
     public function __construct(
         public $color = null,
-        public $items = null,          // array opcional (ya en memoria)
-        protected $source = null,      // legacy (sin uso)
-        protected $src = null,         // ruta JSON en storage/app (NO público)
-        public bool $allowGuests = false // opcional: en landing/docs permitir todo
+        public $items = null,
+        protected $source = null,
+        protected $src = null,
+        public bool $allowGuests = false
     ) {}
 
+    /**
+     * Get the view / contents that represent the component.
+     *
+     * Calculates cache key based on user permissions and content version.
+     * Caches the resulting filtered items for performance.
+     *
+     * @return \Illuminate\View\View|\Closure|string
+     */
     public function render()
     {
         // Clave de cache por usuario/roles/permisos + versión del contenido
         [$userKey, $version] = $this->cacheKeyParts();
-        $srcKey = $this->src ? ('|src:'.ltrim($this->src, '/')) : '|inline';
+        $srcKey = $this->src ? ('|src:' . ltrim($this->src, '/')) : '|inline';
         $cacheKey = "bt-cp:{$userKey}:v{$version}{$srcKey}";
 
         $this->bt_cp_data = Cache::remember($cacheKey, now()->addDay(), function () {
             $items = $this->resolveItems();             // Lee array o JSON
-            $items = $this->filterByPermissions($items);// Filtra por permisos
+            $items = $this->filterByPermissions($items); // Filtra por permisos
             return $this->stripPermissions($items);     // Remueve 'permission'
         });
 
@@ -38,9 +68,12 @@ class CommandPalette extends BeartropyComponent
     }
 
     /**
-     * Construye partes de la cache key:
-     *  - userKey: id + hash de roles/permisos (o "guest")
-     *  - version: mtime del archivo (si src) o hash del array (si items)
+     * Build cache key parts.
+     *
+     * - userKey: id + hash of roles/permissions (or "guest")
+     * - version: file modification time (if src) or array hash (if items)
+     *
+     * @return array [userKey, version]
      */
     protected function cacheKeyParts(): array
     {
@@ -60,14 +93,21 @@ class CommandPalette extends BeartropyComponent
         $user = Auth::user();
         if (!$user) return ['guest', $version];
 
+        /** @phpstan-ignore-next-line */
         $roles = method_exists($user, 'getRoleNames') ? $user->getRoleNames()->join(',') : '';
+        /** @phpstan-ignore-next-line */
         $perms = method_exists($user, 'getAllPermissions') ? $user->getAllPermissions()->pluck('name')->join(',') : '';
         $userKey = $user->getAuthIdentifier() . ':' . md5($roles . '|' . $perms);
 
         return [$userKey, $version];
     }
 
-    /** Lee ítems desde $items (array) o $src (JSON en storage/app). */
+    /**
+     * Resolve items from array or JSON file.
+     *
+     * @return array
+     * @throws \Exception If JSON parsing fails.
+     */
     protected function resolveItems(): array
     {
         if (is_array($this->items) && !empty($this->items)) {
@@ -82,6 +122,14 @@ class CommandPalette extends BeartropyComponent
         return [];
     }
 
+    /**
+     * Read JSON file from storage.
+     *
+     * @param string $path File path relative to storage root.
+     *
+     * @return array
+     * @throws \Exception If JSON parsing fails.
+     */
     protected function readJsonFromStorage(string $path): array
     {
         if (!Storage::disk('local')->exists($path)) {
@@ -98,7 +146,13 @@ class CommandPalette extends BeartropyComponent
         return $this->normalize(is_array($data) ? $data : []);
     }
 
-    /** Normaliza para evitar notices. */
+    /**
+     * Normalize items to ensure all keys exist.
+     *
+     * @param array $items Raw items.
+     *
+     * @return array Normalized items.
+     */
     protected function normalize(array $items): array
     {
         return array_values(array_map(function ($i) {
@@ -115,11 +169,15 @@ class CommandPalette extends BeartropyComponent
     }
 
     /**
-     * Filtrado por permisos (Spatie):
-     * - Invitado: si $allowGuests => todo; si no, solo sin 'permission'
-     * - Admin: todo
-     * - String: user->can
-     * - Array: canAny
+     * Filter items by permissions (Spatie).
+     *
+     * - Guest: if $allowGuests => all; otherwise only items without 'permission'/'role'.
+     * - Admin: all (if config admin_roles matches).
+     * - User: checks 'permission' (can) and 'role' (hasAnyRole).
+     *
+     * @param array $items Normalized items.
+     *
+     * @return array Filtered items.
      */
     protected function filterByPermissions(array $items): array
     {
@@ -137,6 +195,7 @@ class CommandPalette extends BeartropyComponent
 
         // Bypass por admin_roles (Spatie hasAnyRole)
         $adminRoles = config('beartropy-ui.admin_roles', []);
+        /** @phpstan-ignore-next-line */
         if (!empty($adminRoles) && method_exists($user, 'hasAnyRole') && $user->hasAnyRole($adminRoles)) {
             return $items;
         }
@@ -158,8 +217,10 @@ class CommandPalette extends BeartropyComponent
             if (empty($role)) return false; // no condiciona si no está
             if (!method_exists($user, 'hasAnyRole')) return false; // sin Spatie, ignora roles
             if (is_array($role)) {
+                /** @phpstan-ignore-next-line */
                 return $user->hasAnyRole($role);
             }
+            /** @phpstan-ignore-next-line */
             return $user->hasAnyRole([$role]);
         };
 
@@ -177,7 +238,13 @@ class CommandPalette extends BeartropyComponent
     }
 
 
-    /** Remueve 'permission' antes de enviar al cliente. */
+    /**
+     * Remove 'permission' key before sending to client.
+     *
+     * @param array $items Filtered items.
+     *
+     * @return array Items safe for public exposure.
+     */
     protected function stripPermissions(array $items): array
     {
         return array_map(fn($i) => Arr::except($i, ['permission']), $items);

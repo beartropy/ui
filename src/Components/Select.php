@@ -6,6 +6,17 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Beartropy\Ui\Components\Base\InputTriggerBase;
 
+/**
+ * Select Component.
+ *
+ * A powerful select input supporting arrays, Eloquent collections, remote search, and object mapping.
+ *
+ * @property string|null $optionLabel       Field map for option label.
+ * @property string|null $optionValue       Field map for option value.
+ * @property string|null $optionDescription Field map for option description.
+ * @property string|null $optionIcon        Field map for option icon.
+ * @property string|null $optionAvatar      Field map for option avatar.
+ */
 class Select extends InputTriggerBase
 {
     public $options;
@@ -42,6 +53,37 @@ class Select extends InputTriggerBase
     public $isEmpty = false;
     public $spinner;
 
+    /**
+     * Create a new Select component instance.
+     *
+     * @param mixed       $options           Options array or Collection.
+     * @param mixed       $selected          Initially selected value.
+     * @param string|null $icon              Trigger icon.
+     * @param string      $placeholder       Placeholder text.
+     * @param bool        $searchable        Enable search input.
+     * @param string|null $label             Label text.
+     * @param bool        $multiple          Enable multiple selection.
+     * @param bool        $clearable         Enable clear button.
+     * @param bool        $remote            Enable remote data fetching.
+     * @param string|null $remoteUrl         Endpoint for remote data.
+     * @param string|null $size              Component size.
+     * @param string|null $color             Color theme.
+     * @param mixed       $initialValue      Initial value for remote loading context.
+     * @param int         $perPage           Results per page.
+     * @param mixed       $customError       Custom error state.
+     * @param string|null $hint              Helper text.
+     * @param bool|int    $autosave          Auto-save selection on change.
+     * @param string      $autosaveMethod    Method to call on auto-save (Livewire).
+     * @param string|null $autosaveKey       Key to update on auto-save.
+     * @param int         $autosaveDebounce  Debounce Ms for auto-save.
+     * @param string      $optionLabel       Key/Method for label mapping.
+     * @param string      $optionValue       Key/Method for value mapping.
+     * @param string      $optionDescription Key/Method for description mapping.
+     * @param string      $optionIcon        Key/Method for icon mapping.
+     * @param string      $optionAvatar      Key/Method for avatar mapping.
+     * @param string      $emptyMessage      Text to show when no options found.
+     * @param bool        $spinner           Show loading spinner.
+     */
     public function __construct(
         $options = null,
         $selected = null,
@@ -81,15 +123,15 @@ class Select extends InputTriggerBase
         $this->optionIcon = $optionIcon ?: 'icon';
         $this->optionAvatar = $optionAvatar ?: 'avatar';
 
-        if(empty($options) || is_null($options)) {
+        if (empty($options) || is_null($options)) {
             $this->isEmpty = true;
-            
+
             // Fix: Don't disable search/clear if it's a remote select
             if (!filter_var($remote, FILTER_VALIDATE_BOOLEAN) && empty($remoteUrl)) {
                 $clearable = false;
                 $searchable = false;
             }
-            
+
             $options = [];
         } else {
             $this->options      = $this->normalizeOptions($options);
@@ -117,6 +159,21 @@ class Select extends InputTriggerBase
         $this->spinner          = $spinner;
     }
 
+    /**
+     * Normalize options into a standard array format.
+     *
+     * Handles:
+     * - Eloquent Collections.
+     * - Associative arrays (key => label).
+     * - Indexed arrays.
+     * - Array of Options (objects/arrays).
+     *
+     * Uses configured field mappings (`optionLabel`, `optionValue`) to extract data.
+     *
+     * @param mixed $options Raw options data.
+     *
+     * @return array<string, array{_value: mixed, label: string|null, icon: string|null, avatar: string|null, description: string|null}>
+     */
     protected function normalizeOptions($options)
     {
         if ($options instanceof Collection) {
@@ -248,6 +305,11 @@ class Select extends InputTriggerBase
         return $normalized;
     }
 
+    /**
+     * Get the view / contents that represent the component.
+     *
+     * @return \Illuminate\View\View|\Closure|string
+     */
     public function render()
     {
         return view('beartropy-ui::select');

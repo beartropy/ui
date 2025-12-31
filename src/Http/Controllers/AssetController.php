@@ -5,8 +5,24 @@ namespace Beartropy\Ui\Http\Controllers;
 use Tighten\Ziggy\BladeRouteGenerator;
 use Illuminate\Support\Facades\Response;
 
+/**
+ * Asset Controller.
+ *
+ * Serves static assets (JS/CSS) and dynamic Ziggy routes for the specific UI requirements.
+ * Useful when assets are not published or when delivering dynamic content.
+ */
 class AssetController
 {
+    /**
+     * Serve a Beartropy UI static asset.
+     *
+     * Validates extension and file type before serving.
+     *
+     * @param string $file Filename.
+     *
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     */
     public function beartropyAssets($file)
     {
         // Permití extensiones seguras
@@ -32,7 +48,7 @@ class AssetController
             'css'  => 'text/css',
             'svg'  => 'image/svg+xml',
             'map'  => 'application/json',
-            'woff2'=> 'font/woff2',
+            'woff2' => 'font/woff2',
             'woff' => 'font/woff',
             'ttf'  => 'font/ttf',
         ];
@@ -43,6 +59,15 @@ class AssetController
         ]);
     }
 
+    /**
+     * Serve the Ziggy route list as a JavaScript file.
+     *
+     * Generates the JS, strips script tags, wraps it in a closure, and serves it
+     * with appropriate headers.
+     *
+     * @return \Illuminate\Http\Response
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     */
     public function ziggy()
     {
         if (!class_exists(BladeRouteGenerator::class)) {
