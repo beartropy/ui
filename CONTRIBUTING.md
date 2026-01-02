@@ -12,7 +12,7 @@ However, if you file a bug report, your issue should contain a title and a clear
 
 Beartropy's GitHub issue trackers are not intended to provide help or support. Instead, use one of the following channels:
 
-*   [GitHub Discussions](https://github.com/beartropy/discussions)
+*   [GitHub Discussions](https://github.com/beartropy/beartropy/discussions)
 
 ## Core Development Standards
 
