@@ -1,105 +1,48 @@
-# Beartropy UI
+<div align="center">
+    <h1>🐻 Beartropy UI</h1>
+    <p><strong>A comprehensive UI component library for the TALL stack</strong></p>
+    <p>Tailwind • Alpine • Laravel • Livewire</p>
+</div>
 
-A beautiful, modern UI components library for Laravel & Livewire.
+<div align="center">
+    <a href="https://packagist.org/packages/beartropy/ui"><img src="https://img.shields.io/packagist/v/beartropy/ui.svg?style=flat-square&color=indigo" alt="Latest Stable Version"></a>
+    <a href="https://packagist.org/packages/beartropy/ui"><img src="https://img.shields.io/packagist/dt/beartropy/ui.svg?style=flat-square&color=blue" alt="Total Downloads"></a>
+    <a href="https://packagist.org/packages/beartropy/ui"><img src="https://img.shields.io/packagist/l/beartropy/ui?style=flat-square&color=slate" alt="License"></a>
+</div>
 
-Beartropy UI is a modular, customizable component system designed for real-world apps. Ships with beautiful presets, accessible markup, Tailwind support, and out-of-the-box integration with Livewire and Alpine.js.
+<br>
 
----
+A comprehensive UI component library specifically designed for the TALL stack (Tailwind, Alpine, Laravel, Livewire).
 
-## 🚀 Features
+## 📚 Documentation
 
-* **Plug & Play Components:** Inputs, selects, buttons, toggles, alerts, modals, toasts, tables, tags, and more.
-* **Presets System:** Customize every aspect (colors, sizes, icons, slots) via simple Blade/array presets.
-* **Blade-first:** All components are Blade files, extendable and publishable.
-* **Ready for Livewire:** Built-in support for wire\:model, validation, instant feedback.
-* **Tailwind Friendly:** 100% utility classes, dark mode support.
-* **JS Optional:** Interactive components (modals, toasts, dropdowns) work with Alpine.js, but degrade gracefully.
-* **Easy to Extend:** Add your own components, presets or override any view.
+The full documentation for this package involves installation, configuration, and advanced usage examples.
 
-### [See full documentation here](https://beartropy.com/ui)
----
+👉 **[Read the full documentation at beartropy.com/ui](https://beartropy.com/ui)**
 
-## 📦 Installation
+## ✨ Key Features
 
-```
+*   **Comprehensive Component Library**: Over 40+ components including Buttons, Inputs, Modals, Dropdowns, and Layouts.
+*   **TALL Stack Optimized**: Built seamlessly for Tailwind CSS, Alpine.js, Laravel, and Livewire integration.
+*   **Modern Interactive Elements**: sophisticated components like CommandPalette, FileDropzone, Date/Time pickers, and ChatInput.
+*   **Theme Support**: Built-in light/dark mode support with ToggleTheme component.
+*   **Developer Friendly**: Customizable and easy to integrate into existing Laravel applications.
+
+## 🚀 Quick Installation
+
+You can install the package via composer:
+
+```bash
 composer require beartropy/ui
 ```
 
-If you use Laravel >=8, the service provider will be auto-discovered.
+## 🤝 Contributing
 
----
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
-## 🔧 Publishing Presets & Config
+## 📄 License
 
-Publish config and presets:
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-```
-php artisan vendor:publish --provider="Beartropy\Ui\BeartropyUiServiceProvider"
-```
-
-Or publish only a specific tag:
-
-```
-php artisan vendor:publish --tag=beartropyui-config
-php artisan vendor:publish --tag=beartropyui-presets
-```
-
-You can also publish only a specific preset file:
-```
-php artisan vendor:publish --tag=beartropyui-preset-input
-php artisan vendor:publish --tag=beartropyui-preset-select
-```
->Replace input or select with the name of the preset you want to publish.
-
-*After publishing presets or views, run*
-
-```
-php artisan view:clear
-```
-
-*to see changes!*
-
----
-
-## ⚡️ Usage Example
-
-```blade
-<x-input label="Username" placeholder="Your username" />
-
-<x-select :options="$categories" label="Category" />
-
-<x-button color="beartropy" size="lg">
-    Save
-</x-button>
-
-<x-alert success dismissible>
-    Everything was saved!
-</x-alert>
-```
-
-See the [documentation](https://beartropyui.com/docs) for more examples and advanced usage.
-
----
-
-## 🎨 Presets & Customization
-
-You can fully customize colors, icons, sizes, and behavior for every component by editing the presets in `resources/views/presets` (after publishing).
-
-* **Add or edit color schemes, sizes, icons, etc.**
-* Use the provided `add-preset` command for scaffolding new presets:
-
-```
-php artisan beartropyui:add-preset {component} {name}
-```
-
----
-
-## 🧑‍💻 Contributing
-
-Found a bug, want a new feature, or have feedback? Open an issue or PR!
-
----
-
-## 📜 License
-
-Beartropy UI is open-source, MIT licensed.
+> [!NOTE]
+> **Disclaimer**: This software is provided "as is", without warranty of any kind, express or implied. Use at your own risk.
