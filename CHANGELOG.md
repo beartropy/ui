@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.4] - 2026-01-02
+
+### Changed
+- Added comprehensive feature tests for UI components.
+- Updated documentation.
+
 ## [v0.11.3] - 2025-12-31
 
 ### Changed
