@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.5] - 2026-01-02
+
+### Fixed
+- Added `x-cloak` to slider component to prevent initial loading glitch.
+
 ## [v0.11.4] - 2026-01-02
 
 ### Changed
