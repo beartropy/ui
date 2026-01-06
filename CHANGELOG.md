@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.6] - 2026-01-06
+
+### Changed
+- Fixed dialog button visibility in light mode (success, warning) and added missing `confirm` variant. 
+
 ## [v0.11.5] - 2026-01-02
 
 ### Fixed
