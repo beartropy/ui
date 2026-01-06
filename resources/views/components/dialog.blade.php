@@ -34,6 +34,15 @@
             'iconText' => 'text-red-600 dark:text-red-300',
         ],
     ];
+
+    // Js button colors
+    $jsButtonColors = [
+        'info' => 'bg-blue-700 hover:bg-blue-600 dark:bg-blue-800 dark:hover:bg-blue-700 text-white',
+        'success' => 'bg-emerald-700 hover:bg-emerald-600 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white',
+        'warning' => 'bg-amber-700 hover:bg-amber-600 dark:bg-amber-800 dark:hover:bg-amber-700 text-white',
+        'error' => 'bg-rose-700 hover:bg-rose-600 dark:bg-rose-800 dark:hover:bg-rose-700 text-white',
+        'danger' => 'bg-rose-700 hover:bg-rose-600 dark:bg-rose-800 dark:hover:bg-rose-700 text-white',
+    ];
 @endphp
 
 <div

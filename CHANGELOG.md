@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.7] - 2026-01-06
+
+### Changed
+- Added safelist for dialog button colors to ensure visibility in light mode. 
+
 ## [v0.11.6] - 2026-01-06
 
 ### Changed
