@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.8] - 2026-01-06
+
+### Changed
+- Fix Dialog Button Visibility
+
 ## [v0.11.7] - 2026-01-06
 
 ### Changed
