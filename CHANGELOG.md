@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.9] - 2026-01-10
+
+### Changed
+- Refined ChatInput styles (rounded look, responsive layout, conditional border) and updated all presets.
+
 ## [v0.11.8] - 2026-01-06
 
 ### Changed

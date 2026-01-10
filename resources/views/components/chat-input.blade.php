@@ -7,6 +7,11 @@
     $name = $name ?? $id;
 
     $wrapperClass = $hasError ? $colorPreset['wrapper_error'] ?? $colorPreset['wrapper'] : $colorPreset['wrapper'];
+
+    if ($border) {
+        $borderClass = $colorPreset['border'] ?? 'border border-gray-200 dark:border-gray-700/50 shadow-sm focus-within:ring-2 focus-within:ring-gray-200 dark:focus-within:ring-gray-700';
+        $wrapperClass .= ' ' . $borderClass;
+    }
 @endphp
 
 <div class="{{ isset($footer) ? 'mb-4' : '' }}">
