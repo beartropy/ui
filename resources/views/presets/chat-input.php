@@ -3,7 +3,7 @@
 return [
     'colors' => [
         'beartropy' => [
-            'wrapper' => 'relative bg-gray-50 dark:bg-gray-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-gray-300/50 dark:bg-gray-900 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-gray-700 dark:text-gray-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -14,7 +14,7 @@ return [
             'border' => 'border border-gray-200 dark:border-gray-700/50 shadow-sm focus-within:ring-2 focus-within:ring-gray-200 dark:focus-within:ring-gray-700',
         ],
         'red' => [
-            'wrapper' => 'relative bg-white dark:bg-red-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-red-300/50 dark:bg-red-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-red-700 dark:text-red-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -25,7 +25,7 @@ return [
             'border' => 'border border-red-300 dark:border-red-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'blue' => [
-            'wrapper' => 'relative bg-white dark:bg-blue-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-blue-300/50 dark:bg-blue-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-blue-700 dark:text-blue-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -36,7 +36,7 @@ return [
             'border' => 'border border-blue-300 dark:border-blue-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'green' => [
-            'wrapper' => 'relative bg-white dark:bg-green-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-green-300/50 dark:bg-green-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-green-700 dark:text-green-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -47,7 +47,7 @@ return [
             'border' => 'border border-green-300 dark:border-green-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'yellow' => [
-            'wrapper' => 'relative bg-white dark:bg-yellow-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-yellow-300/50 dark:bg-yellow-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-yellow-700 dark:text-yellow-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -58,7 +58,7 @@ return [
             'border' => 'border border-yellow-300 dark:border-yellow-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'purple' => [
-            'wrapper' => 'relative bg-white dark:bg-purple-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-purple-300/50 dark:bg-purple-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-purple-700 dark:text-purple-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -69,7 +69,7 @@ return [
             'border' => 'border border-purple-300 dark:border-purple-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'pink' => [
-            'wrapper' => 'relative bg-white dark:bg-pink-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-pink-300/50 dark:bg-pink-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-pink-700 dark:text-pink-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -80,7 +80,7 @@ return [
             'border' => 'border border-pink-300 dark:border-pink-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'gray' => [
-            'wrapper' => 'relative bg-white dark:bg-gray-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-gray-300/50 dark:bg-gray-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-gray-700 dark:text-gray-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -91,7 +91,7 @@ return [
             'border' => 'border border-gray-300 dark:border-gray-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'orange' => [
-            'wrapper' => 'relative bg-white dark:bg-orange-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-orange-300/50 dark:bg-orange-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-orange-700 dark:text-orange-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -102,7 +102,7 @@ return [
             'border' => 'border border-orange-300 dark:border-orange-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'amber' => [
-            'wrapper' => 'relative bg-white dark:bg-amber-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-amber-300/50 dark:bg-amber-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-amber-700 dark:text-amber-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -113,7 +113,7 @@ return [
             'border' => 'border border-amber-300 dark:border-amber-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'lime' => [
-            'wrapper' => 'relative bg-white dark:bg-lime-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-lime-300/50 dark:bg-lime-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-lime-700 dark:text-lime-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -124,7 +124,7 @@ return [
             'border' => 'border border-lime-300 dark:border-lime-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'emerald' => [
-            'wrapper' => 'relative bg-white dark:bg-emerald-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-emerald-300/50 dark:bg-emerald-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-emerald-700 dark:text-emerald-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -135,7 +135,7 @@ return [
             'border' => 'border border-emerald-300 dark:border-emerald-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'teal' => [
-            'wrapper' => 'relative bg-white dark:bg-teal-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-teal-300/50 dark:bg-teal-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-teal-700 dark:text-teal-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -146,7 +146,7 @@ return [
             'border' => 'border border-teal-300 dark:border-teal-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'cyan' => [
-            'wrapper' => 'relative bg-white dark:bg-cyan-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-cyan-300/50 dark:bg-cyan-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-cyan-700 dark:text-cyan-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -157,7 +157,7 @@ return [
             'border' => 'border border-cyan-300 dark:border-cyan-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'sky' => [
-            'wrapper' => 'relative bg-white dark:bg-sky-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-sky-300/50 dark:bg-sky-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-sky-700 dark:text-sky-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -168,7 +168,7 @@ return [
             'border' => 'border border-sky-300 dark:border-sky-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'indigo' => [
-            'wrapper' => 'relative bg-white dark:bg-indigo-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-indigo-300/50 dark:bg-indigo-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-indigo-700 dark:text-indigo-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -179,7 +179,7 @@ return [
             'border' => 'border border-indigo-300 dark:border-indigo-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'violet' => [
-            'wrapper' => 'relative bg-white dark:bg-violet-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-violet-300/50 dark:bg-violet-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-violet-700 dark:text-violet-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -190,7 +190,7 @@ return [
             'border' => 'border border-violet-300 dark:border-violet-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'rose' => [
-            'wrapper' => 'relative bg-white dark:bg-rose-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-rose-300/50 dark:bg-rose-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-rose-700 dark:text-rose-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -201,7 +201,7 @@ return [
             'border' => 'border border-rose-300 dark:border-rose-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'fuchsia' => [
-            'wrapper' => 'relative bg-white dark:bg-fuchsia-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-fuchsia-300/50 dark:bg-fuchsia-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-fuchsia-700 dark:text-fuchsia-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -212,7 +212,7 @@ return [
             'border' => 'border border-fuchsia-300 dark:border-fuchsia-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'slate' => [
-            'wrapper' => 'relative bg-white dark:bg-slate-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-slate-300/50 dark:bg-slate-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-slate-700 dark:text-slate-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -223,7 +223,7 @@ return [
             'border' => 'border border-slate-300 dark:border-slate-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'stone' => [
-            'wrapper' => 'relative bg-white dark:bg-stone-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-stone-300/50 dark:bg-stone-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-stone-700 dark:text-stone-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -234,7 +234,7 @@ return [
             'border' => 'border border-stone-300 dark:border-stone-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'zinc' => [
-            'wrapper' => 'relative bg-white dark:bg-zinc-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-zinc-300/50 dark:bg-zinc-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-zinc-700 dark:text-zinc-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
@@ -245,7 +245,7 @@ return [
             'border' => 'border border-zinc-300 dark:border-zinc-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
         'neutral' => [
-            'wrapper' => 'relative bg-white dark:bg-neutral-900/50 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper' => 'relative bg-neutral-300/50 dark:bg-neutral-800 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
             'label' => 'font-semibold text-neutral-700 dark:text-neutral-300/80 text-sm tracking-wide ml-1',
             'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',

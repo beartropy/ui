@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.10] - 2026-01-10
+
+### Changed
+- Updated chat input preset wrapper backgrounds to use bg-{color}-300/50 instead of bg-white.
+
 ## [v0.11.9] - 2026-01-10
 
 ### Changed
