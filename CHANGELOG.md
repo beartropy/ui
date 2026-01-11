@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.11] - 2026-01-11
+
+### Changed
+- Removed `placeholder:text-sm` from all chat-input color presets so placeholder text matches input text size.
+
 ## [v0.11.10] - 2026-01-10
 
 ### Changed
