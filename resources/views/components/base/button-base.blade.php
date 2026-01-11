@@ -12,7 +12,7 @@
     @if($disabled) disabled @endif
     {{ $attributes->merge([
         'class' => "
-            inline-flex items-center justify-center rounded-md border transition-colors relative text-sm tracking-wide
+            inline-flex items-center justify-center rounded-md border transition-colors relative text-sm tracking-wide cursor-pointer
             {$sizePreset['font']} {$sizePreset['height']} {$sizePreset['px']} {$sizePreset['py']}
             {$colorPreset['bg']} {$colorPreset['text']} {$colorPreset['border']}
             {$colorPreset['hover']} {$colorPreset['focus']} {$colorPreset['active']}

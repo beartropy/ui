@@ -341,7 +341,7 @@ _installLocationListeners() {
 >
 
     {{-- ÁREA SCROLLABLE: categorías + items --}}
-    <div class="flex-1 overflow-y-auto pl-1.5 py-4 space-y-6 overflow-x-hidden beartropy-thin-scrollbar">
+    <div class="flex-1 overflow-y-auto pl-1.5 pr-1.5 py-4 space-y-6 overflow-x-hidden beartropy-thin-scrollbar">
         @foreach($items as $category)
             <div class="overflow-x-hidden">
                 @if(!$hideCategories)
