@@ -24,6 +24,7 @@
     @endif
 
     <div class="{{ $wrapperClass }} {{ $colorPreset['main'] ?? '' }}"
+        x-cloak
         x-data='{
         val: @if ($hasWireModel) $wire.entangle("{{ $wireModelValue }}") @else $el.querySelector("textarea").value @endif,
         isSingleLine: @json(!$stacked),

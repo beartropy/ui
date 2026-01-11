@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.12] - 2026-01-11
+
+### Changed
+- Added `x-cloak` to `chat-input` component to prevent flash of unstyled content.
+
 ## [v0.11.11] - 2026-01-11
 
 ### Changed
