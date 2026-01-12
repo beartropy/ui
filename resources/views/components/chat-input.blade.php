@@ -48,8 +48,11 @@
         });
         },
         resize() {
-        $refs.textarea.style.height = "auto";
-        $refs.textarea.style.height = $refs.textarea.scrollHeight + "px";
+        const textarea = $refs.textarea;
+        textarea.style.overflowY = "hidden";
+        textarea.style.height = "auto";
+        textarea.style.height = textarea.scrollHeight + "px";
+        textarea.style.overflowY = "auto";
         if (!this.stacked) {
         this.checkLine();
         }

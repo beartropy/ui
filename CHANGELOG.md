@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.14] - 2026-01-12
+
+### Fixed
+- Fixed glitch in `chat-input` textarea resize preventing internal scroll.
+
 ## [v0.11.13] - 2026-01-11
 
 ### Changed
