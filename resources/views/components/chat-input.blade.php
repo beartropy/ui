@@ -32,41 +32,62 @@
         action: @json($action),
         submitOnEnter: @json($submitOnEnter),
         baseHeight: 0,
+        checkLineTimeout: null,
         init() {
             this.$nextTick(() => {
                 if (!this.stacked) {
                     this.baseHeight = $refs.textarea.clientHeight;
                 }
                 this.resize();
-                if (!this.stacked) {
-                    this.checkLine();
-                }
             });
-            this.$watch("val",
-        ()=> {
-        this.$nextTick(() => this.resize());
-        });
+            this.$watch("val", () => {
+                this.$nextTick(() => this.resize());
+            });
         },
         resize() {
-        const textarea = $refs.textarea;
-        textarea.style.overflowY = "hidden";
-        textarea.style.height = "auto";
-        textarea.style.height = textarea.scrollHeight + "px";
-        textarea.style.overflowY = "auto";
-        if (!this.stacked) {
-        this.checkLine();
-        }
+            const textarea = $refs.textarea;
+            const currentWidth = textarea.offsetWidth;
+            textarea.style.width = currentWidth + "px";
+            textarea.style.height = "auto";
+            const scrollH = textarea.scrollHeight;
+            const newHeight = Math.max(scrollH, this.baseHeight || 0);
+            textarea.style.height = newHeight + "px";
+            textarea.style.width = "";
+            textarea.style.overflowY = newHeight >= 240 ? "auto" : "hidden";
+            if (!this.stacked) {
+                this.debouncedCheckLine(scrollH);
+            }
         },
-        checkLine() {
-            if (!this.val) {
-                this.isSingleLine = true;
-                return;
+        debouncedCheckLine(scrollH) {
+            clearTimeout(this.checkLineTimeout);
+            this.checkLineTimeout = setTimeout(() => {
+                if (!this.val || this.val.length === 0) {
+                    this.isSingleLine = true;
+                    return;
+                }
+                if (this.baseHeight > 0) {
+                    // Hysteresis: different thresholds to prevent oscillation
+                    if (this.isSingleLine) {
+                        // Currently single-line: go multi if clearly overflows
+                        if (scrollH > this.baseHeight + 5) {
+                            this.isSingleLine = false;
+                        }
+                    } else {
+                        // Currently multi-line: only go single if clearly fits with margin
+                        if (scrollH <= this.baseHeight - 5) {
+                            this.isSingleLine = true;
+                        }
+                    }
+                }
+            }, 150);
+        },
+        handleEnter(e) {
+            if (this.submitOnEnter && this.action && !e.shiftKey) {
+                e.preventDefault();
+                $wire.call(this.action);
             }
-            if (this.baseHeight > 0) {
-                this.isSingleLine = $refs.textarea.scrollHeight <= (this.baseHeight + 10);
-            }
-        }, handleEnter(e) { if
-            (this.submitOnEnter && this.action && !e.shiftKey) { e.preventDefault(); $wire.call(this.action); } } }'
+        }
+    }'
         :class="isSingleLine && !stacked ? 'grid grid-cols-[auto_1fr_auto] items-center gap-x-2' :
             'grid grid-cols-2 gap-y-2 items-center'">
 
@@ -82,7 +103,8 @@
             @if ($disabled) disabled @endif @if ($readonly) readonly @endif
             @if ($required) required @endif
             @if ($maxLength) maxlength="{{ $maxLength }}" @endif x-ref="textarea" x-model="val"
-            class="{{ $colorPreset['input'] }} py-2 min-w-0 max-h-60 overflow-y-auto beartropy-textarea beartropy-thin-scrollbar"
+            class="{{ $colorPreset['input'] }} py-2 min-w-0 max-h-60 overflow-y-hidden beartropy-textarea beartropy-thin-scrollbar"
+            style="field-sizing: content;"
             :class="isSingleLine && !stacked ? 'col-start-2' : 'col-span-2'" x-init="init()" x-on:input="resize()"
             x-on:keydown.enter="handleEnter($event)"
             {{ $attributes->whereDoesntStartWith('wire:model')->whereDoesntStartWith('wire:click')->whereDoesntStartWith('wire:keydown') }}

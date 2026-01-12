@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.15] - 2026-01-12
+
+### Fixed
+- Improved `chat-input` textarea stability with hysteresis and debounced layout changes.
+
 ## [v0.11.14] - 2026-01-12
 
 ### Fixed
