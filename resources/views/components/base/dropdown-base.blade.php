@@ -12,6 +12,9 @@
     'maxHeight' => null,        // altura ideal o máxima
     'overflow'  => null,        // null => auto según autoFit/maxHeight | 'visible'|'auto'|'scroll'
 
+    // Teleport: escapa de overflow:hidden en modales/cards
+    'teleport'  => true,       // true: renderiza en body con posición fija
+
     // Mobile
     'mobileMode'          => 'center', // fullscreen | sheet | center | none
     'mobileBreakpoint'    => 768,          // px: <= breakpoint se considera mobile
@@ -67,6 +70,11 @@
         // Config runtime
         mobileModeLocal: '{{ $mobileMode }}',
         isMobile: window.innerWidth <= {{ (int)$mobileBreakpoint }},
+        useTeleport: {{ $teleport ? 'true' : 'false' }},
+
+        // Teleport positioning (fixed coordinates)
+        teleportStyle: '',
+        triggerRect: null,
 
         // Medidas mobile
         mobileHeight: null,
@@ -75,10 +83,66 @@
         _onResize() {
             this.isMobile = window.innerWidth <= {{ (int)$mobileBreakpoint }};
             if (this.isMobile && {{ $bind }} ) this._measureAndSizeMobile();
+            if (!this.isMobile && this.useTeleport && {{ $bind }}) this._repositionTeleport();
         },
 
-        // --- Desktop: cálculos de posición/alto ---
+        // --- Desktop Teleport: posición fija respecto al viewport ---
+        _repositionTeleport() {
+            if (!this.useTeleport || this.isMobile) return;
+            if (!{{ $bind }}) return;
+
+            // Buscar el trigger (el padre del x-data div)
+            const anchor = this.$root.parentElement;
+            if (!anchor) return;
+
+            const rect = anchor.getBoundingClientRect();
+            this.triggerRect = rect;
+            const vh = window.innerHeight || document.documentElement.clientHeight;
+            const vw = window.innerWidth || document.documentElement.clientWidth;
+
+            const spaceBelow = vh - rect.bottom;
+            const spaceAbove = rect.top;
+            const margin = 8;
+            const ideal = {{ $maxHeight ? (int)$maxHeight : 300 }};
+
+            // Auto-flip
+            if ({{ $autoFlip ? 'true' : 'false' }}) {
+                if (this.sideLocal === 'bottom') {
+                    this.sideLocal = (spaceBelow < 160 && spaceAbove > spaceBelow) ? 'top' : 'bottom';
+                } else {
+                    this.sideLocal = (spaceAbove < 160 && spaceBelow > spaceAbove) ? 'bottom' : 'top';
+                }
+            }
+
+            const room = this.sideLocal === 'bottom' ? spaceBelow : spaceAbove;
+            const maxH = Math.max(140, Math.min(ideal, room - margin));
+
+            // Calcular posición X según placement
+            let leftPos = rect.left;
+            const placement = '{{ $placement }}';
+            if (placement === 'right') {
+                leftPos = rect.right;
+            } else if (placement === 'center') {
+                leftPos = rect.left + (rect.width / 2);
+            }
+
+            // Calcular posición Y
+            let topPos;
+            if (this.sideLocal === 'bottom') {
+                topPos = rect.bottom + 4; // 4px gap
+            } else {
+                topPos = rect.top - maxH - 4; // 4px gap
+            }
+
+            this.teleportStyle = `position:fixed; top:${topPos}px; left:${leftPos}px; max-height:${maxH}px; width:${rect.width}px; z-index:9999;`;
+            this.maxStyle = `max-height:${maxH}px;`;
+        },
+
+        // --- Desktop: cálculos de posición/alto (sin teleport) ---
         _reposition() {
+            if (this.useTeleport) {
+                return this._repositionTeleport();
+            }
             if (!{{ $autoFit ? 'true' : 'false' }}) return;
             if (this.isMobile && this.mobileModeLocal !== 'none') return;
 
@@ -177,8 +241,8 @@
     x-effect="!isMobile && ({{ $bind }}) && $nextTick(() => _reposition())"
     @keydown.escape.stop.prevent="{{ $bind }} = false"
 >
-    {{-- 💻 Desktop/Tablet: dropdown posicionado relativo al trigger --}}
-    <template x-if="!isMobile || mobileModeLocal === 'none'">
+    {{-- 💻 Desktop/Tablet SIN teleport: dropdown posicionado relativo al trigger --}}
+    <template x-if="(!isMobile || mobileModeLocal === 'none') && !useTeleport">
         <div
             x-show="{{ $bind }}"
             x-collapse
@@ -204,6 +268,42 @@
         >
             {{ $slot }}
         </div>
+    </template>
+
+    {{-- 💻 Desktop/Tablet CON teleport: dropdown en body con posición fija --}}
+    <template x-if="(!isMobile || mobileModeLocal === 'none') && useTeleport">
+        <template x-teleport="body">
+            <div
+                x-show="{{ $bind }}"
+                x-transition:enter="transition ease-out duration-150"
+                x-transition:enter-start="opacity-0 scale-95"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-100"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                @click.outside="{{ $bind }} = false"
+                x-effect="{{ $bind }} && $nextTick(() => _repositionTeleport())"
+                role="menu"
+                aria-orientation="vertical"
+                tabindex="-1"
+                class="{{ $width }}
+                    rounded-lg
+                    {{ $colorPreset['dropdown_border'] ?? '' }}
+                    {{ $colorPreset['dropdown_bg'] }}
+                    {{ $colorPreset['dropdown_shadow'] }}
+                    {{ $overflowClass }}
+                    {{ $thinScrollbar }}"
+                :class="{
+                    'origin-top': sideLocal === 'bottom',
+                    'origin-bottom': sideLocal === 'top',
+                    '-translate-x-full': '{{ $placement }}' === 'right',
+                    '-translate-x-1/2': '{{ $placement }}' === 'center'
+                }"
+                :style="teleportStyle"
+            >
+                {{ $slot }}
+            </div>
+        </template>
     </template>
 
     {{-- 📱 Mobile: center/sheet/fullscreen con auto-fit al contenido --}}

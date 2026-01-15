@@ -430,6 +430,7 @@
                 triggerLabel="{{ $label }}"
                 @click.away="close()"
                 wire:key="{{ $optionsKey }}"
+                :teleport="$teleport ?? true"
             >
                 @if($searchable)
                     {{-- Search input --}}
