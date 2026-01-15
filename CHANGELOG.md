@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.16] - 2026-01-14
+
+### Fixed
+- Fixed base dropdown positioning.
+
 ## [v0.11.15] - 2026-01-12
 
 ### Fixed
