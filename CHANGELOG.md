@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.17] - 2026-01-16
+
+### Changed
+- Updated modal to appear at approx. 1/3 from top by default, centering only when requested.
+
 ## [v0.11.16] - 2026-01-14
 
 ### Fixed

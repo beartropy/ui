@@ -29,7 +29,7 @@
             this.$wire.set('{{ $attributes->wire('model')->value() }}', true); @endif
     }
 }" x-show="localOpen" x-cloak id="{{ $modalId }}" x-ref="{{ $modalId }}"
-    class="fixed inset-0 {{ $zIndexClass }} flex items-center justify-center transition-all px-4 sm:px-0"
+    class="fixed inset-0 {{ $zIndexClass }} flex {{ $centered ? 'items-center' : 'items-start' }} justify-center transition-all px-4 sm:px-0"
     x-on:keydown.escape.window="close()" x-on:{{ $eventToClose }}.window="close()"
     x-on:{{ $eventToOpen }}.window="openModal()"
     x-effect="if(localOpen) { document.documentElement.classList.add('overflow-hidden') } else { document.documentElement.classList.remove('overflow-hidden') }"
@@ -44,7 +44,7 @@
 
     <!-- Modal Container -->
     <div x-show="localOpen" @click.stop
-        class="relative w-full {{ $widthClass }} mx-auto rounded-xl shadow-[0_8px_48px_0_rgba(0,0,0,0.18)] p-4 {{ $bgColor }} {{ $blurClass }} transition-all {{ $zIndexClass }} overflow-y-auto max-h-[80vh]"
+        class="relative w-full {{ $widthClass }} mx-auto {{ $centered ? '' : 'mt-24 sm:mt-32' }} rounded-xl shadow-[0_8px_48px_0_rgba(0,0,0,0.18)] p-4 {{ $bgColor }} {{ $blurClass }} transition-all {{ $zIndexClass }} overflow-y-auto max-h-[80vh]"
         x-transition:enter="ease-[cubic-bezier(.4,0,.2,1)] duration-300"
         x-transition:enter-start="opacity-0 scale-95 translate-y-6"
         x-transition:enter-end="opacity-100 scale-100 translate-y-0" x-transition:leave="ease-in duration-200"
