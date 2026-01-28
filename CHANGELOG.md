@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.18] - 2026-01-28
+
+### Added
+- **Slider**: Added `name` prop and external trigger support via `$dispatch` events (`open-slider`, `close-slider`, `toggle-slider`).
+
 ## [v0.11.17] - 2026-01-16
 
 ### Changed

@@ -8,6 +8,7 @@ namespace Beartropy\Ui\Components;
  * Renders a slide-over panel.
  *
  * @property bool   $show          Initial show state (usually controlled via wire:model).
+ * @property string|null $name     Unique name for external trigger via events.
  * @property string|null $color    Color preset.
  * @property string $side          Side to slide from (left, right).
  * @property bool   $backdrop      Show backdrop.
@@ -22,6 +23,7 @@ class Slider extends BeartropyComponent
      * Create a new Slider component instance.
      *
      * @param bool   $show          Initial visibility.
+     * @param string|null $name     Unique name for event-based triggers.
      * @param string|null $color    Color preset.
      * @param string $side          Side.
      * @param bool   $backdrop      Has backdrop.
@@ -38,6 +40,7 @@ class Slider extends BeartropyComponent
      */
     public function __construct(
         public bool $show = false,
+        public ?string $name = null,
         public ?string $color = null,
         public string $side = 'right',
         public bool $backdrop = true,

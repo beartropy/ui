@@ -10,8 +10,17 @@
 @endphp
 
 <div x-cloak x-data="{
-    show: @if ($attributes->wire('model')->value()) @entangle($attributes->wire('model')) @else false @endif
-}" x-modelable="show" x-on:keydown.escape.window="show = false" class="relative z-50"
+    show: @if ($attributes->wire('model')->value()) @entangle($attributes->wire('model')) @else false @endif,
+    sliderName: '{{ $name }}'
+}"
+    x-modelable="show"
+    x-on:keydown.escape.window="show = false"
+    @if ($name)
+        x-on:open-slider.window="if ($event.detail === sliderName) show = true"
+        x-on:close-slider.window="if ($event.detail === sliderName) show = false"
+        x-on:toggle-slider.window="if ($event.detail === sliderName) show = !show"
+    @endif
+    class="relative z-50"
     role="dialog" aria-modal="true" {{ $attributes->whereDoesntStartWith('wire:model') }}>
     @if ($backdrop)
         {{-- BACKDROP --}}
