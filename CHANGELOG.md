@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.19] - 2026-01-28
+
+### Fixed
+- **Slider**: Fixed external trigger events not working across Livewire components by using native `addEventListener` in `init()`.
+
 ## [v0.11.18] - 2026-01-28
 
 ### Added
