@@ -255,5 +255,16 @@ return [
             'error' => 'text-xs mt-1 text-red-500',
             'border' => 'border border-neutral-300 dark:border-neutral-700 shadow-sm focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',
         ],
+        'white' => [
+            'wrapper' => 'relative bg-white dark:bg-zinc-900 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
+            'label' => 'font-semibold text-zinc-700 dark:text-zinc-300/80 text-sm tracking-wide ml-1',
+            'label_error' => 'font-semibold text-red-500 text-sm tracking-wide ml-1',
+            'input' => 'w-full border-none !outline-none bg-transparent py-2 px-3 text-zinc-800 dark:text-zinc-100 min-h-0 resize-none overflow-hidden max-h-60 mr-1',
+            'footer' => 'px-3 pb-2 pt-1 flex items-center justify-between',
+            'help' => 'text-xs mt-1 text-neutral-400 dark:text-neutral-500',
+            'error' => 'text-xs mt-1 text-red-500',
+            'border' => 'border border-zinc-200 dark:border-zinc-800 shadow-sm focus-within:ring-2 focus-within:ring-zinc-200 dark:focus-within:ring-zinc-700',
+        ],
     ],
 ];

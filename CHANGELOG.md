@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.20] - 2026-01-30
+
+### Added
+- **ChatInput**: Added `white` preset to `chat-input` configuration.
+
 ## [v0.11.19] - 2026-01-28
 
 ### Fixed
