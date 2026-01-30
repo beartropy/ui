@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.21] - 2026-01-30
+
+### Added
+- **ChatInput**: Added `border-color` prop to allow using a specific preset's border style independently.
+
 ## [v0.11.20] - 2026-01-30
 
 ### Added

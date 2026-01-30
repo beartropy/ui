@@ -71,6 +71,7 @@ class ChatInput extends BeartropyComponent
         public $submitOnEnter = true,
         public $action = null,
         public $border = false,
+        public $borderColor = null,
     ) {}
 
     /**
