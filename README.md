@@ -36,6 +36,34 @@ You can install the package via composer:
 composer require beartropy/ui
 ```
 
+## 🤖 AI Assistant Support
+
+Beartropy UI includes comprehensive AI coding assistant integration to help you build faster.
+
+### Claude Code
+Built-in skills with slash commands:
+```bash
+/beartropy-form           # Create forms with components
+/beartropy-component      # Component documentation
+/beartropy-livewire       # Livewire integration
+/beartropy-patterns       # Complete UI examples
+/beartropy-setup          # Installation help
+```
+
+### Cursor
+Copy the included `.cursorrules` to your project:
+```bash
+cp vendor/beartropy/ui/docs/ai-assistants/cursor/.cursorrules .cursorrules
+```
+
+### Other AI Tools
+Reference the universal guide in your prompts:
+```
+Check vendor/beartropy/ui/docs/ai-assistants/BEARTROPY_GUIDE.md
+```
+
+👉 **[Full AI Assistant Documentation](docs/ai-assistants/README.md)**
+
 ## 🤝 Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.

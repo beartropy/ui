@@ -1,0 +1,318 @@
+# Beartropy UI - Cursor Rules
+
+## Project Context
+This project uses **Beartropy UI**, a comprehensive UI component library for the TALL stack (Tailwind, Alpine, Laravel, Livewire).
+
+## Component Syntax
+
+### Prefix
+All Beartropy UI components use the `x-bt-` prefix:
+- `<x-bt-input />` NOT `<x-input />` or `<input />`
+- `<x-bt-button />` NOT `<x-button />` or `<button />`
+- `<x-bt-select />` NOT `<x-select />` or `<select />`
+
+### Common Components
+```blade
+# Forms
+<x-bt-input wire:model="field" label="Label" />
+<x-bt-select wire:model="field" :options="$array" />
+<x-bt-textarea wire:model="field" label="Label" />
+<x-bt-checkbox wire:model="field" label="Label" />
+<x-bt-toggle wire:model="field" label="Label" />
+<x-bt-radio value="val" label="Label" />
+<x-bt-file-input wire:model="file" />
+
+# Buttons
+<x-bt-button primary>Text</x-bt-button>
+<x-bt-button-icon icon="name" />
+<x-bt-fab icon="plus" />
+
+# Display
+<x-bt-alert success>Message</x-bt-alert>
+<x-bt-badge>Text</x-bt-badge>
+<x-bt-card>Content</x-bt-card>
+<x-bt-avatar src="url" alt="name" />
+
+# Overlays
+<x-bt-modal wire:model="show">...</x-bt-modal>
+<x-bt-dialog wire:model="show">...</x-bt-dialog>
+<x-bt-dropdown>...</x-bt-dropdown>
+
+# Layout
+<x-bt-table>...</x-bt-table>
+<x-bt-nav>...</x-bt-nav>
+```
+
+## Livewire Integration Rules
+
+### Wire Model Usage
+ALWAYS use `wire:model` for form inputs in Livewire components:
+```blade
+# ✅ Correct
+<x-bt-input wire:model="email" label="Email" />
+
+# ❌ Incorrect
+<x-bt-input name="email" label="Email" />
+```
+
+### Wire Model Modifiers
+```blade
+wire:model="field"                        # Updates on blur
+wire:model.live="field"                   # Updates immediately
+wire:model.live.debounce.300ms="field"   # Debounced updates (for search)
+wire:model.blur="field"                   # Updates on blur (explicit)
+```
+
+### Validation
+Validation errors display AUTOMATICALLY from Livewire - do NOT manually display them:
+```blade
+# ✅ Correct - errors show automatically
+<x-bt-input wire:model="email" label="Email" />
+
+# ❌ Incorrect - don't manually add error display
+<x-bt-input wire:model="email" label="Email" />
+@error('email') <span>{{ $message }}</span> @enderror
+```
+
+### Loading States
+Components show loading spinners AUTOMATICALLY with `wire:loading`:
+```blade
+# ✅ Buttons show spinner automatically
+<x-bt-button wire:click="save" primary>Save</x-bt-button>
+
+# ✅ Inputs show spinner during updates
+<x-bt-input wire:model.live="search" />
+```
+
+## Icon Usage
+
+### Icon Names
+Use Heroicon names WITHOUT any prefix:
+```blade
+# ✅ Correct
+iconStart="envelope"
+iconStart="magnifying-glass"
+iconStart="user"
+iconStart="lock-closed"
+
+# ❌ Incorrect
+iconStart="o-envelope"
+iconStart="heroicon-envelope"
+iconStart="hero-envelope"
+```
+
+Common icons:
+- `envelope` - Email
+- `user` - User/profile
+- `lock-closed` - Password/security
+- `magnifying-glass` - Search
+- `plus` - Add/create
+- `trash` - Delete
+- `pencil` - Edit
+- `check` - Confirm/success
+- `x-mark` - Close/cancel
+
+## Props and Attributes
+
+### Magic Attributes
+Use size, color, and variant as direct attributes:
+```blade
+# ✅ Correct
+<x-bt-button primary lg>Save</x-bt-button>
+<x-bt-input secondary xl wire:model="name" />
+
+# ❌ Incorrect
+<x-bt-button color="primary" size="lg">Save</x-bt-button>
+```
+
+### Sizes
+`xs`, `sm`, `md` (default), `lg`, `xl`, `2xl`
+
+### Colors
+`primary`, `secondary`, `success`, `warning`, `danger`, `info`
+
+### Button Variants
+`solid` (default), `outline`, `ghost`, `link`
+
+## Common Patterns
+
+### Forms with Validation
+```blade
+<form wire:submit="save" class="space-y-4">
+    <x-bt-input
+        wire:model="name"
+        label="Name"
+        iconStart="user"
+    />
+
+    <x-bt-input
+        wire:model="email"
+        type="email"
+        label="Email"
+        iconStart="envelope"
+    />
+
+    <x-bt-button type="submit" primary>
+        Save
+    </x-bt-button>
+</form>
+```
+
+### Live Search
+```blade
+<x-bt-input
+    wire:model.live.debounce.300ms="search"
+    placeholder="Search..."
+    iconStart="magnifying-glass"
+    clearable
+/>
+```
+
+### Select Dropdowns
+```blade
+# Simple array
+<x-bt-select
+    wire:model="status"
+    :options="['active' => 'Active', 'inactive' => 'Inactive']"
+    label="Status"
+/>
+
+# Object array
+<x-bt-select
+    wire:model="userId"
+    :options="$users"
+    optionLabel="name"
+    optionValue="id"
+    searchable
+/>
+```
+
+### Modal with Form
+```blade
+<x-bt-button wire:click="$set('showModal', true)" primary>
+    Open Modal
+</x-bt-button>
+
+<x-bt-modal wire:model="showModal">
+    <x-slot:title>Modal Title</x-slot:title>
+
+    <div class="space-y-4">
+        <x-bt-input wire:model="name" label="Name" />
+    </div>
+
+    <x-slot:footer>
+        <x-bt-button wire:click="save" primary>Save</x-bt-button>
+        <x-bt-button wire:click="$set('showModal', false)" outline>
+            Cancel
+        </x-bt-button>
+    </x-slot:footer>
+</x-bt-modal>
+```
+
+### Data Table
+```blade
+<x-bt-table>
+    <x-slot:header>
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </x-slot:header>
+
+    <x-slot:body>
+        @foreach($items as $item)
+            <tr>
+                <td>{{ $item->name }}</td>
+                <td>
+                    <x-bt-button-icon
+                        icon="pencil"
+                        href="/items/{{ $item->id }}/edit"
+                    />
+                </td>
+            </tr>
+        @endforeach
+    </x-slot:body>
+</x-bt-table>
+```
+
+## Rules for Code Generation
+
+1. **Always use `x-bt-` prefix** for Beartropy components
+2. **Always use `wire:model`** for form fields in Livewire
+3. **Use `wire:model.live.debounce.300ms`** for search inputs
+4. **Never manually display validation errors** - they appear automatically
+5. **Use icon names without prefix** - just the Heroicon name
+6. **Use magic attributes** for size/color/variant
+7. **Always provide labels** for form inputs
+8. **Use `hint` prop** for helpful user guidance
+9. **Prefer `wire:click`** over `onclick` for Livewire actions
+10. **Use slots** for modal titles and footers
+
+## File Structure
+
+When creating Livewire components:
+```
+app/Livewire/ComponentName.php        # PHP component
+resources/views/livewire/component-name.blade.php  # Blade view
+```
+
+## Livewire Component Template
+```php
+<?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Livewire\Attributes\Validate;
+
+class FormName extends Component
+{
+    #[Validate('required|min:3')]
+    public $name = '';
+
+    #[Validate('required|email')]
+    public $email = '';
+
+    public function save()
+    {
+        $this->validate();
+
+        // Save logic...
+
+        session()->flash('success', 'Saved successfully!');
+        $this->reset();
+    }
+
+    public function render()
+    {
+        return view('livewire.form-name');
+    }
+}
+```
+
+## Don't Suggest
+
+- ❌ Native HTML form elements when Beartropy components exist
+- ❌ Manual error display (use automatic validation)
+- ❌ Custom styled buttons (use `<x-bt-button>`)
+- ❌ Plain `<select>` tags (use `<x-bt-select>`)
+- ❌ Alpine.js `x-model` for Livewire forms (use `wire:model`)
+
+## Do Suggest
+
+- ✅ Beartropy UI components for all UI elements
+- ✅ Livewire integration with `wire:model`
+- ✅ Proper component prefixes (`x-bt-`)
+- ✅ Magic attributes for styling
+- ✅ Icons for better UX
+- ✅ Hints/help text for clarity
+- ✅ Loading states (automatic with Beartropy)
+- ✅ Proper Tailwind spacing classes
+
+## Quick Reference
+
+Need help? Reference: `vendor/beartropy/ui/docs/ai-assistants/BEARTROPY_GUIDE.md`
+
+---
+
+**When generating code, ALWAYS use Beartropy UI components (`x-bt-*`) instead of plain HTML or other component libraries.**
