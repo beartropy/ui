@@ -74,9 +74,9 @@
             :class="dark ? '{{ $viewData->borderColorDark }}' : '{{ $viewData->borderColorLight }}'"
         >
             {{-- ICON LIGHT --}}
-            @if($viewData->hasIconLightSlot)
+            @isset($iconLight)
                 <span x-show="!dark" :class="rotating ? 'theme-rotate' : ''">
-                    {!! $__data['icon-light'] !!}
+                    {{ $iconLight }}
                 </span>
             @elseif($viewData->iconLight)
             <span x-show="!dark">
@@ -98,9 +98,9 @@
             @endif
 
             {{-- ICON DARK --}}
-            @if($viewData->hasIconDarkSlot)
+            @isset($iconDark)
                 <span x-show="dark" :class="rotating ? 'theme-rotate' : ''">
-                    {!! $__data['icon-dark'] !!}
+                    {{ $iconDark }}
                 </span>
             @elseif($viewData->iconDark)
             <span x-show="dark">
@@ -127,9 +127,9 @@
             style="padding: 0;"
         >
             {{-- ICON LIGHT --}}
-            @if($viewData->hasIconLightSlot)
+            @isset($iconLight)
                 <span x-show="!dark" :class="rotating ? 'theme-rotate' : ''">
-                    {!! $__data['icon-light'] !!}
+                    {{ $iconLight }}
                 </span>
             @elseif($viewData->iconLight)
                 <span x-show="!dark">
@@ -151,9 +151,9 @@
             @endif
 
             {{-- ICON DARK --}}
-            @if($viewData->hasIconDarkSlot)
+            @isset($iconDark)
                 <span x-show="dark" :class="rotating ? 'theme-rotate' : ''">
-                    {!! $__data['icon-dark'] !!}
+                    {{ $iconDark }}
                 </span>
             @elseif($viewData->iconDark)
                 <span x-show="dark">
@@ -171,9 +171,9 @@
         </button>
 
     @else {{-- icon mode --}}
-        @if($viewData->hasIconLightSlot)
+        @isset($iconLight)
             <span x-show="!dark" @click.stop="toggle()" style="cursor:pointer" :class="rotating ? 'theme-rotate' : ''">
-                {!! $__data['icon-light'] !!}
+                {{ $iconLight }}
             </span>
         @elseif($viewData->iconLight)
             <div x-show="!dark">
@@ -194,9 +194,9 @@
             </svg>
         @endif
 
-        @if($viewData->hasIconDarkSlot)
+        @isset($iconDark)
             <span x-show="dark" @click.stop="toggle()" style="cursor:pointer" :class="rotating ? 'theme-rotate' : ''">
-                {!! $__data['icon-dark'] !!}
+                {{ $iconDark }}
             </span>
         @elseif($viewData->iconDark)
             <span x-show="dark">

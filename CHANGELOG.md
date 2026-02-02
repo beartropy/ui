@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.11.22] - 2026-02-02
+
+### Added
+- **ToggleTheme**: Fix custom icons not showing
+
 ## [v0.11.21] - 2026-01-30
 
 ### Added
