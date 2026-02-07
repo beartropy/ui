@@ -102,6 +102,9 @@ return [
             'size' => env('BEARTROPY_UI_CHAT_INPUT_SIZE', 'md'),
             'outline' => env('BEARTROPY_UI_CHAT_INPUT_OUTLINE', true)
         ],
+        'file-dropzone' => [
+            'color' => env('BEARTROPY_UI_FILE_DROPZONE_COLOR', 'beartropy'),
+        ],
     ],
 
     'presets' => [

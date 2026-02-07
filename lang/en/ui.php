@@ -39,4 +39,11 @@ return [
     'options' => 'Options',
     'show_password' => 'Show password',
     'hide_password' => 'Hide password',
+    'drop_files_here' => 'Drop files here or click to select',
+    'drop_file_here' => 'Drop a file here or click to select',
+    'clear_all' => 'Clear all',
+    'file_too_large' => 'File ":name" exceeds the :max limit.',
+    'file_type_not_accepted' => 'File ":name" is not an accepted type.',
+    'max_files_exceeded' => 'Maximum :max files allowed.',
+    'remove_file' => 'Remove file',
 ];
