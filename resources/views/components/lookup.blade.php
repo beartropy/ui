@@ -4,7 +4,7 @@
     $inputId = $attributes->get('id') ?? 'input-' . uniqid();
     $wireModelName = $attributes->wire('model')->value();
 
-    // Detección de modo Alpine/Livewire
+    // Alpine/Livewire mode detection
     $alpineControlled = $attributes->has('x-model');
     $xModel = $alpineControlled ? $attributes->get('x-model') : null;
     $isLivewire = !!$wireModelName;
@@ -33,7 +33,7 @@
         $wireActionTargets = collect($attributes->getAttributes())
             ->filter(fn ($v, $k) => Str::startsWith($k, 'wire:'))
             ->reject(fn ($v, $k) => Str::startsWith($k, 'wire:model'))
-            // Nos quedamos con el "valor" del wire:*, que es el método/prop objetivo (string)
+            // Keep the "value" of wire:*, which is the target method/prop (string)
             ->map(function ($v) {
                 // En Blade suele venir como string directamente
                 if (is_string($v)) return $v;
@@ -137,12 +137,12 @@ x-data="{
                 return;
             }
 
-            // Buscamos la opción cuyo value matchee con el wire:model
+            // Find the option whose value matches the wire:model
             const match = this.options.find(
                 o => String(this.getValue(o)) === String(current)
             );
 
-            // Si encontramos opción, usamos su label, sino mostramos el valor crudo
+            // If option found, use its label; otherwise show the raw value
             const label = match ? this.getLabel(match) : current;
             this.setVisibleValue(label);
         },
@@ -291,11 +291,11 @@ x-data="{
             <x-slot name="start">
                 @if($iconStart)
                     <span class="flex items-center {{ $colorPreset['text'] ?? '' }}">
-                        {{-- Icono --}}
+                        {{-- Icon --}}
                         <x-beartropy-ui::icon :name="$iconStart" size="{{ $size }}" />
                     </span>
                 @endif
-                {{-- Slot personalizado --}}
+                {{-- Custom slot --}}
                 @isset($start)
                     {{ $start }}
                 @endisset
@@ -308,7 +308,7 @@ x-data="{
                 <span
                     wire:loading
                     wire:target="{{ $wireLoadingTargetsCsv }}"
-                    aria-label="Cargando…"
+                    aria-label="{{ __('beartropy-ui::ui.loading') }}"
                     class="inline-flex items-center"
                 >
                     @include('beartropy-ui-svg::beartropy-spinner', [
@@ -316,7 +316,7 @@ x-data="{
                     ])
                 </span>
             @endif
-            {{-- Botón limpiar --}}
+            {{-- Clear button --}}
             @if($clearable)
                 <button
                     type="button"
@@ -331,14 +331,14 @@ x-data="{
                 </button>
             @endif
 
-            {{-- Botón copiar --}}
+            {{-- Copy button --}}
             @if($copyButton)
                 <button
                     type="button"
                     x-on:click="copyToClipboard"
-                    x-tooltip.raw="Copiar"
+                    x-tooltip.raw="{{ __('beartropy-ui::ui.copy') }}"
                     tabindex="-1"
-                    aria-label="Copiar al portapapeles"
+                    aria-label="{{ __('beartropy-ui::ui.copy_to_clipboard') }}"
                 >
                     <span x-show="!copySuccess">
                         @include('beartropy-ui-svg::beartropy-clipboard', [
@@ -380,7 +380,7 @@ x-data="{
                 </span>
             @endif
 
-            {{-- Slot personalizado --}}
+            {{-- Custom slot --}}
             @isset($end)
                 {{ $end }}
             @endisset

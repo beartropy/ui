@@ -13,19 +13,19 @@
     })"
     class="w-full"
 >
-    <!-- Buscador y contador -->
+    <!-- Search and counter -->
     <div class="{{ $colorPreset['searchbox'] }}">
         <template x-if="searchable">
             <x-beartropy-ui::input
                 sm
                 type="text"
                 x-model="search"
-                placeholder="Buscar..."
+                placeholder="{{ __('beartropy-ui::ui.search') }}"
             />
         </template>
     </div>
 
-    <!-- Tabla -->
+    <!-- Table -->
     <div class="overflow-x-auto beartropy-thin-scrollbar {{ $colorPreset['table'] ?? '' }}">
         <table class="w-full border-collapse text-sm">
             <thead class="{{ $colorPreset['thead'] ?? '' }}">
@@ -61,7 +61,7 @@
         </table>
     </div>
 
-    <!-- Paginador -->
+    <!-- Paginator -->
     <div class="flex items-center justify-between mt-2"  x-show="paginated">
         <div class="text-sm {{$colorPreset['pagination_info']}}">
             Showing <span x-text="filtered.length ? start + 1 : 0"></span>
@@ -70,7 +70,7 @@
         </div>
         <nav>
             <ul class="{{ $colorPreset['pagination_container'] }}">
-                <!-- Botón anterior -->
+                <!-- Previous button -->
                 <li>
                     <button
                         @click="prevPage"
@@ -83,7 +83,7 @@
                         </svg>
                     </button>
                 </li>
-                <!-- Números de página (key único por valor+índice) -->
+                <!-- Page numbers (unique key by value+index) -->
                 <template x-for="(p, i) in pagesToShow()" :key="p + '-' + i">
                     <li>
                         <template x-if="p === '...'">
@@ -101,7 +101,7 @@
                         </template>
                     </li>
                 </template>
-                <!-- Botón siguiente -->
+                <!-- Next button -->
                 <li>
                     <button
                         @click="nextPage"

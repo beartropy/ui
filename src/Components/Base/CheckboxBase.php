@@ -3,37 +3,21 @@
 namespace Beartropy\Ui\Components\Base;
 
 use Beartropy\Ui\Components\BeartropyComponent;
+use Illuminate\Contracts\View\View;
 
 /**
  * Base class for Checkbox logic.
  */
 class CheckboxBase extends BeartropyComponent
 {
-    public $size, $color, $label;
-    public $customError;
+    public function __construct(
+        public ?string $size = 'md',
+        public ?string $color = 'beartropy',
+        public ?string $label = null,
+        public ?string $customError = null,
+    ) {}
 
-    /**
-     * Create a new CheckboxBase component instance.
-     *
-     * @param string      $size        Checkbox size.
-     * @param string      $color       Checkbox color.
-     * @param string|null $label       Label text.
-     * @param mixed       $customError Custom error message.
-     */
-    public function __construct($size = 'md', $color = 'beartropy', $label = null, $customError = null)
-    {
-        $this->size = $size;
-        $this->color = $color;
-        $this->label = $label;
-        $this->customError = $customError;
-    }
-
-    /**
-     * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\View\View|\Closure|string
-     */
-    public function render()
+    public function render(): View
     {
         return view('beartropy-ui::base.checkbox-base');
     }

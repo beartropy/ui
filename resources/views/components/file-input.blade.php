@@ -4,14 +4,14 @@
     [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
     [$hasWireModel, $wireModelValue] = $getWireModelState();
 
-    $isDisabled = $attributes->has('disabled');
+    $isDisabled = $disabled;
 
     $inputId = $attributes->get('id') ?? 'input-file-' . uniqid();
 
     $wrapperClass = $attributes->get('class') ?? '';
 
     $label = $label ?? null;
-    $placeholder = $placeholder ?? 'Elegir archivo...';
+    $placeholder = $placeholder ?? __('beartropy-ui::ui.choose_file');
     $labelClass = $hasError ? ($colorPreset['label_error'] ?? $colorPreset['label']) : $colorPreset['label'];
 
     $loadingTargetsOverride = null;
@@ -57,7 +57,7 @@
                 this.files = selectedFiles;
                 this.label = this.files.length === 1
                     ? this.files[0].name
-                    : `${this.files.length} archivos seleccionados`;
+                    : `${this.files.length} {{ __('beartropy-ui::ui.files_selected') }}`;
                 this.uploaded = false;
                 this.validationErrors = false;
             }
@@ -69,7 +69,7 @@
             this.uploaded = false;
             this.validationErrors = false;
 
-            // Resetear el input
+            // Reset the input
             this.$refs.fileInput.value = '';
         },
 
@@ -111,9 +111,9 @@
         <label for="{{ $inputId }}-trigger" class="{{ $labelClass }}">{{ $label }}</label>
     @endif
 
-    {{-- input file real (oculto) - CAMBIÉ EL REF AQUÍ --}}
+    {{-- Hidden real file input --}}
     <input
-        x-ref="fileInput" {{-- 👈 CAMBIÉ DE 'input' A 'fileInput' --}}
+        x-ref="fileInput"
         id="{{ $inputId }}"
         name="{{ $name ?? $inputId }}"
         type="file"
@@ -135,7 +135,8 @@
         has-error="{{ $hasError }}"
         :fill="$attributes->has('fill') || $shouldFill"
         :outline="$attributes->has('outline')"
-        {{ $attributes->whereDoesntStartWith(['wire:model', 'id', 'name', 'accept', 'multiple']) }}
+        :disabled="$isDisabled"
+        {{ $attributes->whereDoesntStartWith(['wire:model', 'id', 'name', 'accept', 'multiple', 'disabled']) }}
     >
         <x-slot name="start">
             <x-beartropy-ui::icon name="paper-clip" class="w-4 h-4 opacity-70 shrink-0 text-gray-700 dark:text-gray-300" />
@@ -175,7 +176,7 @@
         <x-slot name="end">
             <span
                 x-show="uploading"
-                aria-label="Cargando…"
+                aria-label="{{ __('beartropy-ui::ui.loading') }}"
                 class="inline-flex items-center"
                 x-cloak
             >
@@ -187,7 +188,7 @@
             @if ($hasError)
                 <span
                     x-show="!uploading"
-                    aria-label="Error de validación"
+                    aria-label="{{ __('beartropy-ui::ui.validation_error') }}"
                     class="inline-flex items-center"
                     x-cloak
                 >
@@ -198,7 +199,7 @@
             @else
                 <span
                     x-show="!uploading && uploaded"
-                    aria-label="Subido"
+                    aria-label="{{ __('beartropy-ui::ui.uploaded') }}"
                     class="inline-flex items-center"
                     x-cloak
                 >

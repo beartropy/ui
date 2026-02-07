@@ -75,19 +75,19 @@ class Table extends BeartropyComponent
      */
     public function normalizeData($items, $columns)
     {
-        // 1. Si es Collection: conviértelo a array
+        // 1. If Collection: convert to array
         if ($items instanceof \Illuminate\Support\Collection) {
             $items = $items->all();
         }
 
-        // 2. Si es array de modelos Eloquent u objetos con toArray()
+        // 2. If array of Eloquent models or objects with toArray()
         if (is_array($items) && count($items) && is_object($items[0]) && method_exists($items[0], 'toArray')) {
             $items = array_map(function ($item) {
                 return $item->toArray();
             }, $items);
         }
 
-        // 3. Si es array de arrays planos (detecta keys 0,1,2...) y columns está definido
+        // 3. If array of flat arrays (sequential keys 0,1,2...) and columns are defined
         $columnLabels = array_values($columns);
         if (
             is_array($items)
@@ -96,18 +96,18 @@ class Table extends BeartropyComponent
             && array_keys($items[0]) === range(0, count($items[0]) - 1)
             && count($items[0]) === count($columnLabels)
         ) {
-            // Mapear por orden
+            // Map by order
             return array_map(function ($row) use ($columnLabels) {
                 return array_combine($columnLabels, array_pad($row, count($columnLabels), null));
             }, $items);
         }
 
-        // 4. Si ya es asociativo, no tocar
+        // 4. If already associative, leave as-is
         return $items;
     }
 
 
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::table');
     }

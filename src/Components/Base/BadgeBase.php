@@ -3,35 +3,22 @@
 namespace Beartropy\Ui\Components\Base;
 
 use Beartropy\Ui\Components\BeartropyComponent;
+use Illuminate\Contracts\View\View;
 
 /**
  * Base class for Badge component logic.
  */
 class BadgeBase extends BeartropyComponent
 {
-    /**
-     * Create a new BadgeBase component instance.
-     *
-     * @param string|null $color     Badge color.
-     * @param string|null $size      Badge size.
-     * @param string|null $variant   Badge variant.
-     * @param string|null $iconLeft  Left icon name.
-     * @param string|null $iconRight Right icon name.
-     */
     public function __construct(
-        public $color = null,
-        public $size = null,
-        public $variant = null,
-        public $iconLeft = null,
-        public $iconRight = null,
+        public ?string $color = null,
+        public ?string $size = null,
+        public ?string $variant = null,
+        public ?string $iconLeft = null,
+        public ?string $iconRight = null,
     ) {}
 
-    /**
-     * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\View\View|\Closure|string
-     */
-    public function render()
+    public function render(): View
     {
         return view('beartropy-ui::base.badge-base');
     }

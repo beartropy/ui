@@ -47,16 +47,14 @@ class Dropdown extends BeartropyComponent
         public ?string $color = null,
         public ?string $size = null,
         public ?bool $withnavigate = null
-    ) {
-        parent::__construct();
-    }
+    ) {}
 
     /**
      * Get the view / contents that represent the component.
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::dropdown');
     }

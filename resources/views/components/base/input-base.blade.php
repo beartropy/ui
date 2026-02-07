@@ -37,34 +37,31 @@
     class="flex items-center w-full min-w-0 group relative"
 >
     <div
-        class="flex items-center group w-full min-w-0 overflow-hidden rounded-md transition-all shadow-sm
-            {{ ($shouldFill) ? $colorPreset['bg'] : '' }}
+        class="flex items-center group w-full min-w-0 overflow-hidden rounded-lg transition-all shadow-sm
+            {{ $shouldFill ? $colorPreset['bg'] : 'bg-white dark:bg-gray-900' }}
             {{ $borderClass ?? '' }}
             {{ $ringClass ?? '' }}
-            {{ $colorPreset['disabled_bg'] ?? '' }}
             {{ $disabled ? 'opacity-60 cursor-not-allowed' : '' }}
-            {{ $sizePreset['px'] ?? '' }}
             {{ $sizePreset['height'] ?? '' }}"
         @if($disabled) aria-disabled="true" @endif
     >
         {{-- Start slot --}}
         @if (trim($start ?? ''))
-            <div class="flex items-center shrink-0 h-full pr-2 gap-1 beartropy-inputbase-start-slot">
+            <div class="flex shrink-0 self-stretch beartropy-inputbase-start-slot">
                 {{ $start }}
             </div>
         @endif
 
-        <div class="flex-1 min-w-0 h-full flex items-center" wire:key="{{ $inputId }}">
+        <div class="flex-1 min-w-0 h-full flex items-center {{ $sizePreset['px'] ?? '' }}" wire:key="{{ $inputId }}">
             <input
                 data-beartropy-input
                 id="{{ $inputId }}"
                 x-ref="input"
-                x-bind:type="(typeof showPassword !== 'undefined' && showPassword) ? 'text' : '{{ $type }}'"
+                x-bind:type="showPassword ? 'text' : '{{ $type }}'"
                 class="w-full min-w-0 bg-transparent outline-none border-none shadow-none beartropy-input
                     {{ $sizePreset['font'] ?? '' }}
                     {{ $colorPreset['text'] ?? '' }}
-                    {{ $colorPreset['placeholder'] ?? '' }}
-                    {{ $colorPreset['disabled_text'] ?? '' }}"
+                    {{ $colorPreset['placeholder'] ?? '' }}"
                 placeholder="{{ $placeholder ?? '' }}"
                 autocomplete="off"
                 {{ $attributes->merge([
@@ -76,7 +73,7 @@
 
         {{-- End slot --}}
         @if (trim($end ?? ''))
-            <div class="flex items-center shrink-0 h-full pl-1 gap-1 whitespace-nowrap beartropy-inputbase-end-slot">
+            <div class="flex shrink-0 self-stretch beartropy-inputbase-end-slot">
                 {{ $end }}
             </div>
         @endif

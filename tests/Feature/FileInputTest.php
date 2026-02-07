@@ -32,8 +32,8 @@ it('can render with custom placeholder', function () {
 
 it('can render with default placeholder', function () {
     $html = Blade::render('<x-bt-file-input name="test_file" />');
-    
-    expect($html)->toContain('Elegir archivo');
+
+    expect($html)->toContain('Choose file');
 });
 
 it('can render in multiple mode', function () {
@@ -167,21 +167,21 @@ it('shows validation errors state with Livewire', function () {
 
 it('renders spinner during upload', function () {
     $html = Blade::render('<x-bt-file-input name="test_file" wire:model="file" />');
-    
+
     expect($html)->toContain('animate-spin');
-    expect($html)->toContain('Cargando…');
+    expect($html)->toContain('Loading');
 });
 
 it('renders success icon after upload', function () {
     $html = Blade::render('<x-bt-file-input name="test_file" wire:model="file" />');
-    
-    expect($html)->toContain('Subido');
+
+    expect($html)->toContain('Uploaded');
 });
 
 it('renders error icon on validation error', function () {
     $html = Blade::render('<x-bt-file-input name="test_file" custom-error="Invalid file" />');
-    
-    expect($html)->toContain('Error de validación');
+
+    expect($html)->toContain('Validation error');
 });
 
 it('generates unique id when not provided', function () {
@@ -201,9 +201,9 @@ it('has Alpine.js reactive files array', function () {
 
 it('updates label based on file selection', function () {
     $html = Blade::render('<x-bt-file-input name="test_file" />');
-    
+
     expect($html)->toContain('this.files[0].name');
-    expect($html)->toContain('archivos seleccionados');
+    expect($html)->toContain('files selected');
 });
 
 it('can render with custom end slot', function () {

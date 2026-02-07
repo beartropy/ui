@@ -31,6 +31,8 @@ class BeartropyUiServiceProvider extends ServiceProvider
 
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
 
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'beartropy-ui');
+
         $this->loadViewsFrom(__DIR__ . '/../resources/views/components', 'beartropy-ui');
         $this->loadViewsFrom(__DIR__ . '/../resources/views/svg', 'beartropy-ui-svg');
 

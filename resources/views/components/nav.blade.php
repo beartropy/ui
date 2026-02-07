@@ -11,10 +11,10 @@
     'childBorderClass' => '',
     'customBadges' => [],
 
-    'hideCategories' => false,          // Oculta los títulos de las categorías
+    'hideCategories' => false,          // Hides category titles
     'singleOpenExpanded' => false,
 
-    // Collapse button (opcional)
+    // Collapse button (optional)
     'collapseButtonAsItem' => true,
     'collapseButtonLabelCollapse' => 'Collapse',
     'collapseButtonLabelExpand'  => 'Expand',
@@ -23,7 +23,7 @@
     'rememberCollapse' => null,                 // null = auto (usa collapseButtonAsItem)
     'rememberCollapseKey' => 'beartropy:sidebar:collapsed',
 
-    // Header del menú flotante
+    // Floating menu header
     'hoverMenuShowHeader'   => true,
     'hoverMenuHeaderClass'  => 'sticky top-0 z-10 px-3 py-2 border-b border-gray-200/80 dark:border-gray-700/70 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm',
     'hoverMenuHeaderTextClass' => 'font-bold text-sm text-gray-700 dark:text-gray-400',
@@ -31,17 +31,17 @@
 ])
 
 @php
-    // Clases hover desde preset según modo
+    // Hover classes from preset based on mode
     $itemHover  = $highlightMode === 'text' ? $hoverTextClass      : '';
     $childHover = $highlightMode === 'text' ? $hoverTextChildClass : '';
 
-    // Soporte para badges por slot y/o Alpine
+    // Support for badges via slot and/or Alpine
     $customBadges = ${'custom-badges'} ?? [];
 
-    // Botón de colapso reusa las clases del item principal + hover
+    // Collapse button reuses main item classes + hover
     $collapseBtnClass = trim(($itemClass ?? '') . ' ' . $itemHover);
 
-    // Manejo de binding (acepta "!sidebarOpen")
+    // Binding handling (accepts "!sidebarOpen")
     $bindExpr   = trim($sidebarBind ?? '');
     $bindVar    = ltrim($bindExpr, '! ');
     $isNegated  = str_starts_with($bindExpr, '!');
@@ -53,11 +53,12 @@
         open: {},
         sidebarIsCollapsed: false,
         singleOpenExpanded: {{ $singleOpenExpanded ? 'true' : 'false' }},
-        // ---- config de recordatorio ----
+        // ---- remember config ----
         remember: {{ ($rememberCollapse === null ? ($collapseButtonAsItem ? 'true' : 'false') : ($rememberCollapse ? 'true' : 'false')) }},
         rememberKey: @js($rememberCollapseKey),
 
         // ---- hover submenu ----
+
         hoverId: null,
         hoverTimer: null,
         submenuPos: { top: 0, left: 0, minWidth: 220 },
@@ -79,7 +80,7 @@ _norm(u) {
     const url = new URL(u, window.location.origin);
     let path = url.pathname.replace(/\/+$/, '');
     if (path === '') path = '/';
-    const query = url.search; // conserva query si querés distinguir filtros
+    const query = url.search; // keep query to distinguish filters
     return path + query;
   } catch (e) {
     let s = (u || '').replace(/\/+$/, '');
@@ -92,7 +93,7 @@ isActiveHref(href, mode = 'exact') {
   if (!href || href === '#' || href.startsWith('javascript')) return false;
   const here  = this._norm(this.activePath);
   const there = this._norm(href);
-  if (!there) return false; // evita que '' haga match con todo
+  if (!there) return false; // prevents '' from matching everything
   return mode === 'startsWith' ? here.startsWith(there) : here === there;
 },
 hrefFromEl(el) {
@@ -121,7 +122,7 @@ isActiveEl(el, startsWith = false) {
   return this.isActiveHref(href, startsWith ? 'startsWith' : 'exact');
 },
 _path(u) {
-  // ignorar anchors y javascript
+  // ignore anchors and javascript
   if (!u || u === '#' || String(u).startsWith('javascript')) return '';
   try {
     let p = new URL(u, window.location.origin).pathname.replace(/\/+$/, '');
@@ -141,7 +142,7 @@ _pathStartsWith(herePath, prefix) {
 parentMatches(el) {
   const here = this._path(this.activePath);
 
-  // Si es padre con hijos: SOLO chequeamos los prefijos de hijos
+  // If parent with children: we ONLY check child prefixes
   if (el?.dataset?.hasChildren === '1') {
     if (el?.dataset?.childPrefixes) {
       try {
@@ -152,8 +153,8 @@ parentMatches(el) {
         }
       } catch (e) {}
     }
-    // Opcional: si este padre tiene realmente un link propio (data-href verdadero),
-    // también lo dejamos matchear. Pero evitamos '#' o 'javascript'.
+    // Optional: if this parent actually has its own link (real data-href),
+    // also let it match. But we skip '#' or 'javascript'.
     const dh = el?.dataset?.href;
     if (dh && dh !== '#' && !String(dh).startsWith('javascript')) {
       const p = this._path(dh);
@@ -162,7 +163,7 @@ parentMatches(el) {
     return false;
   }
 
-  // Si NO tiene hijos: activo exacto por su propio href (solo path)
+  // If no children: exact match by its own href (path only)
   const herePath = here;
   const p = this._path(this.hrefFromEl(el));
   return herePath === p;
@@ -170,7 +171,7 @@ parentMatches(el) {
 
 isActiveParent(el) {
   if (el?.dataset?.hasChildren === '1') return this.parentMatches(el);
-  // sin hijos: activo exacto (path + query no; usamos solo path)
+  // no children: exact match (path only, no query)
   const here = this._path(this.activePath);
   const p = this._path(this.hrefFromEl(el));
   return here === p;
@@ -194,7 +195,7 @@ updateActiveState() {
   const activeParents = this.getActiveParentIds();
 
   if (activeParents.length === 0) {
-    // no tocar 'open' aún; esperamos al próximo frame (dom ya montado)
+    // don't touch 'open' yet; wait for the next frame (DOM already mounted)
     requestAnimationFrame(() => {
       const retry = this.getActiveParentIds();
       if (retry.length > 0) this._reconcileOpen(retry);
@@ -210,14 +211,14 @@ _reconcileOpen(activeParents) {
   const shouldOpen = new Set(activeParents);
 
   if (this.singleOpenExpanded) {
-    // Cerrar solo lo que NO debe estar abierto
+    // Close only what should NOT be open
     Object.keys(this.open).forEach(id => {
       if (this.open[id] && !shouldOpen.has(id)) this.open[id] = false;
     });
-    // Abrir solo lo necesario
+    // Open only what's needed
     shouldOpen.forEach(id => { if (!this.open[id]) this.open[id] = true; });
   } else {
-    // No colapsivo: solo garantizar abiertas las activas actuales
+    // Not collapsible: just ensure active items are open
     shouldOpen.forEach(id => { if (!this.open[id]) this.open[id] = true; });
   }
   this.$nextTick(() => {});
@@ -225,7 +226,7 @@ _reconcileOpen(activeParents) {
 
 
         openActiveBranches() {
-            // (compat) mantener llamada desde init; ahora delega en updateActiveState
+            // (compat) keep call from init; now delegates to updateActiveState
             this.updateActiveState();
         },
 
@@ -233,7 +234,7 @@ _installLocationListeners() {
   let t = null;
   const notify = () => {
     clearTimeout(t);
-    t = setTimeout(() => this.updateActiveState(), 30); // pequeño debounce
+    t = setTimeout(() => this.updateActiveState(), 30); // small debounce
   };
 
   window.addEventListener('popstate', notify);
@@ -257,7 +258,7 @@ _installLocationListeners() {
 
 
 
-        // ---- helpers persistencia ----
+        // ---- persistence helpers ----
         loadRemembered() {
             if (!this.remember) return null;
             const v = localStorage.getItem(this.rememberKey);
@@ -270,7 +271,7 @@ _installLocationListeners() {
         },
 
         init() {
-            // 1) Estado inicial (autoabrir ramas activas en expandido)
+            // 1) Initial state (auto-open active branches when expanded)
             @foreach($items as $category)
                 @foreach($category['items'] as $item)
                     @php $id = $navId($item); @endphp
@@ -280,54 +281,54 @@ _installLocationListeners() {
                 @endforeach
             @endforeach
 
-            // 2) Bind externo (con/sin negación) + recordatorio
+            // 2) External bind (with/without negation) + remember
             @if(!empty($bindVar))
                 if (typeof {{ $bindVar }} !== 'undefined') {
-                    // a) Si hay valor recordado, úsalo para inicializar el bind externo y el estado local
+                    // a) If there's a remembered value, use it to initialize the external bind and local state
                     const remembered = this.loadRemembered();
                     if (remembered !== null) {
-                        // Si sidebarIsCollapsed = remembered,
-                        // entonces bindVar debe ser (negado o no) según $isNegated
+                        // If sidebarIsCollapsed = remembered,
+                        // then bindVar must be (negated or not) based on $isNegated
                         {{ $bindVar }} = {{ $isNegated ? '!' : '' }}remembered;
                         this.sidebarIsCollapsed = remembered;
                     } else {
-                        // Sin recordado: derivamos del bind
+                        // No remembered value: derive from bind
                         this.sidebarIsCollapsed = {{ $isNegated ? '!' : '' }}{{ $bindVar }} ? true : false;
                     }
 
-                    // b) Watch: cuando cambia el bind, sincronizamos local + localStorage
+                    // b) Watch: when the bind changes, sync local + localStorage
                     $watch('{{ $bindVar }}', value => {
                         const collapsed = {{ $isNegated ? '!' : '' }}value ? true : false;
                         this.sidebarIsCollapsed = collapsed;
                         this.saveRemembered(collapsed);
                     });
                 } else {
-                    // No existe el bind en runtime: caemos a modo interno con recordatorio
+                    // Bind doesn't exist at runtime: fall back to internal mode with remember
                     const remembered = this.loadRemembered();
                     this.sidebarIsCollapsed = remembered !== null ? remembered : false;
                     $watch('sidebarIsCollapsed', v => this.saveRemembered(v));
                 }
             @else
-                // 3) Sin bind externo: persistimos el estado interno
+                // 3) No external bind: persist internal state
                 const remembered = this.loadRemembered();
                 this.sidebarIsCollapsed = remembered !== null ? remembered : false;
                 $watch('sidebarIsCollapsed', v => this.saveRemembered(v));
             @endif
 
-            // ---- ACTIVAR listeners y abrir ramas segun URL actual ----
+            // ---- Activate listeners and open branches based on current URL ----
             this._installLocationListeners();
             this.openActiveBranches();
         },
 
         toggle(id) {
-            // En colapsado no hay inline (se maneja por hover), no hacemos nada
+            // When collapsed there's no inline (handled by hover), do nothing
             if (this.sidebarIsCollapsed) return;
 
             if (this.singleOpenExpanded) {
                 const willOpen = !this.open[id];
-                // cerrar todos
+                // close all
                 Object.keys(this.open).forEach(k => this.open[k] = false);
-                // abrir solo el actual si corresponde
+                // open only the current one if appropriate
                 this.open[id] = willOpen;
             } else {
                 this.open[id] = !this.open[id];
@@ -340,7 +341,7 @@ _installLocationListeners() {
     @mousedown.stop
 >
 
-    {{-- ÁREA SCROLLABLE: categorías + items --}}
+    {{-- SCROLLABLE AREA: categories + items --}}
     <div class="flex-1 overflow-y-auto pl-1.5 pr-1.5 py-4 space-y-6 overflow-x-hidden beartropy-thin-scrollbar">
         @foreach($items as $category)
             <div class="overflow-x-hidden">
@@ -374,11 +375,11 @@ _installLocationListeners() {
                             if ($itemClassOverride) {
                                 $finalItemClass = trim($itemClassOverride);
                             } else {
-                                // NUNCA marcamos active desde PHP (lo maneja Alpine)
+                                // NEVER mark active from PHP (handled by Alpine)
                                 $finalItemClass = trim($itemClass . ' ' . $itemHover);
                             }
 
-                            // Nueva lógica para obtener el href
+                            // Logic to resolve the href
                             $href = '#';
                             if (!$hasChildren) {
                                 if (!empty($item['routeName'])) {
@@ -414,7 +415,7 @@ _installLocationListeners() {
                                         } catch (\Throwable $e) {}
                                     }
 
-                                    // también considerar el path del propio padre si tiene routeName/route
+                                    // also consider the parent's own path if it has routeName/route
                                     $parentSelfHref = null;
                                     if (!empty($item['routeName'])) {
                                         try { $parentSelfHref = route($item['routeName'], $item['routeParams'] ?? []); } catch (\Throwable $e) {}
@@ -500,7 +501,7 @@ _installLocationListeners() {
                                 @endif
                             </a>
 
-                            {{-- SUBMENU INLINE (solo expandido, comportamiento original) --}}
+                            {{-- INLINE SUBMENU (expanded only, original behavior) --}}
                             @if($hasChildren)
                                 <div
                                     class="space-y-1 {{ $childBorderClass }}"
@@ -533,7 +534,7 @@ _installLocationListeners() {
                         if ($childClassOverride) {
                             $finalChildClass = trim($childClassOverride);
                         } else {
-                            // NUNCA marcamos active desde PHP (lo maneja Alpine)
+                            // NEVER mark active from PHP (handled by Alpine)
                             $finalChildClass = trim($childItemClass . ' ' . $childHover);
                         }
 
@@ -606,7 +607,7 @@ _installLocationListeners() {
                                 </div>
                             @endif
 
-                            {{-- SUBMENU FLOTANTE (solo colapsado, hover) --}}
+                            {{-- FLOATING SUBMENU (collapsed only, hover) --}}
                             @if($hasChildren)
                                 <template x-teleport="body">
                                     <template x-if="sidebarIsCollapsed && hoverId === '{{ $itemId }}'">
@@ -619,9 +620,9 @@ _installLocationListeners() {
                                                 max-h-[70vh] overflow-auto"
                                             :style="`top:${submenuPos.top}px; left:${submenuPos.left}px; min-width:${submenuPos.minWidth}px`"
                                             role="menu"
-                                            aria-label="Submenú {{ $item['label'] ?? '' }}"
+                                            aria-label="Submenu {{ $item['label'] ?? '' }}"
                                         >
-                                        {{-- HEADER DEL SUBMENÚ FLOTANTE --}}
+                                        {{-- FLOATING SUBMENU HEADER --}}
                                         @if($hoverMenuShowHeader)
                                             <div class="{{ $hoverMenuHeaderClass }}">
                                                 <div class="flex items-center gap-2">
@@ -632,7 +633,7 @@ _installLocationListeners() {
                                             </div>
                                         @endif
 
-                                        {{-- LISTA DE HIJOS --}}
+                                        {{-- CHILDREN LIST --}}
                                         <div class="py-1">
                                             @foreach($item['children'] as $child)
                                                 @if(!empty($child['divider']))
@@ -707,7 +708,7 @@ _installLocationListeners() {
         @endforeach
     </div>
 
-    {{-- FOOTER FIJO: botón de colapso --}}
+    {{-- FIXED FOOTER: collapse button --}}
     @if ($collapseButtonAsItem)
         <div class="pl-1.5 py-2">
             <button

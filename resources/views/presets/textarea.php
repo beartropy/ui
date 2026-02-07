@@ -2,6 +2,16 @@
 
 return [
     'colors' => [
+        'primary' => [
+            'main' => 'relative bg-white dark:bg-gray-900/50 text-gray-800 dark:text-gray-100 border rounded-md shadow-sm focus-within:ring-1 transition',
+            'border_default' => 'border-gray-300 dark:border-gray-700 focus-within:ring-beartropy-500 focus-within:border-beartropy-500',
+            'border_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
+            'label' => 'font-semibold text-gray-700 dark:text-gray-300 text-sm ml-1',
+            'label_error' => 'font-semibold text-red-500 text-sm ml-1',
+            'input' => 'beartropy-textarea w-full border-none !outline-none bg-transparent py-2 text-gray-800 dark:text-gray-100 min-h-[2.5rem]',
+            'help' => 'text-xs mt-1 text-neutral-400 dark:text-neutral-500',
+            'error' => 'text-xs mt-1 text-red-500',
+        ],
         'beartropy' => [
             'main' => 'relative bg-white dark:bg-gray-900/50 text-gray-800 dark:text-gray-100 border rounded-md shadow-sm focus-within:ring-2 transition',
             'border_default' => 'border-gray-300 dark:border-gray-700 focus-within:ring-blue-400 dark:focus-within:ring-blue-500',

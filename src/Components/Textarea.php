@@ -53,23 +53,23 @@ class Textarea extends BeartropyComponent
      * @property bool $info      Info color.
      */
     public function __construct(
-        public $label = null,
-        public $placeholder = '',
-        public $rows = 4,
-        public $cols = null,
-        public $name = null,
-        public $id = null,
-        public $color = null,
-        public $disabled = false,
-        public $readonly = false,
-        public $required = false,
-        public $help =  null,
-        public $customError = null,
-        public $autoResize = false,
-        public $resize = null,
-        public $showCounter = true,
-        public $maxLength = null,
-        public $showCopyButton = true,
+        public ?string $label = null,
+        public string $placeholder = '',
+        public int $rows = 4,
+        public ?int $cols = null,
+        public ?string $name = null,
+        public ?string $id = null,
+        public ?string $color = null,
+        public bool $disabled = false,
+        public bool $readonly = false,
+        public bool $required = false,
+        public ?string $help = null,
+        public mixed $customError = null,
+        public bool $autoResize = false,
+        public ?string $resize = null,
+        public bool $showCounter = true,
+        public ?int $maxLength = null,
+        public bool $showCopyButton = true,
     ) {}
 
 
@@ -78,7 +78,7 @@ class Textarea extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::textarea');
     }

@@ -72,7 +72,7 @@ class Button extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::button');
     }

@@ -56,17 +56,17 @@ return [
     */
     'component_defaults' => [
         'input' => [
-            'color' => env('BEARTROPY_UI_INPUT_COLOR', 'beartropy'),
+            'color' => env('BEARTROPY_UI_INPUT_COLOR', 'primary'),
             'size' => env('BEARTROPY_UI_INPUT_SIZE', 'md'),
             'outline' => env('BEARTROPY_UI_INPUT_OUTLINE', true)
         ],
         'textarea' => [
-            'color' => env('BEARTROPY_UI_TEXTAREA_COLOR', 'beartropy'),
+            'color' => env('BEARTROPY_UI_TEXTAREA_COLOR', 'primary'),
             'size' => env('BEARTROPY_UI_TEXTAREA_SIZE', 'md'),
             'outline' => env('BEARTROPY_UI_TEXTAREA_OUTLINE', true)
         ],
         'tag' => [
-            'color' => env('BEARTROPY_UI_TAG_COLOR', 'beartropy'),
+            'color' => env('BEARTROPY_UI_TAG_COLOR', 'primary'),
             'size' => env('BEARTROPY_UI_TAG_SIZE', 'md'),
             'outline' => env('BEARTROPY_UI_TAG_OUTLINE', true)
         ],
@@ -93,8 +93,12 @@ return [
         'table' => [
             'color' => env('BEARTROPY_UI_TABLE_COLOR', 'beartropy'),
         ],
+        'select' => [
+            'color' => env('BEARTROPY_UI_SELECT_COLOR', 'primary'),
+            'size' => env('BEARTROPY_UI_SELECT_SIZE', 'md'),
+        ],
         'chat-input' => [
-            'color' => env('BEARTROPY_UI_CHAT_INPUT_COLOR', 'beartropy'),
+            'color' => env('BEARTROPY_UI_CHAT_INPUT_COLOR', 'primary'),
             'size' => env('BEARTROPY_UI_CHAT_INPUT_SIZE', 'md'),
             'outline' => env('BEARTROPY_UI_CHAT_INPUT_OUTLINE', true)
         ],

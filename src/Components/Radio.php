@@ -50,13 +50,13 @@ class Radio extends BeartropyComponent
      * @property bool $info      Info color.
      */
     public function __construct(
-        public $labelPosition = null,
-        public $size = null,
-        public $color = null,
-        public $label = null,
-        public $customError = null,
-        public $grouped = false,
-        public $groupedError = false,
+        public ?string $labelPosition = null,
+        public ?string $size = null,
+        public ?string $color = null,
+        public ?string $label = null,
+        public ?string $customError = null,
+        public bool $grouped = false,
+        public bool $groupedError = false,
     ) {}
 
 
@@ -65,7 +65,7 @@ class Radio extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::radio');
     }

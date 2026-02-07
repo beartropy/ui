@@ -55,23 +55,23 @@ class ChatInput extends BeartropyComponent
      * @property bool $info      Info color.
      */
     public function __construct(
-        public $label = null,
-        public $placeholder = '',
-        public $rows = 1,
-        public $name = null,
-        public $id = null,
-        public $color = null,
-        public $disabled = false,
-        public $readonly = false,
-        public $required = false,
-        public $help = null,
-        public $customError = null,
-        public $maxLength = null,
-        public $stacked = false,
-        public $submitOnEnter = true,
-        public $action = null,
-        public $border = false,
-        public $borderColor = null,
+        public ?string $label = null,
+        public string $placeholder = '',
+        public int $rows = 1,
+        public ?string $name = null,
+        public ?string $id = null,
+        public ?string $color = null,
+        public bool $disabled = false,
+        public bool $readonly = false,
+        public bool $required = false,
+        public ?string $help = null,
+        public mixed $customError = null,
+        public ?int $maxLength = null,
+        public bool $stacked = false,
+        public bool $submitOnEnter = true,
+        public ?string $action = null,
+        public bool $border = false,
+        public ?string $borderColor = null,
     ) {}
 
     /**
@@ -79,7 +79,7 @@ class ChatInput extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::chat-input');
     }

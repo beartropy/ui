@@ -16,13 +16,13 @@ it('can render basic input component', function () {
 
 it('can render with different input types', function () {
     $html = Blade::render('<x-bt-input name="email_input" type="email" />');
-    expect($html)->toContain("x-bind:type=\"(typeof showPassword !== 'undefined' && showPassword) ? 'text' : 'email'\"");
+    expect($html)->toContain("x-bind:type=\"showPassword ? 'text' : 'email'\"");
 
     $htmlPassword = Blade::render('<x-bt-input name="password_input" type="password" />');
-    expect($htmlPassword)->toContain("x-bind:type=\"(typeof showPassword !== 'undefined' && showPassword) ? 'text' : 'password'\"");
+    expect($htmlPassword)->toContain("x-bind:type=\"showPassword ? 'text' : 'password'\"");
 
     $htmlNumber = Blade::render('<x-bt-input name="number_input" type="number" />');
-    expect($htmlNumber)->toContain("x-bind:type=\"(typeof showPassword !== 'undefined' && showPassword) ? 'text' : 'number'\"");
+    expect($htmlNumber)->toContain("x-bind:type=\"showPassword ? 'text' : 'number'\"");
 });
 
 it('can render with label', function () {
@@ -68,7 +68,7 @@ it('can render without clearable button', function () {
 it('can render with copy button', function () {
     $html = Blade::render('<x-bt-input name="test_input" :copy-button="true" />');
     expect($html)->toContain('x-on:click="copyToClipboard"');
-    expect($html)->toContain('aria-label="Copiar al portapapeles"');
+    expect($html)->toContain('aria-label="Copy to clipboard"');
 });
 
 it('can render password toggle for password type', function () {

@@ -21,79 +21,48 @@ trait HasToasts
      *
      * @return object Proxy instance with success(), error(), info(), warning() methods.
      */
-    public function toast()
+    public function toast(): object
     {
         if (!isset($this->_beartropy_toast_proxy)) {
             $this->_beartropy_toast_proxy = new class($this) {
-                protected $component;
-                public function __construct($component)
+                public function __construct(protected object $component) {}
+
+                public function success(string $title, string $message = '', int $duration = 4000, ?string $position = null): void
                 {
-                    $this->component = $component;
+                    $this->send('success', $title, $message, $duration, $position);
                 }
 
-                /**
-                 * Send a success toast.
-                 * @param string $title
-                 * @param string $message
-                 * @param int $duration
-                 * @param string|null $position
-                 */
-                public function success($title, $message = '', $duration = 4000, $position = null)
+                public function error(string $title, string $message = '', int $duration = 4000, ?string $position = null): void
                 {
-                    return $this->send('success', $title, $message, $duration, $position);
+                    $this->send('error', $title, $message, $duration, $position);
                 }
 
-                /**
-                 * Send an error toast.
-                 * @param string $title
-                 * @param string $message
-                 * @param int $duration
-                 * @param string|null $position
-                 */
-                public function error($title, $message = '', $duration = 4000, $position = null)
+                public function info(string $title, string $message = '', int $duration = 4000, ?string $position = null): void
                 {
-                    return $this->send('error', $title, $message, $duration, $position);
+                    $this->send('info', $title, $message, $duration, $position);
                 }
 
-                /**
-                 * Send an info toast.
-                 * @param string $title
-                 * @param string $message
-                 * @param int $duration
-                 * @param string|null $position
-                 */
-                public function info($title, $message = '', $duration = 4000, $position = null)
+                public function warning(string $title, string $message = '', int $duration = 4000, ?string $position = null): void
                 {
-                    return $this->send('info', $title, $message, $duration, $position);
+                    $this->send('warning', $title, $message, $duration, $position);
                 }
 
-                /**
-                 * Send a warning toast.
-                 * @param string $title
-                 * @param string $message
-                 * @param int $duration
-                 * @param string|null $position
-                 */
-                public function warning($title, $message = '', $duration = 4000, $position = null)
-                {
-                    return $this->send('warning', $title, $message, $duration, $position);
-                }
-
-                protected function send($type, $title, $message, $duration, $position)
+                protected function send(string $type, string $title, string $message, int $duration, ?string $position): void
                 {
                     $payload = [
-                        'id'      => (string) \Illuminate\Support\Str::uuid(),
-                        'type'    => $type,
-                        'title'   => $title,
-                        'message' => $message,
-                        'single'  => (!$message) ? true : false,
+                        'id'       => (string) Str::uuid(),
+                        'type'     => $type,
+                        'title'    => $title,
+                        'message'  => $message,
+                        'single'   => $message === '',
                         'duration' => $duration,
-                        'position' => $position ?? null,
+                        'position' => $position,
                     ];
                     $this->component->dispatch('beartropy-add-toast', $payload);
                 }
             };
         }
+
         return $this->_beartropy_toast_proxy;
     }
 }

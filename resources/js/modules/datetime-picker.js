@@ -319,11 +319,11 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
             out = out.replace(/{m}/g, m);
             out = out.replace(/{d}/g, d);
             if (out.includes('{M}')) {
-                let monthsShort = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                let monthsShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                 out = out.replace(/{M}/g, monthsShort[parseInt(m, 10) - 1] || m);
             }
             if (out.includes('{MMMM}')) {
-                let monthsLong = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                let monthsLong = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
                 out = out.replace(/{MMMM}/g, monthsLong[parseInt(m, 10) - 1] || m);
             }
             hour = (hour || '').padStart(2, '0');

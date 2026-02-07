@@ -15,10 +15,6 @@ use Beartropy\Ui\Components\BeartropyComponent;
  */
 class FieldHelp extends BeartropyComponent
 {
-    public $errorMessage;
-    public $hint;
-    public $minHeight;
-
     /**
      * Create a new FieldHelp component instance.
      *
@@ -26,11 +22,12 @@ class FieldHelp extends BeartropyComponent
      * @param string|null $hint         Hint text.
      * @param string|null $minHeight    Min height value.
      */
-    public function __construct($errorMessage = null, $hint = null, $minHeight = null)
-    {
-        $this->errorMessage = $errorMessage;
-        $this->hint = $hint;
-        $this->minHeight = ($minHeight) ? 'min-h-[' . $minHeight . ']' : '';
+    public function __construct(
+        public ?string $errorMessage = null,
+        public ?string $hint = null,
+        public string $minHeight = '',
+    ) {
+        $this->minHeight = $minHeight ? 'min-h-[' . $minHeight . ']' : '';
     }
 
     /**
@@ -38,7 +35,7 @@ class FieldHelp extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::support.field-help');
     }

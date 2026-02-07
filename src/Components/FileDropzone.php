@@ -45,16 +45,16 @@ class FileDropzone extends BeartropyComponent
      * @property bool $info      Info color.
      */
     public function __construct(
-        public $name = null,
-        public $label = null,
-        public $icon = null,
-        public $preview = true,
-        public $multiple = true,
-        public $accept = null,
-        public $clearable = true,
-        public $disabled = false,
-        public $color = null,
-        public $customError = null,
+        public ?string $name = null,
+        public ?string $label = null,
+        public ?string $icon = null,
+        public bool $preview = true,
+        public bool $multiple = true,
+        public ?string $accept = null,
+        public bool $clearable = true,
+        public bool $disabled = false,
+        public ?string $color = null,
+        public ?string $customError = null,
     ) {}
 
 
@@ -63,7 +63,7 @@ class FileDropzone extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::file-dropzone');
     }

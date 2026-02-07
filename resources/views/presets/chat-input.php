@@ -2,6 +2,17 @@
 
 return [
     'colors' => [
+        'primary' => [
+            'wrapper' => 'relative bg-gray-300/50 dark:bg-gray-900 rounded-[2rem] transition overflow-hidden p-1.5',
+            'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',
+            'label' => 'font-semibold text-gray-700 dark:text-gray-300 text-sm ml-1',
+            'label_error' => 'font-semibold text-red-500 text-sm ml-1',
+            'input' => 'placeholder:text-gray-400 w-full border-none !outline-none bg-transparent py-2 px-3 text-gray-800 dark:text-gray-100 min-h-0 resize-none overflow-hidden max-h-60 mr-1',
+            'footer' => 'px-4 pb-2 pt-1 flex items-center justify-between',
+            'help' => 'text-xs mt-1 text-neutral-400 dark:text-neutral-500',
+            'error' => 'text-xs mt-1 text-red-500',
+            'border' => 'border border-gray-200 dark:border-gray-700/50 shadow-sm focus-within:ring-1 focus-within:ring-beartropy-500',
+        ],
         'beartropy' => [
             'wrapper' => 'relative bg-gray-300/50 dark:bg-gray-900 rounded-[2rem] transition overflow-hidden p-1.5',
             'wrapper_error' => 'border-red-500 ring-red-200 dark:ring-red-900',

@@ -2,6 +2,23 @@
 
 return [
     'colors' => [
+        'primary' => [
+            'dropdown_bg' => 'bg-white dark:bg-gray-900/95',
+            'dropdown_shadow' => 'shadow-xl',
+            'option_text' => 'text-gray-700 dark:text-gray-300',
+            'option_hover' => 'hover:bg-gray-200/60 dark:hover:bg-gray-800',
+            'option_active' => 'font-bold bg-beartropy-200/80 dark:bg-beartropy-800/80',
+            'option_selected' => 'bg-beartropy-50 dark:bg-beartropy-800 font-bold',
+            'option_icon' => 'text-beartropy-600 dark:text-beartropy-300',
+            'chip_bg' => 'bg-neutral-100 dark:bg-neutral-800',
+            'chip_text' => 'text-gray-900 dark:text-gray-100',
+            'chip_close' => 'hover:text-red-500',
+            'badge_bg' => 'bg-neutral-300 dark:bg-neutral-700',
+            'badge_text' => 'text-neutral-700 dark:text-neutral-200',
+            'desc_text' => 'text-xs text-neutral-500 dark:text-neutral-400 mt-0.5',
+            'loading_text' => 'text-xs text-gray-500 p-2 text-center',
+            'dropdown_border' => 'border border-neutral-200 dark:border-neutral-700',
+        ],
         'beartropy' => [
             'dropdown_bg' => 'bg-white dark:bg-gray-900/95',
             'dropdown_shadow' => 'shadow-xl',

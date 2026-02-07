@@ -9,7 +9,7 @@
 
 <div
     x-data="btCommandPalette({
-        initial: @js($bt_cp_data) // ítems ya filtrados y seguros
+        initial: @js($bt_cp_data) // items already filtered and safe
     })"
     @keydown.window.prevent.cmd.k="open = true"
     @keydown.window.prevent.ctrl.k="open = true"
@@ -27,7 +27,7 @@
                 color="{{ $presetNames['color'] }}"
                 size="{{ $presetNames['size'] ?? 'md' }}"
                 icon-start="magnifying-glass"
-                placeholder="Buscar en el sitio... (⌘ K / Ctrl K)"
+                placeholder="{{ __('beartropy-ui::ui.search_site') }}"
                 {{ $attributes->only(['fill', 'outline']) }}
             />
         </div>
@@ -79,7 +79,7 @@
                         id="{{ $id }}-input"
                         color="{{ $presetNames['color'] }}"
                         x-model="query"
-                        placeholder="Buscar..."
+                        placeholder="{{ __('beartropy-ui::ui.search') }}"
                         icon-start="magnifying-glass"
                         autofocus
                     />
@@ -121,12 +121,12 @@
                     </template>
 
                     <template x-if="filtered && filtered.length === 0">
-                        <li class="p-3 text-sm text-gray-400">Sin resultados</li>
+                        <li class="p-3 text-sm text-gray-400">{{ __('beartropy-ui::ui.no_results') }}</li>
                     </template>
 
                     <template x-if="!query && filtered && filtered.length === 5">
                         <li class="p-3 text-xs text-gray-400 text-center">
-                            Mostrando los primeros 5 resultados
+                            {{ __('beartropy-ui::ui.showing_first_results') }}
                         </li>
                     </template>
                 </ul>
@@ -195,7 +195,7 @@ function btCommandPalette({ initial }) {
             const openUrl = (url) => {
                 if (!url) return;
                 if (target === '_blank') {
-                    // seguridad + nueva pestaña
+                    // security + new tab
                     window.open(url, '_blank', 'noopener,noreferrer');
                 } else {
                     window.location.href = url;
@@ -206,18 +206,18 @@ function btCommandPalette({ initial }) {
                 const name = action.replace('route:', '').trim();
                 let url = null;
 
-                // Soporte route() de Ziggy / Laravel
+                // Ziggy / Laravel route() support
                 if (typeof window.route === 'function') {
-                    // opcional: params desde item.params / item.route_params
+                    // optional: params from item.params / item.route_params
                     const params = item.params || item.route_params || {};
                     url = route(name, params);
                 } else if (routes[name]) {
-                    // routes puede ser string o función builder
+                    // routes can be a string or a builder function
                     url = typeof routes[name] === 'function'
                         ? routes[name](item.params || item.route_params || {})
                         : routes[name];
                 } else {
-                    console.warn(`No se pudo resolver la ruta "${name}".`);
+                    console.warn(`Could not resolve route "${name}".`);
                 }
 
                 openUrl(url);
@@ -226,7 +226,7 @@ function btCommandPalette({ initial }) {
                 openUrl(action.replace('url:', '').trim());
 
             } else if (/^(https?:\/\/|\/)/i.test(action)) {
-                // Permite pasar directamente una URL absoluta o relativa sin prefijo
+                // Allows passing an absolute or relative URL directly without prefix
                 openUrl(action);
 
             } else if (action.startsWith('dispatch:')) {

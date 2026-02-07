@@ -5,9 +5,25 @@
     [$hasWireModel, $wireModelValue] = $getWireModelState();
 
     $selectId = $attributes->get('id') ?? 'select-' . uniqid();
+
+    // Drain slot options collected by <x-bt-option> children
+    $slotOptions = \Beartropy\Ui\Components\Select::$pendingSlotOptions;
+    \Beartropy\Ui\Components\Select::$pendingSlotOptions = [];
     $options = $options ?? [];
+
+    if (!empty($slotOptions)) {
+        foreach ($slotOptions as $opt) {
+            $options[(string) $opt['_value']] = $opt;
+        }
+        if ($isEmpty) {
+            $isEmpty = false;
+            $searchable = $userSearchable;
+            $clearable = $userClearable;
+        }
+    }
+
     $label = $label ?? null;
-    $placeholder = $placeholder ?? 'Seleccionar...';
+    $placeholder = $placeholder ?? __('beartropy-ui::ui.select');
     $labelClass = $hasError ? ($colorPreset['label_error'] ?? $colorPreset['label']) : $colorPreset['label'];
 
     $isMulti = ($multiple ?? false);
@@ -19,18 +35,14 @@
     $remoteUrl = $remoteUrl ?? null;
     $perPage = $perPage ?? 15;
 
-    $optionsKey = md5(json_encode($options));
-
     $wrapperClass = $attributes->get('class') ?? '';
 
-    $autosave          = $autosave          ?? false;          // bool: activa autosave
-    $autosaveMethod    = $autosaveMethod    ?? 'savePreference'; // nombre del método Livewire
-    $autosaveKey       = $autosaveKey       ?? ($wireModelValue ?? null); // clave del setting (por defecto el "name")
-    $autosaveDebounce  = $autosaveDebounce  ?? 300;            // ms
+    $autosave          = $autosave          ?? false;
+    $autosaveMethod    = $autosaveMethod    ?? 'savePreference';
+    $autosaveKey       = $autosaveKey       ?? ($wireModelValue ?? null);
+    $autosaveDebounce  = $autosaveDebounce  ?? 300;
 
-    $spinner = $spinner ?? false;
-
-    if($hasWireModel && $spinner != false && $autosave == false) {
+    if($hasWireModel && $spinner && !$autosave) {
         $showSpinner = true;
     }
 
@@ -48,9 +60,11 @@
             if (this.open) {
                 this.focusSearch();
                 if (this.remoteUrl && !this.initDone) {
-                this.page = 1;
-                this.fetchOptions(true);
-                this.initDone = true;
+                    this.page = 1;
+                    this.fetchOptions(true);
+                    this.initDone = true;
+                } else if (this.remoteUrl && this.hasMore) {
+                    this._fillIfNeeded();
                 }
             }
         },
@@ -81,15 +95,15 @@
 
             $wire.call(this.autosaveMethod, this.value, this.autosaveKey)
                 .then(() => {
-                    this.saveState = 'ok'; // queda fijo
+                    this.saveState = 'ok';
                 })
                 .catch(() => {
-                    this.saveState = 'error'; // queda fijo
+                    this.saveState = 'error';
                 });
         },
 
         filteredOptions() {
-            // Si remote: las opciones ya se filtran en backend
+            // If remote: options are already filtered on backend
             if (this.remoteUrl) {
                 return Object.entries(this.options);
             }
@@ -171,8 +185,6 @@
                 this.value = '';
             }
             this.syncInput();
-            // Si querés que se cierre el dropdown al limpiar:
-            // this.close();
         },
         // === Remote/Lazy ===
         fetchOptions(reset = false) {
@@ -194,20 +206,32 @@
                     }
                     this.hasMore = data.hasMore;
                     this.loading = false;
+                    this._fillIfNeeded();
                 });
+        },
+        // Auto-load more pages if the list isn't scrollable yet
+        _fillIfNeeded() {
+            if (!this.hasMore || this.loading || !this.open) return;
+            setTimeout(() => {
+                const el = document.getElementById('{{ $selectId }}-list');
+                if (el && el.scrollHeight <= el.clientHeight + 10) {
+                    this.page++;
+                    this.fetchOptions();
+                }
+            }, 50);
         },
         focusSearch() {
         this.$nextTick(() => {
             requestAnimationFrame(() => {
-            // 1) Directo por x-ref, si llegó al input real
+            // 1) Direct via x-ref to the actual input
             let el = this.$refs.searchInput;
 
-            // 2) Dentro del host del buscador
+            // 2) Inside the search host
             if (!el && this.$refs.searchHost) {
                 el = this.$refs.searchHost.querySelector('[data-beartropy-input]');
             }
 
-            // 3) Como fallback, pero SIEMPRE scoped al componente actual
+            // 3) Fallback, but ALWAYS scoped to the current component
             if (!el) {
                 el = this.$root.querySelector('[data-beartropy-input]');
             }
@@ -228,10 +252,12 @@
         if (isMulti && Array.isArray(value)) {
             value = value.map(String);
         }
+        @if(!$defer)
         if (remoteUrl) {
             fetchOptions(true);
             initDone = true;
         }
+        @endif
         // Watch search changes
         $watch('search', value => {
             page = 1;
@@ -240,7 +266,7 @@
         $watch('open', (v) => { if (v) focusSearch(); });
     "
     class="flex flex-col w-full {{ $wrapperClass }}"
-    wire:key="{{ $optionsKey }}"
+    wire:key="{{ $selectId }}"
 
 >
     @if($label)
@@ -271,7 +297,7 @@
                 @click="toggle()"
                 class="relative flex flex-wrap items-center gap-1 min-h-[1.6em] cursor-pointer w-full pr-2 md:pr-3 {{ $colorDropdown['option_text'] ?? '' }}"
             >
-                {{-- MULTI SELECT: chips truncados --}}
+                {{-- MULTI SELECT: truncated chips --}}
                 <template x-if="isMulti && value && value.length">
                     <template x-for="(id, idx) in visibleChips()" :key="id">
                         <span
@@ -285,10 +311,10 @@
                                     <span x-show="options[id].avatar && !options[id].avatar.startsWith('http')" x-text="options[id].avatar" class="text-base"></span>
                                 </span>
                             </template>
-                            <!-- Icono, solo si no hay avatar -->
+                            <!-- Icon, only if no avatar -->
                             <template x-if="!options[id]?.avatar && options[id]?.icon">
                                 <span class="inline-flex w-5 h-5 justify-center items-center">
-                                    <span x-text="options[id].icon" class="text-base"></span>
+                                    <span x-html="options[id].icon" class="text-base [&>svg]:w-4 [&>svg]:h-4"></span>
                                 </span>
                             </template>
                             <!-- Label -->
@@ -333,10 +359,10 @@
                                 class="text-base"></span>
                         </span>
                     </template>
-                    <!-- Icono, solo si no hay avatar -->
+                    <!-- Icon, only if no avatar -->
                     <template x-if="!options[value]?.avatar && options[value]?.icon">
                         <span class="inline-flex w-5 h-5 justify-center items-center">
-                            <span x-text="options[value].icon" class="text-base"></span>
+                            <span x-html="options[value].icon" class="text-base [&>svg]:w-4 [&>svg]:h-4"></span>
                         </span>
                     </template>
                     <!-- Label -->
@@ -347,63 +373,59 @@
 
 
         <x-slot name="end">
-            {{-- Contenedor relativo para posicionar todo a la derecha sin depender del ancho --}}
-            <div class="relative w-full h-0">
-                {{-- Grupo absoluto: CLEAR + INDICADOR, alineados justo a la izquierda del chevron --}}
-                <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
-                    @if($clearable)
-                        <button
-                            type="button"
-                            @click.stop="clearValue()"
-                            class="grid place-items-center w-5 h-5 rounded transition hover:bg-gray-100 dark:hover:bg-white/5"
-                            :class="((isMulti && value && value.length) || (!isMulti && value))
-                                ? 'opacity-100 pointer-events-auto'
-                                : 'opacity-0 pointer-events-none'"
-                            title="Limpiar selección"
-                            aria-label="Limpiar selección"
-                            x-cloak
-                        >
-                            @include('beartropy-ui-svg::beartropy-x-mark', [
-                                'class' => 'shrink-0 text-gray-700 dark:text-gray-400 ' . ($sizePreset['iconSize'] ?? '')
-                            ])
-                        </button>
-                    @endif
+            <div class="flex items-center gap-0.5 px-2">
+                @if($clearable)
+                    <button
+                        type="button"
+                        @click.stop="clearValue()"
+                        class="grid place-items-center w-5 h-5 rounded transition hover:bg-gray-100 dark:hover:bg-white/5"
+                        :class="((isMulti && value && value.length) || (!isMulti && value))
+                            ? 'opacity-100 pointer-events-auto'
+                            : 'opacity-0 pointer-events-none'"
+                        title="{{ __('beartropy-ui::ui.clear_selection') }}"
+                        aria-label="{{ __('beartropy-ui::ui.clear_selection') }}"
+                        x-cloak
+                    >
+                        @include('beartropy-ui-svg::beartropy-x-mark', [
+                            'class' => 'shrink-0 text-gray-700 dark:text-gray-400 ' . ($sizePreset['iconSize'] ?? '')
+                        ])
+                    </button>
+                @endif
 
-                    {{-- Indicador autosave: aparece ENTRE el clear y el chevron, sin empujar nada --}}
-                    <template x-if="autosave && saveState !== 'idle'">
-                        <span class="grid place-items-center w-5 h-5">
-                            <!-- saving -->
-                            <svg x-show="saveState==='saving'" class="w-4 h-4 animate-spin text-gray-400" viewBox="0 0 24 24" fill="none">
-                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity=".25"/>
-                                <path d="M21 12a9 9 0 0 1-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            <!-- ok -->
-                            <svg x-show="saveState==='ok'" class="w-5 h-5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                            </svg>
-                            <!-- error -->
-                            <svg x-show="saveState==='error'" class="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                            </svg>
-                        </span>
-                    </template>
+                {{-- Autosave indicator: between clear and chevron --}}
+                <template x-if="autosave && saveState !== 'idle'">
+                    <span class="grid place-items-center w-5 h-5">
+                        <!-- saving -->
+                        <svg x-show="saveState==='saving'" class="w-4 h-4 animate-spin text-gray-400" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity=".25"/>
+                            <path d="M21 12a9 9 0 0 1-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <!-- ok -->
+                        <svg x-show="saveState==='ok'" class="w-5 h-5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <!-- error -->
+                        <svg x-show="saveState==='error'" class="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </span>
+                </template>
 
-                    {{-- Spinner Livewire --}}
-                    <template x-if="showSpinner">
-                        <span class="grid place-items-center w-5 h-5" wire:loading wire:target="{{ $wireModelValue }}">
-                            <svg class="w-4 h-4 animate-spin text-gray-400" viewBox="0 0 24 24" fill="none">
-                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity=".25"/>
-                                <path d="M21 12a9 9 0 0 1-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                        </span>
-                    </template>
-                </div>
+                {{-- Spinner Livewire --}}
+                <template x-if="showSpinner">
+                    <span class="grid place-items-center w-5 h-5" wire:loading wire:target="{{ $wireModelValue }}">
+                        <svg class="w-4 h-4 animate-spin text-gray-400" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity=".25"/>
+                            <path d="M21 12a9 9 0 0 1-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                </template>
 
-                {{-- Chevron SIEMPRE fijo al borde derecho --}}
+                {{-- Chevron always fixed at right edge --}}
                 <button
                     type="button"
                     @click="toggle()"
-                    class="absolute -right-1 top-1/2 -translate-y-1/2 grid place-items-center w-5 h-5 shrink-0"
+                    class="grid place-items-center w-5 h-5 shrink-0"
                 >
                     <svg
                         class="w-4.5 h-4.5 transition-transform duration-200 {{ $colorDropdown['option_icon'] ?? '' }}"
@@ -419,17 +441,18 @@
 
 
         <x-slot name="dropdown">
-            <div wire:key="{{ $hasError }}">
+            <div wire:key="{{ $selectId }}-err-{{ $hasError }}">
             <x-beartropy-ui::base.dropdown-base
                 placement="left"
                 side="bottom"
                 color="{{$presetNames['color']}}"
                 preset-for="select"
-                width="w-full"
+                width="{{ $fitTrigger ? 'w-full' : 'min-w-full' }}"
+                :fit-anchor="$fitTrigger"
                 x-show="open"
                 triggerLabel="{{ $label }}"
                 @click.away="close()"
-                wire:key="{{ $optionsKey }}"
+                wire:key="{{ $selectId }}-dropdown"
                 :teleport="$teleport ?? true"
             >
                 @if($searchable)
@@ -437,7 +460,7 @@
                     <div class="p-2" x-ref="searchHost">
                         <x-beartropy-ui::input
                             type="text"
-                            placeholder="Buscar..."
+                            placeholder="{{ __('beartropy-ui::ui.search') }}"
                             x-model="search"
                             autocomplete="off"
                             color="{{$presetNames['color']}}"
@@ -450,7 +473,8 @@
                 @endif
                 {{-- Options list --}}
                 <ul
-                    class="overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800 beartropy-thin-scrollbar"
+                    id="{{ $selectId }}-list"
+                    class="overflow-y-auto max-h-60 divide-y divide-gray-100 dark:divide-gray-800 beartropy-thin-scrollbar"
                     @scroll="if($event.target.scrollTop + $event.target.clientHeight >= $event.target.scrollHeight - 10 && hasMore && !loading) { page++; fetchOptions(); }"
                 >
                     @if(isset($beforeOptions))
@@ -478,16 +502,16 @@
                                                 <span x-show="option.avatar && !option.avatar.startsWith('http')" x-text="option.avatar" class="text-lg"></span>
                                             </span>
                                         </template>
-                                        <!-- Icono, solo si no hay avatar -->
+                                        <!-- Icon, only if no avatar -->
                                         <template x-if="!option.avatar && option.icon">
                                             <span class="inline-flex w-6 h-6 justify-center items-center">
-                                                <span x-text="option.icon" class="text-lg"></span>
+                                                <span x-html="option.icon" class="text-lg [&>svg]:w-5 [&>svg]:h-5"></span>
                                             </span>
                                         </template>
                                         <!-- Label -->
                                         <span class="truncate font-medium" x-text="option.label ?? option ?? id"></span>
                                     </div>
-                                    <!-- Descripción -->
+                                    <!-- Description -->
                                     <template x-if="option.description">
                                         <span class="{{ $colorDropdown['desc_text'] ?? 'text-xs text-neutral-500 dark:text-neutral-400 mt-0.5' }}"
                                             x-text="option.description"></span>
@@ -509,7 +533,13 @@
                         </li>
                     </template>
                     <template x-if="loading">
-                        <li class="{{ $colorDropdown['loading_text'] ?? 'text-center text-xs text-gray-500 p-2' }}">Cargando...</li>
+                        <li class="flex items-center justify-center gap-2 p-2 {{ $colorDropdown['loading_text'] ?? 'text-xs text-gray-500' }}">
+                            <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity=".25"/>
+                                <path d="M21 12a9 9 0 0 1-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            {{ __('beartropy-ui::ui.loading') }}
+                        </li>
                     </template>
                     <template x-if="!loading && filteredOptions().length === 0">
                         @if(isset($afterOptions))
@@ -517,7 +547,7 @@
                                 {!! $afterOptions !!}
                             </div>
                         @else
-                            <li class="{{ $isEmpty ? 'p-2 text-base text-gray-700 dark:text-gray-300' : $colorDropdown['loading_text'] ?? 'text-center text-xs text-gray-500 p-2' }}">{{ $isEmpty ? $emptyMessage : 'No hay resultados.' }}</li>
+                            <li class="{{ $isEmpty ? 'p-2 text-base text-gray-700 dark:text-gray-300' : $colorDropdown['loading_text'] ?? 'text-center text-xs text-gray-500 p-2' }}">{{ $isEmpty ? $emptyMessage : __('beartropy-ui::ui.no_results') }}</li>
                         @endif
                     </template>
 

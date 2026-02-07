@@ -63,7 +63,6 @@ class ButtonIcon extends BeartropyComponent
         public ?string $iconSet = null,
         public ?string $iconVariant = null,
     ) {
-        parent::__construct();
         $this->iconSet = $iconSet ?? config('beartropyui.icons.set', 'heroicons');
         $this->iconVariant = $iconVariant ?? config('beartropyui.icons.variant', 'outline');
     }
@@ -73,7 +72,7 @@ class ButtonIcon extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::button-icon');
     }

@@ -7,7 +7,7 @@
 ])
 
 <div class="flex flex-col flex-1 h-full {{ $bg }} rounded-xl p-3 shadow-sm">
-    <!-- Encabezado -->
+    <!-- Header -->
     @if ($title)
         <div class="pb-3 mb-3 border-b {{ $headerBorder }} flex items-center justify-between">
             <h1 class="text-xl font-semibold {{ $titleColor }} p-2">
@@ -22,7 +22,7 @@
         </div>
     @endif
 
-    <!-- Contenido scrolleable -->
+    <!-- Scrollable content -->
     <div class="flex-1 overflow-y-auto beartropy-thin-scrollbar p-1 px-3">
         {{ $slot }}
     </div>

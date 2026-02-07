@@ -69,24 +69,25 @@ class Datetime extends BeartropyComponent
      * @property bool $xl Extra Large.
      */
     public function __construct(
-        public $name = null,
-        public $label = null,
-        public $value = null,
-        public $min = null,
-        public $max = null,
-        public $disabled = false,
-        public $readonly = false,
-        public $placeholder = null,
-        public $hint = null,
-        public $customError = null,
-        public $locale = 'es',
-        public $range = false,
-        public $initialValue = null,
-        public $format = 'Y-m-d',
-        public $formatDisplay = null,
-        public $showTime = false,
-        public $color = null,
+        public ?string $name = null,
+        public ?string $label = null,
+        public mixed $value = null,
+        public ?string $min = null,
+        public ?string $max = null,
+        public bool $disabled = false,
+        public bool $readonly = false,
+        public ?string $placeholder = null,
+        public ?string $hint = null,
+        public ?string $customError = null,
+        public ?string $locale = null,
+        public bool $range = false,
+        public mixed $initialValue = null,
+        public string $format = 'Y-m-d',
+        public ?string $formatDisplay = null,
+        public bool $showTime = false,
+        public ?string $color = null,
     ) {
+        $this->locale = $locale ?? app()->getLocale();
         $this->formatDisplay = $formatDisplay ?? ($showTime ? '{d}/{m}/{Y} {H}:{i}' : '{d}/{m}/{Y}');
     }
 
@@ -95,7 +96,7 @@ class Datetime extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::datetime');
     }

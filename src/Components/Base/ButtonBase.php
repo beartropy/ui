@@ -3,66 +3,30 @@
 namespace Beartropy\Ui\Components\Base;
 
 use Beartropy\Ui\Components\BeartropyComponent;
+use Illuminate\Contracts\View\View;
 
 /**
  * Base class for Button logic.
  *
- * Handles properties common to all button implementations, including icon, spinner, tag type (a/button), and wire:target.
+ * Handles properties common to all button implementations, including icon, spinner,
+ * tag type (a/button), and wire:target.
  */
 class ButtonBase extends BeartropyComponent
 {
-    public $iconStart = null;
-
-    public $iconEnd = null;
-
-    public $spinner = null;
-
-    public $tag = 'button';
-
-    public $type = 'button';
-
-    public $href = null;
-
-    public $disabled = false;
-
-    public $size = null;
-
-    public $color = null;
-
-    public $variant = null;
-
-    public $iconSet = null;
-
-    public $iconVariant = null;
-
-    /**
-     * Create a new ButtonBase component instance.
-     *
-     * @param string|null $iconStart   Icon to show at start.
-     * @param string|null $iconEnd     Icon to show at end.
-     * @param mixed       $spinner     Loading spinner configuration.
-     * @param string|null $tag         HTML tag to render (button/a).
-     * @param string|null $type        Button type attribute.
-     * @param string|null $href        Link URL.
-     * @param bool|null   $disabled    Disabled state.
-     * @param string|null $size        Button size.
-     * @param string|null $color       Button color.
-     * @param string|null $variant     Button variant.
-     * @param string|null $iconSet     Icon set used.
-     * @param string|null $iconVariant Icon variant used.
-     */
-    public function __construct($iconStart = null, $iconEnd = null, $spinner = null, $tag = null, $type = null, $href = null, $disabled = null, $size = null, $color = null, $variant = null, $iconSet = null, $iconVariant = null)
-    {
-        $this->iconStart = $iconStart;
-        $this->iconEnd = $iconEnd;
-        $this->spinner = $spinner;
-        $this->tag = $tag;
-        $this->type = $type;
-        $this->href = $href;
-        $this->disabled = $disabled;
-        $this->size = $size;
-        $this->color = $color;
-        $this->variant = $variant;
+    public function __construct(
+        public ?string $iconStart = null,
+        public ?string $iconEnd = null,
+        public ?bool $spinner = null,
+        public ?string $tag = null,
+        public ?string $type = null,
+        public ?string $href = null,
+        public ?bool $disabled = false,
+        public ?string $size = null,
+        public ?string $color = null,
+        public ?string $variant = null,
+        public ?string $iconSet = null,
+        public ?string $iconVariant = null,
+    ) {
         $this->iconSet = $iconSet ?? config('beartropyui.icons.set', 'heroicons');
         $this->iconVariant = $iconVariant ?? config('beartropyui.icons.variant', 'outline');
     }
@@ -71,29 +35,25 @@ class ButtonBase extends BeartropyComponent
      * Determine the HTML tag to use.
      *
      * Returns 'a' if href attribute is present, otherwise 'button'.
-     *
-     * @return string
      */
-    public function getTag()
+    public function getTag(): string
     {
         if ($this->attributes->has('href')) {
             return 'a';
-        } else {
-            return 'button';
         }
+
+        return 'button';
     }
 
     /**
      * Get the Livewire target for loading states.
      *
      * Infers target from wire:target or wire:click if not explicitly set.
-     *
-     * @return string|null
      */
-    public function getWireTarget()
+    public function getWireTarget(): ?string
     {
         $wireTarget = $this->attributes->get('wire:target');
-        if (! $wireTarget && $this->attributes->has('wire:click')) {
+        if (!$wireTarget && $this->attributes->has('wire:click')) {
             $wireClick = $this->attributes->get('wire:click');
             if (preg_match('/^\s*([a-zA-Z0-9_]+)/', $wireClick, $matches)) {
                 $wireTarget = $matches[1];
@@ -103,12 +63,7 @@ class ButtonBase extends BeartropyComponent
         return $wireTarget;
     }
 
-    /**
-     * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\View\View|\Closure|string
-     */
-    public function render()
+    public function render(): View
     {
         return view('beartropy-ui::base.button-base');
     }

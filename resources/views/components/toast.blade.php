@@ -205,11 +205,11 @@
                             </template>
                         </div>
 
-                        <!-- Cerrar -->
+                        <!-- Close -->
                         <button
                             @click="show = false; Alpine.store('toasts').remove(toast.id)"
                             class="absolute right-2 top-2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded transition"
-                            aria-label="Cerrar"
+                            aria-label="{{ __('beartropy-ui::ui.close') }}"
                         >
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <line x1="18" y1="6" x2="6" y2="18" />
@@ -357,11 +357,11 @@
                         </template>
                     </div>
 
-                    <!-- Cerrar -->
+                    <!-- Close -->
                     <button
                         @click="show=false; Alpine.store('toasts').remove(toast.id)"
                         class="absolute right-2 top-2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded transition"
-                        aria-label="Cerrar"
+                        aria-label="{{ __('beartropy-ui::ui.close') }}"
                     >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <line x1="18" y1="6" x2="6" y2="18" />

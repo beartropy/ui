@@ -154,11 +154,11 @@ it('handles disabled state styling', function () {
 it('renders clearable option by default', function () {
     $html = Blade::render('<x-bt-time-picker name="test_time" />');
 
-    expect($html)->toContain('Limpiar');
+    expect($html)->toContain('Clear');
 });
 
 it('can hide clearable option', function () {
     $html = Blade::render('<x-bt-time-picker name="test_time" :clearable="false" />');
 
-    expect($html)->not->toContain('Limpiar');
+    expect($html)->not->toContain('Clear');
 });

@@ -3,6 +3,7 @@
 namespace Beartropy\Ui\Components;
 
 use Beartropy\Ui\Components\Base\InputBase;
+use Illuminate\Contracts\View\View;
 
 /**
  * Input Component.
@@ -11,24 +12,6 @@ use Beartropy\Ui\Components\Base\InputBase;
  */
 class Input extends InputBase
 {
-    public $iconStart;
-    public $iconStartSvg;
-    public $iconEnd;
-    public $iconEndSvg;
-    public $copyButton;
-    public $clearable;
-    public $help;
-    public $showPasswordToggle;
-    public $customError;
-    public $value;
-    public $hint;
-    public $type;
-    public $size;
-    public $color;
-    public $label;
-    public $placeholder;
-    public $spinner;
-
     /**
      * Create a new Input component instance.
      *
@@ -49,7 +32,6 @@ class Input extends InputBase
      * @param string|null $label              Label text.
      * @param string|null $placeholder        Placeholder text.
      * @param bool        $spinner            Show spinner on loading.
-     * @param mixed       ...$args            Parent arguments.
      *
      * ## Blade Props
      *
@@ -74,51 +56,26 @@ class Input extends InputBase
      * @property bool $info      Info color.
      */
     public function __construct(
-        $iconStart = null,
-        $iconStartSvg = null,
-        $iconEnd = null,
-        $iconEndSvg = null,
-        $copyButton = false,
-        $clearable = true,
-        $help = null,
-        $showPasswordToggle = false,
-        $customError = null,
-        $value = null,
-        $hint = null,
-        $type   = 'text',
-        $size = null,
-        $color = null,
-        $label = null,
-        $placeholder = null,
-        $spinner = true,
-        ...$args
-    ) {
-        parent::__construct(...$args);
-        $this->iconStart = $iconStart;
-        $this->iconStartSvg = $iconStartSvg;
-        $this->iconEnd = $iconEnd;
-        $this->iconEndSvg = $iconEndSvg;
-        $this->copyButton = $copyButton;
-        $this->clearable = $clearable;
-        $this->help = $help;
-        $this->showPasswordToggle = $showPasswordToggle;
-        $this->customError = $customError;
-        $this->value = $value;
-        $this->hint = $hint;
-        $this->type = $type;
-        $this->size = $size;
-        $this->color = $color;
-        $this->label = $label;
-        $this->placeholder = $placeholder;
-        $this->spinner = filter_var($spinner, FILTER_VALIDATE_BOOLEAN);
-    }
+        public ?string $iconStart = null,
+        public ?string $iconStartSvg = null,
+        public ?string $iconEnd = null,
+        public ?string $iconEndSvg = null,
+        public bool $copyButton = false,
+        public bool $clearable = true,
+        public ?string $help = null,
+        public bool $showPasswordToggle = false,
+        public mixed $customError = null,
+        public mixed $value = null,
+        public ?string $hint = null,
+        public $type = 'text',
+        public $size = null,
+        public $color = null,
+        public $label = null,
+        public $placeholder = null,
+        public bool $spinner = true,
+    ) {}
 
-    /**
-     * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\View\View|\Closure|string
-     */
-    public function render()
+    public function render(): View
     {
         return view('beartropy-ui::input');
     }

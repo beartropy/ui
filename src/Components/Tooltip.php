@@ -29,16 +29,14 @@ class Tooltip extends BeartropyComponent
         public ?string $label = null,
         public ?int $delay = 0,
         public ?string $position = 'right',
-    ) {
-        parent::__construct();
-    }
+    ) {}
 
     /**
      * Get the view / contents that represent the component.
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::tooltip');
     }

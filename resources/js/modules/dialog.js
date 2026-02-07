@@ -26,10 +26,10 @@ export function dialog(payload) {
         return;
     }
 
-    console.warn('[Beartropy] Dialog: no Alpine ni Livewire disponibles');
+    console.warn('[Beartropy] Dialog: no Alpine or Livewire available');
 }
 
-// helpers tipo toast
+// toast-style helpers
 ['success', 'error', 'warning', 'info'].forEach(type => {
     dialog[type] = (title, description = '', options = {}) =>
         dialog({
@@ -59,12 +59,12 @@ dialog.delete = function (title, description = '', config = {}) {
         allowOutsideClick: false,
         allowEscape: false,
         accept: {
-            label: config.acceptLabel ?? 'Eliminar',
+            label: config.acceptLabel ?? 'Delete',
             method: config.method ?? null,
             params: config.params ?? [],
         },
         reject: {
-            label: config.rejectLabel ?? 'Cancelar',
+            label: config.rejectLabel ?? 'Cancel',
             method: config.rejectMethod ?? null,
             params: config.rejectParams ?? [],
         },

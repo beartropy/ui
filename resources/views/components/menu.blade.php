@@ -7,7 +7,7 @@
     'liClass'     => '',
     'iconClass'   => 'w-4 h-4 mr-2 inline-block',
     'level'       => 0,
-    'mobile'      => false, // para distinguir estilos
+    'mobile'      => false, // to distinguish styles
 ])
 
 <ul
@@ -17,14 +17,14 @@
 >
     @foreach ($items as $node)
         <li class="{{ $liClass }}">
-            {{-- TITULO DE SECCION (opcional, en cualquier nivel) --}}
+            {{-- SECTION TITLE (optional, at any level) --}}
             @if (!empty($node['title']))
                 <h2 class="{{ $titleClass }} {{ $level === 0 ? 'mt-2 mb-1' : 'mt-1 mb-1 text-xs uppercase tracking-widest opacity-80' }}">
                     {{ $node['title'] }}
                 </h2>
             @endif
 
-            {{-- SUBMENU anidado --}}
+            {{-- Nested SUBMENU --}}
             @if (!empty($node['items']))
                 <x-beartropy-ui::menu
                     :items="$node['items']"
@@ -37,7 +37,7 @@
                     :level="$level + 1"
                     :mobile="$mobile"
                 />
-            {{-- ENLACE --}}
+            {{-- LINK --}}
             @elseif(isset($node['url'], $node['label']))
                 @php
                     $pattern  = $node['route'] ?? ltrim(parse_url($node['url'], PHP_URL_PATH), '/');
@@ -49,13 +49,13 @@
                    wire:navigate
                    {{ $isActive ? 'aria-current="page"' : '' }}
                 >
-                    {{-- ÍCONO opcional --}}
+                    {{-- Optional ICON --}}
                     @if (!empty($node['icon']))
                         <i class="{{ $iconClass }} {{ $node['icon'] }}"></i>
                     @endif
                     {{ $node['label'] }}
 
-                    {{-- BADGE opcional --}}
+                    {{-- Optional BADGE --}}
                     @if (!empty($node['badge']))
                         <span class="{{ $node['badge']['class'] ?? '' }}">
                             {{ $node['badge']['text'] ?? '' }}

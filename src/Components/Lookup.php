@@ -66,32 +66,32 @@ class Lookup extends Input
     {
         $this->options = collect($options)
             ->map(function ($item) {
-                // 1) Lista simple: ["asd", "dsa", 123, ...]
+                // 1) Simple list: ["asd", "dsa", 123, ...]
                 if (is_scalar($item)) {
                     $val = (string) $item;
                     return ['id' => $val, 'name' => $val];
                 }
 
-                // 2) Array/objeto con claves dinámicas (usa $this->optionValue / $this->optionLabel)
+                // 2) Array/object with dynamic keys (uses $this->optionValue / $this->optionLabel)
                 $id   = data_get($item, $this->optionValue);
                 $name = data_get($item, $this->optionLabel);
 
-                // 3) Forma "clave => valor" de un solo par: ["ar" => "Argentina"]
+                // 3) Single key-value pair: ["ar" => "Argentina"]
                 if (is_null($id) && is_null($name) && is_array($item) && count($item) === 1) {
                     $k = array_key_first($item);
                     return ['id' => (string) $k, 'name' => (string) $item[$k]];
                 }
 
-                // Si hay id pero falta name, usa id como name
+                // If id exists but name is missing, use id as name
                 if (!is_null($id)) {
                     return ['id' => (string) $id, 'name' => (string) ($name ?? $id)];
                 }
 
-                // Caso no reconocible: descartar
+                // Unrecognizable format: discard
                 return null;
             })
-            ->filter()      // quita nulls
-            ->values()      // reindexa 0..N
+            ->filter()
+            ->values()
             ->toArray();
     }
 
@@ -100,7 +100,7 @@ class Lookup extends Input
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::lookup');
     }

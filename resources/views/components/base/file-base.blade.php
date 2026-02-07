@@ -8,6 +8,6 @@
                 h-10 min-h-[2.5rem]
                 focus:ring-2 focus:ring-beartropy-500 focus:border-beartropy-500
                 outline-none transition-all shadow-sm box-border">
-        {{ $slot ?? 'Elegir archivo' }}
+        {{ $slot ?? __('beartropy-ui::ui.choose_file') }}
     </span>
 </label>

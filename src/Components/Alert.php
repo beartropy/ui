@@ -17,7 +17,6 @@ class Alert extends BeartropyComponent
      * @param string|null $title       Optional title/heading for the alert.
      * @param bool        $dismissible If true, adds a dismiss button.
      * @param string      $class       Additional CSS classes.
-     * @param string      $class       Additional CSS classes.
      * @param string|null $color       Alert color theme (e.g., 'primary', 'danger').
      *
      * ## Blade Props
@@ -42,12 +41,12 @@ class Alert extends BeartropyComponent
      * @property bool $info      Info color.
      */
     public function __construct(
-        public $noIcon = false,
-        public $icon = null,
-        public $title = null,
-        public $dismissible = false,
-        public $class = '',
-        public $color = null
+        public bool $noIcon = false,
+        public ?string $icon = null,
+        public ?string $title = null,
+        public bool $dismissible = false,
+        public string $class = '',
+        public ?string $color = null,
     ) {}
 
     /**
@@ -55,7 +54,7 @@ class Alert extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::alert');
     }

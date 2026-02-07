@@ -37,7 +37,55 @@
     box-shadow: none !important;
 }
 
-
+/* Input slot integration — strip chrome from components placed in start/end slots */
+.beartropy-inputbase-start-slot > *,
+.beartropy-inputbase-end-slot > * {
+    border-width: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+    --tw-ring-offset-shadow: 0 0 #0000 !important;
+    --tw-shadow: 0 0 #0000 !important;
+    height: 100% !important;
+}
+.beartropy-inputbase-start-slot > *:focus,
+.beartropy-inputbase-end-slot > *:focus,
+.beartropy-inputbase-start-slot > *:focus-within,
+.beartropy-inputbase-end-slot > *:focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+    --tw-ring-offset-shadow: 0 0 #0000 !important;
+}
+/* Vertically center slot children and hide field-help inside input slots */
+.beartropy-inputbase-start-slot > *,
+.beartropy-inputbase-end-slot > * {
+    justify-content: center !important;
+}
+.beartropy-inputbase-start-slot > * > p,
+.beartropy-inputbase-end-slot > * > p {
+    display: none !important;
+}
+/* Nested trigger components (select, datetime, etc.) inside input slots */
+.beartropy-inputbase-start-slot .bt-trigger-base,
+.beartropy-inputbase-end-slot .bt-trigger-base {
+    border-width: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+    --tw-ring-offset-shadow: 0 0 #0000 !important;
+    --tw-shadow: 0 0 #0000 !important;
+    height: 100% !important;
+}
+.beartropy-inputbase-start-slot .bt-trigger-base:focus,
+.beartropy-inputbase-end-slot .bt-trigger-base:focus,
+.beartropy-inputbase-start-slot .bt-trigger-base:focus-within,
+.beartropy-inputbase-end-slot .bt-trigger-base:focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+    --tw-ring-offset-shadow: 0 0 #0000 !important;
+}
 
 /* Scrollbar */
 .beartropy-thin-scrollbar::-webkit-scrollbar {
@@ -53,7 +101,7 @@
     background-color: #cacaca;
 }
 
-/* Scrollbar para modo oscuro */
+/* Scrollbar for dark mode */
 .dark .beartropy-thin-scrollbar::-webkit-scrollbar-track {
     background-color: #23272e;
     border: 1px solid #3c4048;
@@ -79,20 +127,20 @@
     pointer-events: none;
 }
 
-/* === BASE (sin Tailwind) =============================================== */
+/* === BASE (no Tailwind) ================================================ */
 :root {
-  /* color del borde externo del ring */
-  --btc-ring-color: rgba(59, 130, 246, .5);   /* azul por defecto */
-  /* color de “offset” detrás del ring (el fondo de tu app) */
+  /* outer ring border color */
+  --btc-ring-color: rgba(59, 130, 246, .5);   /* blue by default */
+  /* ring "offset" color (your app's background) */
   --btc-ring-offset-color: #ffffff;
 }
 
-/* Si usás dark mode por clase .dark en <html> */
+/* If using dark mode via .dark class on <html> */
 .dark {
-  --btc-ring-offset-color: #0a0a0a; /* ajustá a tu fondo dark */
+  --btc-ring-offset-color: #0a0a0a; /* adjust to your dark background */
 }
 
-/* Botón base */
+/* Base button */
 .btc-btn {
   display: inline-flex;
   align-items: center;
@@ -125,9 +173,9 @@
   cursor: not-allowed;
 }
 
-/* === VARIANTES NEUTRALES =============================================== */
+/* === NEUTRAL VARIANTS ================================================== */
 
-/* soft gris */
+/* soft gray */
 .btc-soft {
   background-color: #e5e7eb;    /* gray-200 */
   color: #111827;               /* gray-900 */
@@ -150,7 +198,7 @@
 }
 .dark .btc-ghost:hover { background-color: rgba(255,255,255,.08); }
 
-/* outline gris */
+/* outline gray */
 .btc-outline {
   background-color: transparent;
   border: 1px solid rgba(156,163,175,.6); /* gray-400/60 */
@@ -163,7 +211,7 @@
 }
 .dark .btc-outline:hover { background-color: rgba(255,255,255,.08); }
 
-/* === VARIANTES “FUERTES” POR COLOR ===================================== */
+/* === BOLD COLOR VARIANTS =============================================== */
 
 /* ⚪️ GRAY */
 .btc-primary-gray {
@@ -206,7 +254,7 @@
 .btc-primary-amber:hover { background-color: #b45309; } /* amber-700 */
 
 
-/* === Estado OK (verde) === */
+/* === OK state (green) === */
 .bt-trigger-base[data-state="ok"],
 .bt-trigger-base[data-state="ok"]:focus-within {
   border-color: #10b981;           /* emerald-500 */
@@ -214,7 +262,7 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-/* === Estado ERROR (rojo) === */
+/* === ERROR state (red) === */
 .bt-trigger-base[data-state="error"],
 .bt-trigger-base[data-state="error"]:focus-within {
   border-color: #ef4444;           /* red-500 */
@@ -222,7 +270,7 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-/* === Estado SAVING (gris suave) === */
+/* === SAVING state (soft gray) === */
 .bt-trigger-base[data-state="saving"],
 .bt-trigger-base[data-state="saving"]:focus-within {
   border-color: #9ca3af;           /* gray-400 */
@@ -230,7 +278,7 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-/* === Estado IDLE (restaurar) === */
+/* === IDLE state (restore) === */
 /* .bt-trigger-base[data-state="idle"],
 .bt-trigger-base[data-state="idle"]:focus-within {
   border-color: #d1d5db;
@@ -238,7 +286,7 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 } */
 
-/* Modo oscuro (opcional, si usás dark:) */
+/* Dark mode (optional, if using dark:) */
 .dark .bt-trigger-base[data-state="ok"] {
   border-color: #34d399;
   box-shadow: 0 0 0 1px #059669;

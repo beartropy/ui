@@ -1,34 +1,37 @@
 {{-- resources/views/components/base/dropdown-base.blade.php --}}
 @props([
-    // Posicionamiento base (desktop)
+    // Base positioning (desktop)
     'placement' => 'left',      // left|center|right
     'side'      => 'bottom',    // bottom|top
-    'width'     => '',          // ej: 'min-w-[12rem]' o 'w-64'
+    'width'     => '',          // e.g. 'min-w-[12rem]' or 'w-64'
     'presetFor' => 'dropdown',
 
     // Desktop/tablet
-    'autoFit'   => true,        // adapta alto al viewport
-    'autoFlip'  => true,        // invierte top/bottom si no hay espacio
-    'maxHeight' => null,        // altura ideal o máxima
-    'overflow'  => null,        // null => auto según autoFit/maxHeight | 'visible'|'auto'|'scroll'
+    'autoFit'   => true,        // adapts height to viewport
+    'autoFlip'  => true,        // flips top/bottom if not enough space
+    'maxHeight' => null,        // ideal or maximum height
+    'overflow'  => null,        // null => auto based on autoFit/maxHeight | 'visible'|'auto'|'scroll'
 
-    // Teleport: escapa de overflow:hidden en modales/cards
-    'teleport'  => true,       // true: renderiza en body con posición fija
+    // Teleport: escapes overflow:hidden in modals/cards
+    'teleport'  => true,       // true: renders in body with fixed position
 
     // Mobile
     'mobileMode'          => 'center', // fullscreen | sheet | center | none
     'mobileBreakpoint'    => 768,          // px: <= breakpoint se considera mobile
-    'mobileAutoFit'       => true,         // ajusta alto al contenido
-    'mobileFullTriggerVh' => 90,           // % viewport para pasar a fullscreen (sólo si mobileMode='fullscreen')
-    'mobileSheetMaxVh'    => 82,           // % viewport para altura máxima del sheet (sólo si mobileMode='sheet')
+    'mobileAutoFit'       => true,         // adjusts height to content
+    'mobileFullTriggerVh' => 90,           // % viewport to switch to fullscreen (only if mobileMode='fullscreen')
+    'mobileSheetMaxVh'    => 82,           // % viewport for max sheet height (only if mobileMode='sheet')
     'mobileCenterMaxVh' => 80,
 
-    // Nombre del boolean del padre que controla visibilidad (ej: 'open' o 'isOpen')
+    // Name of the parent boolean that controls visibility (e.g. 'open' or 'isOpen')
     'bind' => 'open',
 
-    'triggerLabel' => 'Opciones',
+    'triggerLabel' => __('beartropy-ui::ui.options'),
 
     'teleportMobile'  => true,
+
+    // Width behavior: true = match trigger width, false = min-width only (dropdown can be wider)
+    'fitAnchor' => true,
 
 ])
 
@@ -63,11 +66,11 @@
 
 <div
     x-data="{
-        // No definimos '{{ $bind }}' para no pisar el del padre
+        // We do not define '{{ $bind }}' here to avoid overriding the parent's value
         sideLocal: '{{ $preferredSide }}',
         maxStyle: '{{ $initialStyle }}',
 
-        // Config runtime
+        // Runtime config
         mobileModeLocal: '{{ $mobileMode }}',
         isMobile: window.innerWidth <= {{ (int)$mobileBreakpoint }},
         useTeleport: {{ $teleport ? 'true' : 'false' }},
@@ -76,7 +79,7 @@
         teleportStyle: '',
         triggerRect: null,
 
-        // Medidas mobile
+        // Mobile measurements
         mobileHeight: null,
         mobileHeaderH: 0,
 
@@ -86,12 +89,12 @@
             if (!this.isMobile && this.useTeleport && {{ $bind }}) this._repositionTeleport();
         },
 
-        // --- Desktop Teleport: posición fija respecto al viewport ---
+        // --- Desktop Teleport: fixed position relative to viewport ---
         _repositionTeleport() {
             if (!this.useTeleport || this.isMobile) return;
             if (!{{ $bind }}) return;
 
-            // Buscar el trigger (el padre del x-data div)
+            // Find the trigger (the parent of the x-data div)
             const anchor = this.$root.parentElement;
             if (!anchor) return;
 
@@ -117,7 +120,7 @@
             const room = this.sideLocal === 'bottom' ? spaceBelow : spaceAbove;
             const maxH = Math.max(140, Math.min(ideal, room - margin));
 
-            // Calcular posición X según placement
+            // Calculate X position based on placement
             let leftPos = rect.left;
             const placement = '{{ $placement }}';
             if (placement === 'right') {
@@ -126,19 +129,21 @@
                 leftPos = rect.left + (rect.width / 2);
             }
 
-            // Calcular posición Y
-            let topPos;
+            // Calculate Y position
+            let posStyle;
             if (this.sideLocal === 'bottom') {
-                topPos = rect.bottom + 4; // 4px gap
+                posStyle = `top:${rect.bottom + 4}px;`; // 4px gap below trigger
             } else {
-                topPos = rect.top - maxH - 4; // 4px gap
+                // Anchor bottom edge 4px above trigger top — dropdown grows upward
+                posStyle = `bottom:${vh - rect.top + 4}px;`;
             }
 
-            this.teleportStyle = `position:fixed; top:${topPos}px; left:${leftPos}px; max-height:${maxH}px; width:${rect.width}px; z-index:9999;`;
+            const widthRule = {{ $fitAnchor ? 'true' : 'false' }} ? `width:${rect.width}px` : `min-width:${rect.width}px`;
+            this.teleportStyle = `position:fixed; ${posStyle} left:${leftPos}px; max-height:${maxH}px; ${widthRule}; z-index:9999;`;
             this.maxStyle = `max-height:${maxH}px;`;
         },
 
-        // --- Desktop: cálculos de posición/alto (sin teleport) ---
+        // --- Desktop: position/height calculations (without teleport) ---
         _reposition() {
             if (this.useTeleport) {
                 return this._repositionTeleport();
@@ -171,7 +176,7 @@
             this.maxStyle = `max-height:${maxH}px;`;
         },
 
-        // --- Mobile: cálculo de alto dinámico (center/sheet/fullscreen) ---
+        // --- Mobile: dynamic height calculation (center/sheet/fullscreen) ---
         _measureAndSizeMobile() {
             if (!this.isMobile || this.mobileModeLocal === 'none') return;
             if (!{{ $bind }}) return;
@@ -185,7 +190,7 @@
             const headerH = header ? header.getBoundingClientRect().height : 0;
             this.mobileHeaderH = headerH;
 
-            // Altura requerida por el contenido (+ header)
+            // Height required by content (+ header)
             const desired = headerH + (content.scrollHeight || 0);
 
             let h;
@@ -210,7 +215,7 @@
 
             this.mobileHeight = h;
 
-            // Bordes según modo/alto
+            // Borders based on mode/height
             const isFull = h >= (vh - 1);
             panel.classList.toggle('rounded-none', this.mobileModeLocal === 'fullscreen' && isFull);
             panel.classList.toggle('rounded-t-2xl', this.mobileModeLocal === 'sheet');
@@ -229,7 +234,7 @@
             };
             window.addEventListener('scroll', onScroll, { passive:true, capture:true });
 
-            // Recalcular al abrir/cerrar
+            // Recalculate on open/close
             this.$watch(() => {{ $bind }}, (v) => {
                 if (v) {
                     this.isMobile ? this._measureAndSizeMobile() : this._reposition();
@@ -241,7 +246,7 @@
     x-effect="!isMobile && ({{ $bind }}) && $nextTick(() => _reposition())"
     @keydown.escape.stop.prevent="{{ $bind }} = false"
 >
-    {{-- 💻 Desktop/Tablet SIN teleport: dropdown posicionado relativo al trigger --}}
+    {{-- Desktop/Tablet WITHOUT teleport: dropdown positioned relative to trigger --}}
     <template x-if="(!isMobile || mobileModeLocal === 'none') && !useTeleport">
         <div
             x-show="{{ $bind }}"
@@ -270,7 +275,7 @@
         </div>
     </template>
 
-    {{-- 💻 Desktop/Tablet CON teleport: dropdown en body con posición fija --}}
+    {{-- Desktop/Tablet WITH teleport: dropdown in body with fixed position --}}
     <template x-if="(!isMobile || mobileModeLocal === 'none') && useTeleport">
         <template x-teleport="body">
             <div
@@ -306,7 +311,7 @@
         </template>
     </template>
 
-    {{-- 📱 Mobile: center/sheet/fullscreen con auto-fit al contenido --}}
+    {{-- Mobile: center/sheet/fullscreen with auto-fit to content --}}
     <template x-if="isMobile && mobileModeLocal !== 'none'">
         <template x-teleport="body">
         <div
@@ -325,7 +330,7 @@
                 ? `height:${mobileHeight}px; max-height:calc(100vh - 8px);`
                 : 'max-height:calc(100vh - 8px);'"
             >
-                {{-- Header con botón cerrar --}}
+                {{-- Header with close button --}}
                 <div data-dd-mobile-header class="flex items-center justify-between p-1">
                     <span class="px-3 text-lg font-medium text-gray-700 dark:text-gray-300">
                         {{ $triggerLabel }}
@@ -336,7 +341,7 @@
                         class="inline-flex items-center justify-center rounded-full p-2
                                text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200
                                hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none"
-                        aria-label="Cerrar"
+                        aria-label="{{ __('beartropy-ui::ui.close') }}"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                              viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -345,7 +350,7 @@
                     </button>
                 </div>
 
-                {{-- Contenido scrolleable si excede el alto disponible --}}
+                {{-- Scrollable content when exceeding available height --}}
                 <div
                     data-dd-mobile-content
                     class="px-3 pb-3 overflow-y-auto beartropy-thin-scrollbar"

@@ -35,7 +35,7 @@
         ],
     ];
 
-    // Js button colors
+    // JS button colors
     $jsButtonColors = [
         'info' => 'bg-blue-700 hover:bg-blue-600 dark:bg-blue-800 dark:hover:bg-blue-700 text-white',
         'success' => 'bg-emerald-700 hover:bg-emerald-600 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white',
@@ -60,7 +60,7 @@
         @click="backdropClick()"
     ></div>
 
-    {{-- Wrapper para 1/3 top --}}
+    {{-- Wrapper for 1/3 top offset --}}
     <div class="relative w-full flex justify-center px-4 md:pt-[18vh]">
         {{-- Panel --}}
         <div
@@ -72,7 +72,7 @@
 
             x-transition
         >
-            {{-- Botón cerrar flotante --}}
+            {{-- Floating close button --}}
             <button
                 type="button"
                 x-show="canCloseViaButton"
@@ -95,11 +95,11 @@
                 </svg>
             </button>
 
-            {{-- Header + contenido --}}
+            {{-- Header + content --}}
             <div class="px-4 pt-2 pb-2">
-                {{-- Layout 2 columnas: icono | título + descripción --}}
+                {{-- 2-column layout: icon | title + description --}}
                 <div class="mt-2 flex items-start gap-4">
-                    {{-- Icono izquierda --}}
+                    {{-- Left icon --}}
                     <div
                         class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full"
                         x-show="icon"
@@ -143,7 +143,7 @@
                         </svg>
                     </div>
 
-                    {{-- Título + descripción derecha --}}
+                    {{-- Title + description (right) --}}
                     <div class="flex-1 min-w-0 text-left">
                         <h2
                             class="text-lg font-semibold text-slate-900 dark:text-slate-50"
@@ -159,9 +159,9 @@
                 </div>
             </div>
 
-            {{-- Footer / botones --}}
+            {{-- Footer / buttons --}}
             <div class="px-4 py-2 mb-2 mt-1 bg-slate-50/90 dark:bg-slate-900/80 flex flex-wrap justify-end gap-2">
-                {{-- Botón REJECT (Cancelar) --}}
+                {{-- REJECT button (Cancel) --}}
                 <template x-if="reject">
                     <button
                         type="button"
@@ -185,13 +185,13 @@
                                 <path class="opacity-75" d="M4 12a8 8 0 018-8"></path>
                             </svg>
 
-                            <span x-text="reject.label ?? 'Cancelar'"></span>
+                            <span x-text="reject.label ?? '{{ __('beartropy-ui::ui.cancel') }}'"></span>
                         </span>
                     </button>
                 </template>
 
 
-                {{-- Botón ACCEPT (Confirmar / Eliminar) --}}
+                {{-- ACCEPT button (Confirm / Delete) --}}
                 <template x-if="accept && accept.method">
                     <button
                         type="button"
@@ -222,7 +222,7 @@
                 </template>
 
 
-                {{-- Botón único (success/info/warning/error) --}}
+                {{-- Single button (success/info/warning/error) --}}
                 <template x-if="isSingleButton">
                     <button
                         type="button"

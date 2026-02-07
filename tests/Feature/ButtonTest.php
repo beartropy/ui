@@ -119,8 +119,8 @@ it('renders with default button classes', function () {
     expect($html)->toContain('inline-flex');
     expect($html)->toContain('items-center');
     expect($html)->toContain('justify-center');
-    expect($html)->toContain('rounded-md');
-    expect($html)->toContain('transition-colors');
+    expect($html)->toContain('rounded-lg');
+    expect($html)->toContain('transition');
 });
 
 it('can render with custom classes', function () {

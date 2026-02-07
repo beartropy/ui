@@ -1,6 +1,6 @@
 <div class="relative">
 
-    {{-- El botón real --}}
+    {{-- The actual button --}}
     <x-beartropy-ui::base.button-base
         :type="$type"
         :href="$href"

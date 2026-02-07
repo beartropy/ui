@@ -11,12 +11,8 @@
     $placeholder =
         $placeholder ??
         ($range ?? false
-            ? (($locale ?? 'es') === 'es'
-                ? 'Seleccionar rango...'
-                : 'Select range...')
-            : (($locale ?? 'es') === 'es'
-                ? 'Seleccionar fecha...'
-                : 'Select date...'));
+            ? __('beartropy-ui::ui.select_range')
+            : __('beartropy-ui::ui.select_date'));
 
     $wrapperClass = $attributes->get('class') ?? '';
 @endphp
@@ -51,7 +47,7 @@
             @if ($clearable ?? true)
                 <span x-show="value"
                     @click.stop="clearSelection()"
-                    class="mr-1 cursor-pointer text-neutral-400 hover:text-red-500 transition" title="Limpiar">
+                    class="mr-1 cursor-pointer text-neutral-400 hover:text-red-500 transition" title="{{ __('beartropy-ui::ui.clear') }}">
                     @include('beartropy-ui-svg::beartropy-x-mark', [
                         'class' =>
                             'shrink-0 text-gray-700 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 ' .
@@ -73,7 +69,7 @@
                 preset-for="datetime" width="w-full max-w-[25rem]" overflow="visible" x-show="open"
                 triggerLabel="{{ $label }}" x-transition>
                 <div x-show="showCalendarPane()" class="p-3 select-none bg-transparent">
-                    <!-- Header: Mes y ano -->
+                    <!-- Header: Month and year -->
                     <div
                         class="flex items-center justify-between mb-2 gap-2 {{ $colorDropdown['header_text'] ?? '' }}">
                         <button @click="prevMonth()" class="p-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800">
@@ -88,11 +84,11 @@
                             </svg>
                         </button>
                     </div>
-                    <!-- Dias de la semana -->
+                    <!-- Days of the week -->
                     <div class="grid grid-cols-7 text-xs text-center mb-1 {{ $colorDropdown['weekday_text'] ?? '' }}">
-                        <span>Lun</span><span>Mar</span><span>Mie</span><span>Jue</span><span>Vie</span><span>Sab</span><span>Dom</span>
+                        <span>{{ __('beartropy-ui::ui.day_mon') }}</span><span>{{ __('beartropy-ui::ui.day_tue') }}</span><span>{{ __('beartropy-ui::ui.day_wed') }}</span><span>{{ __('beartropy-ui::ui.day_thu') }}</span><span>{{ __('beartropy-ui::ui.day_fri') }}</span><span>{{ __('beartropy-ui::ui.day_sat') }}</span><span>{{ __('beartropy-ui::ui.day_sun') }}</span>
                     </div>
-                    <!-- Dias -->
+                    <!-- Days -->
                     <div class="grid grid-cols-7 text-center {{ $colorDropdown['grid_bg'] ?? '' }}">
                         <template x-for="(day, i) in days" :key="i">
                             <button type="button" @click="selectDay(day)"
@@ -120,17 +116,17 @@
                         x-text="formatForDisplay(panel === 'time-end' && end ? end : start, formatDisplay)"></span>
                     <button @click="panel = panel === 'time-end' ? 'date-end' : 'date-start'; hovered = null" type="button"
                         class="text-xs px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
-                        Cambiar fecha
+                        {{ __('beartropy-ui::ui.change_date') }}
                     </button>
                 </div>
-                <!-- Seleccion de hora/minuto -->
+                <!-- Time/minute selection -->
                 <div class="flex w-full items-center justify-center gap-4 mb-2 bg-transparent"
                     x-show="showTime && (isPickingStartTime() || isPickingEndTime())">
                     <template x-if="isPickingStartTime()">
                         <div class="flex items-center gap-2 justify-center">
-                            <!-- Hora inicio -->
+                            <!-- Start hour -->
                             <div class="flex flex-col items-center">
-                                <label class="text-xs text-gray-500 mb-1 font-medium">Hora</label>
+                                <label class="text-xs text-gray-500 mb-1 font-medium">{{ __('beartropy-ui::ui.hour') }}</label>
                                 <ul
                                     class="{{ $colorDropdown['list_column'] ?? 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth' }}">
                                     <template x-for="h in 24" :key="h">
@@ -145,9 +141,9 @@
                                 </ul>
                             </div>
                             <span class="text-xl font-bold opacity-30 pt-6">:</span>
-                            <!-- Minuto inicio -->
+                            <!-- Start minute -->
                             <div class="flex flex-col items-center">
-                                <label class="text-xs text-gray-500 mb-1 font-medium">Min</label>
+                                <label class="text-xs text-gray-500 mb-1 font-medium">{{ __('beartropy-ui::ui.minute_short') }}</label>
                                 <ul
                                     class="{{ $colorDropdown['list_column'] ?? 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth' }}">
                                     <template x-for="m in 60" :key="m">
@@ -165,9 +161,9 @@
                     </template>
                     <template x-if="isPickingEndTime()">
                         <div class="flex items-center gap-2 justify-center">
-                            <!-- Hora fin -->
+                            <!-- End hour -->
                             <div class="flex flex-col items-center">
-                                <label class="text-xs text-gray-500 mb-1 font-medium">Hora</label>
+                                <label class="text-xs text-gray-500 mb-1 font-medium">{{ __('beartropy-ui::ui.hour') }}</label>
                                 <ul
                                     class="{{ $colorDropdown['list_column'] ?? 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth' }}">
                                     <template x-for="h in 24" :key="h">
@@ -182,9 +178,9 @@
                                 </ul>
                             </div>
                             <span class="text-xl font-bold opacity-30 pt-6">:</span>
-                            <!-- Minuto fin -->
+                            <!-- End minute -->
                             <div class="flex flex-col items-center">
-                                <label class="text-xs text-gray-500 mb-1 font-medium">Min</label>
+                                <label class="text-xs text-gray-500 mb-1 font-medium">{{ __('beartropy-ui::ui.minute_short') }}</label>
                                 <ul
                                     class="{{ $colorDropdown['list_column'] ?? 'flex flex-col h-32 overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth' }}">
                                     <template x-for="m in 60" :key="m">

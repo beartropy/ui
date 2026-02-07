@@ -45,7 +45,7 @@
     @if($dismissible)
         <button type="button" @click="open = false"
             class="ml-3 rounded-full hover:bg-black/10 dark:hover:bg-white/10 p-1 transition focus:outline-none"
-            aria-label="Cerrar"
+            aria-label="{{ __('beartropy-ui::ui.close') }}"
         >
             <x-beartropy-ui::icon name="x-mark" class="w-5 h-5" />
         </button>

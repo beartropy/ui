@@ -20,10 +20,10 @@ export function confirmHost({
     function normalizeButtons(arr) {
         return (Array.isArray(arr) ? arr : []).map(b => ({
             label: b?.label ?? 'OK',
-            // semÃ¡nticos (opcionales)
+            // semantic (optional)
             variant: b?.variant ?? 'soft',
             color: b?.color ?? 'gray',
-            // ðŸ‘‡ token de clase que viene del servidor (o fallback)
+            // class token from server (or fallback)
             token: b?.token ?? fallbackToken(b?.variant, b?.color),
 
             // acciones
@@ -40,7 +40,7 @@ export function confirmHost({
         }));
     }
 
-    // ====== efectos ======
+    // ====== effects ======
     function dialogClosed(effect) {
         switch (effect) {
             case 'slide-up': return 'opacity-0 translate-y-2';
@@ -71,10 +71,10 @@ export function confirmHost({
         cfg: {},
         buttons: [],
         btnLoading: [],
-        open: false,              // visibilidad del wrapper
+        open: false,              // wrapper visibility
         anim: 'idle',             // 'idle' | 'enter' | 'open' | 'leave'
 
-        // flags/efectos (configurables por payload)
+        // flags/effects (configurable per payload)
         closeOnBackdrop: true,
         closeOnEscape: true,
         effect: 'zoom',
@@ -105,7 +105,7 @@ export function confirmHost({
         overlayStyle() {
             const d = Number(this.duration) || 200;
             const e = this.easing || 'ease-out';
-            // Cuando estÃ¡ abierto, usa overlayOpacity; cuando entra/sale, 0
+            // When open, use overlayOpacity; when entering/leaving, 0
             const o = (this.anim === 'open') ? this.overlayOpacity : 0;
             return `opacity:${o}; transition: opacity ${d}ms ${e};`;
         },
@@ -115,7 +115,7 @@ export function confirmHost({
             return `transition: transform ${d}ms ${e}, opacity ${d}ms ${e};`;
         },
         dialogMotionClass() {
-            // Durante 'enter' y 'leave' usamos la pose "cerrada"
+            // During 'enter' and 'leave' we use the "closed" pose
             return (this.anim === 'open') ? dialogOpen(this.effect) : dialogClosed(this.effect);
         },
         btnClass(btn) { return classesFor(btn.variant, btn.color); },
@@ -126,25 +126,25 @@ export function confirmHost({
             const target = d.target ?? this.id;
             if (target !== this.id) return;
 
-            // â€” flags dinÃ¡micos â€”
+            // -- dynamic flags --
             this.closeOnBackdrop = (typeof d.closeOnBackdrop === 'boolean') ? d.closeOnBackdrop : true;
             this.closeOnEscape = (typeof d.closeOnEscape === 'boolean') ? d.closeOnEscape : true;
 
-            // â€” efectos â€”
+            // -- effects --
             this.effect = d.effect || 'zoom';
             this.duration = (typeof d.duration === 'number') ? d.duration : 200;
             this.easing = d.easing || 'ease-out';
             this.overlayOpacity = (typeof d.overlayOpacity === 'number') ? d.overlayOpacity : 0.6;
             this.overlayBlur = d.overlayBlur === true;
 
-            // â€” placement / offset (defaults ya seteados en la factory) â€”
+            // -- placement / offset (defaults already set in factory) --
             this.placement = (d.placement ?? this.placement);
             this.panelClass = (d.panelClass ?? this.panelClass);
 
-            // â€” autofocus (opcional, si lo estÃ¡s usando) â€”
+            // -- autofocus (optional) --
             this.autofocus = d.autofocus || this.autofocus; // 'dialog' | 'cancel' | 'confirm' | 'none'
 
-            // â€” contenido / botones (con token desde PHP) â€”
+            // -- content / buttons (with token from PHP) --
             this.cfg = d;
             const btns = normalizeButtons(d.buttons);
             this.buttons = btns.length ? btns : normalizeButtons([{ label: 'OK', mode: 'close' }]);
@@ -156,8 +156,8 @@ export function confirmHost({
 
         _openWithAnimation() {
             if (this.open && this.anim === 'open') return;
-            this.open = true;       // muestra el wrapper (overlay+dialog)
-            this.anim = 'enter';    // posiciÃ³n "cerrada" visible
+            this.open = true;       // show the wrapper (overlay+dialog)
+            this.anim = 'enter';    // visible "closed" positiÃ³n "cerrada" visible
 
             // salto de frame para que el browser pinte 'enter' y luego transicione a 'open'
             this.$nextTick(() => requestAnimationFrame(() => {

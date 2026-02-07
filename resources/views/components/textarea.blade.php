@@ -41,16 +41,16 @@
         }"
         x-init="update(); setInterval(() => update(), 100);"
     >
-        {{-- Copy button (arriba a la derecha) --}}
+        {{-- Copy button (top right) --}}
         @if($showCopyButton)
             <button
                 type="button"
                 class="absolute top-2 right-3 z-10 p-1 rounded transition"
                 x-on:click="copy()"
-                x-tooltip.raw="Copiar"
+                x-tooltip.raw="{{ __('beartropy-ui::ui.copy') }}"
                 :disabled="copySuccess"
                 tabindex="-1"
-                aria-label="Copiar contenido"
+                aria-label="{{ __('beartropy-ui::ui.copy_content') }}"
             >
                 <span x-show="!copySuccess">
                     @include('beartropy-ui-svg::beartropy-clipboard', ['class' => 'w-5 h-5 shrink-0 text-gray-500 dark:text-gray-400'])
@@ -73,7 +73,7 @@
             @if($maxLength) maxlength="{{ $maxLength }}" @endif
             x-ref="textarea"
             {{ $attributes->merge([
-                // Solo pr-2 acá, para evitar que el scroll se meta en el padding
+                // Only pr-2 here, to prevent scroll from overlapping padding
                 'class' => $colorPreset['input'] . '  beartropy-thin-scrollbar ' . ($showCopyButton ? 'pr-12' : 'pr-3') . ' pl-3 ' . $resizeClass
             ]) }}
             @if($autoResize)
@@ -87,7 +87,7 @@
             @endif
         >{{ old($name, $slot) }}</textarea>
 
-        {{-- Contador (abajo a la derecha) --}}
+        {{-- Counter (bottom right) --}}
         @if($showCounter)
             <span class="absolute bottom-3.5 right-3 text-xs select-none"
                 :class="(typeof count !== 'undefined' && {{ $maxLength ?? 'null' }} && count >= {{ $maxLength ?? 'null' }}) ? 'text-red-500 dark:text-red-400 font-semibold' : 'text-gray-400 dark:text-gray-500'"

@@ -24,8 +24,8 @@ class DebugBreakpoints extends BeartropyComponent
      * This component has no significant slots or additional view properties involved in public API.
      */
     public function __construct(
-        public $expanded = false,
-        public $env = 'local',
+        public bool $expanded = false,
+        public string $env = 'local',
     ) {}
 
     /**
@@ -33,7 +33,7 @@ class DebugBreakpoints extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::debug-breakpoints');
     }

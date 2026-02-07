@@ -134,40 +134,35 @@ class Nav extends BeartropyComponent
 
 
     /**
-     * Decide de dónde sacar el array de navegación
+     * Resolve the navigation items source.
      *
      * @param mixed $items
      * @return array
      */
-    protected function resolveItems($items)
+    protected function resolveItems($items): array
     {
-        // Si es null/empty, busca default
         if (empty($items)) {
             return $this->loadConfigNav('default');
         }
 
-        // Si es string, busca navs/<string>.php
         if (is_string($items)) {
             return $this->loadConfigNav($items);
         }
 
-        // Si es array, úsalo directo
         if (is_array($items)) {
             return $items;
         }
-
-        // Fallback
         return [];
     }
 
 
     /**
-     * Carga el archivo de navegación: config/beartropy/ui/navs/<nav>.php
+     * Load navigation config file: config/beartropy/ui/navs/<nav>.php
      *
      * @param string $nav
      * @return array
      */
-    protected function loadConfigNav($nav = 'default')
+    protected function loadConfigNav(string $nav = 'default'): array
     {
         $path = config_path("beartropy/ui/navs/{$nav}.php");
         if (file_exists($path)) {
@@ -190,10 +185,10 @@ class Nav extends BeartropyComponent
         $request     = request();
         $route       = $request->route();
         $currentName = $route?->getName();
-        // Normalizamos el path actual (sin query)
+        // Normalize current path (without query)
         $currentPath = '/' . ltrim($request->path(), '/');
 
-        // 1) match: patrones de PATH (como antes)
+        // 1) match: PATH patterns
         if (!empty($item['match'])) {
             $patterns = is_array($item['match']) ? $item['match'] : [$item['match']];
             foreach ($patterns as $pattern) {
@@ -203,7 +198,7 @@ class Nav extends BeartropyComponent
             }
         }
 
-        // 2) routeNameMatch: patrones de NOMBRE de ruta (users.*)
+        // 2) routeNameMatch: route name patterns (users.*)
         if (!empty($item['routeNameMatch'])) {
             $namePatterns = is_array($item['routeNameMatch']) ? $item['routeNameMatch'] : [$item['routeNameMatch']];
             foreach ($namePatterns as $pat) {
@@ -213,27 +208,27 @@ class Nav extends BeartropyComponent
             }
         }
 
-        // 3) routeName: nombre de ruta exacto
+        // 3) routeName: exact route name match
         if (!empty($item['routeName'])) {
-            // a) Coincidencia directa por nombre (y soporta wildcards si las usan accidentalmente)
+            // a) Direct name match (also supports wildcards)
             if ($currentName && ($currentName === $item['routeName'] || $request->routeIs($item['routeName']))) {
                 return true;
             }
 
-            // b) Fallback por PATH: generamos la URL relativa y comparamos paths
+            // b) PATH fallback: generate relative URL and compare paths
             try {
-                // false => genera relativa (sin dominio); ignoramos querystrings
+                // false => relative (no domain); ignore querystrings
                 $url = route($item['routeName'], $item['routeParams'] ?? [], false);
                 $urlPath = '/' . ltrim(parse_url($url, PHP_URL_PATH) ?: $url, '/');
                 if (rtrim($urlPath, '/') === rtrim($currentPath, '/')) {
                     return true;
                 }
             } catch (\Throwable $e) {
-                // ruta inexistente: ignoramos
+                // Non-existent route: ignore
             }
         }
 
-        // 4) route: path/URL relativo (sin http externo) como antes
+        // 4) route: relative path/URL (no external http)
         if (!empty($item['route']) && (!isset($item['external']) || !$item['external'])) {
             if (is_string($item['route']) && !Str::startsWith($item['route'], ['http://', 'https://'])) {
                 $itemPath = '/' . ltrim(parse_url($item['route'], PHP_URL_PATH) ?: $item['route'], '/');
@@ -246,10 +241,12 @@ class Nav extends BeartropyComponent
             }
         }
 
-        // 5) Algún hijo activo → padre activo
+        // 5) Any active child => parent active
         if (!empty($item['children'])) {
             foreach ($item['children'] as $child) {
-                if ($this->isItemActive($child)) return true;
+                if ($this->isItemActive($child)) {
+                    return true;
+                }
             }
         }
 
@@ -264,16 +261,18 @@ class Nav extends BeartropyComponent
      * @param string $iconClass Extra classes.
      * @return string
      */
-    public function renderIcon($icon, $iconClass = '')
+    public function renderIcon(string $icon, string $iconClass = ''): string
     {
-        if (!$icon) return '';
+        if (!$icon) {
+            return '';
+        }
+
         if (str_starts_with($icon, '<svg') || str_starts_with($icon, '<img') || str_starts_with($icon, '<i')) {
             return $icon;
-        } else {
-            $iconComponent = new \Beartropy\Ui\Components\Icon(name: $icon, class: 'w-4 h-4 shrink-0');
-            return Blade::renderComponent($iconComponent);
         }
-        return '';
+
+        $iconComponent = new \Beartropy\Ui\Components\Icon(name: $icon, class: 'w-4 h-4 shrink-0');
+        return Blade::renderComponent($iconComponent);
     }
 
     /**
@@ -285,8 +284,8 @@ class Nav extends BeartropyComponent
      */
     protected function filterNavCategories(array $categories, $user = null): array
     {
-        // Si te pasan directamente una lista de items (sin categorías),
-        // lo envolvemos en una categoría “anónima” para no romper.
+        // If passed a flat list of items (no categories),
+        // wrap in an anonymous category to avoid breaking.
         $isCategories = !empty($categories) && array_key_exists('category', $categories[0] ?? []);
 
         if (!$isCategories) {
@@ -324,14 +323,20 @@ class Nav extends BeartropyComponent
 
             $roles = config('beartropyui.admin_roles', []);
 
-            // Soporta Spatie\HasRoles o una flag booleana convencional
-            if (method_exists($user, 'hasAnyRole') && $user->hasAnyRole($roles)) return true;
+            // Supports Spatie\HasRoles or a conventional boolean flag
+            if (method_exists($user, 'hasAnyRole') && $user->hasAnyRole($roles)) {
+                return true;
+            }
             if (method_exists($user, 'hasRole')) {
                 foreach ($roles as $r) {
-                    if ($user->hasRole($r)) return true;
+                    if ($user->hasRole($r)) {
+                        return true;
+                    }
                 }
             }
-            if (property_exists($user, 'is_admin') && $user->is_admin) return true;
+            if (property_exists($user, 'is_admin') && $user->is_admin) {
+                return true;
+            }
 
             return false;
         };
@@ -340,45 +345,65 @@ class Nav extends BeartropyComponent
             return config('beartropyui.admin_bypass_nav', true) && $isAdmin($user);
         };
 
-        // can(string|array): OR si es array
+        // can(string|array): OR if array
         $canAccess = function ($can) use ($user, $adminBypass) {
-            if ($adminBypass()) return true;
-            if (!$can) return true;
+            if ($adminBypass()) {
+                return true;
+            }
+            if (!$can) {
+                return true;
+            }
             if (is_array($can)) {
                 foreach ($can as $perm) {
-                    if ($user && $user->can($perm)) return true;
+                    if ($user && $user->can($perm)) {
+                        return true;
+                    }
                 }
                 return false;
             }
             return $user && $user->can($can);
         };
 
-        // canAny(string|array): OR explícito
+        // canAny(string|array): explicit OR
         $canAnyAccess = function ($canAny) use ($user, $adminBypass) {
-            if ($adminBypass()) return true;
-            if (!$canAny) return true;
+            if ($adminBypass()) {
+                return true;
+            }
+            if (!$canAny) {
+                return true;
+            }
             $list = is_array($canAny) ? $canAny : [$canAny];
             foreach ($list as $perm) {
-                if ($user && $user->can($perm)) return true;
+                if ($user && $user->can($perm)) {
+                    return true;
+                }
             }
             return false;
         };
 
-        // canMatch(string|array): wildcard contra permisos del usuario
+        // canMatch(string|array): wildcard against user permissions
         $canMatchAccess = function ($patterns) use ($user, $adminBypass) {
-            if ($adminBypass()) return true;
-            if (!$patterns) return true;
-            if (!$user) return false;
+            if ($adminBypass()) {
+                return true;
+            }
+            if (!$patterns) {
+                return true;
+            }
+            if (!$user) {
+                return false;
+            }
 
             $patterns = is_array($patterns) ? $patterns : [$patterns];
 
-            // Spatie: names de permisos
+            // Spatie: permission names
             /** @phpstan-ignore-next-line */
             $userPerms = method_exists($user, 'getAllPermissions')
                 ? $user->getAllPermissions()->pluck('name')->all()
                 : [];
 
-            if (empty($userPerms)) return false;
+            if (empty($userPerms)) {
+                return false;
+            }
 
             foreach ($patterns as $pat) {
                 foreach ($userPerms as $permName) {
@@ -399,9 +424,9 @@ class Nav extends BeartropyComponent
 
                 if (!empty($item['children'])) {
                     $item['children'] = $filter($item['children']);
-                    // si querés conservar padres con link aunque queden sin hijos,
-                    // cambiá esta línea según tu regla:
-                    if (empty($item['children'])) continue;
+                    if (empty($item['children'])) {
+                        continue;
+                    }
                 }
 
                 $out[] = $item;
@@ -431,7 +456,7 @@ class Nav extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::nav');
     }

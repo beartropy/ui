@@ -6,7 +6,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
-use PhpParser\Node\Expr\Throw_;
 
 /**
  * CommandPalette component.
@@ -67,17 +66,17 @@ class CommandPalette extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
-        // Clave de cache por usuario/roles/permisos + versión del contenido
+        // Cache key by user/roles/permissions + content version
         [$userKey, $version] = $this->cacheKeyParts();
         $srcKey = $this->src ? ('|src:' . ltrim($this->src, '/')) : '|inline';
         $cacheKey = "bt-cp:{$userKey}:v{$version}{$srcKey}";
 
         $this->bt_cp_data = Cache::remember($cacheKey, now()->addDay(), function () {
-            $items = $this->resolveItems();             // Lee array o JSON
-            $items = $this->filterByPermissions($items); // Filtra por permisos
-            return $this->stripPermissions($items);     // Remueve 'permission'
+            $items = $this->resolveItems();
+            $items = $this->filterByPermissions($items);
+            return $this->stripPermissions($items);
         });
 
         return view('beartropy-ui::command-palette');
@@ -93,7 +92,7 @@ class CommandPalette extends BeartropyComponent
      */
     protected function cacheKeyParts(): array
     {
-        // Versión por mtime del archivo o hash del array
+        // Version by file mtime or array hash
         $version = '1';
         if ($this->src) {
             $path = ltrim($this->src, '/');
@@ -105,9 +104,11 @@ class CommandPalette extends BeartropyComponent
             $version = (string) crc32(json_encode($this->items));
         }
 
-        // Usuario + roles/permisos
+        // User + roles/permissions
         $user = Auth::user();
-        if (!$user) return ['guest', $version];
+        if (!$user) {
+            return ['guest', $version];
+        }
 
         /** @phpstan-ignore-next-line */
         $roles = method_exists($user, 'getRoleNames') ? $user->getRoleNames()->join(',') : '';
@@ -199,39 +200,49 @@ class CommandPalette extends BeartropyComponent
     {
         $user = Auth::user();
 
-        // Invitados
+        // Guests
         if (!$user) {
-            if ($this->allowGuests) return $items;
+            if ($this->allowGuests) {
+                return $items;
+            }
 
-            // Solo ítems sin restricciones (ni permission ni role)
+            // Only items without restrictions (no permission or role)
             return array_values(array_filter($items, function ($i) {
                 return empty($i['permission']) && empty($i['role']);
             }));
         }
 
-        // Bypass por admin_roles (Spatie hasAnyRole)
+        // Bypass via admin_roles (Spatie hasAnyRole)
         $adminRoles = config('beartropy-ui.admin_roles', []);
         /** @phpstan-ignore-next-line */
         if (!empty($adminRoles) && method_exists($user, 'hasAnyRole') && $user->hasAnyRole($adminRoles)) {
             return $items;
         }
 
-        // Helper: match de permisos (string|array) con OR interno
+        // Helper: permission match (string|array) with internal OR
         $matchesPermission = function ($perm) use ($user) {
-            if (empty($perm)) return false; // no condiciona si no está
+            if (empty($perm)) {
+                return false;
+            }
             if (is_array($perm)) {
                 foreach ($perm as $p) {
-                    if ($p && $user->can($p)) return true;
+                    if ($p && $user->can($p)) {
+                        return true;
+                    }
                 }
                 return false;
             }
             return $user->can($perm);
         };
 
-        // Helper: match de roles (string|array) con OR interno (requiere Spatie)
+        // Helper: role match (string|array) with internal OR (requires Spatie)
         $matchesRole = function ($role) use ($user) {
-            if (empty($role)) return false; // no condiciona si no está
-            if (!method_exists($user, 'hasAnyRole')) return false; // sin Spatie, ignora roles
+            if (empty($role)) {
+                return false;
+            }
+            if (!method_exists($user, 'hasAnyRole')) {
+                return false;
+            }
             if (is_array($role)) {
                 /** @phpstan-ignore-next-line */
                 return $user->hasAnyRole($role);
@@ -240,9 +251,9 @@ class CommandPalette extends BeartropyComponent
             return $user->hasAnyRole([$role]);
         };
 
-        // Regla final:
-        // - Si no hay ni permission ni role => visible
-        // - Si hay al menos uno => visible si (permission OK) OR (role OK)
+        // Final rule:
+        // - No permission or role => visible
+        // - At least one defined => visible if (permission OK) OR (role OK)
         return array_values(array_filter($items, function ($i) use ($matchesPermission, $matchesRole) {
             $perm = $i['permission'] ?? null;
             $role = $i['role'] ?? null;

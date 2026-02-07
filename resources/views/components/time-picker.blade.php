@@ -38,6 +38,7 @@
         custom-error="{{ $customError }}"
         hint="{{ $hint }}"
         has-error="{{ $hasError }}"
+        :disabled="$disabled"
         {{ $attributes->only(['fill', 'outline']) }}
     >
         <x-slot name="button">
@@ -52,7 +53,7 @@
                     x-show="value"
                     @click.stop="clear()"
                     class="mr-1 cursor-pointer text-neutral-400 hover:text-red-500 transition"
-                    title="Limpiar"
+                    title="{{ __('beartropy-ui::ui.clear') }}"
                 >
                     @include('beartropy-ui-svg::beartropy-x-mark', [
                         'class' => 'shrink-0 text-gray-700 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 ' . ($sizePreset['iconSize'] ?? '')

@@ -29,28 +29,24 @@
     @endif
 
     <div
-        class="flex items-center group w-full rounded-md transition-all shadow-sm outline-none
-            {{ ($shouldFill) ? $colorPreset['bg'] : '' }}
+        class="flex items-center group w-full rounded-lg transition-all shadow-sm outline-none overflow-hidden
+            {{ $shouldFill ? $colorPreset['bg'] : 'bg-white dark:bg-gray-900' }}
             {{ $borderClass ?? '' }}
             {{ $ringClass ?? '' }}
-            {{ $colorPreset['disabled_bg'] ?? '' }}
             {{ $disabled ? 'opacity-60 cursor-not-allowed' : '' }}
-            {{-- {{ $sizePreset['px'] ?? '' }} --}}
-            pl-3
-             beartropy-taginput-chips
-            {{-- {{ $sizePreset['height'] ?? '' }}" --}}
+            beartropy-taginput-chips"
         @if($disabled) aria-disabled="true" @endif
         @click="focusInput"
     >
         {{-- Start slot --}}
         @if (trim($start ?? ''))
-            <div class="flex items-center space-x-2 h-full pr-2 beartropy-inputbase-start-slot">
+            <div class="flex shrink-0 self-stretch beartropy-inputbase-start-slot">
                 {{ $start }}
             </div>
         @endif
 
         {{-- Chips + input --}}
-        <div class="flex flex-wrap gap-1 items-center w-full min-h-[38px] max-h-32 overflow-y-auto beartropy-thin-scrollbar" wire:ignore>
+        <div class="flex flex-wrap gap-1 items-center w-full pl-3 {{ $sizePreset['minHeight'] }} max-h-32 overflow-y-auto beartropy-thin-scrollbar" wire:ignore>
             <template x-for="(tag, i) in tags" :key="tag">
                 <span class="flex items-center gap-1 px-2 py-1 rounded {{ $colorPreset['chip_bg'] }} {{ $colorPreset['chip_text'] }} text-sm">
                     <span x-text="tag"></span>
@@ -78,7 +74,7 @@
                     {{ $sizePreset['font'] ?? '' }}
                     {{ $colorPreset['text'] ?? '' }}
                     {{ $colorPreset['placeholder'] ?? '' }}
-                    {{ $colorPreset['disabled_text'] ?? '' }}"
+"
                 :placeholder="tags.length === 0 ? '{{ $placeholder }}' : ''"
                 autocomplete="off"
                 @paste="handlePaste"
@@ -89,7 +85,7 @@
 
         {{-- End slot --}}
         @if (trim($end ?? ''))
-            <div class="flex items-center h-full space-x-2 pl-1 pr-3 beartropy-inputbase-end-slot">
+            <div class="flex shrink-0 self-stretch beartropy-inputbase-end-slot">
                 {{ $end }}
             </div>
         @endif

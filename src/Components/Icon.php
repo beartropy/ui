@@ -59,12 +59,9 @@ class Icon extends BeartropyComponent
      *
      * @return object{allClasses: string, iconComponent: string|null, fa: string|null, set: string|null, variant: string|null, name: string, class: string, sizeClass: string|null}
      */
-    public function getClasses($iconSize)
+    public function getClasses(?string $iconSize): object
     {
-        // Icon set: primero el override, si no, el default
         $this->set = $this->set ?? config('beartropyui.icons.set', 'heroicons');
-        $this->variant = $this->variant;
-        // Variante: primero override, si no, el default
 
         if (is_null($this->variant) && $this->solid) {
             $this->variant = 'solid';
@@ -112,9 +109,8 @@ class Icon extends BeartropyComponent
         ];
     }
 
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
-
         return view('beartropy-ui::icon');
     }
 }

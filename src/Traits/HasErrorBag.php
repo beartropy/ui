@@ -10,29 +10,32 @@ namespace Beartropy\Ui\Traits;
 trait HasErrorBag
 {
     /**
-     * Retrieve the error state for a given attribute or context.
+     * Determine the error state for a specific field.
      *
-     * @param string|null $error      Direct error message.
+     * Checks both the session error bag and specific error attributes.
+     * Looks up errors by `wire:model` value or `name` attribute.
+     *
      * @param \Illuminate\View\ComponentAttributeBag|null $attributes Component attributes.
-     * @param \Illuminate\Support\MessageBag|null       $errors     Global errors.
+     * @param \Illuminate\Support\ViewErrorBag|\Illuminate\Support\MessageBag|null $errors Global error bag.
+     * @param string|null                                 $error      Specific error message override.
      *
-     * @return array{__bt_wireModel: string|null, __bt_finalError: string|null, __bt_hasError: bool}
+     * @return array{0: bool, 1: string|null} [hasError, firstErrorMessage]
      */
-    public function getErrorState($error = null, $attributes = null, $errors = null)
-    {
-
+    public function getErrorState(
+        ?\Illuminate\View\ComponentAttributeBag $attributes = null,
+        \Illuminate\Support\ViewErrorBag|\Illuminate\Support\MessageBag|null $errors = null,
+        ?string $error = null,
+    ): array {
         $attributes = $attributes ?: $this->attributes;
-        $errors = $errors ?: session('errors', app('view')->shared('errors', new \Illuminate\Support\MessageBag));
+        $errors = $errors ?: session('errors', app('view')->shared('errors', new \Illuminate\Support\ViewErrorBag));
 
         $wireModel = $attributes->wire('model')->value();
-        $errorFromBag = $wireModel && $errors->has($wireModel) ? $errors->first($wireModel) : null;
-        $finalError = $errorFromBag ?: $error;
-        $hasError = !!$finalError;
+        $inputName = $attributes->get('name') ?? $wireModel;
 
-        return [
-            '__bt_wireModel'  => $wireModel,
-            '__bt_finalError' => $finalError,
-            '__bt_hasError'   => $hasError,
-        ];
+        $errorFromBag = $inputName && $errors->has($inputName) ? $errors->first($inputName) : null;
+        $finalError = $errorFromBag ?: $error;
+        $hasError = (bool) $finalError;
+
+        return [$hasError, $finalError];
     }
 }

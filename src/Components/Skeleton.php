@@ -40,16 +40,14 @@ class Skeleton extends BeartropyComponent
         public ?int $rows = null,
         public ?int $cols = null,
 
-    ) {
-        parent::__construct();
-    }
+    ) {}
 
     /**
      * Get the view / contents that represent the component.
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::skeleton');
     }

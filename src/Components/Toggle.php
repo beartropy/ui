@@ -58,10 +58,10 @@ class Toggle extends BeartropyComponent
         public ?bool $disabled = false,
         public ?string $hint = null,
         public ?string $help = null,
-        public $autosave = false,
-        public $autosaveMethod = 'savePreference',
-        public $autosaveKey = null,
-        public $autosaveDebounce = 300
+        public bool $autosave = false,
+        public string $autosaveMethod = 'savePreference',
+        public ?string $autosaveKey = null,
+        public int $autosaveDebounce = 300,
     ) {}
 
     /**
@@ -69,7 +69,7 @@ class Toggle extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::toggle');
     }

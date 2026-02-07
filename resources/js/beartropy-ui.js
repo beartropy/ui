@@ -23,7 +23,7 @@
       window.Livewire.dispatch("bt-dialog", payload);
       return;
     }
-    console.warn("[Beartropy] Dialog: no Alpine ni Livewire disponibles");
+    console.warn("[Beartropy] Dialog: no Alpine or Livewire available");
   }
   ["success", "error", "warning", "info"].forEach((type) => {
     dialog[type] = (title, description = "", options = {}) => dialog({
@@ -51,12 +51,12 @@
       allowOutsideClick: false,
       allowEscape: false,
       accept: {
-        label: config.acceptLabel ?? "Eliminar",
+        label: config.acceptLabel ?? "Delete",
         method: config.method ?? null,
         params: config.params ?? []
       },
       reject: {
-        label: config.rejectLabel ?? "Cancelar",
+        label: config.rejectLabel ?? "Cancel",
         method: config.rejectMethod ?? null,
         params: config.rejectParams ?? []
       },
@@ -513,11 +513,11 @@
         out = out.replace(/{m}/g, m);
         out = out.replace(/{d}/g, d);
         if (out.includes("{M}")) {
-          let monthsShort = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+          let monthsShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
           out = out.replace(/{M}/g, monthsShort[parseInt(m, 10) - 1] || m);
         }
         if (out.includes("{MMMM}")) {
-          let monthsLong = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+          let monthsLong = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
           out = out.replace(/{MMMM}/g, monthsLong[parseInt(m, 10) - 1] || m);
         }
         hour = (hour || "").padStart(2, "0");
@@ -735,10 +735,10 @@
     function normalizeButtons(arr) {
       return (Array.isArray(arr) ? arr : []).map((b) => ({
         label: b?.label ?? "OK",
-        // semÃ¡nticos (opcionales)
+        // semantic (optional)
         variant: b?.variant ?? "soft",
         color: b?.color ?? "gray",
-        // ðŸ‘‡ token de clase que viene del servidor (o fallback)
+        // class token from server (or fallback)
         token: b?.token ?? fallbackToken(b?.variant, b?.color),
         // acciones
         mode: b?.mode ?? (b?.wire ? "wire" : b?.emit ? "emit" : "close"),
@@ -790,10 +790,10 @@
       buttons: [],
       btnLoading: [],
       open: false,
-      // visibilidad del wrapper
+      // wrapper visibility
       anim: "idle",
       // 'idle' | 'enter' | 'open' | 'leave'
-      // flags/efectos (configurables por payload)
+      // flags/effects (configurable per payload)
       closeOnBackdrop: true,
       closeOnEscape: true,
       effect: "zoom",

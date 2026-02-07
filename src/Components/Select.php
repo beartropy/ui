@@ -22,36 +22,44 @@ class Select extends InputTriggerBase
     public $options;
 
     public $selected;
-    public $icon;
+    public ?string $icon;
     public $placeholder;
-    public $searchable;
+    public bool $searchable;
     public $label;
-    public $multiple;
-    public $clearable;
-    public $remote;
-    public $remoteUrl;
+    public bool $multiple;
+    public bool $clearable;
+    public bool $remote;
+    public ?string $remoteUrl;
     public $size;
     public $color;
     public $initialValue;
-    public $perPage;
+    public int $perPage;
     public $customError;
-    public $hint;
+    public ?string $hint;
+    public ?string $help;
 
-    // 🔑 Nuevos mapeos
-    public $optionLabel;
-    public $optionValue;
-    public $optionDescription;
-    public $optionIcon;
-    public $optionAvatar;
+    public ?string $optionLabel;
+    public ?string $optionValue;
+    public ?string $optionDescription;
+    public ?string $optionIcon;
+    public ?string $optionAvatar;
 
-    public $autosave;
-    public $autosaveMethod;
-    public $autosaveKey;
-    public $autosaveDebounce;
+    public bool $autosave;
+    public ?string $autosaveMethod;
+    public ?string $autosaveKey;
+    public int $autosaveDebounce;
 
-    public $emptyMessage = 'No se encontraron opciones';
-    public $isEmpty = false;
-    public $spinner;
+    public ?string $emptyMessage;
+    public bool $isEmpty = false;
+    public bool $spinner;
+    public bool $defer;
+    public bool $fitTrigger;
+
+    public bool $userSearchable;
+    public bool $userClearable;
+
+    /** @var array<int, array{_value: mixed, label: string|null, icon: string|null, avatar: string|null, description: string|null}> */
+    public static array $pendingSlotOptions = [];
 
     /**
      * Create a new Select component instance.
@@ -72,6 +80,7 @@ class Select extends InputTriggerBase
      * @param int         $perPage           Results per page.
      * @param mixed       $customError       Custom error state.
      * @param string|null $hint              Helper text.
+     * @param string|null $help              Help text displayed below the field.
      * @param bool|int    $autosave          Auto-save selection on change.
      * @param string      $autosaveMethod    Method to call on auto-save (Livewire).
      * @param string|null $autosaveKey       Key to update on auto-save.
@@ -83,6 +92,8 @@ class Select extends InputTriggerBase
      * @param string      $optionAvatar      Key/Method for avatar mapping.
      * @param string      $emptyMessage      Text to show when no options found.
      * @param bool        $spinner           Show loading spinner.
+     * @param bool        $defer             Defer remote fetch until dropdown opens.
+     * @param bool        $fitTrigger        Match dropdown width to trigger (false allows wider dropdown).
      *
      * ## Blade Props
      *
@@ -112,7 +123,7 @@ class Select extends InputTriggerBase
         $options = null,
         $selected = null,
         $icon = null,
-        $placeholder = 'Seleccionar...',
+        $placeholder = null,
         $searchable = true,
         $label = null,
         $multiple = false,
@@ -125,27 +136,33 @@ class Select extends InputTriggerBase
         $perPage = 15,
         $customError = null,
         $hint = null,
+        $help = null,
         $autosave = false,
         $autosaveMethod = 'savePreference',
         $autosaveKey = null,
         $autosaveDebounce = 300,
 
-        // 🔑 Defaults de mapeo
         $optionLabel = 'label',
         $optionValue = 'value',
         $optionDescription = 'description',
         $optionIcon = 'icon',
         $optionAvatar = 'avatar',
 
-        $emptyMessage = 'No se encontraron opciones',
+        $emptyMessage = null,
         $spinner = true,
+        $defer = false,
+        $fitTrigger = true,
     ) {
-        // Guardar mapeos primero (los usa normalizeOptions)
+        // Store mappings first (used by normalizeOptions)
         $this->optionLabel = $optionLabel ?: 'label';
         $this->optionValue = $optionValue ?: 'value';
         $this->optionDescription = $optionDescription ?: 'description';
         $this->optionIcon = $optionIcon ?: 'icon';
         $this->optionAvatar = $optionAvatar ?: 'avatar';
+
+        // Preserve user's original intent before the empty-options guard may override them
+        $this->userSearchable = filter_var($searchable, FILTER_VALIDATE_BOOLEAN);
+        $this->userClearable = filter_var($clearable, FILTER_VALIDATE_BOOLEAN);
 
         if (empty($options) || is_null($options)) {
             $this->isEmpty = true;
@@ -162,7 +179,7 @@ class Select extends InputTriggerBase
         }
         $this->selected     = $selected;
         $this->icon         = $icon;
-        $this->placeholder  = $placeholder;
+        $this->placeholder  = $placeholder ?? __('beartropy-ui::ui.select');
         $this->searchable   = filter_var($searchable, FILTER_VALIDATE_BOOLEAN);
         $this->label        = $label;
         $this->multiple     = filter_var($multiple, FILTER_VALIDATE_BOOLEAN);
@@ -175,12 +192,48 @@ class Select extends InputTriggerBase
         $this->perPage      = (int) $perPage;
         $this->customError  = $customError;
         $this->hint         = $hint;
+        $this->help         = $help;
         $this->autosave          = filter_var($autosave, FILTER_VALIDATE_BOOLEAN);
         $this->autosaveMethod    = $autosaveMethod;
         $this->autosaveKey       = $autosaveKey;
         $this->autosaveDebounce  = (int) $autosaveDebounce;
-        $this->emptyMessage     = $emptyMessage;
+        $this->emptyMessage     = $emptyMessage ?? __('beartropy-ui::ui.no_options_found');
         $this->spinner          = $spinner;
+        $this->defer            = filter_var($defer, FILTER_VALIDATE_BOOLEAN);
+        $this->fitTrigger       = filter_var($fitTrigger, FILTER_VALIDATE_BOOLEAN);
+    }
+
+    /**
+     * Pre-render an icon string into HTML.
+     *
+     * Handles emoji, raw SVG/IMG markup, short text, and Heroicon names.
+     *
+     * @param string|null $icon Raw icon value.
+     *
+     * @return string|null Rendered HTML or the original string.
+     */
+    public static function renderIcon(?string $icon): ?string
+    {
+        if (empty($icon)) {
+            return null;
+        }
+
+        if (preg_match('/^[\p{Emoji}\p{S}\p{So}\x{1F600}-\x{1F64F}]{1,3}$/u', $icon)) {
+            return $icon;
+        }
+
+        $trim = trim($icon);
+        if (str_starts_with($trim, '<svg') || str_starts_with($trim, '<img')) {
+            return $icon;
+        }
+
+        if (mb_strlen($icon) <= 2 && strip_tags($icon) === $icon) {
+            return $icon;
+        }
+
+        $iconComponent = new \Beartropy\Ui\Components\Icon(name: $icon, class: 'w-5 h-5');
+
+        return Blade::renderComponent($iconComponent);
     }
 
     /**
@@ -204,45 +257,30 @@ class Select extends InputTriggerBase
             $options = $options->all();
         }
 
-        // ¿array asociativo?
+        // Associative array?
         $isAssociative = false;
         if (is_array($options) && count($options)) {
             $keys = array_keys($options);
             $isAssociative = count(array_filter($keys, 'is_string')) > 0;
         }
 
-        $isEmoji = function ($icon) {
-            return is_string($icon) && preg_match('/^[\p{Emoji}\p{S}\p{So}\x{1F600}-\x{1F64F}]{1,3}$/u', $icon);
-        };
+        $renderIcon = static fn($icon) => self::renderIcon($icon);
 
-        $renderIcon = function ($icon) use ($isEmoji) {
-            if (empty($icon)) return null;
-            if ($isEmoji($icon)) return $icon;
-            $trim = is_string($icon) ? trim($icon) : $icon;
-            if (is_string($trim) && str_starts_with($trim, '<svg')) return $icon;
-            if (is_string($trim) && str_starts_with($trim, '<img')) return $icon;
-            if (is_string($icon) && mb_strlen($icon) <= 2 && strip_tags($icon) === $icon) return $icon;
-
-            $iconComponent = new \Beartropy\Ui\Components\Icon(name: $icon, class: 'w-5 h-5');
-            return Blade::renderComponent($iconComponent);
-        };
-
-        // 🔍 Getter defensivo por campo
+        // Defensive field getter
         $get = function ($source, string $field, $fallbacks = []) {
-            // 1) Campo explícito
+            // 1) Explicit field
             $candidates = array_filter([$field, ...$fallbacks]);
 
             foreach ($candidates as $key) {
-                // Array
                 if (is_array($source) && array_key_exists($key, $source)) {
                     return $source[$key];
                 }
-                // Eloquent / Model-like
                 if (is_object($source) && method_exists($source, 'getAttribute')) {
                     $val = $source->getAttribute($key);
-                    if (!is_null($val)) return $val;
+                    if (!is_null($val)) {
+                        return $val;
+                    }
                 }
-                // Objeto simple
                 if (is_object($source) && isset($source->{$key})) {
                     return $source->{$key};
                 }
@@ -254,27 +292,18 @@ class Select extends InputTriggerBase
         $normalized = [];
 
         $processOption = function ($rawId, $option) use ($get, $renderIcon) {
-            // 🆔 ID / value
             $id = $get($option, $this->optionValue, ['id', 'key', 'value']);
-
-            // 🏷️ Label
             $label = $get($option, $this->optionLabel, ['label', 'name', 'text', 'value']);
-
-            // 🧾 Description
             $desc = $get($option, $this->optionDescription, ['description', 'desc', 'subtitle']);
-
-            // 🖼️ Icon / Avatar
             $icon = $get($option, $this->optionIcon, ['icon']);
             $avatar = $get($option, $this->optionAvatar, ['avatar', 'image', 'photo', 'picture']);
 
-            // Fallbacks finales
             if (is_null($label)) {
-                // Si no hay label, usar el id como label si existe
-                $label = $id ?? (is_scalar($option) ? (string)$option : null);
+                $label = $id ?? (is_scalar($option) ? (string) $option : null);
             }
 
             return [
-                '_value'      => $id ?? $rawId, // guardamos el "value" real para la vista/JS
+                '_value'      => $id ?? $rawId,
                 'label'       => $label,
                 'icon'        => $renderIcon($icon),
                 'avatar'      => $avatar,
@@ -284,7 +313,6 @@ class Select extends InputTriggerBase
 
         if ($isAssociative) {
             foreach ($options as $id => $option) {
-                // Caso simple: label string
                 if (is_string($option)) {
                     $normalized[(string)$id] = [
                         '_value'      => $id,
@@ -312,7 +340,6 @@ class Select extends InputTriggerBase
                 }
 
                 $id = null;
-                // Si trae id/value, úsalo como key para consistencia
                 if (is_array($item)) {
                     $id = $item[$this->optionValue] ?? $item['id'] ?? $item['value'] ?? null;
                 } elseif (is_object($item) && method_exists($item, 'getAttribute')) {
@@ -334,7 +361,7 @@ class Select extends InputTriggerBase
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::select');
     }

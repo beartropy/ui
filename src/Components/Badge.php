@@ -48,11 +48,11 @@ class Badge extends BeartropyComponent
      * @property bool $info      Info color.
      */
     public function __construct(
-        public $color = null,
-        public $size = null,
-        public $variant = null,
-        public $iconLeft = null,
-        public $iconRight = null,
+        public ?string $color = null,
+        public ?string $size = null,
+        public ?string $variant = null,
+        public ?string $iconLeft = null,
+        public ?string $iconRight = null,
     ) {}
 
     /**
@@ -60,7 +60,7 @@ class Badge extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::badge');
     }

@@ -14,8 +14,6 @@ trait HasDialogs
      * Fluent accessor for dialog methods.
      *
      * Allows usage like `$this->dialog()->success(...)`.
-     *
-     * @return static
      */
     public function dialog(): static
     {
@@ -25,8 +23,7 @@ trait HasDialogs
     /**
      * Dispatch the dialog event to the frontend.
      *
-     * @param array $payload Dialog configuration payload.
-     * @return void
+     * @param array<string, mixed> $payload Dialog configuration payload.
      */
     protected function dispatchDialog(array $payload): void
     {
@@ -37,112 +34,81 @@ trait HasDialogs
     }
 
     /**
-     * Show a success dialog.
+     * Build a standard dialog payload.
      *
-     * @param string      $title       Dialog title.
-     * @param string|null $description Dialog body text.
-     * @param array       $options     Additional options (size, buttons, callbacks).
-     * @return void
+     * @param string               $type        Dialog type (success, info, warning, error).
+     * @param string               $title       Dialog title.
+     * @param string|null          $description Dialog body text.
+     * @param string               $icon        Icon name.
+     * @param array<string, mixed> $options     Additional options (size, buttons, callbacks).
+     *
+     * @return array<string, mixed>
      */
-    public function success(string $title, ?string $description = null, array $options = []): void
+    protected function buildDialogPayload(string $type, string $title, ?string $description, string $icon, array $options = []): array
     {
-        $this->dispatchDialog(array_merge([
-            'type'        => 'success',
-            'title'       => $title,
-            'description' => $description,
-            'icon'        => 'check-circle',
-            'size'        => $options['size'] ?? null,
-            'accept'      => [
-                'label'  => $options['accept_label'] ?? 'OK',
+        return array_merge([
+            'type'              => $type,
+            'title'             => $title,
+            'description'       => $description,
+            'icon'              => $icon,
+            'size'              => $options['size'] ?? null,
+            'accept'            => [
+                'label'  => $options['accept_label'] ?? __('beartropy-ui::ui.ok'),
                 'method' => $options['accept_method'] ?? null,
                 'params' => $options['accept_params'] ?? [],
             ],
-            'reject'      => null,
-            // por defecto no se cierra por fuera / escape
+            'reject'            => null,
             'allowOutsideClick' => $options['allowOutsideClick'] ?? false,
             'allowEscape'       => $options['allowEscape'] ?? false,
-        ], $options));
+        ], $options);
+    }
+
+    /**
+     * Show a success dialog.
+     *
+     * @param string               $title       Dialog title.
+     * @param string|null          $description Dialog body text.
+     * @param array<string, mixed> $options     Additional options (size, buttons, callbacks).
+     */
+    public function success(string $title, ?string $description = null, array $options = []): void
+    {
+        $this->dispatchDialog($this->buildDialogPayload('success', $title, $description, 'check-circle', $options));
     }
 
     /**
      * Show an info dialog.
      *
-     * @param string      $title       Dialog title.
-     * @param string|null $description Dialog body text.
-     * @param array       $options     Additional options.
-     * @return void
+     * @param string               $title       Dialog title.
+     * @param string|null          $description Dialog body text.
+     * @param array<string, mixed> $options     Additional options.
      */
     public function info(string $title, ?string $description = null, array $options = []): void
     {
-        $this->dispatchDialog(array_merge([
-            'type'        => 'info',
-            'title'       => $title,
-            'description' => $description,
-            'icon'        => 'information-circle',
-            'size'        => $options['size'] ?? null,
-            'accept'      => [
-                'label'  => $options['accept_label'] ?? 'OK',
-                'method' => $options['accept_method'] ?? null,
-                'params' => $options['accept_params'] ?? [],
-            ],
-            'reject'      => null,
-            'allowOutsideClick' => $options['allowOutsideClick'] ?? false,
-            'allowEscape'       => $options['allowEscape'] ?? false,
-        ], $options));
+        $this->dispatchDialog($this->buildDialogPayload('info', $title, $description, 'information-circle', $options));
     }
 
     /**
      * Show a warning dialog.
      *
-     * @param string      $title       Dialog title.
-     * @param string|null $description Dialog body text.
-     * @param array       $options     Additional options.
-     * @return void
+     * @param string               $title       Dialog title.
+     * @param string|null          $description Dialog body text.
+     * @param array<string, mixed> $options     Additional options.
      */
     public function warning(string $title, ?string $description = null, array $options = []): void
     {
-        $this->dispatchDialog(array_merge([
-            'type'        => 'warning',
-            'title'       => $title,
-            'description' => $description,
-            'icon'        => 'exclamation-triangle',
-            'size'        => $options['size'] ?? null,
-            'accept'      => [
-                'label'  => $options['accept_label'] ?? 'OK',
-                'method' => $options['accept_method'] ?? null,
-                'params' => $options['accept_params'] ?? [],
-            ],
-            'reject'      => null,
-            'allowOutsideClick' => $options['allowOutsideClick'] ?? false,
-            'allowEscape'       => $options['allowEscape'] ?? false,
-        ], $options));
+        $this->dispatchDialog($this->buildDialogPayload('warning', $title, $description, 'exclamation-triangle', $options));
     }
 
     /**
      * Show an error dialog.
      *
-     * @param string      $title       Dialog title.
-     * @param string|null $description Dialog body text.
-     * @param array       $options     Additional options.
-     * @return void
+     * @param string               $title       Dialog title.
+     * @param string|null          $description Dialog body text.
+     * @param array<string, mixed> $options     Additional options.
      */
     public function error(string $title, ?string $description = null, array $options = []): void
     {
-        $this->dispatchDialog(array_merge([
-            'type'        => 'error',
-            'title'       => $title,
-            'description' => $description,
-            'icon'        => 'x-circle',
-            'size'        => $options['size'] ?? null,
-            'accept'      => [
-                'label'  => $options['accept_label'] ?? 'OK',
-                'method' => $options['accept_method'] ?? null,
-                'params' => $options['accept_params'] ?? [],
-            ],
-            'reject'      => null,
-            'allowOutsideClick' => $options['allowOutsideClick'] ?? false,
-            'allowEscape'       => $options['allowEscape'] ?? false,
-        ], $options));
+        $this->dispatchDialog($this->buildDialogPayload('error', $title, $description, 'x-circle', $options));
     }
 
     /**
@@ -158,8 +124,7 @@ trait HasDialogs
      * ]);
      * ```
      *
-     * @param array $config Configuration array for approval/rejection actions.
-     * @return void
+     * @param array<string, mixed> $config Configuration array for approval/rejection actions.
      */
     public function confirm(array $config): void
     {
@@ -167,23 +132,21 @@ trait HasDialogs
         $reject = $config['reject'] ?? [];
 
         $this->dispatchDialog([
-            'type'        => 'confirm',
-            'title'       => $config['title'] ?? 'Are you sure?',
-            'description' => $config['description'] ?? null,
-            'icon'        => $config['icon'] ?? 'question-mark-circle',
-            'size'        => $config['size'] ?? null,
-            'accept' => [
-                'label'  => $accept['label'] ?? 'Confirm',
+            'type'              => 'confirm',
+            'title'             => $config['title'] ?? __('beartropy-ui::ui.are_you_sure'),
+            'description'       => $config['description'] ?? null,
+            'icon'              => $config['icon'] ?? 'question-mark-circle',
+            'size'              => $config['size'] ?? null,
+            'accept'            => [
+                'label'  => $accept['label'] ?? __('beartropy-ui::ui.confirm'),
                 'method' => $accept['method'] ?? null,
                 'params' => $accept['params'] ?? [],
             ],
-            'reject' => [
-                'label'  => $reject['label'] ?? 'Cancel',
+            'reject'            => [
+                'label'  => $reject['label'] ?? __('beartropy-ui::ui.cancel'),
                 'method' => $reject['method'] ?? null,
                 'params' => $reject['params'] ?? [],
             ],
-
-            // por defecto confirm NO se cierra por escape / fuera
             'allowOutsideClick' => $config['allowOutsideClick'] ?? false,
             'allowEscape'       => $config['allowEscape'] ?? false,
         ]);
@@ -192,37 +155,34 @@ trait HasDialogs
     /**
      * Show a delete confirmation dialog (Danger/Destructive style).
      *
-     * @param string      $title       Dialog title.
-     * @param string|null $description Dialog body text.
-     * @param array       $options     Options including 'method' and 'params' for the action.
-     * @return void
+     * @param string               $title       Dialog title.
+     * @param string|null          $description Dialog body text.
+     * @param array<string, mixed> $options     Options including 'method' and 'params' for the action.
      */
     public function delete(
         string $title,
         ?string $description = null,
-        array $options = []
+        array $options = [],
     ): void {
         $method = $options['method'] ?? null;
         $params = $options['params'] ?? [];
 
         $this->dispatchDialog([
-            'type'        => 'danger',
-            'title'       => $title,
-            'description' => $description,
-            'icon'        => 'x-circle',
-            'size'        => $options['size'] ?? null,
-            'accept' => [
-                'label'  => $options['accept_label'] ?? 'Eliminar',
+            'type'              => 'danger',
+            'title'             => $title,
+            'description'       => $description,
+            'icon'              => 'x-circle',
+            'size'              => $options['size'] ?? null,
+            'accept'            => [
+                'label'  => $options['accept_label'] ?? __('beartropy-ui::ui.delete'),
                 'method' => $method,
                 'params' => $params,
             ],
-            'reject' => [
-                'label'  => $options['reject_label'] ?? 'Cancelar',
+            'reject'            => [
+                'label'  => $options['reject_label'] ?? __('beartropy-ui::ui.cancel'),
                 'method' => $options['reject_method'] ?? null,
                 'params' => $options['reject_params'] ?? [],
             ],
-
-            // Para deletes, nunca permitir cerrar afuera
             'allowOutsideClick' => false,
             'allowEscape'       => false,
         ]);

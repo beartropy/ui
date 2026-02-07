@@ -2,7 +2,7 @@
 
 namespace Beartropy\Ui\Components;
 
-use Beartropy\Ui\Components\BeartropyComponent;
+use Illuminate\Contracts\View\View;
 
 /**
  * Avatar component.
@@ -18,8 +18,6 @@ use Beartropy\Ui\Components\BeartropyComponent;
  */
 class Avatar extends BeartropyComponent
 {
-    public $src, $alt, $size, $initials, $color, $customSize;
-
     /**
      * Create a new Avatar component instance.
      *
@@ -52,22 +50,16 @@ class Avatar extends BeartropyComponent
      * @property bool $danger    Danger color.
      * @property bool $info      Info color.
      */
-    public function __construct($src = null, $alt = '', $size = null, $color = null, $initials = null, $customSize = null)
-    {
-        $this->src = $src;
-        $this->alt = $alt;
-        $this->size = $size;
-        $this->color = $color;
-        $this->initials = $initials;
-        $this->customSize = $customSize;
-    }
+    public function __construct(
+        public ?string $src = null,
+        public string $alt = '',
+        public ?string $size = null,
+        public ?string $color = null,
+        public ?string $initials = null,
+        public ?string $customSize = null,
+    ) {}
 
-    /**
-     * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\View\View|\Closure|string
-     */
-    public function render()
+    public function render(): View
     {
         return view('beartropy-ui::avatar');
     }

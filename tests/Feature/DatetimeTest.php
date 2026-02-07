@@ -44,7 +44,7 @@ it('can render with show-time enabled', function () {
 it('can render in range mode', function () {
     $html = Blade::render('<x-bt-datetime name="test_range" :range="true" />');
 
-    expect($html)->toContain('Seleccionar rango...');
+    expect($html)->toContain('Select range...');
 });
 
 it('can render with min date', function () {
@@ -101,10 +101,10 @@ it('can render with hint text', function () {
     expect($html)->toContain('Select a valid date');
 });
 
-it('respects Spanish locale by default', function () {
+it('uses translated placeholder by default', function () {
     $html = Blade::render('<x-bt-datetime name="test_date" />');
 
-    expect($html)->toContain('Seleccionar fecha...');
+    expect($html)->toContain('Select date...');
 });
 
 it('respects English locale', function () {

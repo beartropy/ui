@@ -27,18 +27,18 @@ class AddPreset extends Command
      * @var string
      */
     protected $signature = 'beartropy:add-preset
-        {component : Nombre del componente (ej: input)}
-        {colors* : Nombres de colores Tailwind o hexadecimales}
-        {--name= : Nombre del preset personalizado (opcional)}
-        {--force : Sobrescribir si ya existe}
-        {--force-vendor : Modificar directamente el archivo en vendor si no existe en config}';
+        {component : Component name (e.g. input)}
+        {colors* : Tailwind color names or hex values}
+        {--name= : Custom preset name (optional)}
+        {--force : Overwrite if already exists}
+        {--force-vendor : Modify the vendor file directly if not published to config}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Agrega presets de color a un componente a partir de un color existente, con soporte para hex y nombre custom';
+    protected $description = 'Add color presets to a component based on an existing color, with hex and custom name support';
 
     /**
      * Execute the console command.
@@ -59,53 +59,53 @@ class AddPreset extends Command
         if (File::exists($userPath)) {
             $presetPath = $userPath;
         } elseif ($forceVendor && File::exists($packagePath)) {
-            if (!$this->confirm("¿Seguro que querés modificar vendor? Esto puede perderse si actualizás el paquete.")) {
-                $this->info("Operación cancelada.");
+            if (!$this->confirm("Are you sure you want to modify vendor? Changes may be lost on package update.")) {
+                $this->info("Operation cancelled.");
                 return 0;
             }
             $presetPath = $packagePath;
-            $this->warn("¡Atención! Vas a modificar directamente el archivo en vendor ({$packagePath}).");
+            $this->warn("Warning! You are modifying the vendor file directly ({$packagePath}).");
         } else {
             if (File::exists($packagePath)) {
-                $this->error("No existe el preset para '{$component}' en 'config/presets/'.\n");
-                $this->line("Primero publicá los presets de Beartropy UI con:");
+                $this->error("Preset for '{$component}' not found in 'config/presets/'.\n");
+                $this->line("First publish the Beartropy UI presets with:");
                 $this->line("  php artisan vendor:publish --tag=beartropy-ui-presets");
-                $this->line("O usá --force-vendor para modificar vendor directamente (solo recomendado en dev).");
+                $this->line("Or use --force-vendor to modify vendor directly (only recommended in dev).");
                 return 1;
             } else {
-                $this->error("No se encontró el preset para '{$component}' ni en config/presets ni en vendor.");
+                $this->error("Preset for '{$component}' not found in config/presets or vendor.");
                 return 1;
             }
         }
 
-        // Leer y parsear
+        // Read and parse
         $content = File::get($presetPath);
         $presets = eval('?>' . $content);
 
-        // Estructura: default_color, colors
+        // Structure: default_color, colors
         if (!is_array($presets) || !isset($presets['colors']) || !is_array($presets['colors'])) {
-            $this->error("El archivo '{$presetPath}' no tiene la estructura esperada (default_color, colors).");
+            $this->error("File '{$presetPath}' does not have the expected structure (default_color, colors).");
             return 1;
         }
 
         $colorPresets = $presets['colors'];
         $defaultColor = $presets['default_color'] ?? array_key_first($colorPresets);
 
-        // El preset base para clonar
+        // Base preset to clone
         $baseKey = $defaultColor;
         $basePreset = $colorPresets[$baseKey] ?? reset($colorPresets);
 
         if (!is_array($basePreset)) {
-            $this->error("El preset base '{$baseKey}' no es un array.");
+            $this->error("Base preset '{$baseKey}' is not an array.");
             return 1;
         }
 
-        // Detectar el color base a reemplazar (ej: bg-beartropy- o bg-primary-)
+        // Detect the base color to replace (e.g. bg-beartropy- or bg-primary-)
         preg_match('/bg-([a-z0-9]+)-/', implode(' ', $basePreset), $baseMatch);
         $baseColor = $baseMatch[1] ?? $baseKey;
 
         foreach ($colors as $i => $color) {
-            // Decide key: --name si hay uno solo, o hex-{...} para hex, o nombre de color
+            // Decide key: --name if only one, or hex-{...} for hex, or color name
             $presetKey = ($customName && count($colors) == 1)
                 ? $customName
                 : (
@@ -115,16 +115,16 @@ class AddPreset extends Command
                 );
 
             if (isset($presets['colors'][$presetKey]) && !$force) {
-                $this->warn("El preset '{$presetKey}' ya existe. Usá --force para sobrescribir.");
+                $this->warn("Preset '{$presetKey}' already exists. Use --force to overwrite.");
                 continue;
             }
 
-            // Clonar y reemplazar
+            // Clone and replace
             $newPreset = [];
             foreach ($basePreset as $k => $v) {
                 if (Str::startsWith($color, '#')) {
                     $hex = ltrim($color, '#');
-                    // Reemplaza cualquier color por el hex
+                    // Replace any color with the hex value
                     $v = preg_replace('/(bg|text|border|ring|placeholder|outline|shadow|accent|from|to|via)-[a-z0-9\-]+/', "$1-[#{$hex}]", $v);
                 } else {
                     $v = str_replace("{$baseColor}-", "{$color}-", $v);
@@ -134,21 +134,21 @@ class AddPreset extends Command
             }
 
             $presets['colors'][$presetKey] = $newPreset;
-            $this->info("Preset '{$presetKey}' agregado.");
+            $this->info("Preset '{$presetKey}' added.");
         }
 
-        // Re-escribir archivo con pretty print
+        // Rewrite file with pretty print
         $arrayExport = $this->prettyPrintPresetArray($presets);
         $finalContent = "<?php\n\nreturn {$arrayExport};\n";
 
         File::put($presetPath, $finalContent);
 
-        $this->info("¡Listo! Presets agregados a {$presetPath}");
+        $this->info("Done! Presets added to {$presetPath}");
         return 0;
     }
 
     /**
-     * Pretty print para arrays tipo:
+     * Pretty print for arrays like:
      * [
      *   'default_color' => 'beartropy',
      *   'colors' => [

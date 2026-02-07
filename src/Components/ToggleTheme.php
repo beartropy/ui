@@ -67,7 +67,6 @@ class ToggleTheme extends BeartropyComponent
         public ?string $borderColorDark = null,
         public ?string $iconLight = null,
         public ?string $iconDark = null,
-        // NEW
         public ?string $label = null,
         public string $labelPosition = 'right', // left | right
         public ?string $labelClass = null,
@@ -80,9 +79,8 @@ class ToggleTheme extends BeartropyComponent
      * @param array $__data Blade data attributes.
      * @return object View data object.
      */
-    public function getViewData(array $__data = [])
+    public function getViewData(array $__data = []): object
     {
-        // Tamaños
         $sizes = [
             'xs' => 'w-2 h-2',
             'sm' => 'w-3 h-3',
@@ -133,7 +131,7 @@ class ToggleTheme extends BeartropyComponent
             ?? ($this->inheritColor
                 ? "text-inherit"
                 : "text-sm text-gray-700 dark:text-gray-200");
-        // Para accesibilidad: si no hay label visible y estamos en modo icon, usar ariaLabel
+        // For accessibility: use ariaLabel when there is no visible label in icon mode
         $ariaLabel = $this->ariaLabel ?? ($hasLabel ? $this->label : 'Toggle theme');
 
         return (object)[
@@ -165,7 +163,7 @@ class ToggleTheme extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::toggle-theme');
     }

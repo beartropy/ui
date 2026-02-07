@@ -1,6 +1,6 @@
 @php
     [$colorPreset, $sizePreset, $shouldFill] = $getComponentPresets('input');
-    $disabled = $attributes->get('disabled');
+    $disabled = $disabled ?? false;
     $inputId = $attributes->get('id') ?? 'input-trigger-' . uniqid();
 
     $borderClass = $hasError
@@ -12,42 +12,43 @@
 
 @endphp
 
-<div class="flex flex-col {{ $disabled ? $colorPreset['disabled'] : '' }}">
+<div class="flex flex-col">
 
     <div
         {{ $attributes->merge(['tabindex' => 0])->class([
-            'flex items-center w-full group transition-all shadow-sm rounded-md outline-none bt-trigger-base',
-            $shouldFill ? $colorPreset['bg'] : '',
+            'flex items-center w-full group transition-all shadow-sm rounded-lg outline-none overflow-hidden bt-trigger-base',
+            $shouldFill ? $colorPreset['bg'] : 'bg-white dark:bg-gray-900',
             $borderClass,
             $ringClass,
-            $colorPreset['disabled_bg'] ?? '',
             $disabled ? 'opacity-60 cursor-not-allowed' : '',
-            $sizePreset['px'] ?? '',
             $sizePreset['height'] ?? '',
             'min-w-0',
         ]) }}
+        @if($disabled) aria-disabled="true" @endif
     >
 
         {{-- Start slot --}}
         @if (trim($start ?? ''))
-            <div class="flex items-center space-x-2 pr-2 min-w-0">
+            <div class="flex shrink-0 self-stretch beartropy-inputbase-start-slot">
                 {{ $start }}
             </div>
         @endif
 
-        {{-- Botón trigger --}}
+        {{-- Trigger button --}}
         @if (trim($button ?? ''))
-            {{ $button }}
+            <div class="flex-1 flex items-center {{ $sizePreset['px'] ?? '' }} min-w-0">
+                {{ $button }}
+            </div>
         @endif
 
         {{-- End slot --}}
         @if (trim($end ?? ''))
-            <div class="flex items-center pl-2 min-w-0">
+            <div class="flex shrink-0 self-stretch beartropy-inputbase-end-slot">
                 {{ $end }}
             </div>
         @endif
     </div>
-    {{-- DROPDOWN SLOT: siempre después del trigger --}}
+    {{-- Dropdown slot: always after the trigger --}}
     @if (trim($dropdown ?? ''))
         <div class="relative">
             {{ $dropdown }}

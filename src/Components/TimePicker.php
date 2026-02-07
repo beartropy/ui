@@ -38,7 +38,6 @@ class TimePicker extends BeartropyComponent
      * @param string|null $customError Custom error.
      * @param string      $format      Format.
      * @param int         $interval    Interval.
-     * @param int         $interval    Interval.
      * @param bool        $clearable   Clearable.
      *
      * ## Blade Props
@@ -62,19 +61,19 @@ class TimePicker extends BeartropyComponent
      * @property bool $xl Extra Large.
      */
     public function __construct(
-        public $name = null,
-        public $label = null,
-        public $value = null,
-        public $min = null,
-        public $max = null,
-        public $disabled = false,
-        public $readonly = false,
-        public $placeholder = null,
-        public $hint = null,
-        public $customError = null,
-        public $format = 'H:i',
-        public $interval = 1,
-        public $clearable = true,
+        public ?string $name = null,
+        public ?string $label = null,
+        public mixed $value = null,
+        public ?string $min = null,
+        public ?string $max = null,
+        public bool $disabled = false,
+        public bool $readonly = false,
+        public ?string $placeholder = null,
+        public ?string $hint = null,
+        public ?string $customError = null,
+        public string $format = 'H:i',
+        public int $interval = 1,
+        public bool $clearable = true,
     ) {}
 
     /**
@@ -82,7 +81,7 @@ class TimePicker extends BeartropyComponent
      *
      * @return \Illuminate\View\View|\Closure|string
      */
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('beartropy-ui::time-picker');
     }
