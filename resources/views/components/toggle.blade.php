@@ -1,13 +1,9 @@
 @php
-    // ⬇️ NUEVO: props de autosave con defaults
-    $autosave = $autosave ?? false; // bool
-    $autosaveMethod = $autosaveMethod ?? 'savePreference'; // string
-    $autosaveKey = $autosaveKey ?? ($wireModelValue ?? null); // string|null
-    $autosaveDebounce = $autosaveDebounce ?? 300; // int ms
-
     [$colorPreset, $sizePreset] = $getComponentPresets('toggle');
     [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
     [$hasWireModel, $wireModelValue] = $getWireModelState();
+
+    $autosaveKey = $autosaveKey ?? ($wireModelValue ?? null);
 
     $labelClass = $hasError ? $colorPreset['label_error'] ?? $colorPreset['label'] : $colorPreset['label'];
 
@@ -79,7 +75,7 @@
             }, this.debounceMs);
         }
     }">
-    {{-- Contenido original del toggle --}}
+    {{-- Toggle content --}}
     <div class="flex items-center justify-center gap-3">
         <div class="{{ $layoutClasses }} min-h-full justify-center">
             @if ($labelPosition === 'top' && (trim($slot) || $label))
@@ -107,7 +103,7 @@
 
                 <div class="relative">
                     <input class="peer sr-only" id="{{ $inputId }}" type="checkbox"
-                        {{ $disabled === true ? 'disabled' : '' }} {{ $attributes->merge(['id' => $inputId]) }}
+                        {{ $disabled ? 'disabled' : '' }} {{ $attributes->merge(['id' => $inputId]) }}
                         x-model="checked" @change="triggerAutosave()">
                     <span class="{{ $trackClass }}"></span>
                     <span
@@ -142,7 +138,7 @@
             @endif
         </div>
 
-        {{-- Indicadores --}}
+        {{-- Autosave indicators --}}
         @if ($autosave)
             <div class="min-w-6 flex items-center justify-end">
                 <svg x-show="saving" class="w-4 h-4 animate-spin text-gray-400" viewBox="0 0 24 24" fill="none">
@@ -163,5 +159,5 @@
         @endif
     </div>
 
-    <x-beartropy-ui::support.field-help :error-message="$finalError" :hint="$hint" />
+    <x-beartropy-ui::support.field-help :error-message="$finalError" :hint="$help ?? $hint" />
 </div>

@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\View;
 
 beforeEach(function () {
     $this->app->register(\Beartropy\Ui\BeartropyUiServiceProvider::class);
@@ -81,15 +80,29 @@ it('can render unchecked by default', function () {
 });
 
 it('shows validation errors with custom-error', function () {
-    $html = Blade::render('<x-bt-toggle name="test_toggle" custom-error="This field is required" />');
-    
+    $html = Blade::render('<x-bt-toggle name="test_toggle" :custom-error="\'This field is required\'" />');
+
     expect($html)->toContain('This field is required');
+    expect($html)->toContain('text-red-500');
 });
 
 it('can render with hint text', function () {
     $html = Blade::render('<x-bt-toggle name="test_toggle" hint="Toggle to enable feature" />');
     
     expect($html)->toContain('Toggle to enable feature');
+});
+
+it('can render with help text', function () {
+    $html = Blade::render('<x-bt-toggle name="test_toggle" help="Help text here" />');
+
+    expect($html)->toContain('Help text here');
+});
+
+it('help takes precedence over hint', function () {
+    $html = Blade::render('<x-bt-toggle name="test_toggle" help="Help wins" hint="Hint loses" />');
+
+    expect($html)->toContain('Help wins');
+    expect($html)->not->toContain('Hint loses');
 });
 
 it('renders checkbox as sr-only', function () {
@@ -178,9 +191,9 @@ it('has Alpine.js reactive checked state', function () {
 it('has autosave state variables', function () {
     $html = Blade::render('<x-bt-toggle name="test_toggle" :autosave="true" wire:model="setting" />');
     
-    expect($html)->toContain('saving:false');
-    expect($html)->toContain('saved:false');
-    expect($html)->toContain('error:false');
+    expect($html)->toContain('saving: false');
+    expect($html)->toContain('saved: false');
+    expect($html)->toContain('error: false');
 });
 
 it('renders with transition classes', function () {
@@ -238,8 +251,8 @@ it('can render with different colors', function () {
     $htmlPrimary = Blade::render('<x-bt-toggle name="test_toggle" color="primary" />');
     expect($htmlPrimary)->toContain('type="checkbox"');
     
-    $htmlSecondary = Blade::render('<x-bt-toggle name="test_toggle" color="secondary" />');
-    expect($htmlSecondary)->toContain('type="checkbox"');
+    $htmlBlue = Blade::render('<x-bt-toggle name="test_toggle" color="blue" />');
+    expect($htmlBlue)->toContain('type="checkbox"');
 });
 
 it('renders autosave border states', function () {
