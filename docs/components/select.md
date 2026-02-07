@@ -352,6 +352,23 @@ With `fit-trigger="true"` (default), the dropdown width matches the trigger exac
 ],
 ```
 
+## Keyboard Navigation
+
+The Select component supports full keyboard navigation:
+
+| Key | Dropdown Closed | Dropdown Open |
+|-----|----------------|---------------|
+| Arrow Down | Open dropdown | Move highlight down |
+| Arrow Up | Open dropdown | Move highlight up |
+| Enter | Open dropdown | Select highlighted option |
+| Space | Open dropdown | Type in search (if searchable) |
+| Escape | — | Close dropdown |
+| Tab | Normal tab behavior | Normal tab behavior |
+
+Navigation wraps circularly (last → first, first → last). The highlighted option scrolls into view automatically. Mouse hover syncs with keyboard highlight.
+
+The trigger is focusable via Tab (`tabindex="0"`). When `searchable` is enabled, focus moves to the search input on open. ARIA attributes (`role="listbox"`, `role="option"`, `aria-selected`) are included for screen reader support.
+
 ## Dark Mode
 
 All colors include dark mode styles automatically. Dropdown backgrounds use `bg-white dark:bg-gray-900/95`, text and hover states adapt for dark themes.

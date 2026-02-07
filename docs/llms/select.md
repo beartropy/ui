@@ -289,6 +289,35 @@ The `Option` component (`x-bt-option`) is a data-only child of Select. It extend
 ],
 ```
 
+## Keyboard Navigation
+
+Full keyboard support via Alpine event handlers on the wrapper `<div>`:
+
+### Alpine State & Methods (in `select.js`)
+- `highlightedIndex: -1` — tracks currently highlighted option index (-1 = none)
+- `move(delta)` — circular navigation through `filteredOptions()` using modulo wrapping; calls `scrollHighlightedIntoView()`
+- `selectHighlighted()` — calls `setValue()` with the highlighted option's ID
+- `scrollHighlightedIntoView()` — finds the `<li>` via `[data-select-index="N"]` inside the list `<ul>` and calls `scrollIntoView({ block: 'nearest' })`
+
+### Reset Behavior
+- `toggle()` on open → resets `highlightedIndex` to `0` (or `-1` if empty)
+- `close()` → resets to `-1`
+- `search` watcher → resets to `0` when search changes (filtered list changes)
+
+### Keyboard Bindings (on wrapper div)
+- Arrow Down/Up: open dropdown or move highlight
+- Enter: select highlighted option (open) or toggle (closed)
+- Escape: close dropdown
+- Space: toggle open (only when not focused on an `<input>`, so typing in search still works)
+
+### ARIA
+- `<ul>`: `role="listbox"`
+- `<li>`: `role="option"`, `:aria-selected="isSelected(id)"`
+
+### Highlight Styling
+- Options use `:class` binding: `bg-neutral-100 dark:bg-neutral-800` when `idx === highlightedIndex`
+- Mouse hover syncs via `@mouseenter="highlightedIndex = idx"` on each `<li>`
+
 ## Key Notes
 - Alpine JS logic lives in `resources/js/modules/select.js`, not inline in the Blade template; Blade passes a config object with server-side values (`hasWireModel`, `name`, `selectId`, `defer`), and the JS module handles all runtime branching
 - `searchable` and `clearable` default `true` but are auto-disabled when options are empty (and not remote)

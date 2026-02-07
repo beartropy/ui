@@ -67,7 +67,11 @@
     })"
     class="flex flex-col w-full {{ $wrapperClass }}"
     wire:key="{{ $selectId }}"
-
+    @keydown.arrow-down.prevent="if(!open) { toggle() } else { move(1) }"
+    @keydown.arrow-up.prevent="if(!open) { toggle() } else { move(-1) }"
+    @keydown.enter.prevent="if(open && highlightedIndex >= 0) { selectHighlighted() } else if(!open) { toggle() }"
+    @keydown.escape.prevent="close()"
+    @keydown.space="if(!open && !$event.target.matches('input')) { $event.preventDefault(); toggle() }"
 >
     @if($label)
         <label for="{{ $selectId }}" class="{{ $labelClass }}">{{ $label }}</label>
@@ -95,6 +99,7 @@
         <x-slot name="button">
             <div
                 @click="toggle()"
+                tabindex="0"
                 class="relative flex flex-wrap items-center gap-1 min-h-[1.6em] cursor-pointer w-full pr-2 md:pr-3 {{ $colorDropdown['option_text'] ?? '' }}"
             >
                 {{-- MULTI SELECT: truncated chips --}}
@@ -274,6 +279,7 @@
                 {{-- Options list --}}
                 <ul
                     id="{{ $selectId }}-list"
+                    role="listbox"
                     class="overflow-y-auto max-h-60 divide-y divide-gray-100 dark:divide-gray-800 beartropy-thin-scrollbar"
                     @scroll="if($event.target.scrollTop + $event.target.clientHeight >= $event.target.scrollHeight - 10 && hasMore && !loading) { page++; fetchOptions(); }"
                 >
@@ -283,15 +289,23 @@
                         </div>
                     @endif
                     <template
-                        x-for="[id, option] in filteredOptions()"
+                        x-for="([id, option], idx) in filteredOptions()"
                         :key="id"
                     >
-                        <li>
+                        <li
+                            role="option"
+                            :aria-selected="isSelected(id)"
+                            :data-select-index="idx"
+                            @mouseenter="highlightedIndex = idx"
+                        >
                             <button
                                 type="button"
                                 @click="setValue(id)"
                                 class="w-full text-left px-4 py-2 flex items-center gap-2 {{ $colorDropdown['option_text'] ?? '' }} {{ $colorDropdown['option_hover'] ?? '' }}"
-                                :class="isSelected(id) ? '{{ $colorDropdown['option_active'] ?? '' }} {{ $colorDropdown['option_selected'] ?? '' }}' : ''"
+                                :class="{
+                                    '{{ $colorDropdown['option_active'] ?? '' }} {{ $colorDropdown['option_selected'] ?? '' }}': isSelected(id),
+                                    'bg-neutral-100 dark:bg-neutral-800': idx === highlightedIndex,
+                                }"
                             >
                                 <div class="flex flex-col items-start w-full">
                                     <div class="flex items-center gap-2">

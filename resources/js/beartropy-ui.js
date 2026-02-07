@@ -1095,6 +1095,7 @@
       open: false,
       options: cfg.options,
       search: "",
+      highlightedIndex: -1,
       isMulti: cfg.isMulti,
       maxChips: 3,
       perPage: cfg.perPage,
@@ -1133,6 +1134,7 @@
         }
         this.$watch("search", () => {
           this.page = 1;
+          this.highlightedIndex = 0;
           this.fetchOptions(true);
         });
         this.$watch("open", (v) => {
@@ -1144,6 +1146,7 @@
       toggle() {
         this.open = !this.open;
         if (this.open) {
+          this.highlightedIndex = this.filteredOptions().length ? 0 : -1;
           this.focusSearch();
           if (this.remoteUrl && !this.initDone) {
             this.page = 1;
@@ -1156,6 +1159,33 @@
       },
       close() {
         this.open = false;
+        this.highlightedIndex = -1;
+      },
+      move(delta) {
+        if (!this.open || !this.filteredOptions().length) {
+          return;
+        }
+        const n = this.filteredOptions().length;
+        this.highlightedIndex = (this.highlightedIndex + delta + n) % n;
+        this.scrollHighlightedIntoView();
+      },
+      selectHighlighted() {
+        const entries = this.filteredOptions();
+        if (this.highlightedIndex >= 0 && this.highlightedIndex < entries.length) {
+          this.setValue(entries[this.highlightedIndex][0]);
+        }
+      },
+      scrollHighlightedIntoView() {
+        this.$nextTick(() => {
+          const list = document.getElementById(this._cfg.selectId + "-list");
+          if (!list) {
+            return;
+          }
+          const el = list.querySelector('[data-select-index="' + this.highlightedIndex + '"]');
+          if (el) {
+            el.scrollIntoView({ block: "nearest" });
+          }
+        });
       },
       triggerAutosave() {
         if (!this.autosave || !this.autosaveMethod || !this.autosaveKey) {
@@ -1288,7 +1318,7 @@
       focusSearch() {
         this.$nextTick(() => {
           requestAnimationFrame(() => {
-            let el = this.$refs.searchInput;
+            let el = document.getElementById(this._cfg.selectId + "-search");
             if (!el && this.$refs.searchHost) {
               el = this.$refs.searchHost.querySelector("[data-beartropy-input]");
             }
@@ -1301,8 +1331,32 @@
                 el.select?.();
               } catch (_) {
               }
+              this._bindSearchKeyboard(el);
             }
           });
+        });
+      },
+      _bindSearchKeyboard(el) {
+        if (el._beartropyKeyBound) {
+          return;
+        }
+        el._beartropyKeyBound = true;
+        el.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            this.move(1);
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            this.move(-1);
+          } else if (e.key === "Enter") {
+            e.preventDefault();
+            if (this.highlightedIndex >= 0) {
+              this.selectHighlighted();
+            }
+          } else if (e.key === "Escape") {
+            e.preventDefault();
+            this.close();
+          }
         });
       }
     };
