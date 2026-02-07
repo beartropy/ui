@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\View;
 
 beforeEach(function () {
     $this->app->register(\Beartropy\Ui\BeartropyUiServiceProvider::class);
@@ -80,15 +79,36 @@ it('can render with disabled state', function () {
 });
 
 it('shows validation errors with custom-error', function () {
-    $html = Blade::render('<x-bt-file-input name="test_file" custom-error="File is required" />');
-    
+    $html = Blade::render('<x-bt-file-input name="test_file" :custom-error="\'File is required\'" />');
+
     expect($html)->toContain('File is required');
+    expect($html)->toContain('text-red-500');
 });
 
 it('can render with hint text', function () {
     $html = Blade::render('<x-bt-file-input name="test_file" hint="Maximum file size: 10MB" />');
     
     expect($html)->toContain('Maximum file size: 10MB');
+});
+
+it('can render with help text', function () {
+    $html = Blade::render('<x-bt-file-input name="test_file" help="Max 10MB per file" />');
+
+    expect($html)->toContain('Max 10MB per file');
+});
+
+it('help takes precedence over hint', function () {
+    $html = Blade::render('<x-bt-file-input name="test_file" help="Help wins" hint="Hint loses" />');
+
+    expect($html)->toContain('Help wins');
+    expect($html)->not->toContain('Hint loses');
+});
+
+it('x-effect resets uploading when server reports error', function () {
+    $html = Blade::render('<x-bt-file-input name="test_file" :custom-error="\'Error\'" wire:model="file" />');
+
+    expect($html)->toContain('uploading = false');
+    expect($html)->toContain('validationErrors = true');
 });
 
 it('renders file input as sr-only', function () {
@@ -179,7 +199,7 @@ it('renders success icon after upload', function () {
 });
 
 it('renders error icon on validation error', function () {
-    $html = Blade::render('<x-bt-file-input name="test_file" custom-error="Invalid file" />');
+    $html = Blade::render('<x-bt-file-input name="test_file" :custom-error="\'Invalid file\'" />');
 
     expect($html)->toContain('Validation error');
 });

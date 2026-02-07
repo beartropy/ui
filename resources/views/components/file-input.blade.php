@@ -1,45 +1,13 @@
 @php
     [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('input');
-    [$colorDropdown, $sizeDropdown] = $getComponentPresets('select');
     [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
     [$hasWireModel, $wireModelValue] = $getWireModelState();
 
-    $isDisabled = $disabled;
-
     $inputId = $attributes->get('id') ?? 'input-file-' . uniqid();
-
-    $wrapperClass = $attributes->get('class') ?? '';
-
-    $label = $label ?? null;
     $placeholder = $placeholder ?? __('beartropy-ui::ui.choose_file');
     $labelClass = $hasError ? ($colorPreset['label_error'] ?? $colorPreset['label']) : $colorPreset['label'];
 
-    $loadingTargetsOverride = null;
-    if($attributes->get('wire:target')) {
-        $wireLoadingTargetsCsv = $attributes->get('wire:target');
-    } else {
-        $wireActionTargets = collect($attributes->getAttributes())
-            ->filter(fn ($v, $k) => Str::startsWith($k, 'wire:'))
-            ->map(function ($v) {
-                if (is_string($v)) return $v;
-                if (is_array($v)) return head($v);
-                return null;
-            })
-            ->filter()
-            ->unique()
-            ->values();
-
-        $wireLoadingTargets = $loadingTargetsOverride
-            ? collect(is_array($loadingTargetsOverride) ? $loadingTargetsOverride : explode(',', (string) $loadingTargetsOverride))
-                ->map(fn($s) => trim($s))
-                ->filter()
-                ->unique()
-                ->values()
-            : $wireActionTargets;
-
-        $wireLoadingTargetsCsv = $wireLoadingTargets->implode(',');
-    }
-
+    $wrapperClass = $attributes->get('class') ?? '';
 @endphp
 
 <div
@@ -74,7 +42,7 @@
         },
 
         openPicker(){
-            if(!@json($isDisabled)) {
+            if(!@json($disabled)) {
                 this.$refs.fileInput.click();
             }
         },
@@ -103,7 +71,12 @@
             }
         @endif
     "
-    x-effect="validationErrors = {{ $hasError ? 'true' : 'false' }}"
+    x-effect="
+        if ({{ $hasError ? 'true' : 'false' }}) {
+            validationErrors = true;
+            uploading = false;
+        }
+    "
 
     class="flex flex-col w-full {{ $wrapperClass }}"
 >
@@ -122,24 +95,24 @@
         {{ $attributes->whereStartsWith('wire:model') }}
         class="sr-only"
         x-on:change="onChange($event)"
-        @disabled($isDisabled)
+        @disabled($disabled)
     />
 
-    {{-- TRIGGER BASE --}}
+    {{-- Trigger base --}}
     <x-beartropy-ui::base.input-trigger-base
         id="{{ $inputId }}-trigger"
         color="{{ $presetNames['color'] }}"
         size="{{ $presetNames['size'] }}"
-        custom-error="{{ $customError }}"
-        hint="{{ $hint }}"
-        has-error="{{ $hasError }}"
+        :has-error="$hasError"
         :fill="$attributes->has('fill') || $shouldFill"
         :outline="$attributes->has('outline')"
-        :disabled="$isDisabled"
-        {{ $attributes->whereDoesntStartWith(['wire:model', 'id', 'name', 'accept', 'multiple', 'disabled']) }}
+        :disabled="$disabled"
+        {{ $attributes->whereDoesntStartWith(['wire:model', 'id', 'name', 'accept', 'multiple', 'disabled', 'class', 'style']) }}
     >
         <x-slot name="start">
-            <x-beartropy-ui::icon name="paper-clip" class="w-4 h-4 opacity-70 shrink-0 text-gray-700 dark:text-gray-300" />
+            <span class="flex items-center px-2 {{ $colorPreset['text'] ?? '' }}">
+                <x-beartropy-ui::icon name="paper-clip" class="w-4 h-4 opacity-70 shrink-0" />
+            </span>
         </x-slot>
 
         <x-slot name="button">
@@ -216,6 +189,6 @@
     </x-beartropy-ui::base.input-trigger-base>
     <x-beartropy-ui::support.field-help
         :error-message="$finalError"
-        :hint="$help ?? $hint ?? null"
+        :hint="$help ?? $hint"
     />
 </div>
