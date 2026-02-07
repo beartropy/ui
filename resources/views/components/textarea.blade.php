@@ -1,27 +1,27 @@
 @php
-    [$colorPreset, $sizePreset] = $getComponentPresets('textarea');
+    [$colorPreset] = $getComponentPresets('textarea');
     [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
     [$hasWireModel, $wireModelValue] = $getWireModelState();
-    $borderClass = $hasError ? ($colorPreset['border_error'] ?? $colorPreset['border_default']) : $colorPreset['border_default'];
-    $labelClass = $hasError ? ($colorPreset['label_error'] ?? $colorPreset['label']) : $colorPreset['label'];
 
     $id = $id ?? $name ?? uniqid('textarea-');
     $name = $name ?? $id;
 
+    $resizeMap = ['none' => 'resize-none', 'x' => 'resize-x', 'y' => 'resize-y', 'both' => 'resize'];
     $resizeClass = $resize
-
-        ? 'resize-' . $resize
+        ? ($resizeMap[$resize] ?? 'resize-none')
         : ($autoResize ? 'resize-none' : 'resize-y');
+
+    $labelClass = $hasError ? ($colorPreset['label_error'] ?? $colorPreset['label']) : $colorPreset['label'];
 
     $value = old($name, $slot);
     $countBlade = is_string($value) ? mb_strlen($value) : 0;
 @endphp
 
-<div class="mb-4">
+<div>
     @if($label)
         <label
             for="{{ $id }}"
-            class="{{ $colorPreset['label'] }} {{ $hasError ? $colorPreset['label_error'] : '' }}"
+            class="{{ $labelClass }}"
         >
             {{ $label }} @if($required)<span class="text-red-500">*</span>@endif
         </label>
@@ -30,16 +30,15 @@
     <div
         class="{{ $colorPreset['main'] }} {{ $hasError ? $colorPreset['border_error'] : $colorPreset['border_default'] }} min-h-[2.5rem] relative"
         x-data="{
-            count: $refs.textarea?.value?.length || 0,
+            count: 0,
             copySuccess: false,
-            update() { this.count = $refs.textarea?.value?.length || 0; },
             copy() {
                 navigator.clipboard.writeText($refs.textarea.value);
                 this.copySuccess = true;
                 setTimeout(() => this.copySuccess = false, 1600);
             }
         }"
-        x-init="update(); setInterval(() => update(), 100);"
+        x-init="count = $refs.textarea?.value?.length || 0"
     >
         {{-- Copy button (top right) --}}
         @if($showCopyButton)
@@ -82,7 +81,7 @@
                     $el.style.height = 'auto';
                     $el.style.height = $el.scrollHeight + 'px';
                     count = $el.value.length"
-            @elseif($showCounter || $showCopyButton)
+            @elseif($showCounter)
                 x-on:input="count = $el.value.length"
             @endif
         >{{ old($name, $slot) }}</textarea>
@@ -100,6 +99,6 @@
 
     <x-beartropy-ui::support.field-help
         :error-message="$finalError"
-        :hint="$help ?? $hint ?? null"
+        :hint="$help ?? $hint"
     />
 </div>

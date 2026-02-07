@@ -12,7 +12,6 @@ beforeEach(function () {
     Blade::component(\Beartropy\Ui\Components\Base\CheckboxBase::class, 'bt-checkbox-base');
     Blade::component(\Beartropy\Ui\Components\Base\InputBase::class, 'bt-input-base');
     Blade::component(\Beartropy\Ui\Components\Base\SelectBase::class, 'bt-select-base');
-    Blade::component(\Beartropy\Ui\Components\Base\TextareaBase::class, 'bt-textarea-base');
 });
 
 it('can render badge base', function () {
@@ -39,6 +38,3 @@ it('can render select base', function () {
     $html = Blade::render('<x-bt-select-base />');
     expect($html)->toContain('select');
 });
-
-// TextareaBase view is missing, skipping test
-// it('can render textarea base', function () { ... });
