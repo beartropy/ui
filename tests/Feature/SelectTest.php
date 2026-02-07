@@ -153,7 +153,6 @@ it('can render with autosave enabled', function () {
 
     expect($html)->toContain('autosave: true');
     expect($html)->toContain('autosaveKey: \'user_preference\'');
-    expect($html)->toContain('triggerAutosave()');
 });
 
 it('can render with custom autosave method', function () {
@@ -309,15 +308,14 @@ it('eager-fetches remote options in x-init by default', function () {
     $html = Blade::render('<x-bt-select name="test" :remote="true" remote-url="/api/opts" />');
 
     expect($html)->toContain("remoteUrl: '/api/opts'");
-    expect($html)->toMatch('/if\s*\(\s*remoteUrl\s*\)\s*\{/');
+    expect($html)->toContain('defer: false');
 });
 
 it('skips eager fetch in x-init when defer is true', function () {
     $html = Blade::render('<x-bt-select name="test" :remote="true" :defer="true" remote-url="/api/opts" />');
 
     expect($html)->toContain("remoteUrl: '/api/opts'");
-    expect($html)->toContain('initDone: false');
-    expect($html)->not->toMatch('/if\s*\(\s*remoteUrl\s*\)\s*\{[^}]*fetchOptions/');
+    expect($html)->toContain('defer: true');
 });
 
 it('sets defer property on component', function () {

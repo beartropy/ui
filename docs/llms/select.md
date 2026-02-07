@@ -13,6 +13,8 @@
 - Sizes: global `resources/views/presets/sizes.php`
 - CSS: `resources/css/beartropy-ui.css` (slot chrome stripping, state borders, scrollbar)
 - Field help: uses `support/field-help.blade.php` for error and help text below field
+- **Alpine JS**: `resources/js/modules/select.js` exports `beartropySelect(cfg)`, registered as `Alpine.data('beartropySelect')` and `window.$beartropy.beartropySelect` in `resources/js/index.js`
+- Blade passes a config object to `$beartropy.beartropySelect({...})` containing all server-side values; JS handles all runtime logic including `init()`, watchers, and Livewire/vanilla branching
 
 ## Props (constructor)
 
@@ -71,6 +73,38 @@ Note: `options`, `selected`, `initialValue`, `customError`, `size`, `color`, `la
 | afterOptions | Content at the bottom when no results; replaces "No results" message |
 | dropdown | Full dropdown override (rarely used) |
 
+## Alpine JS Module (`resources/js/modules/select.js`)
+
+The `beartropySelect(cfg)` function receives a config object from Blade and returns an Alpine data object. Blade-dependent values are accessed via `this._cfg.*` for runtime branching.
+
+### Config object passed from Blade
+
+```js
+{
+    value,           // Initial value: $wire.get() for Livewire, static for vanilla
+    options,         // Normalized options object from PHP
+    isMulti,         // bool
+    perPage,         // int
+    remoteUrl,       // string
+    autosave,        // bool
+    autosaveMethod,  // string
+    autosaveKey,     // string
+    autosaveDebounce,// int
+    hasFieldError,   // bool
+    showSpinner,     // bool
+    hasWireModel,    // bool — drives syncInput() branching
+    name,            // string — wire:model name or input name
+    selectId,        // string — unique DOM ID
+    defer,           // bool — controls eager fetch in init()
+}
+```
+
+### Key methods
+- `init()` — Alpine lifecycle hook: sets up `$wire` watchers (if Livewire), casts multi values to strings, triggers eager fetch (if `!defer && remoteUrl`), watches `search` and `open`
+- `syncInput()` — branches on `this._cfg.hasWireModel`: Livewire path calls `$wire.set()` + `triggerAutosave()`; vanilla path creates hidden `<input>` elements in `$refs.multiInputs`
+- `_fillIfNeeded()` — uses `this._cfg.selectId` to find the list element by ID
+- `triggerAutosave()` — calls `this.$wire.call(method, value, key)`
+
 ## Options Normalization
 
 The constructor calls `normalizeOptions()` which handles:
@@ -94,8 +128,8 @@ Icons are pre-rendered at construct time: Heroicon names → rendered SVG, emoji
 
 ## Binding Mode Detection
 
-1. **Livewire**: `wire:model` → value synced via `$wire.get()` / `$wire.set()`
-2. **Vanilla**: no wire:model → hidden inputs generated dynamically via JS for form submission
+1. **Livewire**: `wire:model` → `_cfg.hasWireModel=true` → value synced via `$wire.get()` / `$wire.set()` in JS module
+2. **Vanilla**: no wire:model → `_cfg.hasWireModel=false` → hidden inputs generated dynamically via `syncInput()` into `$refs.multiInputs`
 
 ## Empty State Behavior
 
@@ -153,9 +187,9 @@ Control page size with `:per-page`.
 
 ### Deferred Fetch
 
-Default (`defer=false`): remote selects fetch immediately on mount via `x-init`.
+Default (`defer=false`): remote selects fetch immediately via `init()` in the JS module.
 
-With `defer=true`: the `x-init` eager fetch is skipped. On first `toggle()`, the `!initDone` guard triggers `fetchOptions()`. Subsequent opens skip the fetch since `initDone=true`. Search and pagination work normally after initial fetch.
+With `defer=true`: the `init()` eager fetch is skipped. On first `toggle()`, the `!initDone` guard triggers `fetchOptions()`. Subsequent opens skip the fetch since `initDone=true`. Search and pagination work normally after initial fetch.
 
 ```blade
 <x-bt-select :remote="true" :defer="true" remote-url="/api/users" />
@@ -256,6 +290,7 @@ The `Option` component (`x-bt-option`) is a data-only child of Select. It extend
 ```
 
 ## Key Notes
+- Alpine JS logic lives in `resources/js/modules/select.js`, not inline in the Blade template; Blade passes a config object with server-side values (`hasWireModel`, `name`, `selectId`, `defer`), and the JS module handles all runtime branching
 - `searchable` and `clearable` default `true` but are auto-disabled when options are empty (and not remote)
 - `primary` color = neutral gray dropdown + beartropy accents on selected/active states
 - `help` and `hint` are aliases — both show text below the field via `field-help`; `help` takes precedence
@@ -264,7 +299,7 @@ The `Option` component (`x-bt-option`) is a data-only child of Select. It extend
 - Multiple mode shows max 3 chips + `+N` badge; single mode shows label with optional icon/avatar
 - The end slot uses flex layout (not absolute positioning) — works correctly inside Input slot integration
 - The dropdown uses `DropdownBase` with teleport enabled by default
-- `defer` only affects remote selects — defers the initial `fetchOptions()` from mount to first dropdown open via `toggle()`
+- `defer` only affects remote selects — defers the initial `fetchOptions()` from `init()` to first dropdown open via `toggle()`
 - Remote selects have built-in infinite scroll — control page size with `per-page`
 - Icons are rendered with `x-html` (not `x-text`) since they may contain pre-rendered SVG HTML
 - `fitTrigger` controls dropdown width: `true` = `width` matches trigger exactly, `false` = `min-width` only (dropdown can grow). Passed to `DropdownBase` as `fit-anchor`

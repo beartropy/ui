@@ -48,223 +48,23 @@
 
 @endphp
 <div
-    x-data="{
-        @if($hasWireModel)
-            value: $wire.get('{{ $name }}'),
-        @else
-            value: {{ $isMulti ? (json_encode($parsedInitial)) : ("'$parsedInitial'") }},
-        @endif
-        open: false,
-        toggle() {
-            this.open = !this.open;
-            if (this.open) {
-                this.focusSearch();
-                if (this.remoteUrl && !this.initDone) {
-                    this.page = 1;
-                    this.fetchOptions(true);
-                    this.initDone = true;
-                } else if (this.remoteUrl && this.hasMore) {
-                    this._fillIfNeeded();
-                }
-            }
-        },
-        close() { this.open = false; },
+    x-data="$beartropy.beartropySelect({
+        value: @if($hasWireModel) $wire.get('{{ $name }}') @else {{ $isMulti ? json_encode($parsedInitial) : "'" . $parsedInitial . "'" }} @endif,
         options: @js($options),
-        search: '',
         isMulti: {{ $isMulti ? 'true' : 'false' }},
-        maxChips: 3,
         perPage: {{ $perPage }},
-        page: 1,
-        hasMore: false,
-        loading: false,
         remoteUrl: '{{ $remoteUrl }}',
-        initDone: false,
         autosave: {{ $autosave ? 'true' : 'false' }},
         autosaveMethod: '{{ $autosaveMethod }}',
         autosaveKey: '{{ $autosaveKey }}',
         autosaveDebounce: {{ $autosaveDebounce }},
-        saveState: 'idle', // idle | saving | ok | error
-        _saveT: null,
         hasFieldError: {{ $hasError ? 'true' : 'false' }},
         showSpinner: {{ isset($showSpinner) && $showSpinner ? 'true' : 'false' }},
-
-        triggerAutosave() {
-            if (!this.autosave || !this.autosaveMethod || !this.autosaveKey) return;
-
-            this.saveState = 'saving';
-
-            $wire.call(this.autosaveMethod, this.value, this.autosaveKey)
-                .then(() => {
-                    this.saveState = 'ok';
-                })
-                .catch(() => {
-                    this.saveState = 'error';
-                });
-        },
-
-        filteredOptions() {
-            // If remote: options are already filtered on backend
-            if (this.remoteUrl) {
-                return Object.entries(this.options);
-            }
-            const entries = Object.entries(this.options);
-            if (!this.search) return entries;
-            return entries.filter(([id, opt]) =>
-                (opt.label ?? opt ?? id).toLowerCase().includes(this.search.toLowerCase())
-            );
-        },
-        isSelected(id) {
-            if (this.isMulti) {
-                return Array.isArray(this.value)
-                    ? this.value.map(String).includes(String(id))
-                    : false;
-            }
-            return String(this.value) === String(id);
-        },
-        setValue(id) {
-            id = String(id);
-            if (this.isMulti) {
-                if (!Array.isArray(this.value)) this.value = [];
-                const valueStr = this.value.map(String);
-                if (valueStr.includes(id)) {
-                    this.value = valueStr.filter(v => v !== id);
-                } else {
-                    this.value = valueStr.concat([id]);
-                }
-                this.syncInput();
-            } else {
-                this.value = id;
-                this.syncInput();
-                this.close();
-            }
-        },
-        removeSelected(id) {
-            if (!this.value) return;
-            this.value = this.value.filter(v => v !== id);
-            this.syncInput();
-        },
-        syncInput() {
-            @if(!$hasWireModel)
-                this.$refs.multiInputs.innerHTML = '';
-                if (this.isMulti) {
-                    if (Array.isArray(this.value)) {
-                        this.value.forEach(val => {
-                            const input = document.createElement('input');
-                            input.type = 'hidden';
-                            input.name = '{{ $name }}[]';
-                            input.value = val;
-                            this.$refs.multiInputs.appendChild(input);
-                        });
-                    }
-                } else {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = '{{ $name }}';
-                    input.value = this.value ?? '';
-                    this.$refs.multiInputs.appendChild(input);
-                }
-            @endif
-
-            @if($hasWireModel)
-                $wire.set('{{ $name }}', this.value);
-                this.triggerAutosave();
-            @endif
-        },
-        visibleChips() {
-            return Array.isArray(this.value) ? this.value.slice(0, this.maxChips) : [];
-        },
-        hiddenCount() {
-            return Array.isArray(this.value) && this.value.length > this.maxChips
-                ? this.value.length - this.maxChips
-                : 0;
-        },
-        clearValue() {
-            if (this.isMulti) {
-                this.value = [];
-            } else {
-                this.value = '';
-            }
-            this.syncInput();
-        },
-        // === Remote/Lazy ===
-        fetchOptions(reset = false) {
-            if (!this.remoteUrl || this.loading) return;
-            this.loading = true;
-            let params = new URLSearchParams({
-                q: this.search,
-                page: this.page,
-                per_page: this.perPage,
-            }).toString();
-
-            fetch(`${this.remoteUrl}?${params}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (reset) {
-                        this.options = data.options || {};
-                    } else {
-                        this.options = Object.assign({}, this.options, data.options || {});
-                    }
-                    this.hasMore = data.hasMore;
-                    this.loading = false;
-                    this._fillIfNeeded();
-                });
-        },
-        // Auto-load more pages if the list isn't scrollable yet
-        _fillIfNeeded() {
-            if (!this.hasMore || this.loading || !this.open) return;
-            setTimeout(() => {
-                const el = document.getElementById('{{ $selectId }}-list');
-                if (el && el.scrollHeight <= el.clientHeight + 10) {
-                    this.page++;
-                    this.fetchOptions();
-                }
-            }, 50);
-        },
-        focusSearch() {
-        this.$nextTick(() => {
-            requestAnimationFrame(() => {
-            // 1) Direct via x-ref to the actual input
-            let el = this.$refs.searchInput;
-
-            // 2) Inside the search host
-            if (!el && this.$refs.searchHost) {
-                el = this.$refs.searchHost.querySelector('[data-beartropy-input]');
-            }
-
-            // 3) Fallback, but ALWAYS scoped to the current component
-            if (!el) {
-                el = this.$root.querySelector('[data-beartropy-input]');
-            }
-
-            if (el) {
-                el.focus({ preventScroll: true });
-                try { el.select?.(); } catch (_) {}
-            }
-            });
-        });
-        }
-
-    }"
-    x-init="
-        @if($hasWireModel)
-            if (isMulti) { $watch('$wire.{{ $name }}', v => { value = v; syncInput(); }); } else { $watch('$wire.{{ $name }}', v => value = v); }
-        @endif
-        if (isMulti && Array.isArray(value)) {
-            value = value.map(String);
-        }
-        @if(!$defer)
-        if (remoteUrl) {
-            fetchOptions(true);
-            initDone = true;
-        }
-        @endif
-        // Watch search changes
-        $watch('search', value => {
-            page = 1;
-            fetchOptions(true);
-        });
-        $watch('open', (v) => { if (v) focusSearch(); });
-    "
+        hasWireModel: {{ $hasWireModel ? 'true' : 'false' }},
+        name: '{{ $name }}',
+        selectId: '{{ $selectId }}',
+        defer: {{ $defer ? 'true' : 'false' }},
+    })"
     class="flex flex-col w-full {{ $wrapperClass }}"
     wire:key="{{ $selectId }}"
 

@@ -8,6 +8,7 @@ import { timepicker } from './modules/time-picker.js';
 import { tagInput } from './modules/tag-input.js';
 import { confirmHost } from './modules/confirm.js';
 import { btDialog } from './modules/bt-dialog.js';
+import { beartropySelect } from './modules/select.js';
 
 // Initialize global namespace
 window.$beartropy = window.$beartropy || {};
@@ -28,6 +29,7 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('tagInput', tagInput);
     Alpine.data('confirmHost', confirmHost);
     Alpine.data('btDialog', btDialog);
+    Alpine.data('beartropySelect', beartropySelect);
 
     // Keep global references for legacy/external usage if needed
     window.$beartropy.beartropyTable = beartropyTable;
@@ -36,4 +38,5 @@ document.addEventListener('alpine:init', () => {
     window.$beartropy.tagInput = tagInput;
     window.$beartropy.confirmHost = confirmHost;
     window.$beartropy.btDialog = btDialog;
+    window.$beartropy.beartropySelect = beartropySelect;
 });
