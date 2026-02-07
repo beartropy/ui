@@ -2,70 +2,58 @@
 
 namespace Beartropy\Ui\Components;
 
+use Illuminate\Contracts\View\View;
+
 /**
  * Radio component.
  *
- * Renders a radio button input, optionally with a label and error handling.
+ * Renders a radio button input with label, colors, sizes, and validation errors.
  *
- * @property string|null $labelPosition Label position (left, right).
- * @property string|null $size          Size preset.
- * @property string|null $color         Color preset.
- * @property string|null $label         Label text.
- * @property string|null $customError   Custom error message.
- * @property bool        $grouped       Whether it belongs to a group.
- * @property bool        $groupedError  Whether to show error for the group.
+ * @property bool $xs Extra Small size.
+ * @property bool $sm Small size.
+ * @property bool $md Medium size (default).
+ * @property bool $lg Large size.
+ * @property bool $xl Extra Large size.
+ * @property bool $primary   Primary color.
+ * @property bool $beartropy Beartropy color (default).
+ * @property bool $red       Red color.
+ * @property bool $blue      Blue color.
+ * @property bool $green     Green color.
+ * @property bool $yellow    Yellow color.
+ * @property bool $purple    Purple color.
+ * @property bool $pink      Pink color.
+ * @property bool $gray      Gray color.
+ * @property bool $orange    Orange color.
+ * @property bool $amber     Amber color.
+ * @property bool $lime      Lime color.
+ * @property bool $emerald   Emerald color.
+ * @property bool $teal      Teal color.
+ * @property bool $cyan      Cyan color.
+ * @property bool $sky       Sky color.
+ * @property bool $indigo    Indigo color.
+ * @property bool $violet    Violet color.
+ * @property bool $rose      Rose color.
+ * @property bool $fuchsia   Fuchsia color.
+ * @property bool $slate     Slate color.
+ * @property bool $stone     Stone color.
+ * @property bool $zinc      Zinc color.
+ * @property bool $neutral   Neutral color.
  */
 class Radio extends BeartropyComponent
 {
-    /**
-     * Create a new Radio component instance.
-     *
-     * @param string|null $labelPosition Label position.
-     * @param string|null $size          Size preset.
-     * @param string|null $color         Color preset.
-     * @param string|null $label         Label text.
-     * @param string|null $customError   Custom error message.
-     * @param bool        $grouped       Is grouped.
-     * @param bool        $groupedError  Show group error.
-     *
-     * ## Blade Props
-     *
-     * ### Slots
-     * @slot default Label content override.
-     *
-     * ### Magic Attributes (Size)
-     * @property bool $xs Extra Small.
-     * @property bool $sm Small.
-     * @property bool $md Medium (default).
-     * @property bool $lg Large.
-     * @property bool $xl Extra Large.
-     * @property bool $2xl Double Extra Large.
-     *
-     * ### Magic Attributes (Color)
-     * @property bool $primary   Primary color.
-     * @property bool $secondary Secondary color.
-     * @property bool $success   Success color.
-     * @property bool $warning   Warning color.
-     * @property bool $danger    Danger color.
-     * @property bool $info      Info color.
-     */
     public function __construct(
         public ?string $labelPosition = null,
         public ?string $size = null,
         public ?string $color = null,
         public ?string $label = null,
-        public ?string $customError = null,
+        public mixed $customError = null,
+        public bool $disabled = false,
         public bool $grouped = false,
-        public bool $groupedError = false,
+        public ?string $help = null,
+        public ?string $hint = null,
     ) {}
 
-
-    /**
-     * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\View\View|\Closure|string
-     */
-    public function render(): \Illuminate\Contracts\View\View
+    public function render(): View
     {
         return view('beartropy-ui::radio');
     }

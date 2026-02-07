@@ -96,10 +96,11 @@ it('shows validation errors', function () {
     $options = [
         ['value' => '1', 'label' => 'Option 1'],
     ];
-    $html = Blade::render('<x-bt-radio-group name="test_group" error="Please select an option" :options="$options" />', ['options' => $options]);
+    $html = Blade::render('<x-bt-radio-group name="test_group" :custom-error="\'Please select an option\'" :options="$options" />', ['options' => $options]);
 
-    // Component should render successfully with error prop
     expect($html)->toContain('Option 1');
+    expect($html)->toContain('Please select an option');
+    expect($html)->toContain('text-red-500');
 });
 
 it('renders all radios with same name', function () {
@@ -161,7 +162,7 @@ it('applies color to all radio buttons in group', function () {
         ['value' => '1', 'label' => 'Option 1'],
         ['value' => '2', 'label' => 'Option 2'],
     ];
-    $html = Blade::render('<x-bt-radio-group name="test_group" color="danger" :options="$options" />', ['options' => $options]);
+    $html = Blade::render('<x-bt-radio-group name="test_group" color="red" :options="$options" />', ['options' => $options]);
 
     // Should render both options with color applied
     expect($html)->toContain('Option 1');
@@ -178,4 +179,43 @@ it('applies size to all radio buttons in group', function () {
     // Should render both options with size applied
     expect($html)->toContain('Option 1');
     expect($html)->toContain('Option 2');
+});
+
+it('forwards disabled to child radios', function () {
+    $options = [
+        ['value' => '1', 'label' => 'Option 1'],
+    ];
+    $html = Blade::render('<x-bt-radio-group name="test_group" :disabled="true" :options="$options" />', ['options' => $options]);
+
+    expect($html)->toContain('disabled');
+    expect($html)->toContain('opacity-60');
+});
+
+it('can render with help text', function () {
+    $options = [
+        ['value' => '1', 'label' => 'Option 1'],
+    ];
+    $html = Blade::render('<x-bt-radio-group name="test_group" :options="$options" help="Pick one" />', ['options' => $options]);
+
+    expect($html)->toContain('Pick one');
+});
+
+it('can render with label', function () {
+    $options = [
+        ['value' => '1', 'label' => 'Option 1'],
+    ];
+    $html = Blade::render('<x-bt-radio-group name="test_group" :options="$options" label="Choose" />', ['options' => $options]);
+
+    expect($html)->toContain('Choose');
+});
+
+it('selects default value', function () {
+    $options = [
+        ['value' => '1', 'label' => 'Option 1'],
+        ['value' => '2', 'label' => 'Option 2'],
+    ];
+    $html = Blade::render('<x-bt-radio-group name="test_group" :options="$options" value="2" />', ['options' => $options]);
+
+    // Only the second radio should be checked
+    expect($html)->toContain('checked');
 });

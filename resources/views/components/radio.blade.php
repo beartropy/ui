@@ -1,8 +1,6 @@
 @php
-
     [$colorPreset, $sizePreset] = $getComponentPresets('radio');
-    $disabled = $attributes->get('disabled');
-    [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
+    [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError);
 
     $borderClass = $hasError
         ? ($colorPreset['border_error'] ?? $colorPreset['border'])
@@ -17,13 +15,14 @@
         ? ($sizePreset['mr'] ?? 'mr-2')
         : ($sizePreset['ml'] ?? 'ml-2');
 
+    $labelContent = trim($slot) !== '' ? $slot : $label;
 @endphp
 
 <div class="flex flex-col min-h-full justify-center">
     <label class="inline-flex items-center cursor-pointer gap-1 relative select-none {{ $disabled ? $colorPreset['disabled'] : '' }}">
         @if($labelPosition === 'left')
             <span class="{{ $sizePreset['font'] }} {{ $labelSpacing }} {{ $labelClass }}">
-                {{ trim($slot) !== '' ? $slot : $label }}
+                {{ $labelContent }}
             </span>
         @endif
 
@@ -48,11 +47,11 @@
 
         @if($labelPosition !== 'left')
             <span class="{{ $sizePreset['font'] }} {{ $labelSpacing }} {{ $labelClass }}">
-                {{ trim($slot) !== '' ? $slot : $label }}
+                {{ $labelContent }}
             </span>
         @endif
     </label>
     @if(!$grouped)
-        <x-beartropy-ui::support.field-help :error-message="$finalError" :hint="$hint ?? null" />
+        <x-beartropy-ui::support.field-help :error-message="$finalError" :hint="$help ?? $hint" />
     @endif
 </div>

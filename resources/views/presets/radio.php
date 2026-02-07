@@ -2,6 +2,20 @@
 
 return [
     'colors' => [
+        'primary' => [
+            'checked' => 'peer-checked:border-beartropy-600 peer-checked:bg-beartropy-600',
+            'bg' => 'bg-transparent',
+            'border' => 'border-2 border-beartropy-400 dark:border-beartropy-600',
+            'border_error' => 'border-2 border-red-500',
+            'hover' => 'hover:border-beartropy-700 hover:bg-beartropy-200',
+            'focus' => 'focus:ring-2 focus:ring-beartropy-500 focus:ring-offset-2',
+            'focus_error' => 'focus:ring-2 focus:ring-red-500 focus:ring-offset-2',
+            'active' => 'active:border-beartropy-800 active:bg-beartropy-300',
+            'disabled' => 'opacity-60 cursor-not-allowed',
+            'dot' => 'bg-white dark:bg-black',
+            'label' => 'text-gray-800 dark:text-gray-100',
+            'label_error' => 'text-red-500',
+        ],
         'beartropy' => [
             'checked' => 'peer-checked:border-beartropy-600 peer-checked:bg-beartropy-600',
             'bg' => 'bg-transparent',

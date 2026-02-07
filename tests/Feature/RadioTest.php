@@ -75,9 +75,10 @@ it('can render with required attribute', function () {
 });
 
 it('shows validation errors with custom-error', function () {
-    $html = Blade::render('<x-bt-radio name="test_radio" value="1" custom-error="Please select an option" />');
+    $html = Blade::render('<x-bt-radio name="test_radio" value="1" :custom-error="\'Please select an option\'" />');
 
     expect($html)->toContain('Please select an option');
+    expect($html)->toContain('text-red-500');
 });
 
 it('can render with different sizes', function () {
@@ -95,11 +96,11 @@ it('can render with different colors', function () {
     $htmlPrimary = Blade::render('<x-bt-radio name="test_radio" value="1" color="primary" />');
     expect($htmlPrimary)->toContain('type="radio"');
 
-    $htmlSecondary = Blade::render('<x-bt-radio name="test_radio" value="1" color="secondary" />');
-    expect($htmlSecondary)->toContain('type="radio"');
+    $htmlBlue = Blade::render('<x-bt-radio name="test_radio" value="1" color="blue" />');
+    expect($htmlBlue)->toContain('type="radio"');
 
-    $htmlDanger = Blade::render('<x-bt-radio name="test_radio" value="1" color="danger" />');
-    expect($htmlDanger)->toContain('type="radio"');
+    $htmlRed = Blade::render('<x-bt-radio name="test_radio" value="1" color="red" />');
+    expect($htmlRed)->toContain('type="radio"');
 });
 
 it('can render with custom classes', function () {
@@ -186,10 +187,11 @@ it('can render with multiple features combined', function () {
     expect($html)->toContain('custom-radio');
 });
 
-it('does not show error when not in grouped mode without group error', function () {
-    $html = Blade::render('<x-bt-radio name="test_radio" value="1" custom-error="Error" :grouped="false" />');
+it('shows error when not in grouped mode', function () {
+    $html = Blade::render('<x-bt-radio name="test_radio" value="1" :custom-error="\'Error\'" :grouped="false" />');
 
     expect($html)->toContain('Error');
+    expect($html)->toContain('text-red-500');
 });
 
 it('renders accessible radio input', function () {
@@ -198,4 +200,22 @@ it('renders accessible radio input', function () {
     expect($html)->toContain('type="radio"');
     expect($html)->toContain('<label');
     expect($html)->toContain('Accessible Option');
+});
+
+it('can render with help text', function () {
+    $html = Blade::render('<x-bt-radio name="test_radio" value="1" label="Option" help="Select this option" />');
+
+    expect($html)->toContain('Select this option');
+});
+
+it('can render with hint text', function () {
+    $html = Blade::render('<x-bt-radio name="test_radio" value="1" label="Option" hint="Hint text" />');
+
+    expect($html)->toContain('Hint text');
+});
+
+it('hides field-help when grouped', function () {
+    $html = Blade::render('<x-bt-radio name="test_radio" value="1" :grouped="true" help="Should not appear" />');
+
+    expect($html)->not->toContain('Should not appear');
 });
