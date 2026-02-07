@@ -133,9 +133,10 @@ it('can render with rounded corners', function () {
 });
 
 it('shows validation errors with custom-error', function () {
-    $html = Blade::render('<x-bt-checkbox custom-error="This field is required" />');
-    
+    $html = Blade::render('<x-bt-checkbox :custom-error="\'This field is required\'" />');
+
     expect($html)->toContain('This field is required');
+    expect($html)->toContain('text-red-500');
 });
 
 it('can render with hint text', function () {
@@ -144,11 +145,10 @@ it('can render with hint text', function () {
     expect($html)->toContain('Check to agree');
 });
 
-it('can render with description', function () {
-    $html = Blade::render('<x-bt-checkbox description="Additional info" />');
-    
-    // Description is passed but may not be directly rendered in this component
-    expect($html)->toContain('type="checkbox"');
+it('can render with help text', function () {
+    $html = Blade::render('<x-bt-checkbox help="Additional info" />');
+
+    expect($html)->toContain('Additional info');
 });
 
 
@@ -167,8 +167,8 @@ it('can render with different colors', function () {
     $htmlPrimary = Blade::render('<x-bt-checkbox color="primary" />');
     expect($htmlPrimary)->toContain('type="checkbox"');
     
-    $htmlSecondary = Blade::render('<x-bt-checkbox color="secondary" />');
-    expect($htmlSecondary)->toContain('type="checkbox"');
+    $htmlBlue = Blade::render('<x-bt-checkbox color="blue" />');
+    expect($htmlBlue)->toContain('type="checkbox"');
 });
 
 it('can render with wire:model', function () {

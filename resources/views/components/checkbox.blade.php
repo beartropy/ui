@@ -1,6 +1,6 @@
 @php
     [$colorPreset, $sizePreset] = $getComponentPresets('checkbox');
-    [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
+    [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError);
 
     $borderClass = $hasError
         ? ($colorPreset['border_error'] ?? $colorPreset['border'])
@@ -15,9 +15,8 @@
         ? ($sizePreset['mr'] ?? 'mr-2')
         : ($sizePreset['ml'] ?? 'ml-2');
 
-    // Determina el contenido del label: slot > prop
+    // Label content: slot takes precedence over prop
     $labelContent = trim($slot) !== '' ? $slot : $label;
-
 @endphp
 
 <div {{ $attributes->only(['class', 'style'])->merge(['class' => 'flex flex-col min-h-full justify-center']) }}>
@@ -56,5 +55,5 @@
             </span>
         @endif
     </label>
-    <x-beartropy-ui::support.field-help :error-message="$finalError" :hint="$hint ?? null" />
+    <x-beartropy-ui::support.field-help :error-message="$finalError" :hint="$help ?? $hint" />
 </div>

@@ -41,5 +41,5 @@
             {{ trim($slot) !== '' ? $slot : $label }}
         </span>
     </label>
-    <x-beartropy-ui::support.field-help :error-message="$finalError" :hint="$hint ?? null" />
+    <x-beartropy-ui::support.field-help :error-message="$finalError" :hint="$help ?? $hint" />
 </div>

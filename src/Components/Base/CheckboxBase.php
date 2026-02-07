@@ -14,7 +14,9 @@ class CheckboxBase extends BeartropyComponent
         public ?string $size = 'md',
         public ?string $color = 'beartropy',
         public ?string $label = null,
-        public ?string $customError = null,
+        public mixed $customError = null,
+        public ?string $help = null,
+        public ?string $hint = null,
     ) {}
 
     public function render(): View
