@@ -8,105 +8,361 @@ beforeEach(function () {
     $this->app->register(\BladeUI\Heroicons\BladeHeroiconsServiceProvider::class);
 });
 
-it('can render basic chat input component', function () {
+// ─── Basic Rendering ──────────────────────────────────────────────
+
+it('renders with Alpine beartropyChatInput component', function () {
     $html = Blade::render('<x-bt-chat-input />');
 
-    expect($html)->toContain('<textarea');
+    expect($html)
+        ->toContain('x-data="beartropyChatInput(')
+        ->toContain('<textarea')
+        ->toContain('x-ref="textarea"');
 });
 
-it('renders with default 1 row', function () {
+it('does not contain inline Alpine init block', function () {
     $html = Blade::render('<x-bt-chat-input />');
 
-    expect($html)->toContain('<textarea');
+    expect($html)
+        ->not->toContain('x-data=\'{')
+        ->not->toContain('init()');
 });
 
-it('can render with multiple rows', function () {
-    $html = Blade::render('<x-bt-chat-input :rows="3" />');
+// ─── ID / Name ────────────────────────────────────────────────────
 
-    expect($html)->toContain('<textarea');
+it('generates unique id when not provided', function () {
+    $html = Blade::render('<x-bt-chat-input />');
+
+    expect($html)->toContain('id="beartropy-chat-input-');
 });
 
-it('can render with label', function () {
+it('uses custom id when provided', function () {
+    $html = Blade::render('<x-bt-chat-input id="my-chat" />');
+
+    expect($html)->toContain('id="my-chat"');
+});
+
+it('uses explicit name when provided', function () {
+    $html = Blade::render('<x-bt-chat-input name="message" />');
+
+    expect($html)->toContain('name="message"');
+});
+
+it('falls back name to id when name not provided', function () {
+    $html = Blade::render('<x-bt-chat-input id="chat-box" />');
+
+    expect($html)->toContain('name="chat-box"');
+});
+
+// ─── Label ────────────────────────────────────────────────────────
+
+it('renders label when provided', function () {
     $html = Blade::render('<x-bt-chat-input label="Message" />');
 
-    expect($html)->toContain('Message');
+    expect($html)
+        ->toContain('Message')
+        ->toContain('<label');
 });
 
-it('can render with placeholder', function () {
-    $html = Blade::render('<x-bt-chat-input placeholder="Type a message..." />');
+it('links label to textarea via for attribute', function () {
+    $html = Blade::render('<x-bt-chat-input id="my-input" label="Chat" />');
+
+    expect($html)->toContain('for="my-input"');
+});
+
+it('omits label when not provided', function () {
+    $html = Blade::render('<x-bt-chat-input />');
+
+    expect($html)->not->toContain('<label');
+});
+
+it('shows required asterisk when required with label', function () {
+    $html = Blade::render('<x-bt-chat-input label="Message" :required="true" />');
+
+    expect($html)->toContain('text-red-500');
+});
+
+// ─── Placeholder ──────────────────────────────────────────────────
+
+it('uses i18n default placeholder when none provided', function () {
+    $html = Blade::render('<x-bt-chat-input />');
 
     expect($html)->toContain('Type a message...');
 });
 
-it('can be disabled', function () {
+it('uses custom placeholder when provided', function () {
+    $html = Blade::render('<x-bt-chat-input placeholder="Say something..." />');
+
+    expect($html)->toContain('Say something...');
+});
+
+// ─── Disabled / Readonly / Required ───────────────────────────────
+
+it('renders disabled attribute on textarea', function () {
     $html = Blade::render('<x-bt-chat-input :disabled="true" />');
 
-    expect($html)->toContain('<textarea');
+    expect($html)->toMatch('/textarea[^>]*\bdisabled\b/');
 });
 
-it('can be readonly', function () {
+it('renders readonly attribute on textarea', function () {
     $html = Blade::render('<x-bt-chat-input :readonly="true" />');
 
-    expect($html)->toContain('<textarea');
+    expect($html)->toMatch('/textarea[^>]*\breadonly\b/');
 });
 
-it('can be required', function () {
+it('renders required attribute on textarea', function () {
     $html = Blade::render('<x-bt-chat-input :required="true" />');
 
-    expect($html)->toContain('<textarea');
+    expect($html)->toMatch('/textarea[^>]*\brequired\b/');
 });
 
-it('supports submit on Enter by default', function () {
+it('does not render disabled when false', function () {
     $html = Blade::render('<x-bt-chat-input />');
 
-    expect($html)->toContain('<textarea');
+    expect($html)->not->toMatch('/textarea[^>]*\bdisabled\b/');
 });
 
-it('can disable submit on Enter', function () {
-    $html = Blade::render('<x-bt-chat-input :submitOnEnter="false" />');
+// ─── MaxLength ────────────────────────────────────────────────────
 
-    expect($html)->toContain('<textarea');
-});
-
-it('can render with help text', function () {
-    $html = Blade::render('<x-bt-chat-input help="Enter to send, Shift+Enter for new line" />');
-
-    expect($html)->toContain('<textarea');
-});
-
-it('can render with max length', function () {
+it('renders maxlength attribute when provided', function () {
     $html = Blade::render('<x-bt-chat-input :maxLength="500" />');
 
-    expect($html)->toContain('<textarea');
+    expect($html)->toContain('maxlength="500"');
 });
 
-it('supports stacked layout', function () {
+it('omits maxlength when not provided', function () {
+    $html = Blade::render('<x-bt-chat-input />');
+
+    expect($html)->not->toContain('maxlength');
+});
+
+// ─── Stacked Layout ───────────────────────────────────────────────
+
+it('passes stacked false by default to Alpine config', function () {
+    $html = Blade::render('<x-bt-chat-input />');
+
+    expect($html)
+        ->toContain('isSingleLine: true')
+        ->toContain('stacked: false');
+});
+
+it('passes stacked true when enabled', function () {
     $html = Blade::render('<x-bt-chat-input :stacked="true" />');
 
-    expect($html)->toContain('<textarea');
+    expect($html)
+        ->toContain('isSingleLine: false')
+        ->toContain('stacked: true');
 });
 
-it('supports color presets', function () {
-    $colors = ['primary', 'secondary', 'success', 'warning', 'danger', 'info'];
+// ─── Submit on Enter / Action ─────────────────────────────────────
 
-    foreach ($colors as $color) {
-        $html = Blade::render("<x-bt-chat-input color=\"{$color}\" />");
-        expect($html)->toContain('<textarea');
-    }
+it('passes submitOnEnter true by default to Alpine config', function () {
+    $html = Blade::render('<x-bt-chat-input />');
+
+    expect($html)->toContain('submitOnEnter: true');
 });
 
-it('can render with all features', function () {
+it('passes submitOnEnter false when disabled', function () {
+    $html = Blade::render('<x-bt-chat-input :submitOnEnter="false" />');
+
+    expect($html)->toContain('submitOnEnter: false');
+});
+
+it('passes action to Alpine config', function () {
+    $html = Blade::render('<x-bt-chat-input action="sendMessage" />');
+
+    expect($html)->toContain("action: 'sendMessage'");
+});
+
+it('renders handleEnter handler on textarea', function () {
+    $html = Blade::render('<x-bt-chat-input />');
+
+    expect($html)->toContain('handleEnter($event)');
+});
+
+// ─── Tools Slot ───────────────────────────────────────────────────
+
+it('renders tools slot when provided', function () {
     $html = Blade::render('
-        <x-bt-chat-input 
-            label="Chat Message"
-            placeholder="Type here..."
-            :rows="2"
-            :submitOnEnter="true"
-            :maxLength="1000"
-            help="Press Enter to send"
-        />
+        <x-bt-chat-input>
+            <x-slot:tools>
+                <button>Attach</button>
+            </x-slot:tools>
+        </x-bt-chat-input>
     ');
 
-    expect($html)->toContain('Chat Message');
-    expect($html)->toContain('Type here...');
+    expect($html)->toContain('<button>Attach</button>');
+});
+
+it('omits tools container when slot not provided', function () {
+    $html = Blade::render('<x-bt-chat-input />');
+
+    expect($html)->not->toContain('col-start-1 pl-2');
+});
+
+// ─── Footer / Actions Slot ────────────────────────────────────────
+
+it('renders footer slot when provided', function () {
+    $html = Blade::render('
+        <x-bt-chat-input>
+            <x-slot:footer>
+                <button>Send</button>
+            </x-slot:footer>
+        </x-bt-chat-input>
+    ');
+
+    expect($html)->toContain('<button>Send</button>');
+});
+
+it('renders actions slot when provided', function () {
+    $html = Blade::render('
+        <x-bt-chat-input>
+            <x-slot:actions>
+                <button>Submit</button>
+            </x-slot:actions>
+        </x-bt-chat-input>
+    ');
+
+    expect($html)->toContain('<button>Submit</button>');
+});
+
+it('adds mb-4 wrapper class when footer is present', function () {
+    $html = Blade::render('
+        <x-bt-chat-input>
+            <x-slot:footer>
+                <span>Footer</span>
+            </x-slot:footer>
+        </x-bt-chat-input>
+    ');
+
+    expect($html)->toContain('mb-4');
+});
+
+// ─── Help / Hint / Error ──────────────────────────────────────────
+
+it('renders help text via field-help component', function () {
+    $html = Blade::render('<x-bt-chat-input help="Enter to send" />');
+
+    expect($html)->toContain('Enter to send');
+});
+
+it('renders hint text via field-help component', function () {
+    $html = Blade::render('<x-bt-chat-input hint="Shift+Enter for new line" />');
+
+    expect($html)->toContain('Shift+Enter for new line');
+});
+
+it('renders custom error message via field-help', function () {
+    $html = Blade::render('<x-bt-chat-input customError="Message too long" />');
+
+    expect($html)->toContain('Message too long');
+});
+
+// ─── Border ───────────────────────────────────────────────────────
+
+it('applies border classes when border is true', function () {
+    $html = Blade::render('<x-bt-chat-input :border="true" />');
+
+    expect($html)->toContain('focus-within:ring');
+});
+
+it('does not apply border classes when border is false', function () {
+    $html = Blade::render('<x-bt-chat-input />');
+
+    expect($html)->not->toContain('focus-within:ring');
+});
+
+// ─── Color Presets ────────────────────────────────────────────────
+
+it('applies default primary color preset', function () {
+    $html = Blade::render('<x-bt-chat-input />');
+
+    expect($html)->toContain('bg-gray-300/50');
+});
+
+it('applies named color preset', function () {
+    $html = Blade::render('<x-bt-chat-input color="blue" />');
+
+    expect($html)->toContain('bg-blue-300/50');
+});
+
+it('applies magic color attribute', function () {
+    $html = Blade::render('<x-bt-chat-input green />');
+
+    expect($html)->toContain('bg-green-300/50');
+});
+
+it('applies error label class when error present', function () {
+    $html = Blade::render('<x-bt-chat-input label="Msg" customError="Bad" />');
+
+    expect($html)->toContain('text-red-500');
+});
+
+// ─── Custom Classes / Attribute Forwarding ────────────────────────
+
+it('merges custom classes on wrapper', function () {
+    $html = Blade::render('<x-bt-chat-input class="my-custom-class" />');
+
+    expect($html)->toContain('my-custom-class');
+});
+
+it('forwards extra attributes to wrapper div', function () {
+    $html = Blade::render('<x-bt-chat-input data-testid="chat" />');
+
+    expect($html)->toContain('data-testid="chat"');
+});
+
+// ─── Textarea hardcoded attributes ────────────────────────────────
+
+it('always renders rows=1 on textarea', function () {
+    $html = Blade::render('<x-bt-chat-input />');
+
+    expect($html)->toContain('rows="1"');
+});
+
+it('applies field-sizing content style', function () {
+    $html = Blade::render('<x-bt-chat-input />');
+
+    expect($html)->toContain('field-sizing: content');
+});
+
+// ─── Combined Features ────────────────────────────────────────────
+
+it('renders with all features combined', function () {
+    $html = Blade::render('
+        <x-bt-chat-input
+            id="full-chat"
+            name="user_message"
+            label="Chat Message"
+            placeholder="Write here..."
+            :disabled="false"
+            :required="true"
+            :maxLength="1000"
+            :stacked="true"
+            :submitOnEnter="true"
+            action="send"
+            :border="true"
+            help="Press Enter to send"
+            color="blue"
+        >
+            <x-slot:tools>
+                <button>+</button>
+            </x-slot:tools>
+            <x-slot:actions>
+                <button>Send</button>
+            </x-slot:actions>
+        </x-bt-chat-input>
+    ');
+
+    expect($html)
+        ->toContain('id="full-chat"')
+        ->toContain('name="user_message"')
+        ->toContain('Chat Message')
+        ->toContain('Write here...')
+        ->toContain('maxlength="1000"')
+        ->toContain('stacked: true')
+        ->toContain("action: 'send'")
+        ->toContain('bg-blue-300/50')
+        ->toContain('<button>+</button>')
+        ->toContain('<button>Send</button>')
+        ->toContain('Press Enter to send');
 });
