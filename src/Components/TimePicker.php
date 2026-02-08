@@ -5,40 +5,31 @@ namespace Beartropy\Ui\Components;
 /**
  * TimePicker component.
  *
- * Renders a time picker input.
+ * Renders a time picker input with scrollable hour/minute/second columns,
+ * 12-hour or 24-hour format, min/max range, and interval support.
  *
+ * @property string|null $id          Component id.
  * @property string|null $name        Input name.
  * @property string|null $label       Label text.
- * @property mixed       $value       Initial value.
- * @property string|null $min         Minimum time.
- * @property string|null $max         Maximum time.
+ * @property string|null $color       Color preset key.
+ * @property mixed       $value       Initial value (HH:mm or HH:mm:ss).
+ * @property string|null $min         Minimum allowed time (HH:mm).
+ * @property string|null $max         Maximum allowed time (HH:mm).
+ * @property int         $interval    Minute step (1, 5, 10, 15, 30, 60).
+ * @property string      $format      Time format (H:i = 24h, h:i A = 12h).
+ * @property bool        $seconds     Show seconds column.
  * @property bool        $disabled    Disabled state.
  * @property bool        $readonly    Readonly state.
  * @property string|null $placeholder Placeholder text.
- * @property string|null $hint        Hint text.
- * @property string|null $customError Custom error message.
- * @property string      $format      Time format (default H:i).
- * @property int         $interval    Minute interval.
  * @property bool        $clearable   Allow clearing.
+ * @property mixed       $customError Custom error message.
+ * @property string|null $help        Help text below input.
+ * @property string|null $hint        Hint text below input.
  */
 class TimePicker extends BeartropyComponent
 {
     /**
      * Create a new TimePicker component instance.
-     *
-     * @param string|null $name        Input name.
-     * @param string|null $label       Label text.
-     * @param mixed       $value       Initial value.
-     * @param string|null $min         Min time.
-     * @param string|null $max         Max time.
-     * @param bool        $disabled    Disabled.
-     * @param bool        $readonly    Readonly.
-     * @param string|null $placeholder Placeholder.
-     * @param string|null $hint        Hint.
-     * @param string|null $customError Custom error.
-     * @param string      $format      Format.
-     * @param int         $interval    Interval.
-     * @param bool        $clearable   Clearable.
      *
      * ## Blade Props
      *
@@ -46,12 +37,30 @@ class TimePicker extends BeartropyComponent
      * @slot default Trigger content.
      *
      * ### Magic Attributes (Color)
-     * @property bool $primary   Primary color.
-     * @property bool $secondary Secondary color.
-     * @property bool $success   Success color.
-     * @property bool $warning   Warning color.
-     * @property bool $danger    Danger color.
-     * @property bool $info      Info color.
+     * @property bool $beartropy Beartropy color.
+     * @property bool $red       Red color.
+     * @property bool $orange    Orange color.
+     * @property bool $amber     Amber color.
+     * @property bool $yellow    Yellow color.
+     * @property bool $lime      Lime color.
+     * @property bool $green     Green color.
+     * @property bool $emerald   Emerald color.
+     * @property bool $teal      Teal color.
+     * @property bool $cyan      Cyan color.
+     * @property bool $sky       Sky color.
+     * @property bool $blue      Blue color.
+     * @property bool $indigo    Indigo color.
+     * @property bool $violet    Violet color.
+     * @property bool $purple    Purple color.
+     * @property bool $fuchsia   Fuchsia color.
+     * @property bool $pink      Pink color.
+     * @property bool $rose      Rose color.
+     * @property bool $slate     Slate color.
+     * @property bool $gray      Gray color.
+     * @property bool $zinc      Zinc color.
+     * @property bool $neutral   Neutral color.
+     * @property bool $stone     Stone color.
+     * @property bool $primary   Primary color (alias for beartropy).
      *
      * ### Magic Attributes (Size)
      * @property bool $xs Extra Small.
@@ -61,25 +70,30 @@ class TimePicker extends BeartropyComponent
      * @property bool $xl Extra Large.
      */
     public function __construct(
+        public ?string $id = null,
         public ?string $name = null,
         public ?string $label = null,
+        public ?string $color = null,
         public mixed $value = null,
         public ?string $min = null,
         public ?string $max = null,
+        public int $interval = 1,
+        public string $format = 'H:i',
+        public bool $seconds = false,
         public bool $disabled = false,
         public bool $readonly = false,
         public ?string $placeholder = null,
-        public ?string $hint = null,
-        public ?string $customError = null,
-        public string $format = 'H:i',
-        public int $interval = 1,
         public bool $clearable = true,
-    ) {}
+        public mixed $customError = null,
+        public ?string $help = null,
+        public ?string $hint = null,
+    ) {
+        $this->id = $id ?? ('beartropy-timepicker-' . uniqid());
+        $this->name = $name ?? $this->id;
+    }
 
     /**
      * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\View\View|\Closure|string
      */
     public function render(): \Illuminate\Contracts\View\View
     {

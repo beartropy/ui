@@ -105,6 +105,9 @@ return [
         'file-dropzone' => [
             'color' => env('BEARTROPY_UI_FILE_DROPZONE_COLOR', 'beartropy'),
         ],
+        'time-picker' => [
+            'color' => env('BEARTROPY_UI_TIME_PICKER_COLOR', 'beartropy'),
+        ],
     ],
 
     'presets' => [
@@ -128,5 +131,6 @@ return [
         'command-palette' => beartropy_preset('command-palette'),
         'fab'          => beartropy_preset('fab'),
         'chat-input'   => beartropy_preset('chat-input'),
+        'time-picker'  => beartropy_preset('time-picker'),
     ],
 ];

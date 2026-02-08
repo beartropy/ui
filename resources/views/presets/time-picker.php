@@ -1,35 +1,178 @@
 <?php
 
-return [
-    'default' => [
-        // Input wrapper
-        'wrapper' => 'relative w-full',
-
-        // Label
-        'label' => 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1',
-        'label_error' => 'block text-sm font-medium text-red-600 dark:text-red-400 mb-1',
-
-        // Input trigger
-        'base' => 'w-full flex items-center justify-between border rounded-lg shadow-sm transition duration-150 ease-in-out focus:ring-2 focus:ring-offset-2',
-        'sizes' => [
-            'sm' => 'px-2 py-1 text-xs',
-            'md' => 'px-3 py-2 text-sm',
-            'lg' => 'px-4 py-3 text-base',
-        ],
-        'colors' => [
-            'default' => 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-beartropy-500 focus:border-beartropy-500',
-            'error' => 'border-red-300 dark:border-red-600 bg-white dark:bg-gray-800 text-red-900 dark:text-red-100 focus:ring-red-500 focus:border-red-500',
-        ],
-
-        // Dropdown
-        'dropdown_wrapper' => 'absolute z-50 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-2',
-        'select' => 'block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-beartropy-500 focus:border-beartropy-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white',
-        'option_text' => 'text-gray-900 dark:text-gray-100',
-
-        // List UI
-        'list_wrapper' => 'flex items-start justify-center gap-2 h-56',
-        'list_column' => 'flex flex-col h-full overflow-y-auto beartropy-thin-scrollbar w-16 text-center scroll-smooth',
-        'list_item' => 'py-1 px-2 cursor-pointer rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors',
-        'list_item_active' => 'bg-beartropy-500 text-white font-bold hover:bg-beartropy-600 dark:hover:bg-beartropy-600',
-    ],
+$shared = [
+    'dropdown_bg'     => 'bg-white dark:bg-gray-900',
+    'dropdown_shadow' => 'shadow-xl',
+    'option_text'     => 'text-gray-800 dark:text-gray-100',
+    'column_label'    => 'text-[11px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500',
+    'wheel_adjacent'  => 'text-gray-300 dark:text-gray-600 hover:text-gray-400 dark:hover:text-gray-500',
+    'ampm_button'     => 'px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-all duration-150 cursor-pointer',
 ];
+
+$colors = [
+    'beartropy' => array_merge($shared, [
+        'dropdown_border'  => 'border border-gray-200 dark:border-gray-700',
+        'wheel_selected'   => 'text-beartropy-600 dark:text-beartropy-400',
+        'wheel_highlight'  => 'bg-beartropy-50 dark:bg-beartropy-950/30',
+        'ampm_active'      => 'bg-beartropy-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-beartropy-500 dark:text-beartropy-400 hover:text-beartropy-600 dark:hover:text-beartropy-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'red' => array_merge($shared, [
+        'dropdown_border'  => 'border border-red-200 dark:border-red-800',
+        'wheel_selected'   => 'text-red-600 dark:text-red-400',
+        'wheel_highlight'  => 'bg-red-50 dark:bg-red-950/30',
+        'ampm_active'      => 'bg-red-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'orange' => array_merge($shared, [
+        'dropdown_border'  => 'border border-orange-200 dark:border-orange-800',
+        'wheel_selected'   => 'text-orange-600 dark:text-orange-400',
+        'wheel_highlight'  => 'bg-orange-50 dark:bg-orange-950/30',
+        'ampm_active'      => 'bg-orange-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-orange-500 dark:text-orange-400 hover:text-orange-600 dark:hover:text-orange-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'amber' => array_merge($shared, [
+        'dropdown_border'  => 'border border-amber-200 dark:border-amber-800',
+        'wheel_selected'   => 'text-amber-600 dark:text-amber-400',
+        'wheel_highlight'  => 'bg-amber-50 dark:bg-amber-950/30',
+        'ampm_active'      => 'bg-amber-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-amber-500 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'yellow' => array_merge($shared, [
+        'dropdown_border'  => 'border border-yellow-200 dark:border-yellow-800',
+        'wheel_selected'   => 'text-yellow-600 dark:text-yellow-400',
+        'wheel_highlight'  => 'bg-yellow-50 dark:bg-yellow-950/30',
+        'ampm_active'      => 'bg-yellow-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-yellow-500 dark:text-yellow-400 hover:text-yellow-600 dark:hover:text-yellow-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'lime' => array_merge($shared, [
+        'dropdown_border'  => 'border border-lime-200 dark:border-lime-800',
+        'wheel_selected'   => 'text-lime-600 dark:text-lime-400',
+        'wheel_highlight'  => 'bg-lime-50 dark:bg-lime-950/30',
+        'ampm_active'      => 'bg-lime-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-lime-500 dark:text-lime-400 hover:text-lime-600 dark:hover:text-lime-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'green' => array_merge($shared, [
+        'dropdown_border'  => 'border border-green-200 dark:border-green-800',
+        'wheel_selected'   => 'text-green-600 dark:text-green-400',
+        'wheel_highlight'  => 'bg-green-50 dark:bg-green-950/30',
+        'ampm_active'      => 'bg-green-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-green-500 dark:text-green-400 hover:text-green-600 dark:hover:text-green-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'emerald' => array_merge($shared, [
+        'dropdown_border'  => 'border border-emerald-200 dark:border-emerald-800',
+        'wheel_selected'   => 'text-emerald-600 dark:text-emerald-400',
+        'wheel_highlight'  => 'bg-emerald-50 dark:bg-emerald-950/30',
+        'ampm_active'      => 'bg-emerald-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-emerald-500 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'teal' => array_merge($shared, [
+        'dropdown_border'  => 'border border-teal-200 dark:border-teal-800',
+        'wheel_selected'   => 'text-teal-600 dark:text-teal-400',
+        'wheel_highlight'  => 'bg-teal-50 dark:bg-teal-950/30',
+        'ampm_active'      => 'bg-teal-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-teal-500 dark:text-teal-400 hover:text-teal-600 dark:hover:text-teal-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'cyan' => array_merge($shared, [
+        'dropdown_border'  => 'border border-cyan-200 dark:border-cyan-800',
+        'wheel_selected'   => 'text-cyan-600 dark:text-cyan-400',
+        'wheel_highlight'  => 'bg-cyan-50 dark:bg-cyan-950/30',
+        'ampm_active'      => 'bg-cyan-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-cyan-500 dark:text-cyan-400 hover:text-cyan-600 dark:hover:text-cyan-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'sky' => array_merge($shared, [
+        'dropdown_border'  => 'border border-sky-200 dark:border-sky-800',
+        'wheel_selected'   => 'text-sky-600 dark:text-sky-400',
+        'wheel_highlight'  => 'bg-sky-50 dark:bg-sky-950/30',
+        'ampm_active'      => 'bg-sky-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-sky-500 dark:text-sky-400 hover:text-sky-600 dark:hover:text-sky-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'blue' => array_merge($shared, [
+        'dropdown_border'  => 'border border-blue-200 dark:border-blue-800',
+        'wheel_selected'   => 'text-blue-600 dark:text-blue-400',
+        'wheel_highlight'  => 'bg-blue-50 dark:bg-blue-950/30',
+        'ampm_active'      => 'bg-blue-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'indigo' => array_merge($shared, [
+        'dropdown_border'  => 'border border-indigo-200 dark:border-indigo-800',
+        'wheel_selected'   => 'text-indigo-600 dark:text-indigo-400',
+        'wheel_highlight'  => 'bg-indigo-50 dark:bg-indigo-950/30',
+        'ampm_active'      => 'bg-indigo-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-indigo-500 dark:text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'violet' => array_merge($shared, [
+        'dropdown_border'  => 'border border-violet-200 dark:border-violet-800',
+        'wheel_selected'   => 'text-violet-600 dark:text-violet-400',
+        'wheel_highlight'  => 'bg-violet-50 dark:bg-violet-950/30',
+        'ampm_active'      => 'bg-violet-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-violet-500 dark:text-violet-400 hover:text-violet-600 dark:hover:text-violet-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'purple' => array_merge($shared, [
+        'dropdown_border'  => 'border border-purple-200 dark:border-purple-800',
+        'wheel_selected'   => 'text-purple-600 dark:text-purple-400',
+        'wheel_highlight'  => 'bg-purple-50 dark:bg-purple-950/30',
+        'ampm_active'      => 'bg-purple-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-purple-500 dark:text-purple-400 hover:text-purple-600 dark:hover:text-purple-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'fuchsia' => array_merge($shared, [
+        'dropdown_border'  => 'border border-fuchsia-200 dark:border-fuchsia-800',
+        'wheel_selected'   => 'text-fuchsia-600 dark:text-fuchsia-400',
+        'wheel_highlight'  => 'bg-fuchsia-50 dark:bg-fuchsia-950/30',
+        'ampm_active'      => 'bg-fuchsia-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-fuchsia-500 dark:text-fuchsia-400 hover:text-fuchsia-600 dark:hover:text-fuchsia-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'pink' => array_merge($shared, [
+        'dropdown_border'  => 'border border-pink-200 dark:border-pink-800',
+        'wheel_selected'   => 'text-pink-600 dark:text-pink-400',
+        'wheel_highlight'  => 'bg-pink-50 dark:bg-pink-950/30',
+        'ampm_active'      => 'bg-pink-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-pink-500 dark:text-pink-400 hover:text-pink-600 dark:hover:text-pink-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'rose' => array_merge($shared, [
+        'dropdown_border'  => 'border border-rose-200 dark:border-rose-800',
+        'wheel_selected'   => 'text-rose-600 dark:text-rose-400',
+        'wheel_highlight'  => 'bg-rose-50 dark:bg-rose-950/30',
+        'ampm_active'      => 'bg-rose-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-rose-500 dark:text-rose-400 hover:text-rose-600 dark:hover:text-rose-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'slate' => array_merge($shared, [
+        'dropdown_border'  => 'border border-gray-200 dark:border-gray-700',
+        'wheel_selected'   => 'text-slate-700 dark:text-slate-300',
+        'wheel_highlight'  => 'bg-slate-100 dark:bg-slate-800/30',
+        'ampm_active'      => 'bg-slate-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-slate-500 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'gray' => array_merge($shared, [
+        'dropdown_border'  => 'border border-gray-200 dark:border-gray-700',
+        'wheel_selected'   => 'text-gray-700 dark:text-gray-300',
+        'wheel_highlight'  => 'bg-gray-100 dark:bg-gray-800/30',
+        'ampm_active'      => 'bg-gray-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'zinc' => array_merge($shared, [
+        'dropdown_border'  => 'border border-gray-200 dark:border-gray-700',
+        'wheel_selected'   => 'text-zinc-700 dark:text-zinc-300',
+        'wheel_highlight'  => 'bg-zinc-100 dark:bg-zinc-800/30',
+        'ampm_active'      => 'bg-zinc-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'neutral' => array_merge($shared, [
+        'dropdown_border'  => 'border border-gray-200 dark:border-gray-700',
+        'wheel_selected'   => 'text-neutral-700 dark:text-neutral-300',
+        'wheel_highlight'  => 'bg-neutral-100 dark:bg-neutral-800/30',
+        'ampm_active'      => 'bg-neutral-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-neutral-500 dark:text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors duration-150 cursor-pointer',
+    ]),
+    'stone' => array_merge($shared, [
+        'dropdown_border'  => 'border border-gray-200 dark:border-gray-700',
+        'wheel_selected'   => 'text-stone-700 dark:text-stone-300',
+        'wheel_highlight'  => 'bg-stone-100 dark:bg-stone-800/30',
+        'ampm_active'      => 'bg-stone-500 text-white shadow-sm',
+        'now_button'       => 'text-xs font-semibold tracking-wide uppercase text-stone-500 dark:text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors duration-150 cursor-pointer',
+    ]),
+];
+
+$colors['primary'] = $colors['beartropy'];
+
+return ['colors' => $colors];

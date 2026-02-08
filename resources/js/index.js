@@ -4,7 +4,7 @@ import { openModal, closeModal } from './modules/modal.js';
 import { toast } from './modules/toast.js';
 import { beartropyTable } from './modules/table.js';
 import { beartropyI18n, datetimepicker } from './modules/datetime-picker.js';
-import { timepicker } from './modules/time-picker.js';
+import { beartropyTimepicker } from './modules/time-picker.js';
 import { tagInput } from './modules/tag-input.js';
 import { confirmHost } from './modules/confirm.js';
 import { btDialog } from './modules/bt-dialog.js';
@@ -26,7 +26,7 @@ document.addEventListener('alpine:init', () => {
     // Register Alpine components
     Alpine.data('beartropyTable', beartropyTable);
     Alpine.data('datetimepicker', datetimepicker);
-    Alpine.data('timepicker', timepicker);
+    Alpine.data('beartropyTimepicker', beartropyTimepicker);
     Alpine.data('tagInput', tagInput);
     Alpine.data('confirmHost', confirmHost);
     Alpine.data('btDialog', btDialog);
@@ -36,7 +36,7 @@ document.addEventListener('alpine:init', () => {
     // Keep global references for legacy/external usage if needed
     window.$beartropy.beartropyTable = beartropyTable;
     window.$beartropy.datetimepicker = datetimepicker;
-    window.$beartropy.timepicker = timepicker;
+    window.$beartropy.beartropyTimepicker = beartropyTimepicker;
     window.$beartropy.tagInput = tagInput;
     window.$beartropy.confirmHost = confirmHost;
     window.$beartropy.btDialog = btDialog;

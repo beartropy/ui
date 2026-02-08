@@ -46,4 +46,7 @@ return [
     'file_type_not_accepted' => 'File ":name" is not an accepted type.',
     'max_files_exceeded' => 'Maximum :max files allowed.',
     'remove_file' => 'Remove file',
+    'select_time' => 'Select time...',
+    'now' => 'Now',
+    'second_short' => 'Sec',
 ];
