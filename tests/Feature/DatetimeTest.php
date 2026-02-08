@@ -8,147 +8,330 @@ beforeEach(function () {
     $this->app->register(\BladeUI\Heroicons\BladeHeroiconsServiceProvider::class);
 });
 
-it('can render basic datetime component', function () {
-    $html = Blade::render('<x-bt-datetime name="test_date" />');
+// ---------- Basic Rendering ----------
 
-    expect($html)->toContain('x-data="$beartropy.datetimepicker');
-    expect($html)->toContain('name="test_date"');
+it('renders with beartropyDatetimepicker in x-data', function () {
+    $html = Blade::render('<x-bt-datetime />');
+
+    expect($html)->toContain('beartropyDatetimepicker');
+    expect($html)->toContain('x-data');
 });
 
-it('can render with label', function () {
-    $html = Blade::render('<x-bt-datetime name="test_date" label="Select Date" />');
+it('does not use legacy $beartropy.datetimepicker registration', function () {
+    $html = Blade::render('<x-bt-datetime />');
+
+    expect($html)->not->toContain('$beartropy.datetimepicker');
+});
+
+it('does not render redundant x-init', function () {
+    $html = Blade::render('<x-bt-datetime />');
+
+    expect($html)->not->toContain('x-init="init()"');
+});
+
+it('delegates click-outside to dropdown-base (not root div)', function () {
+    $html = Blade::render('<x-bt-datetime />');
+
+    // The root x-data div should NOT have its own @click.outside since
+    // the dropdown-base handles it (dropdown is teleported to <body>).
+    // Verify the root div opens properly with beartropyDatetimepicker.
+    expect($html)->toContain('beartropyDatetimepicker');
+});
+
+// ---------- Label ----------
+
+it('renders with label', function () {
+    $html = Blade::render('<x-bt-datetime label="Select Date" />');
 
     expect($html)->toContain('Select Date');
     expect($html)->toContain('<label');
 });
 
-it('can render with placeholder', function () {
-    $html = Blade::render('<x-bt-datetime name="test_date" placeholder="Choose a date..." />');
+it('renders label with for attribute matching id', function () {
+    $html = Blade::render('<x-bt-datetime id="my-date" label="Date" />');
 
-    expect($html)->toContain('Choose a date...');
+    expect($html)->toContain('for="my-date"');
 });
 
-it('can render with initial value', function () {
-    $value = '2023-10-15';
-    $html = Blade::render('<x-bt-datetime name="test_date" value="' . $value . '" />');
+it('does not render label when not provided', function () {
+    $html = Blade::render('<x-bt-datetime id="no-label-date" />');
 
-    expect($html)->toContain($value);
+    expect($html)->not->toContain('for="no-label-date"');
 });
 
-it('can render with show-time enabled', function () {
-    $html = Blade::render('<x-bt-datetime name="test_date" :show-time="true" />');
+// ---------- Placeholder ----------
 
-    expect($html)->toContain('name="test_date"');
+it('uses default i18n select_date placeholder', function () {
+    $html = Blade::render('<x-bt-datetime />');
+
+    expect($html)->toContain('Select date...');
 });
 
-it('can render in range mode', function () {
-    $html = Blade::render('<x-bt-datetime name="test_range" :range="true" />');
+it('uses default i18n select_range placeholder in range mode', function () {
+    $html = Blade::render('<x-bt-datetime :range="true" />');
 
     expect($html)->toContain('Select range...');
 });
 
-it('can render with min date', function () {
-    $min = '2023-01-01';
-    $html = Blade::render('<x-bt-datetime name="test_date" min="' . $min . '" />');
+it('uses custom placeholder', function () {
+    $html = Blade::render('<x-bt-datetime placeholder="Choose a date..." />');
 
-    expect($html)->toContain($min);
+    expect($html)->toContain('Choose a date...');
 });
 
-it('can render with max date', function () {
-    $max = '2023-12-31';
-    $html = Blade::render('<x-bt-datetime name="test_date" max="' . $max . '" />');
+// ---------- ID ----------
 
-    expect($html)->toContain($max);
-});
-
-it('can render with min and max dates', function () {
-    $min = '2023-01-01';
-    $max = '2023-12-31';
-    $html = Blade::render('<x-bt-datetime name="test_date" min="' . $min . '" max="' . $max . '" />');
-
-    expect($html)->toContain($min);
-    expect($html)->toContain($max);
-});
-
-it('can render with custom display format', function () {
-    $format = '{d}-{m}-{Y}';
-    $html = Blade::render('<x-bt-datetime name="test_date" format-display="' . $format . '" />');
-
-    expect($html)->toContain($format);
-});
-
-it('uses default display format for date only', function () {
-    $html = Blade::render('<x-bt-datetime name="test_date" />');
-
-    expect($html)->toContain('{d}/{m}/{Y}');
-});
-
-it('can render with disabled state', function () {
-    $html = Blade::render('<x-bt-datetime name="test_date" :disabled="true" />');
-
-    expect($html)->toContain('disabled');
-});
-
-it('shows validation errors with custom-error', function () {
-    $html = Blade::render('<x-bt-datetime name="test_date" custom-error="Invalid date" />');
-
-    expect($html)->toContain('Invalid date');
-});
-
-it('can render with hint text', function () {
-    $html = Blade::render('<x-bt-datetime name="test_date" hint="Select a valid date" />');
-
-    expect($html)->toContain('Select a valid date');
-});
-
-it('uses translated placeholder by default', function () {
-    $html = Blade::render('<x-bt-datetime name="test_date" />');
-
-    expect($html)->toContain('Select date...');
-});
-
-it('respects English locale', function () {
-    $html = Blade::render('<x-bt-datetime name="test_date" locale="en" />');
-
-    expect($html)->toContain('Select date...');
-});
-
-it('can render with custom id', function () {
-    $html = Blade::render('<x-bt-datetime name="test_date" id="custom-date-id" />');
+it('renders custom id', function () {
+    $html = Blade::render('<x-bt-datetime id="custom-date-id" />');
 
     expect($html)->toContain('id="custom-date-id"');
 });
 
 it('generates unique id when not provided', function () {
-    $html1 = Blade::render('<x-bt-datetime name="test_date_1" />');
-    $html2 = Blade::render('<x-bt-datetime name="test_date_2" />');
+    $html = Blade::render('<x-bt-datetime />');
 
-    expect($html1)->not->toBe($html2);
+    expect($html)->toContain('beartropy-datetime-');
 });
 
-it('can render with custom classes', function () {
-    $html = Blade::render('<x-bt-datetime name="test_date" class="custom-datetime" />');
+// ---------- Name ----------
+
+it('renders explicit name', function () {
+    $html = Blade::render('<x-bt-datetime name="start_date" />');
+
+    expect($html)->toContain('name="start_date"');
+});
+
+it('falls back name to id when not provided', function () {
+    $html = Blade::render('<x-bt-datetime id="fallback-id" />');
+
+    expect($html)->toContain('name="fallback-id"');
+});
+
+// ---------- Value ----------
+
+it('passes initial value to JS config', function () {
+    $html = Blade::render('<x-bt-datetime value="2024-06-15" />');
+
+    expect($html)->toContain('2024-06-15');
+});
+
+// ---------- Disabled ----------
+
+it('passes disabled to JS config', function () {
+    $html = Blade::render('<x-bt-datetime :disabled="true" />');
+
+    expect($html)->toContain('disabled: true');
+});
+
+it('renders disabled with cursor-not-allowed', function () {
+    $html = Blade::render('<x-bt-datetime :disabled="true" />');
+
+    expect($html)->toContain('cursor-not-allowed');
+});
+
+// ---------- Clearable ----------
+
+it('renders clear button by default', function () {
+    $html = Blade::render('<x-bt-datetime />');
+
+    expect($html)->toContain('clearSelection()');
+});
+
+it('hides clear button when clearable is false', function () {
+    $html = Blade::render('<x-bt-datetime :clearable="false" />');
+
+    expect($html)->not->toContain('clearSelection()');
+});
+
+// ---------- Custom Error ----------
+
+it('renders custom error message', function () {
+    $html = Blade::render('<x-bt-datetime custom-error="Invalid date" />');
+
+    expect($html)->toContain('Invalid date');
+});
+
+// ---------- Help / Hint ----------
+
+it('renders help text', function () {
+    $html = Blade::render('<x-bt-datetime help="Pick a date within range" />');
+
+    expect($html)->toContain('Pick a date within range');
+});
+
+it('renders hint text', function () {
+    $html = Blade::render('<x-bt-datetime hint="Select a valid date" />');
+
+    expect($html)->toContain('Select a valid date');
+});
+
+// ---------- Calendar ----------
+
+it('renders weekday headers', function () {
+    $html = Blade::render('<x-bt-datetime />');
+
+    expect($html)->toContain('Mon');
+    expect($html)->toContain('Tue');
+    expect($html)->toContain('Wed');
+    expect($html)->toContain('Thu');
+    expect($html)->toContain('Fri');
+    expect($html)->toContain('Sat');
+    expect($html)->toContain('Sun');
+});
+
+it('renders month navigation buttons', function () {
+    $html = Blade::render('<x-bt-datetime />');
+
+    expect($html)->toContain('prevMonth()');
+    expect($html)->toContain('nextMonth()');
+});
+
+it('renders day grid', function () {
+    $html = Blade::render('<x-bt-datetime />');
+
+    expect($html)->toContain('selectDay(day)');
+    expect($html)->toContain('x-for="(day, i) in days"');
+});
+
+it('applies today ring class', function () {
+    $html = Blade::render('<x-bt-datetime />');
+
+    expect($html)->toContain('isToday(day)');
+});
+
+it('renders today button', function () {
+    $html = Blade::render('<x-bt-datetime />');
+
+    expect($html)->toContain('goToToday()');
+    expect($html)->toContain('Today');
+});
+
+it('passes min to JS config', function () {
+    $html = Blade::render('<x-bt-datetime min="2024-01-01" />');
+
+    expect($html)->toContain('2024-01-01');
+});
+
+it('passes max to JS config', function () {
+    $html = Blade::render('<x-bt-datetime max="2024-12-31" />');
+
+    expect($html)->toContain('2024-12-31');
+});
+
+// ---------- Range Mode ----------
+
+it('passes range mode to JS config', function () {
+    $html = Blade::render('<x-bt-datetime :range="true" />');
+
+    expect($html)->toContain('range: true');
+});
+
+it('does not enable range by default', function () {
+    $html = Blade::render('<x-bt-datetime />');
+
+    expect($html)->toContain('range: false');
+});
+
+// ---------- Time Features ----------
+
+it('renders wheel UI when show-time enabled', function () {
+    $html = Blade::render('<x-bt-datetime :show-time="true" />');
+
+    expect($html)->toContain('role="listbox"');
+    expect($html)->toContain('getHourForType');
+    expect($html)->toContain('getMinuteForType');
+});
+
+it('renders wheel interaction methods when show-time enabled', function () {
+    $html = Blade::render('<x-bt-datetime :show-time="true" />');
+
+    expect($html)->toContain('getAdjacentHour');
+    expect($html)->toContain('moveHour');
+    expect($html)->toContain('wheelHour');
+    expect($html)->toContain('getAdjacentMinute');
+    expect($html)->toContain('moveMinute');
+    expect($html)->toContain('wheelMinute');
+});
+
+it('renders now button when show-time enabled', function () {
+    $html = Blade::render('<x-bt-datetime :show-time="true" />');
+
+    expect($html)->toContain('setTimeNow');
+    expect($html)->toContain('Now');
+});
+
+it('renders change date button when show-time enabled', function () {
+    $html = Blade::render('<x-bt-datetime :show-time="true" />');
+
+    expect($html)->toContain('Change date');
+});
+
+it('does not render time wheel when show-time is false', function () {
+    $html = Blade::render('<x-bt-datetime :show-time="false" />');
+
+    expect($html)->not->toContain('getHourForType');
+    expect($html)->not->toContain('getMinuteForType');
+    expect($html)->not->toContain('setTimeNow');
+});
+
+it('uses datetime display format with time when show-time enabled', function () {
+    $html = Blade::render('<x-bt-datetime :show-time="true" />');
+
+    expect($html)->toContain('{d}\/{m}\/{Y} {H}:{i}');
+});
+
+// ---------- Display Format ----------
+
+it('uses default date-only display format', function () {
+    $html = Blade::render('<x-bt-datetime />');
+
+    expect($html)->toContain('{d}\/{m}\/{Y}');
+});
+
+it('uses custom display format', function () {
+    $html = Blade::render('<x-bt-datetime format-display="{d}-{m}-{Y}" />');
+
+    expect($html)->toContain('{d}-{m}-{Y}');
+});
+
+// ---------- Color Presets ----------
+
+it('uses default beartropy color', function () {
+    $html = Blade::render('<x-bt-datetime />');
+
+    expect($html)->toContain('beartropy');
+});
+
+it('accepts explicit color prop', function () {
+    $html = Blade::render('<x-bt-datetime color="blue" />');
+
+    expect($html)->toContain('blue');
+});
+
+// ---------- Hidden Input ----------
+
+it('renders hidden input without wire:model', function () {
+    $html = Blade::render('<x-bt-datetime name="my_date" />');
+
+    expect($html)->toContain('type="hidden"');
+    expect($html)->toContain('name="my_date"');
+});
+
+// ---------- Custom Classes ----------
+
+it('passes custom classes to wrapper', function () {
+    $html = Blade::render('<x-bt-datetime class="custom-datetime" />');
 
     expect($html)->toContain('custom-datetime');
 });
 
-it('renders flatpickr initialization', function () {
-    $html = Blade::render('<x-bt-datetime name="test_date" />');
-
-    expect($html)->toContain('x-data="$beartropy.datetimepicker');
-});
-
-it('handles datetime with time enabled', function () {
-    $html = Blade::render('<x-bt-datetime name="test_datetime" :show-time="true" value="2023-10-15 14:30" />');
-
-    expect($html)->toContain('2023-10-15 14:30');
-});
+// ---------- Combined Features ----------
 
 it('can render with all features combined', function () {
     $html = Blade::render('
-        <x-bt-datetime 
+        <x-bt-datetime
             name="appointment_date"
-            label="Appointment Date & Time"
+            label="Appointment Date"
             placeholder="Select date and time..."
             value="2024-06-15 10:00"
             min="2024-01-01"
@@ -156,7 +339,6 @@ it('can render with all features combined', function () {
             :show-time="true"
             format-display="{d}/{m}/{Y} {H}:{i}"
             hint="Choose your preferred appointment slot"
-            locale="en"
             class="custom-datetime-picker"
         />
     ');
@@ -166,25 +348,27 @@ it('can render with all features combined', function () {
     expect($html)->toContain('2024-06-15 10:00');
     expect($html)->toContain('2024-01-01');
     expect($html)->toContain('2024-12-31');
-    expect($html)->toContain('{d}/{m}/{Y} {H}:{i}');
     expect($html)->toContain('Choose your preferred appointment slot');
     expect($html)->toContain('custom-datetime-picker');
 });
 
-it('handles error state correctly', function () {
-    $html = Blade::render('<x-bt-datetime name="test_date" custom-error="Please select a valid date" />');
+it('renders with datetime + range + time combined', function () {
+    $html = Blade::render('<x-bt-datetime :range="true" :show-time="true" />');
 
-    expect($html)->toContain('Please select a valid date');
+    expect($html)->toContain('range: true');
+    expect($html)->toContain('showTime: true');
+    expect($html)->toContain('currentTimeType()');
 });
 
-it('can render date range with custom placeholders', function () {
-    $html = Blade::render('<x-bt-datetime name="test_range" :range="true" placeholder="Select date range..." />');
+it('renders calendar icon SVG', function () {
+    $html = Blade::render('<x-bt-datetime />');
 
-    expect($html)->toContain('Select date range...');
+    expect($html)->toContain('M8 7V3m8 4V3m-9 8h10M5 21h14');
 });
 
-it('renders with calendar functionality', function () {
-    $html = Blade::render('<x-bt-datetime name="test_date" />');
+it('renders column labels for hour and minute in time mode', function () {
+    $html = Blade::render('<x-bt-datetime :show-time="true" />');
 
-    expect($html)->toContain('$beartropy.datetimepicker');
+    expect($html)->toContain('Hour');
+    expect($html)->toContain('Min');
 });

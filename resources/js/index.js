@@ -3,9 +3,9 @@ import { dialog } from './modules/dialog.js';
 import { openModal, closeModal } from './modules/modal.js';
 import { toast } from './modules/toast.js';
 import { beartropyTable } from './modules/table.js';
-import { beartropyI18n, datetimepicker } from './modules/datetime-picker.js';
+import { beartropyDatetimepicker } from './modules/datetime-picker.js';
 import { beartropyTimepicker } from './modules/time-picker.js';
-import { tagInput } from './modules/tag-input.js';
+import { beartropyTagInput } from './modules/tag-input.js';
 import { confirmHost } from './modules/confirm.js';
 import { btDialog } from './modules/bt-dialog.js';
 import { beartropySelect } from './modules/select.js';
@@ -19,15 +19,13 @@ window.$beartropy.dialog = dialog;
 window.$beartropy.openModal = openModal;
 window.$beartropy.closeModal = closeModal;
 window.$beartropy.toast = toast;
-// Export i18n separately
-window.beartropyI18n = beartropyI18n;
 
 document.addEventListener('alpine:init', () => {
     // Register Alpine components
     Alpine.data('beartropyTable', beartropyTable);
-    Alpine.data('datetimepicker', datetimepicker);
+    Alpine.data('beartropyDatetimepicker', beartropyDatetimepicker);
     Alpine.data('beartropyTimepicker', beartropyTimepicker);
-    Alpine.data('tagInput', tagInput);
+    Alpine.data('beartropyTagInput', beartropyTagInput);
     Alpine.data('confirmHost', confirmHost);
     Alpine.data('btDialog', btDialog);
     Alpine.data('beartropySelect', beartropySelect);
@@ -35,9 +33,9 @@ document.addEventListener('alpine:init', () => {
 
     // Keep global references for legacy/external usage if needed
     window.$beartropy.beartropyTable = beartropyTable;
-    window.$beartropy.datetimepicker = datetimepicker;
+    window.$beartropy.beartropyDatetimepicker = beartropyDatetimepicker;
     window.$beartropy.beartropyTimepicker = beartropyTimepicker;
-    window.$beartropy.tagInput = tagInput;
+    window.$beartropy.beartropyTagInput = beartropyTagInput;
     window.$beartropy.confirmHost = confirmHost;
     window.$beartropy.btDialog = btDialog;
     window.$beartropy.beartropySelect = beartropySelect;

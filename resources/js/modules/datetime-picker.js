@@ -1,36 +1,18 @@
-﻿// DateTime Picker Module
-export const beartropyI18n = {
-    es: {
-        months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-        monthsLong: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'],
-        weekdays: ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'],
-        from: 'Desde',
-        to: 'Hasta',
-        placeholder: 'Seleccionar fecha.'
-    },
-    en: {
-        months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-        monthsLong: ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'],
-        weekdays: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-        from: 'From',
-        to: 'To',
-        placeholder: 'Select date.'
-    },
-};
-
-export function datetimepicker(entangledValue, rangeMode = false, min = '', max = '', formatDisplay = '{d}/{m}/{Y}', showTime = false) {
+// DateTime Picker Module
+export function beartropyDatetimepicker(cfg) {
     return {
-        value: entangledValue,
+        value: cfg.value ?? '',
         open: false,
-        range: !!rangeMode,
-        min: min || '',
-        max: max || '',
-        showTime: !!showTime,
+        range: !!cfg.range,
+        min: cfg.min || '',
+        max: cfg.max || '',
+        showTime: !!cfg.showTime,
+        disabled: !!cfg.disabled,
         startHour: '00',
         startMinute: '00',
         endHour: '00',
         endMinute: '00',
-        formatDisplay: formatDisplay || '{d}/{m}/{Y}',
+        formatDisplay: cfg.formatDisplay || '{d}/{m}/{Y}',
         panel: 'date-start',
         startTimeSet: false,
         endTimeSet: false,
@@ -41,6 +23,8 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
         start: null,
         end: null,
         displayLabel: '',
+        i18n: cfg.i18n ?? {},
+
         init() {
             this.setFromValue();
             let refDate = this.start ? new Date(this.start) : new Date();
@@ -72,6 +56,7 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
                 this.setInitialPanel();
             });
         },
+
         setFromValue() {
             if (!this.range) {
                 let [date, time] = (this.value || '').split(' ');
@@ -112,6 +97,7 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
                 this.endTimeSet = false;
             }
         },
+
         updateDisplay() {
             if (!this.range) {
                 this.displayLabel = this.formatForDisplay(
@@ -133,30 +119,39 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
                 this.displayLabel = '';
             }
         },
-        formatDate(str) {
-            if (!str) return '';
-            let [y, m, d] = str.split('-');
-            return `${d}/${m}/${y}`;
-        },
+
         updateCalendar() {
             let first = new Date(this.year, this.month, 1);
             let last = new Date(this.year, this.month + 1, 0);
             let startDay = (first.getDay() + 6) % 7;
             let days = [];
-            for (let i = 0; i < startDay; i++) days.push({ label: '', date: '', inMonth: false });
+            for (let i = 0; i < startDay; i++) {
+                days.push({ label: '', date: '', inMonth: false });
+            }
             for (let d = 1; d <= last.getDate(); d++) {
                 let date = `${this.year}-${(this.month + 1).toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`;
                 days.push({ label: d, date, inMonth: true });
             }
-            while (days.length % 7) days.push({ label: '', date: '', inMonth: false });
+            while (days.length % 7) {
+                days.push({ label: '', date: '', inMonth: false });
+            }
             this.days = days;
         },
+
         isDisabled(day) {
             if (!day.date) return true;
             if (this.min && day.date < this.min) return true;
             if (this.max && day.date > this.max) return true;
             return !day.inMonth;
         },
+
+        isToday(day) {
+            if (!day.date) return false;
+            const now = new Date();
+            const today = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+            return day.date === today;
+        },
+
         selectDay(day) {
             if (this.isDisabled(day)) return;
             this.hovered = null;
@@ -229,6 +224,7 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
             }
             this.updateDisplay();
         },
+
         setTime(type, h, m, autoAdvance = false) {
             if (type === 'start') {
                 this.startHour = h;
@@ -264,9 +260,11 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
             }
             this.updateDisplay();
         },
+
         isSelected(day) {
             return day.date && (day.date === this.start || day.date === this.end);
         },
+
         isInRange(day) {
             if (!this.range || !day.date || !this.start) return false;
             if (this.end) {
@@ -278,14 +276,17 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
             }
             return false;
         },
+
         prevMonth() {
             if (--this.month < 0) { this.month = 11; this.year--; }
             this.updateCalendar();
         },
+
         nextMonth() {
             if (++this.month > 11) { this.month = 0; this.year++; }
             this.updateCalendar();
         },
+
         normalizeDate(str) {
             if (!str) return '';
             if (/^\d{10}$/.test(str)) {
@@ -308,6 +309,7 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
             if (m) return `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
             return str;
         },
+
         formatForDisplay(dateStr, format = '{d}/{m}/{Y}', hour = '', minute = '') {
             if (!dateStr) return '';
             let [y, m, d] = dateStr.split('-');
@@ -332,6 +334,7 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
             out = out.replace(/{i}/g, minute);
             return out;
         },
+
         onDropdownClose() {
             if (this.range) {
                 if (this.start && this.end) {
@@ -351,6 +354,7 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
             this.panel = 'date-start';
             this.updateDisplay();
         },
+
         setInitialPanel() {
             if (!this.showTime) {
                 this.panel = 'date-start';
@@ -378,16 +382,110 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
                 this.panel = 'date-start';
             }
         },
+
         showCalendarPane() {
             if (!this.showTime) return true;
             return this.panel === 'date-start' || this.panel === 'date-end';
         },
+
         isPickingStartTime() {
             return this.showTime && this.panel === 'time-start';
         },
+
         isPickingEndTime() {
             return this.showTime && this.panel === 'time-end';
         },
+
+        currentTimeType() {
+            return this.panel === 'time-end' ? 'end' : 'start';
+        },
+
+        // --- Wheel getters ---
+
+        getHourForType(type) {
+            return type === 'end' ? this.endHour : this.startHour;
+        },
+
+        getMinuteForType(type) {
+            return type === 'end' ? this.endMinute : this.startMinute;
+        },
+
+        getAdjacentHour(type, offset) {
+            const h = parseInt(this.getHourForType(type), 10);
+            let next = h + offset;
+            if (next < 0) next = 23;
+            if (next > 23) next = 0;
+            return String(next).padStart(2, '0');
+        },
+
+        getAdjacentMinute(type, offset) {
+            const m = parseInt(this.getMinuteForType(type), 10);
+            let next = m + offset;
+            if (next < 0) next = 59;
+            if (next > 59) next = 0;
+            return String(next).padStart(2, '0');
+        },
+
+        wheelHour(type, event) {
+            if (this.disabled) return;
+            this.moveHour(type, event.deltaY > 0 ? 1 : -1);
+        },
+
+        wheelMinute(type, event) {
+            if (this.disabled) return;
+            this.moveMinute(type, event.deltaY > 0 ? 1 : -1);
+        },
+
+        moveHour(type, direction) {
+            const current = parseInt(this.getHourForType(type), 10);
+            let next = current + direction;
+            if (next < 0) next = 23;
+            if (next > 23) next = 0;
+            const h = String(next).padStart(2, '0');
+            if (type === 'end') {
+                this.endHour = h;
+            } else {
+                this.startHour = h;
+            }
+            this.setTime(type, this.getHourForType(type), this.getMinuteForType(type));
+        },
+
+        moveMinute(type, direction) {
+            const current = parseInt(this.getMinuteForType(type), 10);
+            let next = current + direction;
+            if (next < 0) next = 59;
+            if (next > 59) next = 0;
+            const m = String(next).padStart(2, '0');
+            if (type === 'end') {
+                this.endMinute = m;
+            } else {
+                this.startMinute = m;
+            }
+            this.setTime(type, this.getHourForType(type), this.getMinuteForType(type));
+        },
+
+        setTimeNow(type) {
+            if (this.disabled) return;
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            if (type === 'end') {
+                this.endHour = h;
+                this.endMinute = m;
+            } else {
+                this.startHour = h;
+                this.startMinute = m;
+            }
+            this.setTime(type, h, m, true);
+        },
+
+        goToToday() {
+            const now = new Date();
+            this.month = now.getMonth();
+            this.year = now.getFullYear();
+            this.updateCalendar();
+        },
+
         clearSelection() {
             this.value = '';
             this.start = '';
@@ -401,8 +499,6 @@ export function datetimepicker(entangledValue, rangeMode = false, min = '', max 
             this.startTimeSet = false;
             this.endTimeSet = false;
             this.hovered = null;
-        }
-
-
+        },
     };
-};
+}

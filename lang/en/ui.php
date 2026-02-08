@@ -48,5 +48,7 @@ return [
     'remove_file' => 'Remove file',
     'select_time' => 'Select time...',
     'now' => 'Now',
+    'today' => 'Today',
     'second_short' => 'Sec',
+    'add_tag' => 'Add tag...',
 ];

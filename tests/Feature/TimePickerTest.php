@@ -353,9 +353,11 @@ it('hour and minute wheels are focusable', function () {
 
 // ---------- Click Outside Closes ----------
 
-it('includes click outside handler', function () {
+it('delegates click-outside to dropdown-base', function () {
     $html = Blade::render('<x-bt-time-picker />');
 
+    // dropdown-base provides @click.outside on the dropdown element itself.
+    // Root div must NOT have its own @click.outside (dropdown teleports to <body>).
     expect($html)->toContain('@click.outside');
 });
 

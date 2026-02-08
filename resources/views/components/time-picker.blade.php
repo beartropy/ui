@@ -25,7 +25,6 @@
         disabled: {{ $disabled ? 'true' : 'false' }},
         i18n: { now: '{{ __('beartropy-ui::ui.now') }}' },
     })"
-    @click.outside="open = false"
     class="flex flex-col w-full {{ $wrapperClass }}"
     {{ $attributes->except(['class', 'id', 'wire:model', 'wire:model.live', 'wire:model.blur', 'wire:model.lazy', 'fill', 'outline']) }}
 >

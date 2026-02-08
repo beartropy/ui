@@ -65,11 +65,6 @@ return [
             'size' => env('BEARTROPY_UI_TEXTAREA_SIZE', 'md'),
             'outline' => env('BEARTROPY_UI_TEXTAREA_OUTLINE', true)
         ],
-        'tag' => [
-            'color' => env('BEARTROPY_UI_TAG_COLOR', 'primary'),
-            'size' => env('BEARTROPY_UI_TAG_SIZE', 'md'),
-            'outline' => env('BEARTROPY_UI_TAG_OUTLINE', true)
-        ],
         'button' => [
             'color' => env('BEARTROPY_UI_BUTTON_COLOR', 'beartropy'),
             'size' => env('BEARTROPY_UI_BUTTON_SIZE', 'md')
@@ -107,6 +102,9 @@ return [
         ],
         'time-picker' => [
             'color' => env('BEARTROPY_UI_TIME_PICKER_COLOR', 'beartropy'),
+        ],
+        'datetime' => [
+            'color' => env('BEARTROPY_UI_DATETIME_COLOR', 'beartropy'),
         ],
     ],
 

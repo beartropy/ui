@@ -2,14 +2,25 @@
     [$colorPreset, $sizePreset, $shouldFill] = $getComponentPresets('input');
     [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
     [$hasWireModel, $wireModelValue] = $getWireModelState();
-    $inputId = $attributes->get('id') ?? 'taginput-' . uniqid();
+
+    $inputId = $id;
+    $inputName = $wireModelValue ?: $name;
+    $labelClass = $hasError ? ($colorPreset['label_error'] ?? $colorPreset['label']) : $colorPreset['label'];
     $borderClass = $hasError ? ($colorPreset['border_error'] ?? $colorPreset['border']) : $colorPreset['border'];
     $ringClass = $hasError ? ($colorPreset['ring_error'] ?? $colorPreset['ring']) : $colorPreset['ring'];
-    $labelClass = $hasError ? ($colorPreset['label_error'] ?? $colorPreset['label']) : $colorPreset['label'];
+    $wrapperClass = $attributes->get('class') ?? '';
+
+    $chipClasses = match($sizePreset['font'] ?? 'text-base') {
+        'text-xs' => 'text-xs px-1.5 py-0.5',
+        'text-sm' => 'text-xs px-2 py-0.5',
+        'text-lg' => 'text-sm px-2.5 py-1',
+        'text-xl' => 'text-base px-3 py-1.5',
+        default => 'text-sm px-2 py-1',
+    };
 @endphp
 
 <div
-    x-data="$beartropy.tagInput({
+    x-data="beartropyTagInput({
         @if($hasWireModel)
             initialTags: @entangle($attributes->wire('model')),
         @else
@@ -20,16 +31,17 @@
         disabled: {{ $disabled ? 'true' : 'false' }},
         separator: @js($separator),
     })"
-    class="flex flex-col w-full"
+    class="flex flex-col w-full {{ $wrapperClass }}"
+    {{ $attributes->except(['class', 'id', 'wire:model', 'wire:model.live', 'wire:model.blur', 'wire:model.lazy']) }}
 >
     @if($label)
-        <label for="{{ $inputId }}" class="{{ $hasError ? ($colorPreset['label_error'] ?? $colorPreset['label']) : $colorPreset['label'] }}">
-            {!! $label !!}
+        <label for="{{ $inputId }}" class="{{ $labelClass }}">
+            {{ $label }}
         </label>
     @endif
 
     <div
-        class="flex items-center group w-full rounded-lg transition-all shadow-sm outline-none overflow-hidden
+        class="flex items-stretch group w-full rounded-lg transition-all shadow-sm outline-none overflow-hidden
             {{ $shouldFill ? $colorPreset['bg'] : 'bg-white dark:bg-gray-900' }}
             {{ $borderClass ?? '' }}
             {{ $ringClass ?? '' }}
@@ -46,9 +58,9 @@
         @endif
 
         {{-- Chips + input --}}
-        <div class="flex flex-wrap gap-1 items-center w-full pl-3 {{ $sizePreset['minHeight'] }} max-h-32 overflow-y-auto beartropy-thin-scrollbar" wire:ignore>
-            <template x-for="(tag, i) in tags" :key="tag">
-                <span class="flex items-center gap-1 px-2 py-1 rounded {{ $colorPreset['chip_bg'] }} {{ $colorPreset['chip_text'] }} text-sm">
+        <div class="flex flex-wrap gap-1 items-center w-full pl-3 py-1 {{ $sizePreset['minHeight'] }} max-h-32 overflow-y-auto beartropy-thin-scrollbar" wire:ignore>
+            <template x-for="(tag, i) in tags" :key="'chip-'+tag+i">
+                <span class="flex items-center gap-1 {{ $chipClasses }} rounded {{ $colorPreset['chip_bg'] }} {{ $colorPreset['chip_text'] }}">
                     <span x-text="tag"></span>
                     <button
                         type="button"
@@ -73,14 +85,12 @@
                 class="flex-1 bg-transparent outline-none border-none shadow-none min-w-[120px] beartropy-input
                     {{ $sizePreset['font'] ?? '' }}
                     {{ $colorPreset['text'] ?? '' }}
-                    {{ $colorPreset['placeholder'] ?? '' }}
-"
+                    {{ $colorPreset['placeholder'] ?? '' }}"
                 :placeholder="tags.length === 0 ? '{{ $placeholder }}' : ''"
                 autocomplete="off"
                 @paste="handlePaste"
                 style="min-width: 80px;"
             >
-
         </div>
 
         {{-- End slot --}}
@@ -91,8 +101,15 @@
         @endif
     </div>
 
+    {{-- Hidden inputs for form submission --}}
+    @unless($hasWireModel)
+        <template x-for="(tag, i) in tags" :key="'hidden-'+tag+i">
+            <input type="hidden" :name="`{{ $inputName }}[]`" :value="tag">
+        </template>
+    @endunless
+
     <x-beartropy-ui::support.field-help
         :error-message="$finalError"
-        :hint="$help ?? $hint ?? null"
+        :hint="$hint ?? $help ?? null"
     />
 </div>

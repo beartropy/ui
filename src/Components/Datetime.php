@@ -5,48 +5,31 @@ namespace Beartropy\Ui\Components;
 /**
  * Datetime component.
  *
- * Renders a date/time picker using flatpickr.
+ * Renders a date/time picker with calendar UI and optional time wheel.
  *
+ * @property string|null $id            Component id.
  * @property string|null $name          Input name.
  * @property string|null $label         Input label.
+ * @property string|null $color         Color preset key.
  * @property mixed       $value         Initial value.
- * @property string|null $min           Minimum date.
- * @property string|null $max           Maximum date.
+ * @property string|null $min           Minimum date (YYYY-MM-DD).
+ * @property string|null $max           Maximum date (YYYY-MM-DD).
  * @property bool        $disabled      Disabled state.
  * @property bool        $readonly      Readonly state.
  * @property string|null $placeholder   Placeholder text.
- * @property string|null $hint          Hint text.
- * @property string|null $customError   Custom error message.
- * @property string      $locale        Locale setting.
+ * @property string|null $hint          Hint text below input.
+ * @property string|null $help          Help text below input.
+ * @property mixed       $customError   Custom error message.
  * @property bool        $range         Enable range mode.
- * @property mixed       $initialValue  Initial value override.
  * @property string      $format        Date format (PHP format).
  * @property string|null $formatDisplay Display format (JS format).
  * @property bool        $showTime      Enable time picker.
- * @property string|null $color         Input color.
+ * @property bool        $clearable     Allow clearing selection.
  */
 class Datetime extends BeartropyComponent
 {
     /**
      * Create a new Datetime component instance.
-     *
-     * @param string|null $name          Input name.
-     * @param string|null $label         Input label.
-     * @param mixed       $value         Initial value.
-     * @param string|null $min           Minimum date.
-     * @param string|null $max           Maximum date.
-     * @param bool        $disabled      Disabled state.
-     * @param bool        $readonly      Readonly state.
-     * @param string|null $placeholder   Placeholder text.
-     * @param string|null $hint          Hint text.
-     * @param string|null $customError   Custom error message.
-     * @param string      $locale        Locale setting.
-     * @param bool        $range         Enable range mode.
-     * @param mixed       $initialValue  Initial value override.
-     * @param string      $format        Date format (PHP format).
-     * @param string|null $formatDisplay Display format (JS format).
-     * @param bool        $showTime      Enable time picker.
-     * @param string|null $color         Input color.
      *
      * ## Blade Props
      *
@@ -54,12 +37,30 @@ class Datetime extends BeartropyComponent
      * @slot default Trigger content.
      *
      * ### Magic Attributes (Color)
-     * @property bool $primary   Primary color.
-     * @property bool $secondary Secondary color.
-     * @property bool $success   Success color.
-     * @property bool $warning   Warning color.
-     * @property bool $danger    Danger color.
-     * @property bool $info      Info color.
+     * @property bool $beartropy Beartropy color.
+     * @property bool $red       Red color.
+     * @property bool $orange    Orange color.
+     * @property bool $amber     Amber color.
+     * @property bool $yellow    Yellow color.
+     * @property bool $lime      Lime color.
+     * @property bool $green     Green color.
+     * @property bool $emerald   Emerald color.
+     * @property bool $teal      Teal color.
+     * @property bool $cyan      Cyan color.
+     * @property bool $sky       Sky color.
+     * @property bool $blue      Blue color.
+     * @property bool $indigo    Indigo color.
+     * @property bool $violet    Violet color.
+     * @property bool $purple    Purple color.
+     * @property bool $fuchsia   Fuchsia color.
+     * @property bool $pink      Pink color.
+     * @property bool $rose      Rose color.
+     * @property bool $slate     Slate color.
+     * @property bool $gray      Gray color.
+     * @property bool $zinc      Zinc color.
+     * @property bool $neutral   Neutral color.
+     * @property bool $stone     Stone color.
+     * @property bool $primary   Primary color (alias for beartropy).
      *
      * ### Magic Attributes (Size)
      * @property bool $xs Extra Small.
@@ -69,8 +70,10 @@ class Datetime extends BeartropyComponent
      * @property bool $xl Extra Large.
      */
     public function __construct(
+        public ?string $id = null,
         public ?string $name = null,
         public ?string $label = null,
+        public ?string $color = null,
         public mixed $value = null,
         public ?string $min = null,
         public ?string $max = null,
@@ -78,23 +81,21 @@ class Datetime extends BeartropyComponent
         public bool $readonly = false,
         public ?string $placeholder = null,
         public ?string $hint = null,
-        public ?string $customError = null,
-        public ?string $locale = null,
+        public ?string $help = null,
+        public mixed $customError = null,
         public bool $range = false,
-        public mixed $initialValue = null,
         public string $format = 'Y-m-d',
         public ?string $formatDisplay = null,
         public bool $showTime = false,
-        public ?string $color = null,
+        public bool $clearable = true,
     ) {
-        $this->locale = $locale ?? app()->getLocale();
+        $this->id = $id ?? ('beartropy-datetime-' . uniqid());
+        $this->name = $name ?? $this->id;
         $this->formatDisplay = $formatDisplay ?? ($showTime ? '{d}/{m}/{Y} {H}:{i}' : '{d}/{m}/{Y}');
     }
 
     /**
      * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\View\View|\Closure|string
      */
     public function render(): \Illuminate\Contracts\View\View
     {
