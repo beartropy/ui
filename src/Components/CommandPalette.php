@@ -11,8 +11,13 @@ use Illuminate\Support\Facades\Storage;
  * CommandPalette component.
  *
  * A searchable command palette for navigation and actions.
- * Supports loading items from an array or a JSON file.
- * Includes permission filtering via Spatie Permissions if available.
+ * Opens via Cmd+K / Ctrl+K or click trigger; renders a modal overlay
+ * via `x-teleport` with Alpine.js keyboard navigation (arrow keys, tab, enter).
+ *
+ * Supports loading items from a PHP array or a JSON file in storage/app.
+ * Items are cached per-user with permission/role filtering via Spatie Permissions.
+ *
+ * Action types: `route:name`, `url:path`, absolute/relative URLs, `dispatch:event`, `js:code`.
  *
  * @property string|null $color       Component color.
  * @property array|null  $items       Items definition array.
@@ -188,9 +193,9 @@ class CommandPalette extends BeartropyComponent
     /**
      * Filter items by permissions (Spatie).
      *
-     * - Guest: if $allowGuests => all; otherwise only items without 'permission'/'role'.
+     * - Guest: if $allowGuests => all; otherwise only items without 'permission'/'roles'.
      * - Admin: all (if config admin_roles matches).
-     * - User: checks 'permission' (can) and 'role' (hasAnyRole).
+     * - User: checks 'permission' (can) and 'roles' (hasAnyRole).
      *
      * @param array $items Normalized items.
      *
@@ -208,12 +213,12 @@ class CommandPalette extends BeartropyComponent
 
             // Only items without restrictions (no permission or role)
             return array_values(array_filter($items, function ($i) {
-                return empty($i['permission']) && empty($i['role']);
+                return empty($i['permission']) && empty($i['roles']);
             }));
         }
 
         // Bypass via admin_roles (Spatie hasAnyRole)
-        $adminRoles = config('beartropy-ui.admin_roles', []);
+        $adminRoles = config('beartropyui.admin_roles', []);
         /** @phpstan-ignore-next-line */
         if (!empty($adminRoles) && method_exists($user, 'hasAnyRole') && $user->hasAnyRole($adminRoles)) {
             return $items;
@@ -256,11 +261,13 @@ class CommandPalette extends BeartropyComponent
         // - At least one defined => visible if (permission OK) OR (role OK)
         return array_values(array_filter($items, function ($i) use ($matchesPermission, $matchesRole) {
             $perm = $i['permission'] ?? null;
-            $role = $i['role'] ?? null;
+            $roles = $i['roles'] ?? null;
 
-            if (empty($perm) && empty($role)) return true;
+            if (empty($perm) && empty($roles)) {
+                return true;
+            }
 
-            return $matchesPermission($perm) || $matchesRole($role);
+            return $matchesPermission($perm) || $matchesRole($roles);
         }));
     }
 
@@ -274,6 +281,6 @@ class CommandPalette extends BeartropyComponent
      */
     protected function stripPermissions(array $items): array
     {
-        return array_map(fn($i) => Arr::except($i, ['permission']), $items);
+        return array_map(fn($i) => Arr::except($i, ['permission', 'roles']), $items);
     }
 }

@@ -58,4 +58,6 @@ return [
     'expand' => 'Expand',
     'submenu_for' => 'Submenu for :label',
     'sidebar_navigation' => 'Sidebar navigation',
+    'command_palette' => 'Command palette',
+    'search_results' => 'Search results',
 ];

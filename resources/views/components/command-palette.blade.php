@@ -3,10 +3,6 @@
     [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('command-palette');
 @endphp
 
-{{-- @if(class_exists(\Tighten\Ziggy\BladeRouteGenerator::class))
-    {!! app(\Tighten\Ziggy\BladeRouteGenerator::class)->generate() !!}
-@endif --}}
-
 <div
     x-data="btCommandPalette({
         initial: @js($bt_cp_data) // items already filtered and safe
@@ -33,17 +29,9 @@
         </div>
     @endif
 
-    {{-- Modal Overlay --}}
+    {{-- Modal --}}
     <template x-teleport="body">
         <div
-            x-show="open"
-            x-transition:enter="transition ease-out duration-200"
-            x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100"
-            x-transition:leave="transition ease-in duration-150"
-            x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0"
-            class="fixed inset-0 bg-black/40 backdrop-blur-xl z-[9999] flex items-start justify-center p-6"
             x-init="
                 $watch('open', value => {
                     if (value) {
@@ -55,81 +43,111 @@
                 })
             "
         >
+            {{-- Backdrop --}}
             <div
                 x-show="open"
-                x-transition:enter="transition transform ease-[cubic-bezier(0.16,1,0.3,1)] duration-300"
-                x-transition:enter-start="opacity-0 scale-95 translate-y-8"
-                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                x-transition:leave="transition transform ease-[cubic-bezier(0.7,0,0.84,0)] duration-250"
-                x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-                x-transition:leave-end="opacity-0 scale-95 translate-y-6"
-                class="rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-gray-200/60 dark:border-gray-700/60 origin-center"
-                :class="open ? '{{ $colorPreset['modal_bg'] ?? 'bg-white/80 dark:bg-gray-800/80' }}' : ''"
-                @click.outside="open = false"
-                @keydown.escape.window="open = false"
-                @keydown.arrow-down.prevent="handleKey($event)"
-                @keydown.arrow-up.prevent="handleKey($event)"
-                @keydown.enter.prevent="handleKey($event)"
-                @keydown.tab.prevent="handleKey($event)"
-                @keydown.shift.tab.prevent="handleKey($event)"
-                x-init="$watch('open', v => { if (v) selectedIndex = 0 })"
-            >
-                <div class="p-3 border-b border-gray-200 dark:border-gray-700">
-                    <x-beartropy-ui::input
-                        id="{{ $id }}-input"
-                        color="{{ $presetNames['color'] }}"
-                        x-model="query"
-                        placeholder="{{ __('beartropy-ui::ui.search') }}"
-                        icon-start="magnifying-glass"
-                        autofocus
-                    />
-                </div>
+                x-cloak
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-black/40 backdrop-blur-xl z-[9999]"
+                aria-hidden="true"
+            ></div>
 
-                <ul class="max-h-96 overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 beartropy-thin-scrollbar">
-                    <template x-if="filtered && filtered.length">
-                        <template x-for="(item, index) in filtered" :key="(item.action || 'item') + '-' + index">
-                            <li
-                                :data-cp-index="index"
-                                @click="execute(item)"
-                                class="p-3 cursor-pointer transition-colors flex flex-col gap-1"
-                                :class="{
-                                    '{{ $colorPreset['hover_bg'] ?? 'hover:bg-gray-100 dark:hover:bg-gray-700' }}': true,
-                                    'bg-beartropy-500/10 dark:bg-beartropy-400/20 ring-1 ring-beartropy-400/30': index === selectedIndex
-                                }"
-                            >
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-sm font-medium {{ $colorPreset['text'] }}" x-text="item.title"></span>
+            {{-- Dialog --}}
+            <div
+                x-show="open"
+                x-cloak
+                class="fixed inset-0 z-[9999] flex items-start justify-center p-6"
+                role="dialog"
+                aria-modal="true"
+                aria-label="{{ __('beartropy-ui::ui.command_palette') }}"
+                @click.self="open = false"
+                @keydown.escape.window="open = false"
+            >
+                {{-- Panel --}}
+                <div
+                    x-show="open"
+                    x-transition:enter="transition transform ease-[cubic-bezier(0.16,1,0.3,1)] duration-300"
+                    x-transition:enter-start="opacity-0 scale-95 translate-y-8"
+                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                    x-transition:leave="transition transform ease-[cubic-bezier(0.7,0,0.84,0)] duration-200"
+                    x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                    x-transition:leave-end="opacity-0 scale-95 translate-y-6"
+                    class="rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-gray-200/60 dark:border-gray-700/60 origin-center {{ $colorPreset['modal_bg'] ?? 'bg-white/80 dark:bg-gray-800/80' }}"
+                    @keydown.arrow-down.prevent="handleKey($event)"
+                    @keydown.arrow-up.prevent="handleKey($event)"
+                    @keydown.enter.prevent="handleKey($event)"
+                    @keydown.tab.prevent="handleKey($event)"
+                    @keydown.shift.tab.prevent="handleKey($event)"
+                    x-init="$watch('open', v => { if (v) selectedIndex = 0 })"
+                >
+                    <div class="p-3 border-b border-gray-200 dark:border-gray-700">
+                        <x-beartropy-ui::input
+                            id="{{ $id }}-input"
+                            color="{{ $presetNames['color'] }}"
+                            x-model="query"
+                            placeholder="{{ __('beartropy-ui::ui.search') }}"
+                            icon-start="magnifying-glass"
+                            autofocus
+                        />
+                    </div>
+
+                    <ul
+                        role="listbox"
+                        aria-label="{{ __('beartropy-ui::ui.search_results') }}"
+                        class="max-h-96 overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 beartropy-thin-scrollbar"
+                    >
+                        <template x-if="filtered && filtered.length">
+                            <template x-for="(item, index) in filtered" :key="(item.action || 'item') + '-' + index">
+                                <li
+                                    role="option"
+                                    :aria-selected="index === selectedIndex"
+                                    :data-cp-index="index"
+                                    @click="execute(item)"
+                                    class="p-3 cursor-pointer transition-colors flex flex-col gap-1"
+                                    :class="{
+                                        '{{ $colorPreset['hover_bg'] ?? 'hover:bg-gray-100 dark:hover:bg-gray-700' }}': true,
+                                        '{{ $colorPreset['selected_bg'] ?? 'bg-beartropy-500/10 dark:bg-beartropy-400/20 ring-1 ring-beartropy-400/30' }}': index === selectedIndex
+                                    }"
+                                >
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-sm font-medium {{ $colorPreset['text'] }}" x-text="item.title"></span>
+                                        </div>
+
+                                        <template x-if="item.tags && item.tags.length">
+                                            <div class="flex flex-wrap gap-1">
+                                                <template x-for="(tag, tindex) in item.tags" :key="(item.action || 'item') + '-tag-' + tindex">
+                                                    <span
+                                                        @click.stop="query = tag"
+                                                        class="text-[10px] px-2 py-0.5 rounded-full bg-gray-200/60 dark:bg-gray-700/60 text-gray-600 dark:text-gray-300 hover:bg-gray-300/60 dark:hover:bg-gray-600/60 hover:text-gray-800 dark:hover:text-gray-200 cursor-pointer transition-colors"
+                                                        x-text="tag"
+                                                    ></span>
+                                                </template>
+                                            </div>
+                                        </template>
                                     </div>
 
-                                    <template x-if="item.tags && item.tags.length">
-                                        <div class="flex flex-wrap gap-1">
-                                            <template x-for="(tag, tindex) in item.tags" :key="(item.action || 'item') + '-tag-' + tindex">
-                                                <span
-                                                    @click.stop="query = tag"
-                                                    class="text-[10px] px-2 py-0.5 rounded-full bg-gray-200/60 dark:bg-gray-700/60 text-gray-600 dark:text-gray-300 hover:bg-gray-300/60 dark:hover:bg-gray-600/60 hover:text-gray-800 dark:hover:text-gray-200 cursor-pointer transition-colors"
-                                                    x-text="tag"
-                                                ></span>
-                                            </template>
-                                        </div>
-                                    </template>
-                                </div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 line-clamp-1" x-text="item.description"></div>
+                                </li>
+                            </template>
+                        </template>
 
-                                <div class="text-xs text-gray-500 dark:text-gray-400 line-clamp-1" x-text="item.description"></div>
+                        <template x-if="filtered && filtered.length === 0">
+                            <li class="p-3 text-sm text-gray-400">{{ __('beartropy-ui::ui.no_results') }}</li>
+                        </template>
+
+                        <template x-if="!query && filtered && filtered.length === 5">
+                            <li class="p-3 text-xs text-gray-400 text-center">
+                                {{ __('beartropy-ui::ui.showing_first_results') }}
                             </li>
                         </template>
-                    </template>
-
-                    <template x-if="filtered && filtered.length === 0">
-                        <li class="p-3 text-sm text-gray-400">{{ __('beartropy-ui::ui.no_results') }}</li>
-                    </template>
-
-                    <template x-if="!query && filtered && filtered.length === 5">
-                        <li class="p-3 text-xs text-gray-400 text-center">
-                            {{ __('beartropy-ui::ui.showing_first_results') }}
-                        </li>
-                    </template>
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
     </template>
