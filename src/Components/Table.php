@@ -7,59 +7,69 @@ namespace Beartropy\Ui\Components;
  *
  * Renders a data table with support for pagination, sorting, and search.
  * Handles data normalization for Collections, Arrays, and associative arrays.
+ *
+ * @property bool $primary   Primary color.
+ * @property bool $secondary Secondary color.
+ * @property bool $success   Success color.
+ * @property bool $warning   Warning color.
+ * @property bool $danger    Danger color.
+ * @property bool $info      Info color.
  */
 class Table extends BeartropyComponent
 {
-    public $items;
-    public $columns;
-    public $perPage;
-    public $sortable;
-    public $searchable;
-    public $paginated;
-    public $color;
+    /** @var array<int, array<string, mixed>> */
+    public array $items;
+
+    /** @var array<string, string>|list<string> */
+    public array $columns;
+
+    public int $perPage;
+
+    public bool $sortable;
+
+    public bool $searchable;
+
+    public bool $paginated;
+
+    public bool $striped;
+
+    public bool $allowHtml;
+
+    public ?string $color;
 
     /**
      * Create a new Table component instance.
      *
-     * @param array|\Illuminate\Support\Collection $items      Data items to display.
-     * @param array                                $columns    Columns configuration (label => key, or list of keys).
-     * @param int                                  $perPage    Number of items per page.
-     * @param bool                                 $sortable   Allow sorting (not implemented recursively currently).
-     * @param bool                                 $searchable Allow searching.
-     * @param bool                                 $paginated  Show pagination.
-     * @param string|null                          $color      Table accent color.
-     *
-     * ## Blade Props
-     *
-     * ### Slots
-     * @slot header Custom header row content.
-     * @slot row    Custom row content loop.
-     * @slot footer Custom footer content.
-     *
-     * ### Magic Attributes (Color)
-     * @property bool $primary   Primary color.
-     * @property bool $secondary Secondary color.
-     * @property bool $success   Success color.
-     * @property bool $warning   Warning color.
-     * @property bool $danger    Danger color.
-     * @property bool $info      Info color.
+     * @param array<int, array<string, mixed>>|\Illuminate\Support\Collection $items     Data items to display.
+     * @param array<string, string>|list<string>                              $columns   Columns configuration (label => key, or list of keys).
+     * @param int                                                             $perPage   Number of items per page.
+     * @param bool                                                            $sortable  Allow column sorting.
+     * @param bool                                                            $searchable Allow text search.
+     * @param bool                                                            $paginated Show pagination controls.
+     * @param bool                                                            $striped   Alternating row background colors.
+     * @param bool                                                            $allowHtml Render cell content as HTML (x-html) instead of text (x-text).
+     * @param string|null                                                     $color     Table accent color.
      */
     public function __construct(
-        $items = [],
-        $columns = [],
-        $perPage = 10,
-        $sortable = true,
-        $searchable = true,
-        $paginated = true,
-        $color = null
+        array|\Illuminate\Support\Collection $items = [],
+        array $columns = [],
+        int $perPage = 10,
+        bool $sortable = true,
+        bool $searchable = true,
+        bool $paginated = true,
+        bool $striped = false,
+        bool $allowHtml = false,
+        ?string $color = null
     ) {
+        $this->sortable = filter_var($sortable, FILTER_VALIDATE_BOOLEAN);
+        $this->searchable = filter_var($searchable, FILTER_VALIDATE_BOOLEAN);
+        $this->paginated = filter_var($paginated, FILTER_VALIDATE_BOOLEAN);
+        $this->striped = filter_var($striped, FILTER_VALIDATE_BOOLEAN);
+        $this->allowHtml = filter_var($allowHtml, FILTER_VALIDATE_BOOLEAN);
+        $this->perPage = $perPage;
+        $this->color = $color;
         $this->columns = $columns ?: (count($items) ? array_keys($items[0]) : []);
         $this->items = $this->normalizeData($items, $this->columns);
-        $this->perPage = $perPage;
-        $this->sortable = $sortable;
-        $this->searchable = $searchable;
-        $this->paginated = $paginated;
-        $this->color = $color;
     }
 
     /**
@@ -68,26 +78,23 @@ class Table extends BeartropyComponent
      * Converts Collections and Models to arrays.
      * Maps indexed arrays to associative arrays based on columns.
      *
-     * @param mixed $items   Raw items.
-     * @param array $columns Column keys/labels.
+     * @param array<int, mixed>|\Illuminate\Support\Collection $items   Raw items.
+     * @param array<string, string>|list<string>               $columns Column keys/labels.
      *
-     * @return array The normalized data array.
+     * @return array<int, array<string, mixed>> The normalized data array.
      */
-    public function normalizeData($items, $columns)
+    public function normalizeData(array|\Illuminate\Support\Collection $items, array $columns): array
     {
-        // 1. If Collection: convert to array
         if ($items instanceof \Illuminate\Support\Collection) {
             $items = $items->all();
         }
 
-        // 2. If array of Eloquent models or objects with toArray()
         if (is_array($items) && count($items) && is_object($items[0]) && method_exists($items[0], 'toArray')) {
             $items = array_map(function ($item) {
                 return $item->toArray();
             }, $items);
         }
 
-        // 3. If array of flat arrays (sequential keys 0,1,2...) and columns are defined
         $columnLabels = array_values($columns);
         if (
             is_array($items)
@@ -96,16 +103,13 @@ class Table extends BeartropyComponent
             && array_keys($items[0]) === range(0, count($items[0]) - 1)
             && count($items[0]) === count($columnLabels)
         ) {
-            // Map by order
             return array_map(function ($row) use ($columnLabels) {
                 return array_combine($columnLabels, array_pad($row, count($columnLabels), null));
             }, $items);
         }
 
-        // 4. If already associative, leave as-is
         return $items;
     }
-
 
     public function render(): \Illuminate\Contracts\View\View
     {

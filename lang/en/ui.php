@@ -63,4 +63,10 @@ return [
     'toggle_theme' => 'Toggle theme',
     'minimize' => 'Minimize',
     'show_debug_info' => 'Show debug info',
+    'table_showing' => 'Showing',
+    'table_to' => 'to',
+    'table_of' => 'of',
+    'table_results' => 'results',
+    'table_previous' => 'Previous page',
+    'table_next' => 'Next page',
 ];

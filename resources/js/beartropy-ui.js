@@ -159,6 +159,7 @@
           this.sortBy = col;
           this.sortDesc = false;
         }
+        this.page = 1;
       },
       gotoPage(p) {
         if (p >= 1 && p <= this.totalPages) this.page = p;
@@ -194,7 +195,6 @@
       },
       init() {
         this.$watch("search", () => this.page = 1);
-        this.$watch("sorted", () => this.page = 1);
       }
     };
   }
