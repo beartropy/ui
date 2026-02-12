@@ -5,32 +5,17 @@ namespace Beartropy\Ui\Components;
 /**
  * Dialog Component.
  *
- * Renders a dialog modal.
+ * Single-instance, event-driven alert/confirm dialog.
+ * Place once per page; controlled entirely through the `bt-dialog` browser event
+ * dispatched by the Livewire `HasDialogs` trait or the JS `dialog()` helper.
+ *
+ * All runtime state (type, title, description, icon, accept/reject buttons)
+ * is managed by the Alpine `btDialog` module — not by Blade props.
  */
 class Dialog extends BeartropyComponent
 {
-
     /**
-     * Create a new Dialog component instance.
-     *
-     * @param string|null $size Dialog size (default: md).
-     *
-     * ## Blade Props
-     *
-     * ### View Properties (via Alpine/JS)
-     * @property string $type        Dialog type (info, success, warning, error, confirm, danger).
-     * @property string $title       Dialog title.
-     * @property string $description Dialog description.
-     * @property string $icon        Icon name (check-circle, x-circle, etc.).
-     * @property object $accept      Accept button config {label, method, params}.
-     * @property object $reject      Reject button config {label, method, params}.
-     *
-     * ### Magic Attributes (Size)
-     * @property bool $sm Small.
-     * @property bool $md Medium (default).
-     * @property bool $lg Large.
-     * @property bool $xl Extra Large.
-     * @property bool $2xl Double Extra Large.
+     * @param  string|null  $size  Default panel width (sm, md, lg, xl, 2xl). Per-dialog events can override.
      */
     public function __construct(
         public ?string $size = 'md'

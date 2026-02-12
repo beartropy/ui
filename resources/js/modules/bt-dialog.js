@@ -26,12 +26,12 @@ export function btDialog({ globalSize = 'md', typeStyles = {} } = {}) {
             const hasAcceptAction = this.accept && this.accept.method;
             const hasRejectAction = this.reject && this.reject.method;
 
-            // Si alguno tiene método -> es confirm/delete (2 botones)
+            // If either has a method -> it's confirm/delete (2 buttons)
             if (hasAcceptAction || hasRejectAction) {
                 return false;
             }
 
-            // De lo contrario, es success/info/warning/error
+            // Otherwise, it's success/info/warning/error
             return true;
         },
 
@@ -56,7 +56,7 @@ export function btDialog({ globalSize = 'md', typeStyles = {} } = {}) {
         },
 
         openDialog(raw) {
-            // Livewire manda detail = [payload]
+            // Livewire sends detail = [payload]
             const payload = Array.isArray(raw) ? (raw[0] ?? {}) : (raw ?? {});
 
             this.acceptBusy = false;
@@ -137,13 +137,13 @@ export function btDialog({ globalSize = 'md', typeStyles = {} } = {}) {
                     finish();
                 }
             } else {
-                // Sin método: solo cerrar
+                // No method: just close
                 this.close();
             }
         },
 
         clickReject() {
-            // Si hay método, tratamos igual que accept
+            // If there's a method, handle the same as accept
             if (this.reject && this.reject.method && this.componentId && window.Livewire) {
                 if (this.rejectBusy) return;
 
@@ -177,7 +177,7 @@ export function btDialog({ globalSize = 'md', typeStyles = {} } = {}) {
                     finish();
                 }
             } else {
-                // Sin método: solo cerrar
+                // No method: just close
                 this.close();
             }
         },

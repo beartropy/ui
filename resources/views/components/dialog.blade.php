@@ -1,13 +1,4 @@
 @php
-
-    $sizes = [
-        'sm' => 'max-w-sm',
-        'md' => 'max-w-md',
-        'lg' => 'max-w-lg',
-        'xl' => 'max-w-xl',
-        '2xl' => 'max-w-2xl',
-    ];
-
     $typeStyles = [
         'info' => [
             'iconBg'   => 'bg-blue-100 dark:bg-blue-900/40',
@@ -34,19 +25,10 @@
             'iconText' => 'text-red-600 dark:text-red-300',
         ],
     ];
-
-    // JS button colors
-    $jsButtonColors = [
-        'info' => 'bg-blue-700 hover:bg-blue-600 dark:bg-blue-800 dark:hover:bg-blue-700 text-white',
-        'success' => 'bg-emerald-700 hover:bg-emerald-600 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white',
-        'warning' => 'bg-amber-700 hover:bg-amber-600 dark:bg-amber-800 dark:hover:bg-amber-700 text-white',
-        'error' => 'bg-rose-700 hover:bg-rose-600 dark:bg-rose-800 dark:hover:bg-rose-700 text-white',
-        'danger' => 'bg-rose-700 hover:bg-rose-600 dark:bg-rose-800 dark:hover:bg-rose-700 text-white',
-    ];
 @endphp
 
 <div
-    x-data="btDialog({ globalSize: @js($sizes['md']), typeStyles: @js($typeStyles) })"
+    x-data="btDialog({ globalSize: @js($size ?? 'md'), typeStyles: @js($typeStyles) })"
     x-on:bt-dialog.window="openDialog($event.detail)"
     x-show="isOpen"
     x-cloak
@@ -216,7 +198,7 @@
                                 <path class="opacity-75" d="M4 12a8 8 0 018-8"></path>
                             </svg>
 
-                            <span x-text="accept.label ?? 'OK'"></span>
+                            <span x-text="accept.label ?? '{{ __('beartropy-ui::ui.ok') }}'"></span>
                         </span>
                     </button>
                 </template>
@@ -231,7 +213,7 @@
                         :class="buttonColors[type] ?? 'bg-slate-700 dark:bg-slate-600 text-white'"
                         @click="close()"
                     >
-                        OK
+                        {{ __('beartropy-ui::ui.ok') }}
                     </button>
                 </template>
 
