@@ -5,22 +5,27 @@ namespace Beartropy\Ui\Components;
 /**
  * ToggleTheme component.
  *
- * Renders a button to toggle between light and dark modes.
+ * A dark/light mode toggle that persists to `localStorage` and syncs via
+ * a custom `theme-change` event. Three display modes: bare icon, rounded
+ * button, or square button. Includes a global `<script>` that applies the
+ * saved theme before CSS loads (prevents FOUC) and re-applies on Livewire
+ * navigation. An Alpine.js `x-data` block handles the toggle interaction,
+ * rotation animation, and external event synchronization.
  *
- * @property string      $size             Size preset.
- * @property string      $mode             Display mode (icon, button, square-button).
- * @property string      $class            Additional classes.
- * @property bool        $inheritColor     Inherit text color.
- * @property string|null $iconColorLight   Color class for light icon.
- * @property string|null $iconColorDark    Color class for dark icon.
- * @property string|null $borderColorLight Border color for light mode.
- * @property string|null $borderColorDark  Border color for dark mode.
- * @property string|null $iconLight        Icon name for light mode.
- * @property string|null $iconDark         Icon name for dark mode.
- * @property string|null $label            Label text.
- * @property string      $labelPosition    Label position (left, right).
- * @property string|null $labelClass       Custom label class.
- * @property string|null $ariaLabel        Aria label.
+ * @property string      $size             Size preset (xs, sm, md, lg, xl, 2xl).
+ * @property string      $mode             Display mode: icon, button, square-button.
+ * @property string      $class            Additional wrapper classes.
+ * @property bool        $inheritColor     Inherit parent text color instead of defaults.
+ * @property string|null $iconColorLight   Tailwind color class for the light-mode icon.
+ * @property string|null $iconColorDark    Tailwind color class for the dark-mode icon.
+ * @property string|null $borderColorLight Border classes in light mode (button/square-button).
+ * @property string|null $borderColorDark  Border classes in dark mode (button/square-button).
+ * @property string|null $iconLight        Heroicon name for light mode (replaces default SVG).
+ * @property string|null $iconDark         Heroicon name for dark mode (replaces default SVG).
+ * @property string|null $label            Visible label text (button mode only).
+ * @property string      $labelPosition    Label position: left or right.
+ * @property string|null $labelClass       Custom label CSS classes.
+ * @property string|null $ariaLabel        Custom aria-label (defaults to localized 'Toggle theme').
  */
 class ToggleTheme extends BeartropyComponent
 {
@@ -116,14 +121,14 @@ class ToggleTheme extends BeartropyComponent
         $defaultBorderLight = 'border-orange-300 dark:border-blue-600';
         $defaultBorderDark  = 'border-orange-400 dark:border-blue-500';
 
-        $buttonClasses = "flex items-center gap-2 rounded-full border-2 bg-white dark:bg-gray-900 transition hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm focus:outline-none {$buttonPadding}";
-        $squareButtonClasses = "flex items-center justify-center border-2 transition shadow-sm focus:outline-none rounded-lg bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 {$squareButtonSize}";
+        $buttonClasses = "flex items-center gap-2 rounded-full border-2 bg-white dark:bg-gray-900 transition hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm focus:outline-none cursor-pointer {$buttonPadding}";
+        $squareButtonClasses = "flex items-center justify-center border-2 transition shadow-sm focus:outline-none cursor-pointer rounded-lg bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 {$squareButtonSize}";
 
-        $iconLightClasses = "theme-rotatable {$iconSize} " . ($this->iconColorLight ?? $defaultIconLight);
-        $iconDarkClasses  = "theme-rotatable {$iconSize} " . ($this->iconColorDark ?? $defaultIconDark);
+        $iconLightClasses = "{$iconSize} " . ($this->iconColorLight ?? $defaultIconLight);
+        $iconDarkClasses  = "{$iconSize} " . ($this->iconColorDark ?? $defaultIconDark);
 
-        $hasIconLightSlot = isset($__data['icon-light']);
-        $hasIconDarkSlot  = isset($__data['icon-dark']);
+        $hasIconLightSlot = isset($__data['iconLight']) && $__data['iconLight'] instanceof \Illuminate\View\ComponentSlot;
+        $hasIconDarkSlot  = isset($__data['iconDark']) && $__data['iconDark'] instanceof \Illuminate\View\ComponentSlot;
 
         // Label
         $hasLabel = filled($this->label);
@@ -131,8 +136,7 @@ class ToggleTheme extends BeartropyComponent
             ?? ($this->inheritColor
                 ? "text-inherit"
                 : "text-sm text-gray-700 dark:text-gray-200");
-        // For accessibility: use ariaLabel when there is no visible label in icon mode
-        $ariaLabel = $this->ariaLabel ?? ($hasLabel ? $this->label : 'Toggle theme');
+        $ariaLabel = $this->ariaLabel ?? ($hasLabel ? $this->label : __('beartropy-ui::ui.toggle_theme'));
 
         return (object)[
             'buttonClasses'        => $buttonClasses,

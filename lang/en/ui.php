@@ -60,4 +60,5 @@ return [
     'sidebar_navigation' => 'Sidebar navigation',
     'command_palette' => 'Command palette',
     'search_results' => 'Search results',
+    'toggle_theme' => 'Toggle theme',
 ];

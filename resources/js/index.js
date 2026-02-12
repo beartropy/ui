@@ -12,6 +12,7 @@ import { beartropySelect } from './modules/select.js';
 import { beartropyFileDropzone } from './modules/file-dropzone.js';
 import { beartropyChatInput } from './modules/chat-input.js';
 import { beartropyLookup } from './modules/lookup.js';
+import { initTheme, btToggleTheme } from './modules/toggle-theme.js';
 
 // Initialize global namespace
 window.$beartropy = window.$beartropy || {};
@@ -21,6 +22,9 @@ window.$beartropy.dialog = dialog;
 window.$beartropy.openModal = openModal;
 window.$beartropy.closeModal = closeModal;
 window.$beartropy.toast = toast;
+
+// Theme: apply before CSS/Alpine to prevent FOUC
+initTheme();
 
 document.addEventListener('alpine:init', () => {
     // Register Alpine components
@@ -34,6 +38,7 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('beartropyFileDropzone', beartropyFileDropzone);
     Alpine.data('beartropyChatInput', beartropyChatInput);
     Alpine.data('beartropyLookup', beartropyLookup);
+    Alpine.data('btToggleTheme', btToggleTheme);
 
     // Keep global references for legacy/external usage if needed
     window.$beartropy.beartropyTable = beartropyTable;
@@ -46,4 +51,5 @@ document.addEventListener('alpine:init', () => {
     window.$beartropy.beartropyFileDropzone = beartropyFileDropzone;
     window.$beartropy.beartropyChatInput = beartropyChatInput;
     window.$beartropy.beartropyLookup = beartropyLookup;
+    window.$beartropy.btToggleTheme = btToggleTheme;
 });

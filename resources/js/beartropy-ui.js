@@ -2042,12 +2042,63 @@
     };
   }
 
+  // resources/js/modules/toggle-theme.js
+  function initTheme() {
+    function computeDark() {
+      const saved = localStorage.getItem("theme");
+      if (saved === "dark") return true;
+      if (saved === "light") return false;
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+    function applyTheme(dark) {
+      document.documentElement.classList.toggle("dark", dark);
+      document.documentElement.style.colorScheme = dark ? "dark" : "light";
+    }
+    applyTheme(computeDark());
+    window.__setTheme = function(mode) {
+      const dark = mode === "dark";
+      localStorage.setItem("theme", dark ? "dark" : "light");
+      applyTheme(dark);
+      window.dispatchEvent(new CustomEvent("theme-change", { detail: { theme: dark ? "dark" : "light" } }));
+    };
+    window.addEventListener("livewire:navigated", () => {
+      applyTheme(computeDark());
+    });
+  }
+  function btToggleTheme() {
+    return {
+      dark: localStorage.theme === "dark" || !("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches,
+      rotating: false,
+      init() {
+        window.addEventListener("theme-change", (e) => {
+          if (e.detail && e.detail.theme) {
+            this.dark = e.detail.theme === "dark";
+          }
+        });
+      },
+      toggle() {
+        this.dark = !this.dark;
+        document.documentElement.classList.toggle("dark", this.dark);
+        document.documentElement.style.colorScheme = this.dark ? "dark" : "light";
+        localStorage.theme = this.dark ? "dark" : "light";
+        window.dispatchEvent(new CustomEvent("theme-change", { detail: { theme: this.dark ? "dark" : "light" } }));
+        this.$nextTick(() => {
+          this.rotating = true;
+          setTimeout(() => {
+            this.rotating = false;
+          }, 500);
+        });
+      }
+    };
+  }
+
   // resources/js/index.js
   window.$beartropy = window.$beartropy || {};
   window.$beartropy.dialog = dialog;
   window.$beartropy.openModal = openModal;
   window.$beartropy.closeModal = closeModal;
   window.$beartropy.toast = toast;
+  initTheme();
   document.addEventListener("alpine:init", () => {
     Alpine.data("beartropyTable", beartropyTable);
     Alpine.data("beartropyDatetimepicker", beartropyDatetimepicker);
@@ -2059,6 +2110,7 @@
     Alpine.data("beartropyFileDropzone", beartropyFileDropzone);
     Alpine.data("beartropyChatInput", beartropyChatInput);
     Alpine.data("beartropyLookup", beartropyLookup);
+    Alpine.data("btToggleTheme", btToggleTheme);
     window.$beartropy.beartropyTable = beartropyTable;
     window.$beartropy.beartropyDatetimepicker = beartropyDatetimepicker;
     window.$beartropy.beartropyTimepicker = beartropyTimepicker;
@@ -2069,5 +2121,6 @@
     window.$beartropy.beartropyFileDropzone = beartropyFileDropzone;
     window.$beartropy.beartropyChatInput = beartropyChatInput;
     window.$beartropy.beartropyLookup = beartropyLookup;
+    window.$beartropy.btToggleTheme = btToggleTheme;
   });
 })();

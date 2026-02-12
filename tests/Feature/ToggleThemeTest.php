@@ -8,188 +8,242 @@ beforeEach(function () {
     $this->app->register(\BladeUI\Heroicons\BladeHeroiconsServiceProvider::class);
 });
 
-it('can render basic toggle theme component', function () {
+// --- Structure ---
+
+it('renders wrapper with Alpine x-data btToggleTheme', function () {
     $html = Blade::render('<x-bt-toggle-theme />');
 
-    expect($html)->toContain('x-data');
-    expect($html)->toContain('dark');
+    expect($html)
+        ->toContain('x-data="btToggleTheme()"')
+        ->toContain('inline-flex');
 });
 
-it('renders with Alpine.js dark state', function () {
+it('renders rotation animation CSS with keyframes', function () {
     $html = Blade::render('<x-bt-toggle-theme />');
 
-    expect($html)->toContain('localStorage');
-    expect($html)->toContain('theme');
+    expect($html)
+        ->toContain('<style>')
+        ->toContain('@keyframes theme-spin')
+        ->toContain('.theme-rotate')
+        ->toContain('animation: theme-spin');
 });
 
-it('includes theme initialization script', function () {
+it('does not render inline script tag', function () {
     $html = Blade::render('<x-bt-toggle-theme />');
 
-    expect($html)->toContain('<script>');
-    expect($html)->toContain('__setTheme');
-    expect($html)->toContain('computeDark');
+    expect($html)->not->toContain('<script>');
 });
 
-it('toggles dark class on documentElement', function () {
+// --- Icon mode (default) ---
+
+it('renders icon mode with a button element by default', function () {
     $html = Blade::render('<x-bt-toggle-theme />');
 
-    expect($html)->toContain('document.documentElement.classList.toggle(\'dark\'');
+    expect($html)
+        ->toContain('type="button"')
+        ->toContain('@click.stop="toggle()"');
 });
 
-it('uses localStorage for theme persistence', function () {
+it('renders sun SVG for light mode', function () {
     $html = Blade::render('<x-bt-toggle-theme />');
 
-    expect($html)->toContain('localStorage.theme');
+    expect($html)
+        ->toContain('x-show="!dark"')
+        ->toContain('<circle cx="12" cy="12" r="5"/>');
 });
 
-it('renders in icon mode by default', function () {
+it('renders moon SVG for dark mode', function () {
     $html = Blade::render('<x-bt-toggle-theme />');
 
-    expect($html)->toContain('<svg');
+    expect($html)
+        ->toContain('x-show="dark"')
+        ->toContain('M21 12.79A9 9 0 1111.21 3');
 });
 
-it('can render in button mode', function () {
+it('renders aria-label and aria-pressed in icon mode', function () {
+    $html = Blade::render('<x-bt-toggle-theme />');
+
+    expect($html)
+        ->toContain('aria-label="Toggle theme"')
+        ->toContain(':aria-pressed="dark"');
+});
+
+// --- Button mode ---
+
+it('renders button mode with rounded border and padding', function () {
     $html = Blade::render('<x-bt-toggle-theme mode="button" />');
 
-    expect($html)->toContain('type="button"');
+    expect($html)
+        ->toContain('type="button"')
+        ->toContain('rounded-full')
+        ->toContain('border-2')
+        ->toContain(':aria-pressed="dark"');
 });
 
-it('can render in square-button mode', function () {
+it('renders button mode with default border colors', function () {
+    $html = Blade::render('<x-bt-toggle-theme mode="button" />');
+
+    expect($html)
+        ->toContain('border-orange-300')
+        ->toContain('border-orange-400');
+});
+
+it('renders button mode with label on the right', function () {
+    $html = Blade::render('<x-bt-toggle-theme mode="button" label="Dark Mode" />');
+
+    expect($html)->toContain('Dark Mode');
+});
+
+it('renders button mode with label on the left', function () {
+    $html = Blade::render('<x-bt-toggle-theme mode="button" label="Theme" label-position="left" />');
+
+    expect($html)->toContain('Theme');
+});
+
+// --- Square-button mode ---
+
+it('renders square-button mode with fixed dimensions', function () {
     $html = Blade::render('<x-bt-toggle-theme mode="square-button" />');
 
-    expect($html)->toContain('type="button"');
+    expect($html)
+        ->toContain('type="button"')
+        ->toContain('w-10 h-10')
+        ->toContain('rounded-lg')
+        ->toContain(':aria-pressed="dark"');
 });
 
-it('renders light mode icon', function () {
-    $html = Blade::render('<x-bt-toggle-theme />');
+// --- Sizes ---
 
-    expect($html)->toContain('x-show="!dark"');
+it('applies xs size classes', function () {
+    $html = Blade::render('<x-bt-toggle-theme size="xs" />');
+
+    expect($html)->toContain('w-2 h-2');
 });
 
-it('renders dark mode icon', function () {
-    $html = Blade::render('<x-bt-toggle-theme />');
+it('applies lg size classes', function () {
+    $html = Blade::render('<x-bt-toggle-theme size="lg" />');
 
-    expect($html)->toContain('x-show="dark"');
+    expect($html)->toContain('w-5 h-5');
 });
 
-it('has rotating animation', function () {
+it('applies 2xl size classes', function () {
+    $html = Blade::render('<x-bt-toggle-theme size="2xl" />');
+
+    expect($html)->toContain('w-8 h-8');
+});
+
+it('applies size to square-button dimensions', function () {
+    $html = Blade::render('<x-bt-toggle-theme mode="square-button" size="lg" />');
+
+    expect($html)->toContain('w-12 h-12');
+});
+
+it('applies size to button padding', function () {
+    $html = Blade::render('<x-bt-toggle-theme mode="button" size="lg" />');
+
+    expect($html)->toContain('p-3');
+});
+
+// --- Custom colors ---
+
+it('applies custom icon colors', function () {
+    $html = Blade::render('<x-bt-toggle-theme icon-color-light="text-yellow-500" icon-color-dark="text-indigo-400" />');
+
+    expect($html)
+        ->toContain('text-yellow-500')
+        ->toContain('text-indigo-400');
+});
+
+it('uses default icon colors when not specified', function () {
     $html = Blade::render('<x-bt-toggle-theme />');
 
-    expect($html)->toContain('theme-rotatable');
+    expect($html)
+        ->toContain('text-orange-600')
+        ->toContain('text-blue-400');
+});
+
+it('applies custom border colors in button mode', function () {
+    $html = Blade::render('<x-bt-toggle-theme mode="button" border-color-light="border-red-300" border-color-dark="border-red-500" />');
+
+    expect($html)
+        ->toContain('border-red-300')
+        ->toContain('border-red-500');
+});
+
+// --- Custom icons ---
+
+it('renders custom heroicon names', function () {
+    $html = Blade::render('<x-bt-toggle-theme icon-light="sun" icon-dark="moon" />');
+
+    expect($html)
+        ->toContain('x-show="!dark"')
+        ->toContain('x-show="dark"');
+});
+
+// --- Animation ---
+
+it('includes theme-spin keyframe animation', function () {
+    $html = Blade::render('<x-bt-toggle-theme />');
+
+    expect($html)->toContain('@keyframes theme-spin');
+});
+
+it('uses theme-rotate class for rotation', function () {
+    $html = Blade::render('<x-bt-toggle-theme />');
+
     expect($html)->toContain('theme-rotate');
-    expect($html)->toContain('rotating');
 });
 
-it('includes CSS for rotation animation', function () {
-    $html = Blade::render('<x-bt-toggle-theme />');
+// --- Accessibility ---
 
-    expect($html)->toContain('<style>');
-    expect($html)->toContain('transform: rotate');
+it('renders custom aria-label', function () {
+    $html = Blade::render('<x-bt-toggle-theme aria-label="Switch dark mode" />');
+
+    expect($html)->toContain('aria-label="Switch dark mode"');
 });
 
-it('dispatches custom theme-change event', function () {
-    $html = Blade::render('<x-bt-toggle-theme />');
+it('uses label as aria-label when provided', function () {
+    $html = Blade::render('<x-bt-toggle-theme mode="button" label="Night Mode" />');
 
-    expect($html)->toContain('theme-change');
-    expect($html)->toContain('CustomEvent');
+    expect($html)->toContain('aria-label="Night Mode"');
 });
 
-it('handles Livewire navigation', function () {
-    $html = Blade::render('<x-bt-toggle-theme />');
+// --- Custom class ---
 
-    expect($html)->toContain('livewire:navigated');
+it('passes custom class to wrapper', function () {
+    $html = Blade::render('<x-bt-toggle-theme class="my-toggle" />');
+
+    expect($html)->toContain('my-toggle');
 });
 
-it('supports different sizes', function () {
-    $sizes = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'];
+// --- Icon slots ---
 
-    foreach ($sizes as $size) {
-        $html = Blade::render("<x-bt-toggle-theme size=\"{$size}\" />");
-        expect($html)->toContain('x-data');
-    }
-});
-
-it('can render with custom icon colors', function () {
-    $html = Blade::render('
-        <x-bt-toggle-theme 
-            iconColorLight="text-yellow-500"
-            iconColorDark="text-indigo-500"
-        />
-    ');
-
-    expect($html)->toContain('x-data');
-});
-
-it('can render with custom icons', function () {
-    $html = Blade::render('
-        <x-bt-toggle-theme 
-            iconLight="sun"
-            iconDark="moon"
-        />
-    ');
-
-    expect($html)->toContain('x-data');
-});
-
-it('supports icon slots', function () {
+it('renders custom icon-light slot content', function () {
     $html = Blade::render('
         <x-bt-toggle-theme>
-            <x-slot:icon-light>
-                <span>Light</span>
-            </x-slot:icon-light>
-            <x-slot:icon-dark>
-                <span>Dark</span>
-            </x-slot:icon-dark>
+            <x-slot:icon-light><span class="custom-sun">SUN</span></x-slot:icon-light>
+            <x-slot:icon-dark><span class="custom-moon">MOON</span></x-slot:icon-dark>
         </x-bt-toggle-theme>
     ');
 
-    expect($html)->toContain('x-data');
+    expect($html)
+        ->toContain('custom-sun')
+        ->toContain('custom-moon');
 });
 
-it('has cursor pointer for click interaction', function () {
-    $html = Blade::render('<x-bt-toggle-theme />');
+// --- JS Module ---
 
-    expect($html)->toContain('cursor:pointer');
-});
+it('has toggle-theme JS module with initTheme and btToggleTheme exports', function () {
+    $path = realpath(__DIR__ . '/../../resources/js/modules/toggle-theme.js');
+    $content = file_get_contents($path);
 
-it('uses @click.stop to prevent propagation', function () {
-    $html = Blade::render('<x-bt-toggle-theme />');
-
-    expect($html)->toContain('@click.stop="toggle()"');
-});
-
-it('respects system prefers-color-scheme', function () {
-    $html = Blade::render('<x-bt-toggle-theme />');
-
-    expect($html)->toContain('prefers-color-scheme');
-    expect($html)->toContain('matchMedia');
-});
-
-it('can render with label', function () {
-    $html = Blade::render('<x-bt-toggle-theme label="Theme Toggle" />');
-
-    expect($html)->toContain('x-data');
-});
-
-it('has aria-pressed for accessibility', function () {
-    $html = Blade::render('<x-bt-toggle-theme mode="button" />');
-
-    expect($html)->toContain(':aria-pressed="dark"');
-});
-
-it('can render with all features combined', function () {
-    $html = Blade::render('
-        <x-bt-toggle-theme 
-            size="lg"
-            mode="button"
-            iconColorLight="text-orange-600"
-            iconColorDark="text-blue-400"
-            label="Switch Theme"
-            labelPosition="left"
-        />
-    ');
-
-    expect($html)->toContain('x-data');
-    expect($html)->toContain('type="button"');
-    expect($html)->toContain('dark');
+    expect($content)
+        ->toContain('export function initTheme()')
+        ->toContain('export function btToggleTheme()')
+        ->toContain('__setTheme')
+        ->toContain('computeDark')
+        ->toContain('livewire:navigated')
+        ->toContain('colorScheme')
+        ->toContain('theme-change')
+        ->toContain('$nextTick');
 });
