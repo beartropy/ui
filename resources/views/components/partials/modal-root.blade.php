@@ -1,17 +1,17 @@
 <div x-data="{
-    // Estado local independiente
+    // Independent local state
     localOpen: false,
 
     init() {
-        @if ($attributes->wire('model')->value()) // Sincronización UNIDIRECCIONAL desde Livewire → Alpine
+        @if ($attributes->wire('model')->value()) // One-way sync from Livewire → Alpine
             this.$watch('$wire.{{ $attributes->wire('model')->value() }}', (value) => {
-                // Solo actualizar si es diferente y no fue causado por nosotros
+                // Only update if different and not caused by us
                 if (this.localOpen !== value) {
                     this.localOpen = value;
                 }
             });
 
-            // Estado inicial
+            // Initial state
             this.$nextTick(() => {
                 this.localOpen = this.$wire.{{ $attributes->wire('model')->value() }};
             }); @endif
@@ -19,13 +19,13 @@
 
     close() {
         this.localOpen = false;
-        @if ($attributes->wire('model')->value()) // Actualizar Livewire solo cuando el usuario cierra el modal
+        @if ($attributes->wire('model')->value()) // Update Livewire only when the user closes the modal
             this.$wire.set('{{ $attributes->wire('model')->value() }}', false); @endif
     },
 
     openModal() {
         this.localOpen = true;
-        @if ($attributes->wire('model')->value()) // Actualizar Livewire solo cuando el usuario abre el modal
+        @if ($attributes->wire('model')->value()) // Update Livewire only when the user opens the modal
             this.$wire.set('{{ $attributes->wire('model')->value() }}', true); @endif
     }
 }" x-show="localOpen" x-cloak id="{{ $modalId }}" x-ref="{{ $modalId }}"
@@ -68,7 +68,7 @@
             @endif
         @endisset
 
-        <!-- CONTENIDO DEL MODAL -->
+        <!-- Modal content -->
         @if ($styled)
             <div class="{{ $slotClass }}">{{ $slot }}</div>
         @else
