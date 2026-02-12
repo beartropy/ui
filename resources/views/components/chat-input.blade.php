@@ -43,7 +43,7 @@
         {{ $attributes->except(['class', 'id', 'wire:model', 'wire:model.live', 'wire:model.blur', 'wire:model.lazy', 'wire:click', 'wire:keydown']) }}
     >
         @if (isset($tools))
-            <div class="text-gray-400"
+            <div class="flex items-center gap-1 text-gray-400"
                 :class="isSingleLine && !stacked
                     ? 'col-start-1 pl-2'
                     : 'col-start-1 row-start-2 justify-self-start pl-2 pb-2'">
