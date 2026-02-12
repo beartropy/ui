@@ -27,36 +27,38 @@ trait HasToasts
             $this->_beartropy_toast_proxy = new class($this) {
                 public function __construct(protected object $component) {}
 
-                public function success(string $title, string $message = '', int $duration = 4000, ?string $position = null): void
+                public function success(string $title, string $message = '', int $duration = 4000, ?string $position = null, ?string $action = null, ?string $actionUrl = null): void
                 {
-                    $this->send('success', $title, $message, $duration, $position);
+                    $this->send('success', $title, $message, $duration, $position, $action, $actionUrl);
                 }
 
-                public function error(string $title, string $message = '', int $duration = 4000, ?string $position = null): void
+                public function error(string $title, string $message = '', int $duration = 4000, ?string $position = null, ?string $action = null, ?string $actionUrl = null): void
                 {
-                    $this->send('error', $title, $message, $duration, $position);
+                    $this->send('error', $title, $message, $duration, $position, $action, $actionUrl);
                 }
 
-                public function info(string $title, string $message = '', int $duration = 4000, ?string $position = null): void
+                public function info(string $title, string $message = '', int $duration = 4000, ?string $position = null, ?string $action = null, ?string $actionUrl = null): void
                 {
-                    $this->send('info', $title, $message, $duration, $position);
+                    $this->send('info', $title, $message, $duration, $position, $action, $actionUrl);
                 }
 
-                public function warning(string $title, string $message = '', int $duration = 4000, ?string $position = null): void
+                public function warning(string $title, string $message = '', int $duration = 4000, ?string $position = null, ?string $action = null, ?string $actionUrl = null): void
                 {
-                    $this->send('warning', $title, $message, $duration, $position);
+                    $this->send('warning', $title, $message, $duration, $position, $action, $actionUrl);
                 }
 
-                protected function send(string $type, string $title, string $message, int $duration, ?string $position): void
+                protected function send(string $type, string $title, string $message, int $duration, ?string $position, ?string $action, ?string $actionUrl): void
                 {
                     $payload = [
-                        'id'       => (string) Str::uuid(),
-                        'type'     => $type,
-                        'title'    => $title,
-                        'message'  => $message,
-                        'single'   => $message === '',
+                        'id' => (string) Str::uuid(),
+                        'type' => $type,
+                        'title' => $title,
+                        'message' => $message,
+                        'single' => $message === '',
                         'duration' => $duration,
                         'position' => $position,
+                        'action' => $action,
+                        'actionUrl' => $actionUrl,
                     ];
                     $this->component->dispatch('beartropy-add-toast', $payload);
                 }

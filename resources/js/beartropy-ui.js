@@ -76,25 +76,27 @@
   }
 
   // resources/js/modules/toast.js
-  function toast(type, title, message = "", duration = 4e3, position = "top-right") {
+  function toast(type, title, message = "", duration = 4e3, position = "top-right", action = null, actionUrl = null) {
     const toastObj = {
       id: window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() : "toast-" + Math.random().toString(36).slice(2) + Date.now(),
       type,
       title,
       message,
       duration,
-      position
+      position,
+      action,
+      actionUrl
     };
     if (window.Alpine && Alpine.store("toasts")) {
       Alpine.store("toasts").add(toastObj);
     } else if (window.Livewire && window.Livewire.dispatch) {
       window.Livewire.dispatch("beartropy-add-toast", toastObj);
     } else {
-      console.warn("[Beartropy] Toast: no Alpine store ni Livewire.dispatch disponible");
+      console.warn("[Beartropy] Toast: no Alpine store or Livewire.dispatch available");
     }
   }
   ["success", "error", "warning", "info"].forEach((type) => {
-    toast[type] = (title, message, duration, position) => toast(type, title, message, duration, position);
+    toast[type] = (title, message, duration, position, action, actionUrl) => toast(type, title, message, duration, position, action, actionUrl);
   });
 
   // resources/js/modules/table.js
