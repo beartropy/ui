@@ -424,18 +424,18 @@
           this.endTimeSet = true;
         }
         if (autoAdvance) {
-          if (this.range && this.start && this.end) {
-            this.value = this.showTime ? {
-              start: `${this.start} ${this.startHour}:${this.startMinute}`,
-              end: `${this.end} ${this.endHour}:${this.endMinute}`
-            } : { start: this.start, end: this.end };
-            this.open = false;
-            this.panel = "date-start";
-          }
-          if (this.range && type === "start" && this.start) {
-            this.panel = this.end ? "time-end" : "date-end";
-          }
-          if (!this.range && this.start) {
+          if (this.range) {
+            if (type === "start") {
+              this.panel = this.end ? "time-end" : "date-end";
+            } else if (type === "end" && this.start && this.end) {
+              this.value = this.showTime ? {
+                start: `${this.start} ${this.startHour}:${this.startMinute}`,
+                end: `${this.end} ${this.endHour}:${this.endMinute}`
+              } : { start: this.start, end: this.end };
+              this.open = false;
+              this.panel = "date-start";
+            }
+          } else if (this.start) {
             this.value = this.showTime ? `${this.start} ${this.startHour}:${this.startMinute}` : this.start;
             this.open = false;
             this.panel = "date-start";
@@ -599,7 +599,7 @@
       },
       wheelMinute(type, event) {
         if (this.disabled) return;
-        this.moveMinute(type, event.deltaY > 0 ? 1 : -1);
+        this.moveMinute(type, event.deltaY > 0 ? 1 : -1, false);
       },
       moveHour(type, direction) {
         const current = parseInt(this.getHourForType(type), 10);
@@ -614,7 +614,7 @@
         }
         this.setTime(type, this.getHourForType(type), this.getMinuteForType(type));
       },
-      moveMinute(type, direction) {
+      moveMinute(type, direction, autoAdvance = true) {
         const current = parseInt(this.getMinuteForType(type), 10);
         let next = current + direction;
         if (next < 0) next = 59;
@@ -625,7 +625,7 @@
         } else {
           this.startMinute = m;
         }
-        this.setTime(type, this.getHourForType(type), this.getMinuteForType(type));
+        this.setTime(type, this.getHourForType(type), this.getMinuteForType(type), autoAdvance);
       },
       setTimeNow(type) {
         if (this.disabled) return;
@@ -755,19 +755,25 @@
         if (this.showSeconds && this.second === null) this.second = "00";
         this.updateTime();
       },
-      selectMinute(m) {
+      selectMinute(m, autoClose = true) {
         if (this.disabled) return;
         this.minute = m;
         if (this.hour === null) this.hour = "00";
         if (this.showSeconds && this.second === null) this.second = "00";
         this.updateTime();
+        if (autoClose && !this.showSeconds && this.hour !== null) {
+          this.open = false;
+        }
       },
-      selectSecond(s) {
+      selectSecond(s, autoClose = true) {
         if (this.disabled) return;
         this.second = s;
         if (this.hour === null) this.hour = "00";
         if (this.minute === null) this.minute = "00";
         this.updateTime();
+        if (autoClose) {
+          this.open = false;
+        }
       },
       togglePeriod(p) {
         if (this.disabled) return;
@@ -807,6 +813,7 @@
         this.minute = String(m).padStart(2, "0");
         this.second = String(s).padStart(2, "0");
         this.updateTime();
+        this.open = false;
       },
       // --- Adjacent value getters (for wheel display) ---
       getAdjacentHour(offset) {
@@ -846,11 +853,11 @@
       },
       wheelMinute(event) {
         if (this.disabled) return;
-        this.moveMinute(event.deltaY > 0 ? 1 : -1);
+        this.moveMinute(event.deltaY > 0 ? 1 : -1, false);
       },
       wheelSecond(event) {
         if (this.disabled) return;
-        this.moveSecond(event.deltaY > 0 ? 1 : -1);
+        this.moveSecond(event.deltaY > 0 ? 1 : -1, false);
       },
       // --- Disabled checks ---
       isHourDisabled(h) {
@@ -938,10 +945,10 @@
           this.selectHour(hours[next]);
         }
       },
-      moveMinute(direction) {
+      moveMinute(direction, autoClose = true) {
         const minutes = this.getMinutes();
         if (this.minute === null) {
-          this.selectMinute(minutes[0]);
+          this.selectMinute(minutes[0], autoClose);
           return;
         }
         const idx = minutes.indexOf(this.minute);
@@ -956,20 +963,20 @@
           attempts--;
         }
         if (attempts > 0) {
-          this.selectMinute(minutes[next]);
+          this.selectMinute(minutes[next], autoClose);
         }
       },
-      moveSecond(direction) {
+      moveSecond(direction, autoClose = true) {
         const seconds = this.getSeconds();
         if (this.second === null) {
-          this.selectSecond(seconds[0]);
+          this.selectSecond(seconds[0], autoClose);
           return;
         }
         const idx = seconds.indexOf(this.second);
         let next = idx + direction;
         if (next < 0) next = seconds.length - 1;
         if (next >= seconds.length) next = 0;
-        this.selectSecond(seconds[next]);
+        this.selectSecond(seconds[next], autoClose);
       },
       // --- Helpers ---
       _toMinutes(timeStr) {

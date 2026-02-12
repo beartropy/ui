@@ -108,20 +108,26 @@ export function beartropyTimepicker(cfg) {
             this.updateTime();
         },
 
-        selectMinute(m) {
+        selectMinute(m, autoClose = true) {
             if (this.disabled) return;
             this.minute = m;
             if (this.hour === null) this.hour = '00';
             if (this.showSeconds && this.second === null) this.second = '00';
             this.updateTime();
+            if (autoClose && !this.showSeconds && this.hour !== null) {
+                this.open = false;
+            }
         },
 
-        selectSecond(s) {
+        selectSecond(s, autoClose = true) {
             if (this.disabled) return;
             this.second = s;
             if (this.hour === null) this.hour = '00';
             if (this.minute === null) this.minute = '00';
             this.updateTime();
+            if (autoClose) {
+                this.open = false;
+            }
         },
 
         togglePeriod(p) {
@@ -167,6 +173,7 @@ export function beartropyTimepicker(cfg) {
             this.minute = String(m).padStart(2, '0');
             this.second = String(s).padStart(2, '0');
             this.updateTime();
+            this.open = false;
         },
 
         // --- Adjacent value getters (for wheel display) ---
@@ -213,12 +220,12 @@ export function beartropyTimepicker(cfg) {
 
         wheelMinute(event) {
             if (this.disabled) return;
-            this.moveMinute(event.deltaY > 0 ? 1 : -1);
+            this.moveMinute(event.deltaY > 0 ? 1 : -1, false);
         },
 
         wheelSecond(event) {
             if (this.disabled) return;
-            this.moveSecond(event.deltaY > 0 ? 1 : -1);
+            this.moveSecond(event.deltaY > 0 ? 1 : -1, false);
         },
 
         // --- Disabled checks ---
@@ -320,10 +327,10 @@ export function beartropyTimepicker(cfg) {
             }
         },
 
-        moveMinute(direction) {
+        moveMinute(direction, autoClose = true) {
             const minutes = this.getMinutes();
             if (this.minute === null) {
-                this.selectMinute(minutes[0]);
+                this.selectMinute(minutes[0], autoClose);
                 return;
             }
             const idx = minutes.indexOf(this.minute);
@@ -338,21 +345,21 @@ export function beartropyTimepicker(cfg) {
                 attempts--;
             }
             if (attempts > 0) {
-                this.selectMinute(minutes[next]);
+                this.selectMinute(minutes[next], autoClose);
             }
         },
 
-        moveSecond(direction) {
+        moveSecond(direction, autoClose = true) {
             const seconds = this.getSeconds();
             if (this.second === null) {
-                this.selectSecond(seconds[0]);
+                this.selectSecond(seconds[0], autoClose);
                 return;
             }
             const idx = seconds.indexOf(this.second);
             let next = idx + direction;
             if (next < 0) next = seconds.length - 1;
             if (next >= seconds.length) next = 0;
-            this.selectSecond(seconds[next]);
+            this.selectSecond(seconds[next], autoClose);
         },
 
         // --- Helpers ---

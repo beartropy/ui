@@ -237,20 +237,20 @@ export function beartropyDatetimepicker(cfg) {
             }
 
             if (autoAdvance) {
-                if (this.range && this.start && this.end) {
-                    this.value = this.showTime
-                        ? {
-                            start: `${this.start} ${this.startHour}:${this.startMinute}`,
-                            end: `${this.end} ${this.endHour}:${this.endMinute}`
-                        }
-                        : { start: this.start, end: this.end };
-                    this.open = false;
-                    this.panel = 'date-start';
-                }
-                if (this.range && type === 'start' && this.start) {
-                    this.panel = this.end ? 'time-end' : 'date-end';
-                }
-                if (!this.range && this.start) {
+                if (this.range) {
+                    if (type === 'start') {
+                        this.panel = this.end ? 'time-end' : 'date-end';
+                    } else if (type === 'end' && this.start && this.end) {
+                        this.value = this.showTime
+                            ? {
+                                start: `${this.start} ${this.startHour}:${this.startMinute}`,
+                                end: `${this.end} ${this.endHour}:${this.endMinute}`
+                            }
+                            : { start: this.start, end: this.end };
+                        this.open = false;
+                        this.panel = 'date-start';
+                    }
+                } else if (this.start) {
                     this.value = this.showTime
                         ? `${this.start} ${this.startHour}:${this.startMinute}`
                         : this.start;
@@ -433,7 +433,7 @@ export function beartropyDatetimepicker(cfg) {
 
         wheelMinute(type, event) {
             if (this.disabled) return;
-            this.moveMinute(type, event.deltaY > 0 ? 1 : -1);
+            this.moveMinute(type, event.deltaY > 0 ? 1 : -1, false);
         },
 
         moveHour(type, direction) {
@@ -450,7 +450,7 @@ export function beartropyDatetimepicker(cfg) {
             this.setTime(type, this.getHourForType(type), this.getMinuteForType(type));
         },
 
-        moveMinute(type, direction) {
+        moveMinute(type, direction, autoAdvance = true) {
             const current = parseInt(this.getMinuteForType(type), 10);
             let next = current + direction;
             if (next < 0) next = 59;
@@ -461,7 +461,7 @@ export function beartropyDatetimepicker(cfg) {
             } else {
                 this.startMinute = m;
             }
-            this.setTime(type, this.getHourForType(type), this.getMinuteForType(type));
+            this.setTime(type, this.getHourForType(type), this.getMinuteForType(type), autoAdvance);
         },
 
         setTimeNow(type) {
