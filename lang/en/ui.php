@@ -61,4 +61,6 @@ return [
     'command_palette' => 'Command palette',
     'search_results' => 'Search results',
     'toggle_theme' => 'Toggle theme',
+    'minimize' => 'Minimize',
+    'show_debug_info' => 'Show debug info',
 ];

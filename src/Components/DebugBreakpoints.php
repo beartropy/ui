@@ -5,11 +5,16 @@ namespace Beartropy\Ui\Components;
 /**
  * DebugBreakpoints component.
  *
- * Displays current Tailwind CSS breakpoint in the corner of the screen.
- * Useful for development.
+ * A development utility that displays the current Tailwind CSS breakpoint
+ * (XS–2XL) and viewport width in pixels, fixed to the bottom-right corner.
+ * Only renders when `app()->environment()` matches the `$env` prop (defaults
+ * to `'local'`). An Alpine.js `x-data` block manages expanded/minimized
+ * state, persisted to `localStorage('debug_breakpoints_expanded')`. When
+ * minimized, shows a small floating red button; when expanded, shows a bar
+ * with breakpoint label, pixel width, and a minimize button.
  *
- * @property bool   $expanded Initial expansion state.
- * @property string $env      Environment setting (e.g. 'local').
+ * @property bool   $expanded Initial expansion state (overridden by localStorage).
+ * @property string $env      Environment to render in (default: 'local').
  */
 class DebugBreakpoints extends BeartropyComponent
 {
