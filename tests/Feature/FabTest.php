@@ -8,69 +8,112 @@ beforeEach(function () {
     $this->app->register(\BladeUI\Heroicons\BladeHeroiconsServiceProvider::class);
 });
 
-it('can render basic fab component', function () {
+// --- Structure ---
+
+it('renders a fixed-position wrapper div', function () {
     $html = Blade::render('<x-bt-fab />');
 
-    expect($html)->toContain('fixed');
-    expect($html)->toContain('rounded-full');
+    expect($html)
+        ->toContain('<div class="fixed')
+        ->toContain('</div>');
 });
 
-it('renders with default icon', function () {
+it('renders as a button element by default', function () {
+    $html = Blade::render('<x-bt-fab />');
+
+    expect($html)
+        ->toContain('<button')
+        ->toContain('type="button"')
+        ->toContain('</button>');
+});
+
+it('renders as an anchor element when href is provided', function () {
+    $html = Blade::render('<x-bt-fab href="/create" />');
+
+    expect($html)
+        ->toContain('<a')
+        ->toContain('href="/create"')
+        ->toContain('</a>')
+        ->not->toContain('<button');
+});
+
+it('renders the default plus icon when no icon or slot given', function () {
     $html = Blade::render('<x-bt-fab />');
 
     expect($html)->toContain('<svg');
 });
 
-it('can render with custom icon', function () {
+it('renders a custom icon via icon prop', function () {
     $html = Blade::render('<x-bt-fab icon="star" />');
 
     expect($html)->toContain('<svg');
 });
 
-it('renders as button by default', function () {
+it('renders slot content instead of icon when slot provided', function () {
+    $html = Blade::render('<x-bt-fab><span class="custom-fab-content">GO</span></x-bt-fab>');
+
+    expect($html)
+        ->toContain('custom-fab-content')
+        ->toContain('GO');
+});
+
+// --- Styling ---
+
+it('applies rounded-full shadow and transition classes', function () {
     $html = Blade::render('<x-bt-fab />');
 
-    expect($html)->toContain('<button');
+    expect($html)
+        ->toContain('rounded-full')
+        ->toContain('shadow-lg')
+        ->toContain('transition');
 });
 
-it('renders as link when href provided', function () {
-    $html = Blade::render('<x-bt-fab href="/create" />');
-
-    expect($html)->toContain('<a');
-    expect($html)->toContain('href="/create"');
-});
-
-it('can render with custom slot content', function () {
-    $html = Blade::render('<x-bt-fab>Custom Content</x-bt-fab>');
-
-    expect($html)->toContain('Custom Content');
-});
-
-it('renders with shadow and transitions', function () {
+it('applies cursor-pointer class', function () {
     $html = Blade::render('<x-bt-fab />');
 
-    expect($html)->toContain('shadow-lg');
-    expect($html)->toContain('transition');
+    expect($html)->toContain('cursor-pointer');
 });
 
-it('can be hidden on desktop with onlyMobile', function () {
-    $html = Blade::render('<x-bt-fab :onlyMobile="true" />');
-
-    expect($html)->toContain('md:hidden');
-});
-
-it('renders on all screens by default', function () {
+it('applies focus-visible ring for keyboard focus', function () {
     $html = Blade::render('<x-bt-fab />');
 
-    expect($html)->not->toContain('md:hidden');
+    expect($html)
+        ->toContain('focus:outline-none')
+        ->toContain('focus-visible:ring-2');
 });
 
-it('uses inline styles for positioning', function () {
+it('applies flex centering classes to button', function () {
     $html = Blade::render('<x-bt-fab />');
 
-    expect($html)->toContain('right:');
-    expect($html)->toContain('bottom:');
-    expect($html)->toContain('z-index:');
+    expect($html)
+        ->toContain('flex')
+        ->toContain('items-center')
+        ->toContain('justify-center');
+});
+
+// --- Accessibility ---
+
+it('renders aria-label with default localized label', function () {
+    $html = Blade::render('<x-bt-fab />');
+
+    expect($html)->toContain('aria-label="New"');
+});
+
+it('renders custom aria-label from label prop', function () {
+    $html = Blade::render('<x-bt-fab label="Add item" />');
+
+    expect($html)->toContain('aria-label="Add item"');
+});
+
+// --- Positioning ---
+
+it('uses default position values', function () {
+    $html = Blade::render('<x-bt-fab />');
+
+    expect($html)
+        ->toContain('right: 1rem')
+        ->toContain('bottom: 1rem')
+        ->toContain('z-index: 50');
 });
 
 it('can customize right position', function () {
@@ -91,45 +134,112 @@ it('can customize z-index', function () {
     expect($html)->toContain('z-index: 100');
 });
 
-it('uses default z-index of 50', function () {
+// --- Mobile visibility ---
+
+it('does not add md:hidden by default', function () {
     $html = Blade::render('<x-bt-fab />');
 
-    expect($html)->toContain('z-index: 50');
+    expect($html)->not->toContain('md:hidden');
 });
 
-it('supports color presets', function () {
-    $htmlPrimary = Blade::render('<x-bt-fab color="primary" />');
-    expect($htmlPrimary)->toContain('fixed');
+it('adds md:hidden when onlyMobile is true', function () {
+    $html = Blade::render('<x-bt-fab :onlyMobile="true" />');
 
-    $htmlDanger = Blade::render('<x-bt-fab color="danger" />');
-    expect($htmlDanger)->toContain('fixed');
+    expect($html)->toContain('md:hidden');
 });
 
-it('supports size presets', function () {
-    $htmlSm = Blade::render('<x-bt-fab size="sm" />');
-    expect($htmlSm)->toContain('fixed');
+// --- Color presets ---
 
-    $htmlLg = Blade::render('<x-bt-fab size="lg" />');
-    expect($htmlLg)->toContain('fixed');
+it('applies default beartropy color preset', function () {
+    $html = Blade::render('<x-bt-fab />');
+
+    expect($html)
+        ->toContain('bg-beartropy-600')
+        ->toContain('text-white')
+        ->toContain('hover:bg-beartropy-700');
 });
 
-it('can render with all features combined', function () {
+it('applies a named color preset', function () {
+    $html = Blade::render('<x-bt-fab color="red" />');
+
+    expect($html)
+        ->toContain('bg-red-600')
+        ->toContain('hover:bg-red-700')
+        ->toContain('text-white');
+});
+
+it('applies magic color attribute', function () {
+    $html = Blade::render('<x-bt-fab blue />');
+
+    expect($html)
+        ->toContain('bg-blue-600')
+        ->toContain('hover:bg-blue-700');
+});
+
+// --- Size presets ---
+
+it('applies default size preset to button and icon', function () {
+    $html = Blade::render('<x-bt-fab />');
+
+    // Default size from sizes.php — first size entry
+    expect($html)->toContain('<svg');
+});
+
+it('applies a named size preset', function () {
+    $html = Blade::render('<x-bt-fab size="lg" />');
+
+    expect($html)->toContain('w-16 h-16');
+});
+
+// --- Attributes pass-through ---
+
+it('merges additional attributes onto the button element', function () {
+    $html = Blade::render('<x-bt-fab id="my-fab" data-action="create" />');
+
+    expect($html)
+        ->toContain('id="my-fab"')
+        ->toContain('data-action="create"');
+});
+
+it('merges custom classes with preset classes', function () {
+    $html = Blade::render('<x-bt-fab class="my-custom-class" />');
+
+    expect($html)
+        ->toContain('my-custom-class')
+        ->toContain('rounded-full');
+});
+
+it('does not double-render attributes', function () {
+    $html = Blade::render('<x-bt-fab id="fab-1" />');
+
+    // Count occurrences of id="fab-1" — should appear exactly once
+    expect(substr_count($html, 'id="fab-1"'))->toBe(1);
+});
+
+// --- Combined ---
+
+it('renders all features together', function () {
     $html = Blade::render('
-        <x-bt-fab 
+        <x-bt-fab
             icon="pencil"
+            label="Edit item"
             href="/edit"
             :onlyMobile="false"
             right="2rem"
             bottom="2rem"
             :zIndex="75"
-            color="success"
+            color="green"
             size="lg"
         />
     ');
 
-    expect($html)->toContain('<a');
-    expect($html)->toContain('href="/edit"');
-    expect($html)->toContain('right: 2rem');
-    expect($html)->toContain('bottom: 2rem');
-    expect($html)->toContain('z-index: 75');
+    expect($html)
+        ->toContain('<a')
+        ->toContain('href="/edit"')
+        ->toContain('aria-label="Edit item"')
+        ->toContain('right: 2rem')
+        ->toContain('bottom: 2rem')
+        ->toContain('z-index: 75')
+        ->toContain('bg-green-600')
+        ->toContain('w-16 h-16');
 });

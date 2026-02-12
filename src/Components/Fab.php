@@ -5,16 +5,20 @@ namespace Beartropy\Ui\Components;
 /**
  * Floating Action Button (FAB) component.
  *
- * Renders a floating action button, typically fixed position on screen.
+ * Renders a fixed-position circular action button at a configurable screen
+ * corner. Supports color and size presets via `HasPresets`. When an `href`
+ * attribute is present, renders as `<a>`; otherwise renders as `<button>`.
+ * Accepts a default slot for fully custom content, or an `icon` prop to
+ * render a Heroicon. The `label` prop sets the accessible `aria-label`.
  *
- * @property string|null $icon       Icon name.
- * @property string|null $label      Label text (tooltip or accessible).
- * @property string|null $onlyMobile Only show on mobile breakpoint.
- * @property string|null $zIndex     Z-index class.
- * @property string|null $right      Right position class.
- * @property string|null $bottom     Bottom position class.
- * @property string|null $color      Color preset.
- * @property string|null $size       Size preset.
+ * @property string|null $icon       Heroicon name (default: 'plus').
+ * @property string|null $label      Accessible label for aria-label.
+ * @property string|null $onlyMobile When truthy, hides the FAB on md+ screens.
+ * @property string|null $zIndex     CSS z-index value (default: 50).
+ * @property string|null $right      CSS right offset (default: '1rem').
+ * @property string|null $bottom     CSS bottom offset (default: '1rem').
+ * @property string|null $color      Color preset name.
+ * @property string|null $size       Size preset name.
  */
 class Fab extends BeartropyComponent
 {
