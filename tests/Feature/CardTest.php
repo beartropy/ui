@@ -8,158 +8,203 @@ beforeEach(function () {
     $this->app->register(\BladeUI\Heroicons\BladeHeroiconsServiceProvider::class);
 });
 
-it('can render basic card component', function () {
+it('renders a basic card with x-data', function () {
     $html = Blade::render('<x-bt-card>Card content</x-bt-card>');
 
-    expect($html)->toContain('Card content');
-    expect($html)->toContain('x-data');
+    expect($html)
+        ->toContain('x-data="{}"')
+        ->toContain('Card content');
 });
 
-it('renders without title by default', function () {
+it('renders slot content', function () {
+    $html = Blade::render('<x-bt-card><p>Inner paragraph</p></x-bt-card>');
+
+    expect($html)->toContain('<p>Inner paragraph</p>');
+});
+
+it('renders title with border-b', function () {
+    $html = Blade::render('<x-bt-card title="My Title">Content</x-bt-card>');
+
+    expect($html)
+        ->toContain('My Title')
+        ->toContain('border-b');
+});
+
+it('omits title div when no title is provided', function () {
     $html = Blade::render('<x-bt-card>Content</x-bt-card>');
 
-    expect($html)->toContain('Content');
+    expect($html)->not->toContain('border-b');
 });
 
-it('can render with title', function () {
-    $html = Blade::render('<x-bt-card title="Card Title">Content</x-bt-card>');
+it('renders footer with border-t', function () {
+    $html = Blade::render('<x-bt-card footer="Footer text">Content</x-bt-card>');
 
-    expect($html)->toContain('Card Title');
-    expect($html)->toContain('Content');
+    expect($html)
+        ->toContain('Footer text')
+        ->toContain('border-t');
 });
 
-it('renders title with border when not collapsable', function () {
-    $html = Blade::render('<x-bt-card title="Title">Content</x-bt-card>');
-
-    expect($html)->toContain('border-b');
-});
-
-it('can render with footer', function () {
-    $html = Blade::render('<x-bt-card footer="Card Footer">Content</x-bt-card>');
-
-    expect($html)->toContain('Card Footer');
-    expect($html)->toContain('border-t');
-});
-
-it('renders with border by default', function () {
+it('omits footer when not provided', function () {
     $html = Blade::render('<x-bt-card>Content</x-bt-card>');
 
-    expect($html)->toContain('border');
+    expect($html)->not->toContain('border-t');
 });
 
-it('can render without border', function () {
+it('renders footer as named slot', function () {
+    $html = Blade::render('
+        <x-bt-card>
+            Content
+            <x-slot:footer>
+                <button>Save</button>
+            </x-slot:footer>
+        </x-bt-card>
+    ');
+
+    expect($html)
+        ->toContain('<button>Save</button>')
+        ->toContain('border-t');
+});
+
+it('removes border and shadow with noBorder', function () {
     $html = Blade::render('<x-bt-card :noBorder="true">Content</x-bt-card>');
 
-    expect($html)->toContain('border-0');
-    expect($html)->toContain('shadow-none');
+    expect($html)
+        ->toContain('border-0')
+        ->toContain('shadow-none');
 });
 
-it('renders as non-collapsable by default', function () {
+it('has border by default', function () {
     $html = Blade::render('<x-bt-card>Content</x-bt-card>');
 
-    expect($html)->not->toContain('@click="open = !open"');
+    expect($html)
+        ->toContain('border border-gray-200')
+        ->not->toContain('border-0');
 });
 
-it('can be collapsable', function () {
+it('is non-collapsable by default', function () {
+    $html = Blade::render('<x-bt-card title="Title">Content</x-bt-card>');
+
+    expect($html)
+        ->toContain('x-data="{}"')
+        ->not->toContain('cursor-pointer')
+        ->not->toContain('x-show');
+});
+
+it('adds click handler and chevron when collapsable', function () {
     $html = Blade::render('<x-bt-card title="Title" :collapsable="true">Content</x-bt-card>');
 
-    expect($html)->toContain('open:');
-    expect($html)->toContain('@click="open = !open"');
+    expect($html)
+        ->toContain('@click="open = !open"')
+        ->toContain('<svg');
 });
 
-it('collapsable cards default to open', function () {
+it('defaults to open when collapsable', function () {
     $html = Blade::render('<x-bt-card :collapsable="true">Content</x-bt-card>');
 
     expect($html)->toContain('open: true');
 });
 
-it('can start collapsed', function () {
+it('can start collapsed with defaultOpen false', function () {
     $html = Blade::render('<x-bt-card :collapsable="true" :defaultOpen="false">Content</x-bt-card>');
 
     expect($html)->toContain('open: false');
 });
 
-it('renders collapse icon when collapsable', function () {
-    $html = Blade::render('<x-bt-card title="Title" :collapsable="true">Content</x-bt-card>');
-
-    expect($html)->toContain('<svg');
-    expect($html)->toContain('rotate-180');
-});
-
-it('uses x-collapse for smooth transitions', function () {
+it('uses x-show x-collapse and x-cloak when collapsable', function () {
     $html = Blade::render('<x-bt-card :collapsable="true">Content</x-bt-card>');
 
-    expect($html)->toContain('x-collapse');
-    expect($html)->toContain('x-transition');
+    expect($html)
+        ->toContain('x-show="open"')
+        ->toContain('x-collapse')
+        ->toContain('x-cloak');
 });
 
-it('hides content with x-show when collapsable', function () {
-    $html = Blade::render('<x-bt-card :collapsable="true">Content</x-bt-card>');
-
-    expect($html)->toContain('x-show="open"');
-});
-
-it('title is clickable when collapsable', function () {
+it('adds cursor-pointer and select-none to collapsable title', function () {
     $html = Blade::render('<x-bt-card title="Title" :collapsable="true">Content</x-bt-card>');
 
-    expect($html)->toContain('cursor-pointer');
-    expect($html)->toContain('select-none');
+    expect($html)
+        ->toContain('cursor-pointer')
+        ->toContain('select-none');
 });
 
-it('supports wire:target for loading state', function () {
+it('shows loading spinner with wire:target', function () {
     $html = Blade::render('<x-bt-card wire:target="save">Content</x-bt-card>');
 
-    expect($html)->toContain('wire:loading');
-    expect($html)->toContain('wire:target="save"');
+    expect($html)
+        ->toContain('wire:loading.flex')
+        ->toContain('wire:target="save"')
+        ->toContain('animate-spin');
 });
 
-it('renders loading spinner with wire:target', function () {
-    $html = Blade::render('<x-bt-card wire:target="submit">Content</x-bt-card>');
-
-    expect($html)->toContain('animate-spin');
-});
-
-it('renders with relative positioning', function () {
+it('does not render spinner without wire:target', function () {
     $html = Blade::render('<x-bt-card>Content</x-bt-card>');
 
-    expect($html)->toContain('relative');
+    expect($html)
+        ->not->toContain('wire:loading')
+        ->not->toContain('animate-spin');
 });
 
-it('supports color presets', function () {
-    $htmlPrimary = Blade::render('<x-bt-card color="primary">Content</x-bt-card>');
-    expect($htmlPrimary)->toContain('x-data');
+it('applies beartropy color preset classes', function () {
+    $html = Blade::render('<x-bt-card color="beartropy">Content</x-bt-card>');
 
-    $htmlDanger = Blade::render('<x-bt-card color="danger">Content</x-bt-card>');
-    expect($htmlDanger)->toContain('x-data');
+    expect($html)
+        ->toContain('bg-white')
+        ->toContain('rounded-xl')
+        ->toContain('shadow-xl');
 });
 
-it('supports size presets', function () {
-    $htmlSm = Blade::render('<x-bt-card size="sm">Content</x-bt-card>');
-    expect($htmlSm)->toContain('x-data');
+it('applies modal color preset classes', function () {
+    $html = Blade::render('<x-bt-card color="modal">Content</x-bt-card>');
 
-    $htmlLg = Blade::render('<x-bt-card size="lg">Content</x-bt-card>');
-    expect($htmlLg)->toContain('x-data');
+    expect($html)
+        ->toContain('bg-white')
+        ->toContain('rounded-xl')
+        ->toContain('shadow-xl');
 });
 
-it('can render with all features combined', function () {
+it('applies neutral color preset classes', function () {
+    $html = Blade::render('<x-bt-card color="neutral">Content</x-bt-card>');
+
+    expect($html)
+        ->toContain('bg-white')
+        ->toContain('rounded-xl')
+        ->toContain('shadow-xl');
+});
+
+it('merges custom attributes', function () {
+    $html = Blade::render('<x-bt-card id="my-card" data-section="info">Content</x-bt-card>');
+
+    expect($html)
+        ->toContain('id="my-card"')
+        ->toContain('data-section="info"');
+});
+
+it('combines all features together', function () {
     $html = Blade::render('
-        <x-bt-card 
-            title="Full Featured Card"
-            footer="Card Footer"
+        <x-bt-card
+            title="Full Card"
+            footer="Footer"
             :collapsable="true"
             :defaultOpen="true"
-            :noBorder="false"
-            color="primary"
-            size="lg"
+            color="beartropy"
             wire:target="action"
         >
-            Card content here
+            Card content
         </x-bt-card>
     ');
 
-    expect($html)->toContain('Full Featured Card');
-    expect($html)->toContain('Card Footer');
-    expect($html)->toContain('Card content here');
-    expect($html)->toContain('open: true');
-    expect($html)->toContain('wire:target="action"');
+    expect($html)
+        ->toContain('Full Card')
+        ->toContain('Footer')
+        ->toContain('Card content')
+        ->toContain('open: true')
+        ->toContain('wire:target="action"')
+        ->toContain('cursor-pointer')
+        ->toContain('animate-spin');
+});
+
+it('always has relative positioning', function () {
+    $html = Blade::render('<x-bt-card>Content</x-bt-card>');
+
+    expect($html)->toContain('relative');
 });

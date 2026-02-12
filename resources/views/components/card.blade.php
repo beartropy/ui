@@ -1,11 +1,11 @@
 @php
-    [$colorPreset, $sizePreset] = $getComponentPresets('card', null);
+    [$colorPreset] = $getComponentPresets('card', null);
 
     $hasWireTarget = $attributes->whereStartsWith('wire:target')->isNotEmpty();
 
     $wrapperClasses = $colorPreset['wrapper']
         . ($noBorder ? ' border-0 shadow-none' : ' border border-gray-200 dark:border-gray-700')
-        . ($hasWireTarget ? ' relative' : ' relative'); // lo dejo siempre relative, no molesta
+        . ' relative';
     $initialOpen = $defaultOpen ? 'true' : 'false';
 @endphp
 
@@ -49,7 +49,7 @@
         </div>
     @endif
 
-    {{-- CONTENIDO PRINCIPAL --}}
+    {{-- Main Content --}}
     <div
         class="{{ $colorPreset['slot'] }} py-2"
         @if($collapsable)
@@ -62,7 +62,7 @@
         {!! $slot !!}
     </div>
 
-    {{-- FOOTER --}}
+    {{-- Footer --}}
     @if (!empty($footer))
         <div
             class="border-t border-gray-200 dark:border-gray-700 pt-1 overflow-hidden"
@@ -95,26 +95,25 @@
                     xmlns="http://www.w3.org/2000/svg"
                 >
                     <defs>
-                        {{-- Definimos el gradiente para la "cola" del spinner --}}
+                        {{-- Gradient for spinner tail --}}
                         <linearGradient id="spinner-mix-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stop-color="currentColor" stop-opacity="0" />
                             <stop offset="100%" stop-color="currentColor" stop-opacity="1" />
                         </linearGradient>
                     </defs>
 
-                    {{-- Fondo: Anillo segmentado (tech) sutil --}}
+                    {{-- Background: segmented ring --}}
                     <circle
                         cx="12"
                         cy="12"
                         r="10"
                         stroke="currentColor"
                         stroke-width="1.5"
-                        stroke-dasharray="3 5" {{-- Guiones cortos y espacios --}}
+                        stroke-dasharray="3 5"
                         class="opacity-20"
                     />
 
-                    {{-- Frente: Arco suave con gradiente --}}
-                    {{-- Usamos un path para tener control total del inicio y fin del arco --}}
+                    {{-- Foreground: gradient arc --}}
                     <path
                         d="M12 2 A10 10 0 0 1 21.5 9.5"
                         stroke="url(#spinner-mix-gradient)"
