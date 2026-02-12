@@ -1,5 +1,5 @@
 @php
-    [$colorPreset, $sizePreset] = $getComponentPresets('alert');
+    [$colorPreset] = $getComponentPresets('alert');
 @endphp
 
 <div
@@ -10,9 +10,9 @@
     role="alert"
 >
 
-    @if($noIcon !== true && (isset($colorPreset['icon']) || isset($icon)))
+    @if($noIcon !== true && (!empty($colorPreset['icon']) || isset($icon)))
         {{-- Icon --}}
-        <div  class="{{ $colorPreset['icon_wrapper'] ?? 'mt-0.5 flex-shrink-0' }}">
+        <div class="{{ $colorPreset['icon_wrapper'] ?? 'mt-0.5 flex-shrink-0' }}">
             @if(isset($icon))
                 @if(is_string($icon))
                     <x-beartropy-ui::icon :name="$icon" class="{{ $colorPreset['icon_class'] ?? 'w-7 h-7' }}" />
@@ -28,8 +28,7 @@
     @endif
 
     <div class="{{ $colorPreset['content'] ?? 'flex-1 min-w-0 mt-0.5' }}">
-        {{-- Título --}}
-        {{-- Título opcional --}}
+        {{-- Title --}}
         @if (isset($title))
             <div class="{{ $colorPreset['title'] ?? 'font-bold mb-1 text-sm leading-tight' }}">
                 {{ $title }}
