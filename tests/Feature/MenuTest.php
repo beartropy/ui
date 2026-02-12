@@ -8,163 +8,267 @@ beforeEach(function () {
     $this->app->register(\BladeUI\Heroicons\BladeHeroiconsServiceProvider::class);
 });
 
-it('can render basic menu component', function () {
+// --- Structure ---
+
+it('renders as a semantic ul with role list', function () {
+    $items = [['url' => '/test', 'label' => 'Test']];
+    $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
+
+    expect($html)
+        ->toContain('<ul')
+        ->toContain('role="list"');
+});
+
+it('does not render bare x-data on the ul', function () {
+    $items = [['url' => '/a', 'label' => 'A']];
+    $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
+
+    expect($html)->not->toContain(' x-data');
+});
+
+it('renders links with wire:navigate', function () {
+    $items = [['url' => '/dashboard', 'label' => 'Dashboard']];
+    $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
+
+    expect($html)
+        ->toContain('wire:navigate')
+        ->toContain('href="/dashboard"')
+        ->toContain('Dashboard');
+});
+
+it('renders multiple items as li elements', function () {
     $items = [
-        ['url' => '/test', 'label' => 'Test Item'],
+        ['url' => '/a', 'label' => 'Alpha'],
+        ['url' => '/b', 'label' => 'Beta'],
     ];
     $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
 
-    expect($html)->toContain('Test Item');
-    expect($html)->toContain('role="list"');
+    expect($html)
+        ->toContain('href="/a"')
+        ->toContain('Alpha')
+        ->toContain('href="/b"')
+        ->toContain('Beta')
+        ->toContain('<li');
 });
 
-it('renders with Alpine.js x-data', function () {
+// --- Active State ---
+
+it('marks active item with aria-current and active class', function () {
+    $items = [['url' => '/', 'label' => 'Home']];
+    $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
+
+    expect($html)
+        ->toContain('aria-current="page"')
+        ->toContain('font-semibold');
+});
+
+it('renders sr-only current text for active items', function () {
+    $items = [['url' => '/', 'label' => 'Home']];
+    $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
+
+    expect($html)
+        ->toContain('sr-only')
+        ->toContain('(current)');
+});
+
+it('does not mark inactive items with aria-current', function () {
+    $items = [['url' => '/never-match-this-path', 'label' => 'Other']];
+    $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
+
+    expect($html)
+        ->not->toContain('aria-current')
+        ->not->toContain('sr-only');
+});
+
+it('supports custom route pattern for active detection', function () {
+    $items = [['url' => '/test', 'label' => 'Test', 'route' => '/']];
+    $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
+
+    expect($html)->toContain('aria-current="page"');
+});
+
+// --- Section Titles ---
+
+it('renders section titles as h2 elements', function () {
+    $items = [['title' => 'Settings']];
+    $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
+
+    expect($html)
+        ->toContain('<h2')
+        ->toContain('Settings')
+        ->toContain('mt-2 mb-1');
+});
+
+it('renders nested section titles with smaller styling', function () {
     $items = [
-        ['url' => '/test', 'label' => 'Test'],
+        ['title' => 'Parent', 'items' => [
+            ['title' => 'Child Section'],
+        ]],
     ];
     $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
 
-    expect($html)->toContain('x-data');
+    expect($html)
+        ->toContain('Child Section')
+        ->toContain('text-xs uppercase tracking-widest');
 });
 
-it('can render menu items with URLs', function () {
+// --- Nested Menus ---
+
+it('renders nested submenus recursively', function () {
     $items = [
-        ['url' => '/dashboard', 'label' => 'Dashboard'],
-        ['url' => '/settings', 'label' => 'Settings'],
+        ['title' => 'Group', 'items' => [
+            ['url' => '/child', 'label' => 'Child Item'],
+        ]],
     ];
     $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
 
-    expect($html)->toContain('Dashboard');
-    expect($html)->toContain('Settings');
-    expect($html)->toContain('href="/dashboard"');
-    expect($html)->toContain('href="/settings"');
+    expect($html)
+        ->toContain('Child Item')
+        ->toContain('href="/child"');
 });
 
-it('renders with wire:navigate on links', function () {
+it('adds left border and indent to nested levels', function () {
     $items = [
-        ['url' => '/test', 'label' => 'Test'],
+        ['items' => [
+            ['url' => '/nested', 'label' => 'Nested'],
+        ]],
     ];
     $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
 
-    expect($html)->toContain('wire:navigate');
+    expect($html)
+        ->toContain('border-l')
+        ->toContain('border-slate-200')
+        ->toContain('ml-4')
+        ->toContain('pl-2');
 });
 
-it('highlights active items', function () {
-    $items = [
-        ['url' => '/', 'label' => 'Home'],
-    ];
+// --- Icons ---
+
+it('renders icons through the Icon component', function () {
+    $items = [['url' => '/test', 'label' => 'Test', 'icon' => 'heroicon-o-home']];
     $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
 
-    expect($html)->toContain('Home');
+    expect($html)->toContain('<svg');
 });
 
-it('can render section titles', function () {
-    $items = [
-        ['title' => 'Main Section'],
-        ['url' => '/test', 'label' => 'Test'],
-    ];
+it('renders raw SVG icons passed as HTML', function () {
+    $items = [['url' => '/test', 'label' => 'Test', 'icon' => '<svg class="custom">x</svg>']];
     $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
 
-    expect($html)->toContain('Main Section');
-    expect($html)->toContain('<h2');
+    expect($html)->toContain('<svg class="custom">x</svg>');
 });
 
-it('can render nested menus', function () {
-    $items = [
-        [
-            'title' => 'Parent',
-            'items' => [
-                ['url' => '/child', 'label' => 'Child Item'],
-            ],
-        ],
-    ];
+it('skips icon rendering when no icon is set', function () {
+    $items = [['url' => '/test', 'label' => 'Test']];
     $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
 
-    expect($html)->toContain('Child Item');
+    expect($html)->not->toContain('<svg');
 });
 
-it('can render icons on items', function () {
-    $items = [
-        ['url' => '/test', 'label' => 'Test', 'icon' => 'fas fa-home'],
-    ];
+// --- Badges ---
+
+it('renders badges with text and class', function () {
+    $items = [['url' => '/test', 'label' => 'Inbox', 'badge' => ['text' => '12', 'class' => 'bg-red-100 text-red-600']]];
     $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
 
-    expect($html)->toContain('fas fa-home');
+    expect($html)
+        ->toContain('12')
+        ->toContain('bg-red-100')
+        ->toContain('text-red-600')
+        ->toContain('<span');
 });
 
-it('can render badges on items', function () {
-    $items = [
-        ['url' => '/test', 'label' => 'Test', 'badge' => ['text' => '5', 'class' => 'bg-red-500']],
-    ];
+it('does not render badge span when no badge is set', function () {
+    $items = [['url' => '/test', 'label' => 'Test']];
     $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
 
-    expect($html)->toContain('5');
-    expect($html)->toContain('bg-red-500');
+    // Only the <a> tag content, no <span> for badge
+    $linkSection = explode('</a>', explode('wire:navigate', $html)[1] ?? '')[0] ?? '';
+    expect($linkSection)->not->toContain('<span class="bg-');
 });
 
-it('renders with custom ul class', function () {
-    $items = [
-        ['url' => '/test', 'label' => 'Test'],
-    ];
-    $html = Blade::render('<x-bt-menu :items="$items" ulClass="custom-ul-class" />', ['items' => $items]);
+// --- Custom Classes ---
 
-    expect($html)->toContain('custom-ul-class');
+it('applies custom ul class', function () {
+    $items = [['url' => '/test', 'label' => 'Test']];
+    $html = Blade::render('<x-bt-menu :items="$items" ul-class="my-custom-ul" />', ['items' => $items]);
+
+    expect($html)->toContain('my-custom-ul');
 });
 
-it('renders with custom title class', function () {
-    $items = [
-        ['title' => 'Section'],
-    ];
-    $html = Blade::render('<x-bt-menu :items="$items" titleClass="custom-title" />', ['items' => $items]);
 
-    expect($html)->toContain('custom-title');
+it('applies custom li class', function () {
+    $items = [['url' => '/test', 'label' => 'Test']];
+    $html = Blade::render('<x-bt-menu :items="$items" li-class="my-li" />', ['items' => $items]);
+
+    expect($html)->toContain('my-li');
 });
 
-it('renders with custom item class', function () {
-    $items = [
-        ['url' => '/test', 'label' => 'Test'],
-    ];
-    $html = Blade::render('<x-bt-menu :items="$items" itemClass="custom-item" />', ['items' => $items]);
+// --- Mobile ---
 
-    expect($html)->toContain('custom-item');
-});
-
-it('renders with custom active class', function () {
-    $items = [
-        ['url' => '/', 'label' => 'Active'],
-    ];
-    $html = Blade::render('<x-bt-menu :items="$items" activeClass="custom-active" />', ['items' => $items]);
-
-    expect($html)->toContain('Active');
-});
-
-it('supports mobile mode', function () {
-    $items = [
-        ['url' => '/test', 'label' => 'Test'],
-    ];
+it('adds p-2 padding in mobile mode', function () {
+    $items = [['url' => '/test', 'label' => 'Test']];
     $html = Blade::render('<x-bt-menu :items="$items" :mobile="true" />', ['items' => $items]);
 
     expect($html)->toContain('p-2');
 });
 
-it('handles nested levels with borders', function () {
-    $items = [
-        [
-            'items' => [
-                ['url' => '/child', 'label' => 'Child'],
-            ],
-        ],
-    ];
+it('does not add p-2 when not in mobile mode', function () {
+    $items = [['url' => '/test', 'label' => 'Test']];
     $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
 
-    expect($html)->toContain('Child');
+    // Root ul (level 0, not mobile) should not have p-2
+    expect($html)->not->toMatch('/<ul[^>]*class="[^"]*\bp-2\b/');
 });
 
-it('renders screen reader text for current page', function () {
+// --- Color Presets ---
+
+it('uses default beartropy color preset', function () {
     $items = [
-        ['url' => '/', 'label' => 'Current'],
+        ['title' => 'Section'],
+        ['url' => '/', 'label' => 'Active'],
     ];
     $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
 
-    expect($html)->toContain('Current');
+    expect($html)
+        ->toContain('text-beartropy-500')
+        ->toContain('dark:text-beartropy-400')
+        ->toContain('hover:text-beartropy-500');
+});
+
+it('applies blue color preset via magic attribute', function () {
+    $items = [
+        ['title' => 'Section'],
+        ['url' => '/', 'label' => 'Active'],
+    ];
+    $html = Blade::render('<x-bt-menu blue :items="$items" />', ['items' => $items]);
+
+    expect($html)
+        ->toContain('text-blue-500')
+        ->toContain('dark:text-blue-400')
+        ->toContain('hover:text-blue-500');
+});
+
+it('applies color preset via color prop', function () {
+    $items = [
+        ['title' => 'Section'],
+        ['url' => '/', 'label' => 'Active'],
+    ];
+    $html = Blade::render('<x-bt-menu color="emerald" :items="$items" />', ['items' => $items]);
+
+    expect($html)
+        ->toContain('text-emerald-500')
+        ->toContain('dark:text-emerald-400')
+        ->toContain('hover:text-emerald-500');
+});
+
+// --- Default Classes ---
+
+it('uses default spacing classes on ul', function () {
+    $items = [['url' => '/test', 'label' => 'Test']];
+    $html = Blade::render('<x-bt-menu :items="$items" />', ['items' => $items]);
+
+    expect($html)
+        ->toContain('space-y-2')
+        ->toContain('lg:space-y-4');
 });

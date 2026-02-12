@@ -53,4 +53,5 @@ return [
     'add_tag' => 'Add tag...',
     'type_message' => 'Type a message...',
     'new' => 'New',
+    'current' => 'current',
 ];
