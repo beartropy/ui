@@ -2,55 +2,108 @@
 
 namespace Beartropy\Ui\Components;
 
+use Illuminate\Contracts\View\View;
+
 /**
- * Lookup component.
+ * Lookup Component.
  *
- * Extends Input component to provide autocomplete/lookup functionality.
+ * An autocomplete/combobox input: type text, filter options, pick from a dropdown.
+ * Extends BeartropyComponent directly (not Input) for a clean, self-contained constructor.
  *
- * @property array  $options     List of options.
- * @property string $optionLabel Property name for option label.
- * @property string $optionValue Property name for option value.
- * @property string|null $label  Label text.
+ * @property array       $options     Normalized list of options.
+ * @property string      $optionLabel Property name for option label.
+ * @property string      $optionValue Property name for option value.
+ * @property string|null $label       Label text.
+ *
+ * ## Blade Props
+ *
+ * ### Slots
+ * @slot start Prepend content/icon.
+ * @slot end   Append content/icon.
+ *
+ * ### Magic Attributes (Size)
+ * @property bool $xs Extra Small.
+ * @property bool $sm Small.
+ * @property bool $md Medium (default).
+ * @property bool $lg Large.
+ * @property bool $xl Extra Large.
+ * @property bool $2xl Double Extra Large.
+ *
+ * ### Magic Attributes (Color)
+ * @property bool $beartropy Beartropy color.
+ * @property bool $primary   Primary color.
+ * @property bool $secondary Secondary color.
+ * @property bool $slate     Slate color.
+ * @property bool $gray      Gray color.
+ * @property bool $zinc      Zinc color.
+ * @property bool $neutral   Neutral color.
+ * @property bool $stone     Stone color.
+ * @property bool $red       Red color.
+ * @property bool $orange    Orange color.
+ * @property bool $amber     Amber color.
+ * @property bool $yellow    Yellow color.
+ * @property bool $lime      Lime color.
+ * @property bool $green     Green color.
+ * @property bool $emerald   Emerald color.
+ * @property bool $teal      Teal color.
+ * @property bool $cyan      Cyan color.
+ * @property bool $sky       Sky color.
+ * @property bool $blue      Blue color.
+ * @property bool $indigo    Indigo color.
+ * @property bool $violet    Violet color.
+ * @property bool $purple    Purple color.
+ * @property bool $fuchsia   Fuchsia color.
+ * @property bool $pink      Pink color.
+ * @property bool $rose      Rose color.
  */
-class Lookup extends Input
+class Lookup extends BeartropyComponent
 {
     /**
      * Create a new Lookup component instance.
      *
-     * @param array       $options     Options array.
-     * @param string      $optionLabel Label key.
-     * @param string      $optionValue Value key.
+     * @param string|null $id          Element ID (auto-generated if null).
+     * @param string|null $name        Hidden input name (defaults to $id).
      * @param string|null $label       Label text.
-     *
-     * ## Blade Props
-     *
-     * ### Slots
-     * @slot start Prepend content/icon.
-     * @slot end   Append content/icon.
-     *
-     * ### Magic Attributes (Color)
-     * @property bool $primary   Primary color.
-     * @property bool $secondary Secondary color.
-     * @property bool $success   Success color.
-     * @property bool $warning   Warning color.
-     * @property bool $danger    Danger color.
-     * @property bool $info      Info color.
-     *
-     * ### Magic Attributes (Size)
-     * @property bool $xs Extra Small.
-     * @property bool $sm Small.
-     * @property bool $md Medium (default).
-     * @property bool $lg Large.
-     * @property bool $xl Extra Large.
+     * @param string|null $color       Color theme.
+     * @param string|null $size        Component size.
+     * @param string|null $placeholder Placeholder text.
+     * @param array       $options     Options array.
+     * @param string      $optionLabel Label key for options.
+     * @param string      $optionValue Value key for options.
+     * @param mixed       $value       Initial value.
+     * @param bool        $disabled    Disabled state.
+     * @param bool        $readonly    Readonly state.
+     * @param bool        $clearable   Enable clear button.
+     * @param string|null $iconStart   Icon at the start.
+     * @param string|null $iconEnd     Icon at the end.
+     * @param string|null $help        Help text.
+     * @param string|null $hint        Hint text.
+     * @param mixed       $customError Custom error message/state.
      */
     public function __construct(
-        public $options = [],
-        public $optionLabel = "name",
-        public $optionValue = "id",
-        public $label = null,
+        public ?string $id = null,
+        public ?string $name = null,
+        public ?string $label = null,
+        public ?string $color = null,
+        public ?string $size = null,
+        public ?string $placeholder = null,
+        public array $options = [],
+        public string $optionLabel = 'name',
+        public string $optionValue = 'id',
+        public mixed $value = null,
+        public bool $disabled = false,
+        public bool $readonly = false,
+        public bool $clearable = true,
+        public ?string $iconStart = null,
+        public ?string $iconEnd = null,
+        public ?string $help = null,
+        public ?string $hint = null,
+        public mixed $customError = null,
     ) {
+        $this->id = $id ?? ('beartropy-lookup-' . uniqid());
+        $this->name = $name ?? $this->id;
+        $this->color = $color ?? config('beartropyui.component_defaults.lookup.color');
         $this->normalizeOptions($options);
-        parent::__construct(label: $label ?? null);
     }
 
     /**
@@ -59,31 +112,31 @@ class Lookup extends Input
      * Supports simple arrays, arrays of objects/arrays, and single key-value pairs.
      *
      * @param array $options Raw options.
-     *
-     * @return array Normalized options.
      */
-    public function normalizeOptions($options)
+    public function normalizeOptions(array $options): void
     {
         $this->options = collect($options)
             ->map(function ($item) {
-                // 1) Simple list: ["asd", "dsa", 123, ...]
+                // Simple list: ["asd", "dsa", 123, ...]
                 if (is_scalar($item)) {
                     $val = (string) $item;
+
                     return ['id' => $val, 'name' => $val];
                 }
 
-                // 2) Array/object with dynamic keys (uses $this->optionValue / $this->optionLabel)
-                $id   = data_get($item, $this->optionValue);
+                // Array/object with dynamic keys (uses $this->optionValue / $this->optionLabel)
+                $id = data_get($item, $this->optionValue);
                 $name = data_get($item, $this->optionLabel);
 
-                // 3) Single key-value pair: ["ar" => "Argentina"]
+                // Single key-value pair: ["ar" => "Argentina"]
                 if (is_null($id) && is_null($name) && is_array($item) && count($item) === 1) {
                     $k = array_key_first($item);
+
                     return ['id' => (string) $k, 'name' => (string) $item[$k]];
                 }
 
                 // If id exists but name is missing, use id as name
-                if (!is_null($id)) {
+                if (! is_null($id)) {
                     return ['id' => (string) $id, 'name' => (string) ($name ?? $id)];
                 }
 
@@ -96,11 +149,9 @@ class Lookup extends Input
     }
 
     /**
-     * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\View\View|\Closure|string
+     * Get the view that represents the component.
      */
-    public function render(): \Illuminate\Contracts\View\View
+    public function render(): View
     {
         return view('beartropy-ui::lookup');
     }

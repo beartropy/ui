@@ -95,6 +95,9 @@ return [
         'chat-input' => [
             'color' => env('BEARTROPY_UI_CHAT_INPUT_COLOR', 'primary'),
         ],
+        'lookup' => [
+            'color' => env('BEARTROPY_UI_LOOKUP_COLOR', 'beartropy'),
+        ],
         'file-dropzone' => [
             'color' => env('BEARTROPY_UI_FILE_DROPZONE_COLOR', 'beartropy'),
         ],

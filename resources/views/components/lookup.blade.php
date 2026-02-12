@@ -1,259 +1,46 @@
 @php
     [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('input');
-
-    $inputId = $attributes->get('id') ?? 'input-' . uniqid();
-    $wireModelName = $attributes->wire('model')->value();
-
-    // Alpine/Livewire mode detection
-    $alpineControlled = $attributes->has('x-model');
-    $xModel = $alpineControlled ? $attributes->get('x-model') : null;
-    $isLivewire = !!$wireModelName;
-    $isAlpineExternal = !!$xModel;
-    $isAlpineLocal = !$isLivewire && !$isAlpineExternal;
-
-
-    $extraInputAttrs = [];
-    if ($isLivewire) {
-        #$inputId = $attributes->wire('model')->value();
-    } elseif ($isAlpineExternal) {
-        $extraInputAttrs['x-model'] = $xModel;
-    } elseif ($isAlpineLocal) {
-        $extraInputAttrs['x-model'] = 'value';
-        $extraInputAttrs['value'] = $value ?? '';
-    }
-    $extraInputAttrs['autocomplete'] = "off";
-
     [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
+
+    $inputId = $id;
+    $wireModelName = $attributes->wire('model')->value();
+    $isLivewire = !!$wireModelName;
+
     $labelClass = $hasError ? ($colorPreset['label_error'] ?? $colorPreset['label']) : $colorPreset['label'];
+    $wrapperClass = $attributes->get('class') ?? '';
 
-    $loadingTargetsOverride = null;
-    if ($attributes->has('wire:target')) {
-        $wireActionTargets = collect([$attributes->get('wire:target')]);
-    } else {
-        $wireActionTargets = collect($attributes->getAttributes())
+    // Auto-detect wire:target for loading spinner
+    $wireLoadingTargetsCsv = $attributes->get('wire:target')
+        ?: collect($attributes->getAttributes())
             ->filter(fn ($v, $k) => Str::startsWith($k, 'wire:'))
-            ->reject(fn ($v, $k) => Str::startsWith($k, 'wire:model'))
-            // Keep the "value" of wire:*, which is the target method/prop (string)
-            ->map(function ($v) {
-                // En Blade suele venir como string directamente
-                if (is_string($v)) return $v;
-                // fallback defensivo
-                if (is_array($v)) return head($v);
-                return null;
-            })
-            ->filter()
-            ->unique()
-            ->values();
-    }
-
-
-    // Si el usuario pasó $loadingTargets lo usamos; sino, usamos lo detectado
-    $wireLoadingTargets = $loadingTargetsOverride
-        ? collect(is_array($loadingTargetsOverride) ? $loadingTargetsOverride : explode(',', (string) $loadingTargetsOverride))
-            ->map(fn($s) => trim($s))
+            ->reject(fn ($v, $k) => in_array($k, ['wire:model', 'wire:model.live', 'wire:model.debounce']))
+            ->map(fn ($v) => is_string($v) ? $v : (is_array($v) ? head($v) : null))
             ->filter()
             ->unique()
             ->values()
-        : $wireActionTargets;
+            ->implode(',');
 
-    // String CSV para wire:target (Livewire soporta targets separados por coma)
-    $wireLoadingTargetsCsv = $wireLoadingTargets->implode(',');
-
-    $wrapperClass = $attributes->get('class') ?? '';
+    // Build extra attributes for input-base (constructor props aren't in $attributes)
+    $extraInputAttrs = [];
+    if ($disabled) {
+        $extraInputAttrs['disabled'] = true;
+    }
+    if ($readonly) {
+        $extraInputAttrs['readonly'] = true;
+    }
 @endphp
 
 <div
     class="flex flex-col w-full relative {{ $wrapperClass }}"
-    {{-- Livewire actualizará este atributo cuando :options cambie --}}
-    data-options='@json($options ?? [])'
-
-x-data="{
-        // --- estado ---
-        open: false,
-        highlighted: -1,
-        options: [],
-        filtered: [],
-
-        // --- config desde Blade ---
-        inputId: '{{ $inputId }}',
+    data-options='@json($options)'
+    x-data="beartropyLookup({
+        inputId: @js($inputId),
         isLivewire: {{ $isLivewire ? 'true' : 'false' }},
-        labelKey: @js($attributes->get('option-label', 'name')),
-        valueKey: @js($attributes->get('option-value', 'id')),
+        labelKey: @js($optionLabel),
+        valueKey: @js($optionValue),
         wireModelName: @js($wireModelName),
-
-        // --- lifecycle ---
-        init() {
-            // 1) sync inicial
-            this._syncOptionsFromAttr();
-
-            // 2) observar cambios del atributo data-options (Livewire morphdom)
-            const obs = new MutationObserver(muts => {
-                for (const m of muts) {
-                    if (m.type === 'attributes' && m.attributeName === 'data-options') {
-                        this._syncOptionsFromAttr();
-                    }
-                }
-            });
-            obs.observe(this.$el, { attributes: true });
-            this._obs = obs;
-
-            // 3) cada vez que Livewire procesa un mensaje, re-sincronizamos
-            if (window.Livewire && window.Livewire.hook) {
-                window.Livewire.hook('message.processed', () => {
-                    this._syncFromLivewire();
-                });
-            }
-        },
-
-        // --- helpers de datos ---
-        _syncOptionsFromAttr() {
-            const raw = this.$el.getAttribute('data-options') || '[]';
-            try {
-                const parsed = JSON.parse(raw);
-                this.options = Array.isArray(parsed) ? parsed : [];
-            } catch (_) {
-                this.options = [];
-            }
-            this.filtered = this.options;
-            if (this.highlighted >= this.filtered.length) {
-                this.highlighted = this.filtered.length ? 0 : -1;
-            }
-
-            if (this.isLivewire) {
-                this._syncFromLivewire();
-            } else {
-                this._reconcileFromVisible();
-            }
-        },
-
-        _syncFromLivewire() {
-            // Si no estamos en Livewire o no sabemos el nombre del modelo, nada que hacer
-            if (!this.isLivewire || !this.wireModelName || !this.$wire) return;
-
-            const current = this.$wire.get(this.wireModelName) ?? '';
-
-            if (!current) {
-                this.setVisibleValue('');
-                return;
-            }
-
-            // Find the option whose value matches the wire:model
-            const match = this.options.find(
-                o => String(this.getValue(o)) === String(current)
-            );
-
-            // If option found, use its label; otherwise show the raw value
-            const label = match ? this.getLabel(match) : current;
-            this.setVisibleValue(label);
-        },
-
-
-        normalize(s) {
-            if (!s) return '';
-            return s.toString()
-                .normalize('NFD').replace(/\p{Diacritic}/gu, '')
-                .trim().toLowerCase();
-        },
-
-        getLabel(o) {
-            return o?.[this.labelKey] ?? '';
-        },
-
-        getValue(o) {
-            return o?.[this.valueKey] ?? '';
-        },
-
-        exactMatch(txt) {
-            const t = this.normalize(txt);
-            return this.options.find(o => this.normalize(this.getLabel(o)) === t) || null;
-        },
-
-        // --- eventos / lógica principal ---
-        onInput(e) {
-            const raw = (e?.target?.value ?? '');
-            const t = this.normalize(raw);
-
-            this.filtered = !t
-                ? this.options
-                : this.options.filter(o => this.normalize(this.getLabel(o)).includes(t));
-
-            this.open = true;
-            this.highlighted = this.filtered.length ? 0 : -1;
-
-            // match exacto => id, sino => texto libre
-            this._setHiddenFromRawOrMatch(raw);
-        },
-
-        move(delta) {
-            if (!this.open || !this.filtered.length) return;
-            const n = this.filtered.length;
-            this.highlighted = (this.highlighted + delta + n) % n;
-        },
-
-        choose(idx) {
-            const opt = this.filtered[idx];
-            if (!opt) return;
-
-            this.setVisibleValue(this.getLabel(opt));
-
-            if (this.isLivewire && this.$refs.livewireValue) {
-                this.$refs.livewireValue.value = this.getValue(opt);
-                this.$refs.livewireValue.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-
-            this.open = false;
-        },
-
-        confirm() {
-            if (this.highlighted >= 0) {
-                this.choose(this.highlighted);
-            } else {
-                const raw = this.$refs.input?.value ?? '';
-                this._setHiddenFromRawOrMatch(raw);
-                this.open = false;
-            }
-        },
-
-        close() {
-            this.open = false;
-        },
-
-        setVisibleValue(v) {
-            const el = document.getElementById(this.inputId);
-            if (!el) return;
-            el.value = v ?? '';
-            el.dispatchEvent(new Event('input', { bubbles: true }));
-        },
-
-        clearBoth() {
-            this.setVisibleValue('');
-
-            if (this.isLivewire && this.$refs.livewireValue) {
-                this.$refs.livewireValue.value = '';
-                this.$refs.livewireValue.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-
-            this.filtered = this.options;
-            this.highlighted = -1;
-            this.open = false;
-        },
-
-        _setHiddenFromRawOrMatch(raw) {
-            if (!this.isLivewire || !this.$refs.livewireValue) return;
-
-            const match = this.exactMatch(raw);
-            this.$refs.livewireValue.value = match ? this.getValue(match) : raw;
-            this.$refs.livewireValue.dispatchEvent(new Event('input', { bubbles: true }));
-        },
-
-        _reconcileFromVisible() {
-            const el = document.getElementById(this.inputId);
-            if (!el) return;
-            this._setHiddenFromRawOrMatch(el.value || '');
-        },
-    }"
+    })"
 >
-
     @if($label)
         <label for="{{ $inputId }}" class="{{ $labelClass }}">
             {{ $label }}
@@ -267,17 +54,16 @@ x-data="{
     @endif
 
     <x-beartropy-ui::base.input-base
-        x-ref="input"
         id="{{ $inputId }}"
-        type="{{ $type }}"
+        type="text"
         size="{{ $size }}"
         color="{{ $color }}"
         placeholder="{{ $placeholder }}"
         custom-error="{{ $customError }}"
         hint="{{ $hint }}"
         has-error="{{ $hasError }}"
+        value="{{ $value ?? '' }}"
         @click="open = true"
-        {{ $attributes->whereDoesntStartWith('wire:model')->merge($extraInputAttrs) }}
         x-on:input="onInput($event)"
         x-on:keydown.down.prevent="move(1)"
         x-on:keydown.up.prevent="move(-1)"
@@ -285,116 +71,76 @@ x-data="{
         x-on:keydown.tab="confirm()"
         x-on:keydown.escape.prevent="close()"
         x-on:blur="confirm()"
+        {{ $attributes->whereDoesntStartWith('wire:model')->except(['class'])->merge($extraInputAttrs) }}
     >
-        {{-- START SLOT --}}
+        {{-- Start slot --}}
         @if(isset($iconStart) || isset($start))
             <x-slot name="start">
                 @if($iconStart)
-                    <span class="flex items-center {{ $colorPreset['text'] ?? '' }}">
-                        {{-- Icon --}}
+                    <span class="flex items-center px-2 {{ $colorPreset['text'] ?? '' }}">
                         <x-beartropy-ui::icon :name="$iconStart" size="{{ $size }}" />
                     </span>
                 @endif
-                {{-- Custom slot --}}
                 @isset($start)
                     {{ $start }}
                 @endisset
             </x-slot>
         @endif
 
-        @if(isset($end) || $clearable || $copyButton || ($type === 'password' && $togglePassword) || $iconEnd || !empty($wireLoadingTargetsCsv))
+        @if(isset($end) || $clearable || $iconEnd || !empty($wireLoadingTargetsCsv))
             <x-slot name="end">
-            @if(!empty($wireLoadingTargetsCsv))
-                <span
-                    wire:loading
-                    wire:target="{{ $wireLoadingTargetsCsv }}"
-                    aria-label="{{ __('beartropy-ui::ui.loading') }}"
-                    class="inline-flex items-center"
-                >
-                    @include('beartropy-ui-svg::beartropy-spinner', [
-                        'class' => 'animate-spin shrink-0 text-gray-700 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 ' . ($sizePreset['iconSize'] ?? '')
-                    ])
-                </span>
-            @endif
-            {{-- Clear button --}}
-            @if($clearable)
-                <button
-                    type="button"
-                    x-show="value.length > 0"
-                    x-on:click="clearBoth()"
-                    tabindex="-1"
-                    aria-label="Clear"
-                >
-                    @include('beartropy-ui-svg::beartropy-x-mark', [
-                        'class' => 'shrink-0 text-gray-700 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 ' . ($sizePreset['iconSize'] ?? '')
-                    ])
-                </button>
-            @endif
+                @if(!empty($wireLoadingTargetsCsv) || $clearable || $iconEnd)
+                    <div class="flex items-center gap-1 px-2">
+                        @if(!empty($wireLoadingTargetsCsv))
+                            <span
+                                wire:loading
+                                wire:target="{{ $wireLoadingTargetsCsv }}"
+                                aria-label="{{ __('beartropy-ui::ui.loading') }}"
+                                class="inline-flex items-center"
+                            >
+                                @include('beartropy-ui-svg::beartropy-spinner', [
+                                    'class' => 'animate-spin shrink-0 text-gray-700 dark:text-gray-400 ' . ($sizePreset['iconSize'] ?? '')
+                                ])
+                            </span>
+                        @endif
 
-            {{-- Copy button --}}
-            @if($copyButton)
-                <button
-                    type="button"
-                    x-on:click="copyToClipboard"
-                    x-tooltip.raw="{{ __('beartropy-ui::ui.copy') }}"
-                    tabindex="-1"
-                    aria-label="{{ __('beartropy-ui::ui.copy_to_clipboard') }}"
-                >
-                    <span x-show="!copySuccess">
-                        @include('beartropy-ui-svg::beartropy-clipboard', [
-                            'class' => 'shrink-0 text-gray-700 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 ' . ($sizePreset['iconSize'] ?? '')
-                        ])
-                    </span>
-                    <span x-show="copySuccess" class="text-green-500">
-                        @include('beartropy-ui-svg::beartropy-check', [
-                            'class' => 'shrink-0 ' . ($sizePreset['iconSize'] ?? '')
-                        ])
-                    </span>
-                </button>
-            @endif
+                        @if($clearable)
+                            <button
+                                type="button"
+                                x-show="value.length > 0"
+                                x-on:click="clearBoth()"
+                                tabindex="-1"
+                                aria-label="{{ __('beartropy-ui::ui.clear') }}"
+                            >
+                                @include('beartropy-ui-svg::beartropy-x-mark', [
+                                    'class' => 'shrink-0 text-gray-700 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 ' . ($sizePreset['iconSize'] ?? '')
+                                ])
+                            </button>
+                        @endif
 
-            {{-- Toggle password --}}
-            @if($type === 'password')
-                <button
-                    type="button"
-                    x-on:click="showPassword = !showPassword"
-                    tabindex="-1"
-                    :aria-label="showPassword ? 'Hide password' : 'Show password'"
-                >
-                    <span x-show="!showPassword">
-                        @include('beartropy-ui-svg::beartropy-eye', [
-                            'class' => 'shrink-0 text-gray-700 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 ' . ($sizePreset['iconSize'] ?? '')
-                        ])
-                    </span>
-                    <span x-show="showPassword">
-                        @include('beartropy-ui-svg::beartropy-eye-slash', [
-                            'class' => 'shrink-0 text-gray-700 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 ' . ($sizePreset['iconSize'] ?? '')
-                        ])
-                    </span>
-                </button>
-            @endif
+                        @if($iconEnd)
+                            <span class="{{ $colorPreset['text'] ?? '' }}">
+                                <x-beartropy-ui::icon :name="$iconEnd" size="{{ $size }}" />
+                            </span>
+                        @endif
+                    </div>
+                @endif
 
-            @if($iconEnd)
-                <span class="{{ $colorPreset['text'] ?? '' }}">
-                    <x-beartropy-ui::icon :name="$iconEnd" size="{{ $size }}" />
-                </span>
-            @endif
-
-            {{-- Custom slot --}}
-            @isset($end)
-                {{ $end }}
-            @endisset
-        </x-slot>
+                @isset($end)
+                    {{ $end }}
+                @endisset
+            </x-slot>
         @endif
+
         <x-slot name="dropdown">
             <x-beartropy-ui::base.dropdown-base
                 placement="left"
                 side="bottom"
-                color="{{ $presetNames['color'] }}"
+                color="{{ $presetNames['color'] ?? '' }}"
                 preset-for="select"
                 width="w-full"
                 x-show="open"
-                @click.outside="close()" {{-- mejor que .away --}}
+                @click.outside="close()"
             >
                 <template x-if="filtered.length">
                     <ul class="max-h-60 overflow-auto beartropy-thin-scrollbar" role="listbox">
@@ -414,7 +160,6 @@ x-data="{
             </x-beartropy-ui::base.dropdown-base>
         </x-slot>
     </x-beartropy-ui::base.input-base>
-
 
     <x-beartropy-ui::support.field-help
         :error-message="$finalError"

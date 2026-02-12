@@ -1,5 +1,6 @@
 <?php
 
+use Beartropy\Ui\Components\Lookup;
 use Illuminate\Support\Facades\Blade;
 
 beforeEach(function () {
@@ -8,260 +9,315 @@ beforeEach(function () {
     $this->app->register(\BladeUI\Heroicons\BladeHeroiconsServiceProvider::class);
 });
 
-it('can render basic lookup component', function () {
-    $options = [
-        ['id' => 1, 'name' => 'Option 1'],
-    ];
-    $html = Blade::render('<x-bt-lookup :options="$options" />', ['options' => $options]);
+it('renders with beartropyLookup Alpine module', function () {
+    $html = Blade::render('<x-bt-lookup :options="[]" />');
 
-    expect($html)->toContain('x-data');
-    expect($html)->toContain('data-options');
+    expect($html)
+        ->toContain('x-data="beartropyLookup(')
+        ->toContain('data-options');
 });
 
-it('can render with label', function () {
-    $options = [
-        ['id' => 1, 'name' => 'Option 1'],
-    ];
-    $html = Blade::render('<x-bt-lookup label="Search" :options="$options" />', ['options' => $options]);
+it('does not contain inline Alpine state in root x-data', function () {
+    $html = Blade::render('<x-bt-lookup :options="[]" />');
 
-    expect($html)->toContain('Search');
-    expect($html)->toContain('<label');
+    // The root x-data should use the module, not inline state
+    expect($html)
+        ->toContain('x-data="beartropyLookup(')
+        ->not->toContain('open: false,')
+        ->not->toContain('highlighted: -1,');
 });
 
-it('can render with simple array options', function () {
-    $options = ['Apple', 'Banana', 'Orange'];
-    $html = Blade::render('<x-bt-lookup :options="$options" />', ['options' => $options]);
+it('auto-generates id with beartropy-lookup prefix', function () {
+    $html = Blade::render('<x-bt-lookup :options="[]" />');
 
-    expect($html)->toContain('data-options');
-    expect($html)->toContain('Apple');
+    expect($html)->toMatch('/id="beartropy-lookup-[a-f0-9]+"/');
 });
 
-it('can render with array of objects options', function () {
+it('uses custom id when provided', function () {
+    $html = Blade::render('<x-bt-lookup id="my-lookup" :options="[]" />');
+
+    expect($html)->toContain('id="my-lookup"');
+});
+
+it('generates unique ids for multiple instances', function () {
+    $html1 = Blade::render('<x-bt-lookup :options="[]" />');
+    $html2 = Blade::render('<x-bt-lookup :options="[]" />');
+
+    preg_match('/id="(beartropy-lookup-[a-f0-9]+)"/', $html1, $m1);
+    preg_match('/id="(beartropy-lookup-[a-f0-9]+)"/', $html2, $m2);
+
+    expect($m1[1])->not->toBe($m2[1]);
+});
+
+it('defaults name to id when not provided', function () {
+    $component = new Lookup(id: 'test-id');
+
+    expect($component->name)->toBe('test-id');
+});
+
+it('uses explicit name when provided', function () {
+    $component = new Lookup(id: 'test-id', name: 'custom-name');
+
+    expect($component->name)->toBe('custom-name');
+});
+
+it('renders label with for attribute', function () {
+    $html = Blade::render('<x-bt-lookup id="my-lookup" label="Country" :options="[]" />');
+
+    expect($html)
+        ->toContain('<label')
+        ->toContain('for="my-lookup"')
+        ->toContain('Country');
+});
+
+it('omits label element when not provided', function () {
+    $html = Blade::render('<x-bt-lookup :options="[]" />');
+
+    expect($html)->not->toContain('<label');
+});
+
+it('renders placeholder on input', function () {
+    $html = Blade::render('<x-bt-lookup placeholder="Search countries..." :options="[]" />');
+
+    expect($html)->toContain('placeholder="Search countries..."');
+});
+
+it('renders options in data-options attribute', function () {
     $options = [
         ['id' => 1, 'name' => 'First'],
         ['id' => 2, 'name' => 'Second'],
     ];
     $html = Blade::render('<x-bt-lookup :options="$options" />', ['options' => $options]);
 
-    expect($html)->toContain('First');
-    expect($html)->toContain('Second');
+    expect($html)
+        ->toContain('data-options=')
+        ->toContain('First')
+        ->toContain('Second');
 });
 
-it('can render with custom option label and value keys', function () {
-    $options = [
-        ['value' => 'ar', 'label' => 'Argentina'],
-        ['value' => 'br', 'label' => 'Brasil'],
-    ];
-    $html = Blade::render('<x-bt-lookup :options="$options" option-label="label" option-value="value" />', ['options' => $options]);
-
-    expect($html)->toContain('Argentina');
-    expect($html)->toContain('Brasil');
-});
-
-it('normalizes simple scalar options correctly', function () {
-    $options = ['apple', 'banana', 123];
+it('normalizes simple scalar array options', function () {
+    $options = ['Apple', 'Banana', 123];
     $html = Blade::render('<x-bt-lookup :options="$options" />', ['options' => $options]);
 
-    expect($html)->toContain('apple');
-    expect($html)->toContain('banana');
-    expect($html)->toContain('123');
+    expect($html)
+        ->toContain('Apple')
+        ->toContain('Banana')
+        ->toContain('123');
 });
 
-it('normalizes key-value pair options correctly', function () {
+it('normalizes object array options', function () {
+    $options = [
+        ['id' => 1, 'name' => 'First'],
+        ['id' => 2, 'name' => 'Second'],
+    ];
+    $component = new Lookup(options: $options);
+
+    expect($component->options)->toBe([
+        ['id' => '1', 'name' => 'First'],
+        ['id' => '2', 'name' => 'Second'],
+    ]);
+});
+
+it('normalizes key-value pair options', function () {
     $options = [
         ['ar' => 'Argentina'],
         ['br' => 'Brasil'],
     ];
-    $html = Blade::render('<x-bt-lookup :options="$options" />', ['options' => $options]);
+    $component = new Lookup(options: $options);
 
-    expect($html)->toContain('Argentina');
-    expect($html)->toContain('Brasil');
+    expect($component->options)->toBe([
+        ['id' => 'ar', 'name' => 'Argentina'],
+        ['id' => 'br', 'name' => 'Brasil'],
+    ]);
 });
 
-it('renders with Alpine.js data structure', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
-    $html = Blade::render('<x-bt-lookup :options="$options" />', ['options' => $options]);
+it('normalizes with custom optionLabel and optionValue', function () {
+    $options = [
+        ['code' => 'ar', 'title' => 'Argentina'],
+        ['code' => 'br', 'title' => 'Brasil'],
+    ];
+    $component = new Lookup(options: $options, optionLabel: 'title', optionValue: 'code');
 
-    expect($html)->toContain('open:');
-    expect($html)->toContain('highlighted:');
-    expect($html)->toContain('filtered:');
+    expect($component->options)->toBe([
+        ['id' => 'ar', 'name' => 'Argentina'],
+        ['id' => 'br', 'name' => 'Brasil'],
+    ]);
 });
 
-it('renders autocomplete off', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
-    $html = Blade::render('<x-bt-lookup :options="$options" />', ['options' => $options]);
+it('forwards custom optionLabel and optionValue to Alpine config', function () {
+    $html = Blade::render('<x-bt-lookup :options="[]" option-label="title" option-value="code" />');
 
-    expect($html)->toContain('autocomplete');
+    expect($html)
+        ->toContain("labelKey: 'title'")
+        ->toContain("valueKey: 'code'");
 });
 
-it('can render with placeholder', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
-    $html = Blade::render('<x-bt-lookup placeholder="Search..." :options="$options" />', ['options' => $options]);
-
-    expect($html)->toContain('placeholder');
-});
-
-it('can render with disabled state', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
-    $html = Blade::render('<x-bt-lookup :disabled="true" :options="$options" />', ['options' => $options]);
+it('renders disabled state', function () {
+    $html = Blade::render('<x-bt-lookup :disabled="true" :options="[]" />');
 
     expect($html)->toContain('disabled');
 });
 
-it('shows validation errors with custom-error', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
-    $html = Blade::render('<x-bt-lookup custom-error="Selection required" :options="$options" />', ['options' => $options]);
+it('renders readonly state', function () {
+    $html = Blade::render('<x-bt-lookup :readonly="true" :options="[]" />');
 
-    expect($html)->toContain('Selection required');
+    expect($html)->toContain('readonly');
 });
 
-it('can render with hint text', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
-    $html = Blade::render('<x-bt-lookup hint="Type to search" :options="$options" />', ['options' => $options]);
+it('renders clearable button with clearBoth', function () {
+    $html = Blade::render('<x-bt-lookup :clearable="true" :options="[]" />');
+
+    expect($html)->toContain('clearBoth()');
+});
+
+it('omits clear button when clearable is false', function () {
+    $html = Blade::render('<x-bt-lookup :clearable="false" :options="[]" />');
+
+    expect($html)->not->toContain('clearBoth');
+});
+
+it('renders icon-start slot', function () {
+    $html = Blade::render('<x-bt-lookup icon-start="magnifying-glass" :options="[]" />');
+
+    // Icon renders as SVG; verify the start slot wrapper is present
+    expect($html)->toContain('beartropy-inputbase-start-slot');
+});
+
+it('renders icon-end slot', function () {
+    $html = Blade::render('<x-bt-lookup icon-end="chevron-down" :options="[]" />');
+
+    // Icon renders as SVG; verify the end slot wrapper is present
+    expect($html)->toContain('beartropy-inputbase-end-slot');
+});
+
+it('renders help text via field-help', function () {
+    $html = Blade::render('<x-bt-lookup help="Select your country" :options="[]" />');
+
+    expect($html)->toContain('Select your country');
+});
+
+it('renders hint text via field-help', function () {
+    $html = Blade::render('<x-bt-lookup hint="Type to search" :options="[]" />');
 
     expect($html)->toContain('Type to search');
 });
 
-it('can render with custom id', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
-    $html = Blade::render('<x-bt-lookup id="custom-lookup-id" :options="$options" />', ['options' => $options]);
+it('renders custom error via field-help', function () {
+    $html = Blade::render('<x-bt-lookup custom-error="Selection required" :options="[]" />');
 
-    expect($html)->toContain('id="custom-lookup-id"');
+    expect($html)->toContain('Selection required');
 });
 
-it('generates unique id when not provided', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
-    $html1 = Blade::render('<x-bt-lookup :options="$options" />', ['options' => $options]);
-    $html2 = Blade::render('<x-bt-lookup :options="$options" />', ['options' => $options]);
+it('applies error label class when error is present', function () {
+    $html = Blade::render('<x-bt-lookup label="Country" custom-error="Required" :options="[]" />');
 
-    expect($html1)->not->toBe($html2);
+    // The label should exist and the error-related styles should be applied
+    expect($html)
+        ->toContain('<label')
+        ->toContain('Country')
+        ->toContain('Required');
 });
 
-it('can render with custom classes', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
-    $html = Blade::render('<x-bt-lookup class="custom-lookup" :options="$options" />', ['options' => $options]);
+it('renders keyboard navigation handlers', function () {
+    $html = Blade::render('<x-bt-lookup :options="[]" />');
 
-    expect($html)->toContain('custom-lookup');
+    expect($html)
+        ->toContain('keydown.down')
+        ->toContain('keydown.up')
+        ->toContain('keydown.enter')
+        ->toContain('keydown.escape');
 });
 
-it('can render with custom attributes', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
-    $html = Blade::render('<x-bt-lookup data-test="lookup" aria-label="Search Field" :options="$options" />', ['options' => $options]);
-
-    expect($html)->toContain('data-test="lookup"');
-    expect($html)->toContain('aria-label="Search Field"');
-});
-
-it('renders dropdown with filtered options', function () {
-    $options = [
-        ['id' => 1, 'name' => 'First'],
-        ['id' => 2, 'name' => 'Second'],
-    ];
-    $html = Blade::render('<x-bt-lookup :options="$options" />', ['options' => $options]);
-
-    expect($html)->toContain('x-for');
-    expect($html)->toContain('filtered');
-});
-
-it('renders clearable button', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
-    $html = Blade::render('<x-bt-lookup :clearable="true" :options="$options" />', ['options' => $options]);
-
-    expect($html)->toContain('clearBoth');
-});
-
-it('handles keyboard navigation with Alpine.js', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
-    $html = Blade::render('<x-bt-lookup :options="$options" />', ['options' => $options]);
-
-    expect($html)->toContain('keydown.down');
-    expect($html)->toContain('keydown.up');
-    expect($html)->toContain('keydown.enter');
-    expect($html)->toContain('keydown.escape');
-});
-
-it('can render with start slot', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
+it('renders start slot content', function () {
     $html = Blade::render('
-        <x-bt-lookup :options="$options">
+        <x-bt-lookup :options="[]">
             <x-slot:start>
-                <span>🔍</span>
+                <span class="custom-start">Start</span>
             </x-slot:start>
         </x-bt-lookup>
-    ', ['options' => $options]);
+    ');
 
-    expect($html)->toContain('🔍');
+    expect($html)->toContain('custom-start');
 });
 
-it('can render with end slot', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
+it('renders end slot content', function () {
     $html = Blade::render('
-        <x-bt-lookup :options="$options">
+        <x-bt-lookup :options="[]">
             <x-slot:end>
-                <span>✓</span>
+                <span class="custom-end">End</span>
             </x-slot:end>
         </x-bt-lookup>
-    ', ['options' => $options]);
+    ');
 
-    expect($html)->toContain('✓');
+    expect($html)->toContain('custom-end');
+});
+
+it('renders dropdown with listbox and option ARIA roles', function () {
+    $html = Blade::render('<x-bt-lookup :options="[]" />');
+
+    expect($html)
+        ->toContain('role="listbox"')
+        ->toContain('role="option"');
+});
+
+it('applies custom classes to wrapper', function () {
+    $html = Blade::render('<x-bt-lookup class="custom-lookup mt-4" :options="[]" />');
+
+    expect($html)->toContain('custom-lookup mt-4');
+});
+
+it('forwards extra attributes', function () {
+    $html = Blade::render('<x-bt-lookup data-testid="country-lookup" :options="[]" />');
+
+    expect($html)->toContain('data-testid="country-lookup"');
 });
 
 it('renders with empty options array', function () {
     $html = Blade::render('<x-bt-lookup :options="[]" />');
 
-    expect($html)->toContain('data-options');
-    expect($html)->toContain('x-data');
+    expect($html)
+        ->toContain("data-options='[]'")
+        ->toContain('beartropyLookup(');
 });
 
-it('can render with all features combined', function () {
+it('renders clear button aria-label with translation', function () {
+    $html = Blade::render('<x-bt-lookup :clearable="true" :options="[]" />');
+
+    expect($html)->toContain('aria-label="Clear"');
+});
+
+it('renders combined features correctly', function () {
     $options = [
         ['id' => 'us', 'name' => 'United States'],
         ['id' => 'uk', 'name' => 'United Kingdom'],
         ['id' => 'ca', 'name' => 'Canada'],
     ];
     $html = Blade::render('
-        <x-bt-lookup 
+        <x-bt-lookup
+            id="country-lookup"
             label="Select Country"
             placeholder="Search countries..."
             hint="Type to filter the list"
             :options="$options"
-            option-label="name"
-            option-value="id"
             :clearable="true"
             class="custom-country-lookup"
         />
     ', ['options' => $options]);
 
-    expect($html)->toContain('Select Country');
-    expect($html)->toContain('placeholder');
-    expect($html)->toContain('Type to filter the list');
-    expect($html)->toContain('United States');
-    expect($html)->toContain('United Kingdom');
-    expect($html)->toContain('Canada');
-    expect($html)->toContain('custom-country-lookup');
+    expect($html)
+        ->toContain('id="country-lookup"')
+        ->toContain('Select Country')
+        ->toContain('placeholder="Search countries..."')
+        ->toContain('Type to filter the list')
+        ->toContain('United States')
+        ->toContain('custom-country-lookup')
+        ->toContain('beartropyLookup(')
+        ->toContain('clearBoth()');
 });
 
-it('extends Input component functionality', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
-    $html = Blade::render('<x-bt-lookup :options="$options" />', ['options' => $options]);
+it('extends BeartropyComponent not Input', function () {
+    $component = new Lookup();
 
-    // Should have input-base component
-    expect($html)->toContain('x-ref="input"');
-});
-
-it('renders listbox ARIA role', function () {
-    $options = [['id' => 1, 'name' => 'Test']];
-    $html = Blade::render('<x-bt-lookup :options="$options" />', ['options' => $options]);
-
-    expect($html)->toContain('role="listbox"');
-});
-
-it('renders option ARIA roles', function () {
-    $options = [
-        ['id' => 1, 'name' => 'First'],
-        ['id' => 2, 'name' => 'Second'],
-    ];
-    $html = Blade::render('<x-bt-lookup :options="$options" />', ['options' => $options]);
-
-    expect($html)->toContain('role="option"');
+    expect($component)->toBeInstanceOf(\Beartropy\Ui\Components\BeartropyComponent::class)
+        ->and($component)->not->toBeInstanceOf(\Beartropy\Ui\Components\Input::class);
 });
