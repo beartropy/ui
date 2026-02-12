@@ -1,16 +1,15 @@
 @php
-    $method = $init ?? $function;
+    $method = $init;
     $lines = (int) $lines;
     $tagName = $tag;
 
-    // Detectar si el usuario pasó clases tipo h-*, min-h-*, max-h-*
+    // Detect if the user passed height classes (h-*, min-h-*, max-h-*)
     $wrapperClass = $attributes->get('class', '');
     $wrapperHasHeight = preg_match('/\b(h-|min-h-|max-h-)/', $wrapperClass);
 
-    // Fallback solo si es un único bloque y no hay altura externa
-    // min-h-* para que aunque el wrapper colapse, el skeleton se vea
+    // Fallback min-height only when single block and no external height set
     $fallbackMinH = (!$wrapperHasHeight && $lines === 1)
-        ? 'min-h-[0.75rem]'   // equivalente a h-3 (12px aprox)
+        ? 'min-h-[0.75rem]'
         : '';
 
     $roundedClass = match ($rounded) {
@@ -31,10 +30,10 @@
     @endif
     {{ $attributes->class(['relative']) }}
 >
-    {{-- Mientras carga --}}
+    {{-- Loading state --}}
     <div wire:loading class="w-full h-full">
         @if ($shape == 'none' && $lines > 1)
-            {{-- Párrafo de varias líneas --}}
+            {{-- Multi-line paragraph --}}
             <div class="flex flex-col justify-center w-full h-full space-y-2">
                 @for ($i = 0; $i < $lines; $i++)
                     @php
@@ -53,7 +52,7 @@
             </div>
         @else
             @if($shape == 'card')
-                {{-- CARD: skeleton tipo card con título + líneas --}}
+                {{-- CARD: card skeleton with title + body lines --}}
                 <div class="w-full h-full {{ $roundedClass }} animate-pulse bg-slate-200/90 dark:bg-slate-700/70 p-3 flex flex-col justify-center">
                     <h3 class="h-4 bg-slate-300/80 dark:bg-slate-600/80 rounded w-1/2 mb-4"></h3>
 
@@ -78,13 +77,13 @@
                 </div>
 
             @elseif($shape == 'rectangle')
-                {{-- RECTANGLE: bloque sólido simple --}}
+                {{-- RECTANGLE: simple solid block --}}
                 <div class="w-full h-full {{ $roundedClass }} animate-pulse bg-slate-200/90 dark:bg-slate-700/70">
                     &nbsp;
                 </div>
 
             @elseif($shape == 'image')
-                {{-- IMAGE: recuadro con ícono de imagen dentro --}}
+                {{-- IMAGE: placeholder with image icon --}}
                 <div class="w-full h-full {{ $roundedClass }} animate-pulse bg-slate-200/90 dark:bg-slate-700/70 flex items-center justify-center">
                     <div class="aspect-[4/3] w-3/4 max-h-full rounded-md bg-slate-300/70 dark:bg-slate-600/70 flex items-center justify-center overflow-hidden">
                         <svg
@@ -104,7 +103,7 @@
                 </div>
 
             @elseif($shape == 'table')
-                {{-- TABLE: header + varias filas --}}
+                {{-- TABLE: header + data rows --}}
                 <div class="w-full h-full {{ $roundedClass }} animate-pulse bg-slate-200/70 dark:bg-slate-700/70 p-3 flex flex-col space-y-2">
                     {{-- Header --}}
                     <div class="flex space-x-2 mb-1">
@@ -113,7 +112,7 @@
                         @endfor
                     </div>
 
-                    {{-- Filas --}}
+                    {{-- Rows --}}
                     @for ($r = 0; $r < $rows; $r++)
                         <div class="flex space-x-2">
                             @for ($c = 0; $c < $cols; $c++)
@@ -124,7 +123,7 @@
                 </div>
 
             @else
-                {{-- Fallback: bloque único simple cuando shape="none" y lines <= 1 --}}
+                {{-- Fallback: single block when shape="none" and lines <= 1 --}}
                 <div class="w-full h-full {{ $fallbackMinH }} {{ $roundedClass }} animate-pulse bg-slate-200/80 dark:bg-slate-700/60">
                     &nbsp;
                 </div>
@@ -133,7 +132,7 @@
     </div>
 
 
-    {{-- Cuando termina de cargar --}}
+    {{-- When loading completes --}}
     <div wire:loading.remove class="w-full h-full">
         {{ $slot }}
     </div>

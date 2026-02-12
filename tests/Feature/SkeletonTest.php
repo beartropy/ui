@@ -8,83 +8,176 @@ beforeEach(function () {
     $this->app->register(\BladeUI\Heroicons\BladeHeroiconsServiceProvider::class);
 });
 
-it('can render basic skeleton component', function () {
-    $html = Blade::render('<x-bt-skeleton init="loading" />');
+it('renders a div with wire:loading and animate-pulse by default', function () {
+    $html = Blade::render('<x-bt-skeleton />');
 
-    expect($html)->not->toBeEmpty();
+    expect($html)
+        ->toContain('<div')
+        ->toContain('wire:loading')
+        ->toContain('animate-pulse')
+        ->toContain('relative');
 });
 
-it('renders with default 1 line', function () {
-    $html = Blade::render('<x-bt-skeleton init="loading" />');
+it('renders wire:init when init is provided', function () {
+    $html = Blade::render('<x-bt-skeleton init="loadData" />');
 
-    expect($html)->not->toBeEmpty();
+    expect($html)->toContain('wire:init="loadData"');
 });
 
-it('can render multiple lines', function () {
-    $html = Blade::render('<x-bt-skeleton init="loading" :lines="3" />');
+it('does not render wire:init when init is null', function () {
+    $html = Blade::render('<x-bt-skeleton />');
 
-    expect($html)->not->toBeEmpty();
+    expect($html)->not->toContain('wire:init');
 });
 
-it('uses default card shape', function () {
-    $html = Blade::render('<x-bt-skeleton init="loading" />');
+it('does not render wire:init when init is empty string', function () {
+    $html = Blade::render('<x-bt-skeleton init="" />');
 
-    expect($html)->not->toBeEmpty();
+    expect($html)->not->toContain('wire:init');
 });
 
-it('supports different shapes', function () {
-    $shapes = ['card', 'rectangle', 'none'];
+it('renders card shape with h3 title and body lines by default', function () {
+    $html = Blade::render('<x-bt-skeleton />');
 
-    foreach ($shapes as $shape) {
-        $html = Blade::render("<x-bt-skeleton init=\"loading\" shape=\"{$shape}\" />");
-        expect($html)->not->toBeEmpty();
+    expect($html)
+        ->toContain('<h3')
+        ->toContain('animate-pulse')
+        ->toContain('p-3');
+});
+
+it('renders card shape with custom line count', function () {
+    $html = Blade::render('<x-bt-skeleton :lines="3" />');
+
+    expect($html)
+        ->toContain('<h3')
+        ->toContain('w-full')
+        ->toContain('w-4/5')
+        ->toContain('w-3/5');
+});
+
+it('renders card shape with default 3 body lines when lines=1', function () {
+    $html = Blade::render('<x-bt-skeleton shape="card" :lines="1" />');
+
+    expect($html)
+        ->toContain('<h3')
+        ->toContain('w-3/4')
+        ->toContain('w-4/5')
+        ->toContain('w-full');
+});
+
+it('renders rectangle shape as a solid block', function () {
+    $html = Blade::render('<x-bt-skeleton shape="rectangle" />');
+
+    expect($html)
+        ->toContain('animate-pulse')
+        ->toContain('bg-slate-200/90')
+        ->not->toContain('<h3')
+        ->not->toContain('<svg');
+});
+
+it('renders image shape with SVG icon', function () {
+    $html = Blade::render('<x-bt-skeleton shape="image" />');
+
+    expect($html)
+        ->toContain('<svg')
+        ->toContain('viewBox="0 0 24 24"')
+        ->toContain('aspect-[4/3]');
+});
+
+it('renders table shape with header and rows', function () {
+    $html = Blade::render('<x-bt-skeleton shape="table" :rows="3" :cols="4" />');
+
+    // Header row has mb-1 class
+    expect($html)->toContain('mb-1');
+
+    // Count flex-1 cells: 4 cols in header + 4 cols * 3 rows = 16 total
+    $cellCount = substr_count($html, 'flex-1');
+    expect($cellCount)->toBe(16);
+});
+
+it('renders none shape with multiple lines of varying widths', function () {
+    $html = Blade::render('<x-bt-skeleton shape="none" :lines="3" />');
+
+    expect($html)
+        ->toContain('space-y-2')
+        ->toContain('w-full')
+        ->toContain('w-4/5')
+        ->toContain('w-3/5')
+        ->not->toContain('<h3')
+        ->not->toContain('p-3');
+});
+
+it('renders none shape with single line as fallback block with min-h', function () {
+    $html = Blade::render('<x-bt-skeleton shape="none" :lines="1" />');
+
+    expect($html)
+        ->toContain('min-h-[0.75rem]')
+        ->toContain('animate-pulse')
+        ->not->toContain('space-y-2')
+        ->not->toContain('<h3');
+});
+
+it('suppresses fallback min-h when height class is present', function () {
+    $html = Blade::render('<x-bt-skeleton shape="none" :lines="1" class="h-20" />');
+
+    expect($html)->not->toContain('min-h-[0.75rem]');
+});
+
+it('uses rounded-lg by default', function () {
+    $html = Blade::render('<x-bt-skeleton />');
+
+    expect($html)->toContain('rounded-lg');
+});
+
+it('supports all rounded variants', function () {
+    $variants = [
+        'none' => 'rounded-none',
+        'sm'   => 'rounded-sm',
+        'md'   => 'rounded-md',
+        'lg'   => 'rounded-lg',
+        'xl'   => 'rounded-xl',
+        'full' => 'rounded-full',
+    ];
+
+    foreach ($variants as $input => $expected) {
+        $html = Blade::render("<x-bt-skeleton rounded=\"{$input}\" />");
+        expect($html)->toContain($expected);
     }
 });
 
-it('uses default lg rounded', function () {
-    $html = Blade::render('<x-bt-skeleton init="loading" />');
+it('renders a custom tag', function () {
+    $html = Blade::render('<x-bt-skeleton tag="span" />');
 
-    expect($html)->not->toBeEmpty();
+    expect($html)
+        ->toContain('<span')
+        ->toContain('</span>');
 });
 
-it('can customize rounded', function () {
-    $html = Blade::render('<x-bt-skeleton init="loading" rounded="full" />');
+it('renders slot content in wire:loading.remove div', function () {
+    $html = Blade::render('
+        <x-bt-skeleton init="load">
+            <p>Real content</p>
+        </x-bt-skeleton>
+    ');
 
-    expect($html)->not->toBeEmpty();
+    expect($html)
+        ->toContain('wire:loading.remove')
+        ->toContain('<p>Real content</p>');
 });
 
-it('uses div tag by default', function () {
-    $html = Blade::render('<x-bt-skeleton init="loading" />');
+it('merges custom classes via attributes', function () {
+    $html = Blade::render('<x-bt-skeleton class="w-64 h-32" />');
 
-    expect($html)->not->toBeEmpty();
+    expect($html)
+        ->toContain('w-64')
+        ->toContain('h-32')
+        ->toContain('relative');
 });
 
-it('can customize tag', function () {
-    $html = Blade::render('<x-bt-skeleton init="loading" tag="span" />');
+it('merges custom attributes', function () {
+    $html = Blade::render('<x-bt-skeleton id="my-skeleton" data-test="true" />');
 
-    expect($html)->not->toBeEmpty();
-});
-
-it('can add custom skeleton class', function () {
-    $html = Blade::render('<x-bt-skeleton init="loading" skeletonClass="custom-skeleton" />');
-
-    expect($html)->not->toBeEmpty();
-});
-
-it('supports rows parameter', function () {
-    $html = Blade::render('<x-bt-skeleton init="loading" :rows="2" />');
-
-    expect($html)->not->toBeEmpty();
-});
-
-it('supports cols parameter', function () {
-    $html = Blade::render('<x-bt-skeleton init="loading" :cols="3" />');
-
-    expect($html)->not->toBeEmpty();
-});
-
-it('can render with all features', function () {
-    $html = Blade::render('<x-bt-skeleton init="loading" :lines="5" rounded="md" tag="div" shape="rectangle" :rows="2" :cols="3" />');
-
-    expect($html)->not->toBeEmpty();
+    expect($html)
+        ->toContain('id="my-skeleton"')
+        ->toContain('data-test="true"');
 });
