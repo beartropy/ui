@@ -2,9 +2,9 @@
 @props([
     'icon' => null,
     'disabled' => false,
-    'as' => 'a', // 'a' o 'button'
+    'as' => 'a', // 'a' or 'button'
     'closeOnClick' => true,
-    'color' => null
+    'color' => $color,
 ])
 
 @php
@@ -17,7 +17,7 @@
     $tone = "{$preset['item_hover_bg']} {$preset['item_active_bg']} {$preset['item_text_color']}";
     $classes = trim("$base $tone " . ($disabled ? 'opacity-50 cursor-not-allowed' : ''));
 
-    // armamos el manejador de click según prop
+    // build click handler based on prop
     $closeAttr = $closeOnClick ? '@click="$dispatch(\'bt-dropdown-close\')"' : '';
 @endphp
 

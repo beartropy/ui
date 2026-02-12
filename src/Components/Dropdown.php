@@ -5,42 +5,21 @@ namespace Beartropy\Ui\Components;
 /**
  * Dropdown Component.
  *
- * Renders a dropdown menu with various placement and styling options.
+ * Click-triggered menu with two rendering modes:
+ * - **Portal** (default): teleports a fixed-position panel to `<body>` via Alpine `x-teleport`,
+ *   escaping parent overflow/stacking contexts. Handles auto-flip, auto-fit, and horizontal clamping.
+ * - **Classic**: delegates to `DropdownBase` for a relative-positioned panel anchored to the trigger.
+ *
+ * Switch modes in Blade with `:usePortal="false"`.
+ *
+ * @param string      $placement    Horizontal alignment: 'left' (default), 'center', 'right'.
+ * @param string      $side         Vertical side: 'bottom' (default) or 'top'.
+ * @param string|null $color        Color preset name (resolved via dropdown presets).
+ * @param string|null $size         Size preset name (controls dropdown width).
+ * @param bool|null   $withnavigate Pass true to add `wire:navigate` on dropdown items.
  */
 class Dropdown extends BeartropyComponent
 {
-
-    /**
-     * Create a new Dropdown component instance.
-     *
-     * @param string      $placement    Popper.js placement (e.g., 'bottom', 'bottom-start').
-     * @param string      $side         Legacy alignment parameter.
-     * @param string|null $color        Dropdown color theme.
-     * @param string|null $size         Dropdown content width/size.
-     * @param bool|null   $withnavigate Enable Wire Navigate on links (if supported).
-     *
-     * ## Blade Props
-     *
-     * ### Slots
-     * @slot default Body content.
-     * @slot trigger Trigger button/content.
-     *
-     * ### Magic Attributes (Size)
-     * @property bool $xs Extra Small.
-     * @property bool $sm Small.
-     * @property bool $md Medium (default).
-     * @property bool $lg Large.
-     * @property bool $xl Extra Large.
-     * @property bool $2xl Double Extra Large.
-     *
-     * ### Magic Attributes (Color)
-     * @property bool $primary   Primary color.
-     * @property bool $secondary Secondary color.
-     * @property bool $success   Success color.
-     * @property bool $warning   Warning color.
-     * @property bool $danger    Danger color.
-     * @property bool $info      Info color.
-     */
     public function __construct(
         public string $placement = 'bottom',
         public string $side = 'left',
@@ -56,6 +35,12 @@ class Dropdown extends BeartropyComponent
      */
     public function render(): \Illuminate\Contracts\View\View
     {
+        // Resolve default color before view renders so @aware children see it
+        if ($this->color === null) {
+            $colors = config('beartropyui.presets.dropdown.colors', []);
+            $this->color = (string) array_key_first($colors) ?: 'neutral';
+        }
+
         return view('beartropy-ui::dropdown');
     }
 }

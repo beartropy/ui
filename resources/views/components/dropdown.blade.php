@@ -1,17 +1,17 @@
 @props([
     'side'         => 'bottom',         // 'bottom' | 'top'
     'placement'    => 'left',           // 'left' | 'center' | 'right'
-    'usePortal'    => true,             // true => render fijo con teleport al <body>
+    'usePortal'    => true,             // true => fixed-position panel teleported to <body>
 
     // Props parametrizables
-    'autoFit'      => true,             // bool: solo se usa si maxHeight != null
+    'autoFit'      => true,             // bool: only used when maxHeight != null
     'autoFlip'     => true,             // bool: flip prudente top/bottom
-    'maxHeight'    => null,             // null => NUNCA overflow/scroll
+    'maxHeight'    => null,             // null => never overflow/scroll
     'overflowMode' => 'auto',           // 'auto' | 'scroll' | 'visible' (si maxHeight != null)
-    'flipAt'       => 96,               // umbral para flip (px)
-    'minPanel'     => 140,              // alto mínimo (px)
-    'zIndex'       => 'z-[99999999]',   // clase tailwind para z-index
-    'width'        => null,             // ej: 'min-w-[12rem]' | 'w-64'; si null, usa preset
+    'flipAt'       => 96,               // threshold for flip (px)
+    'minPanel'     => 140,              // minimum height (px)
+    'zIndex'       => 'z-[99999999]',   // Tailwind class for z-index
+    'width'        => null,             // e.g. 'min-w-[12rem]' | 'w-64'; if null, uses preset
 ])
 
 @php
@@ -35,7 +35,7 @@
         </div>
 
         @if(!$usePortal)
-            {{-- 🔙 Modo clásico: usa el base, no tocamos nada --}}
+            {{-- Classic mode: delegates to base component --}}
             <x-beartropy-ui::base.dropdown-base
                 x-show="open"
                 :autoFit="false"
@@ -52,11 +52,11 @@
                 </div>
             </x-beartropy-ui::base.dropdown-base>
         @else
-            {{-- 🧲 Modo portal: panel fijo fuera de stacking contexts --}}
+            {{-- Portal mode: fixed panel outside stacking contexts --}}
             <template x-teleport="body">
                 <div
                     x-data="{
-                        // ⚙️ Config inyectada (parametrizable)
+                        // Injected config (parameterizable)
                         autoFit: {{ $autoFit ? 'true' : 'false' }},
                         autoFlip: {{ $autoFlip ? 'true' : 'false' }},
                         maxHeight: {{ $maxHeight !== null ? (int)$maxHeight : 'null' }},
@@ -66,7 +66,7 @@
                         zIndex: '{{ $zIndex }}',
                         widthClass: '{{ $widthClass }}',
 
-                        // 📌 Regla: solo hay overflow si hay maxHeight explícito
+                        // Rule: overflow only when maxHeight is explicitly set
                         allowOverflow: {{ $maxHeight !== null ? 'true' : 'false' }},
 
                         // Estado runtime
@@ -93,10 +93,15 @@
                             const margin = 16;
 
                             if (this.autoFlip) {
+                                const preferred = '{{ $side === 'top' ? 'top' : 'bottom' }}';
+                                const prefSpace = preferred === 'bottom' ? spaceBelow : spaceAbove;
+                                const altSpace  = preferred === 'bottom' ? spaceAbove : spaceBelow;
                                 const shouldFlip =
-                                    (spaceBelow < Math.max(this.flipAt, margin + this.minPanel)) &&
-                                    (spaceAbove > spaceBelow);
-                                this.sideLocal = shouldFlip ? 'top' : 'bottom';
+                                    (prefSpace < Math.max(this.flipAt, margin + this.minPanel)) &&
+                                    (altSpace > prefSpace);
+                                this.sideLocal = shouldFlip
+                                    ? (preferred === 'bottom' ? 'top' : 'bottom')
+                                    : preferred;
                             }
 
                             if (!this.allowOverflow) {
@@ -115,7 +120,7 @@
                         },
 
                         _computeLeft() {
-                            // base left según placement
+                            // base left from placement
                             let left = this.coords.left;
                             if ('{{ $placement }}' === 'center') {
                                 left = this.coords.left + (this.coords.width / 2);
@@ -123,18 +128,14 @@
                                 left = this.coords.left + this.coords.width;
                             }
 
-                            // clamp horizontal (evita cortar en extremos)
-                            const vw = window.innerWidth || document.documentElement.clientWidth;
-                            const gap = 8;
-                            let finalLeft = left;
-                            if ('{{ $placement }}' === 'center') {
-                                finalLeft = left - (this.panelW / 2);
-                            } else if ('{{ $placement }}' === 'right') {
-                                finalLeft = left - this.panelW;
+                            // clamp horizontal for left placement (prevent clipping at edges)
+                            if ('{{ $placement }}' === 'left' && this.panelW > 0) {
+                                const vw = window.innerWidth || document.documentElement.clientWidth;
+                                const gap = 8;
+                                left = Math.max(gap, Math.min(left, vw - this.panelW - gap));
                             }
-                            finalLeft = Math.max(gap, Math.min(finalLeft, vw - this.panelW - gap));
 
-                            return { left: finalLeft, translate: 'translateX(0)' };
+                            return left;
                         },
 
                         _computeTop() {
@@ -150,7 +151,7 @@
 
                             if (this.allowOverflow) {
                                 const ro = new ResizeObserver(() => {
-                                    // Recalcular overflow si cambia el contenido
+                                    // Recalculate overflow when content changes
                                     this.hasOverflow = $el.scrollHeight > ($el.clientHeight + 1);
                                 });
                                 ro.observe($el);
@@ -172,25 +173,29 @@
                         widthClass,
                         sideLocal === 'top' ? 'origin-bottom' : 'origin-top',
 
-                        // Overflow: si no se permite, siempre visible
+                        // Overflow: if not allowed, always visible
                         (!allowOverflow)
                             ? 'overflow-visible'
                             : ((overflowMode === 'auto')
                                 ? (hasOverflow ? 'overflow-y-auto' : 'overflow-visible')
                                 : (overflowMode === 'scroll' ? 'overflow-y-scroll' : 'overflow-visible')),
 
-                        // Scrollbar fina solo si realmente hay overflow y está permitido
+                        // Thin scrollbar only when overflow is present and allowed
                         (allowOverflow && hasOverflow && (overflowMode === 'auto' || overflowMode === 'scroll'))
                             ? 'beartropy-thin-scrollbar'
                             : '',
 
-                        // Estilos visuales
+                        // Visual styles
                         'pointer-events-auto rounded-lg isolate {{ $colorPreset['dropdown_bg'] }} {{ $colorPreset['dropdown_shadow'] }} {{ $colorPreset['dropdown_border'] ?? '' }}'
                     ]"
                     :style="(() => {
                         const top = _computeTop();
-                        const { left, translate } = _computeLeft();
-                        return `position:fixed; top:${top}px; left:${left}px; transform:${translate}; min-width:8rem; ${maxStyle}`;
+                        const left = _computeLeft();
+                        const tf = [];
+                        if (sideLocal === 'top') tf.push('translateY(-100%)');
+                        if ('{{ $placement }}' === 'center') tf.push('translateX(-50%)');
+                        else if ('{{ $placement }}' === 'right') tf.push('translateX(-100%)');
+                        return `position:fixed; top:${top}px; left:${left}px; transform:${tf.join(' ') || 'none'}; min-width:8rem; ${maxStyle}`;
                     })()"
                     role="menu"
                 >
