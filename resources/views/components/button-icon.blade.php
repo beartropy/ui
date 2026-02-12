@@ -1,7 +1,7 @@
 @php
     [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('button-icon');
     $icon = $icon ?? 'plus';
-    $label = $label ?? 'Nuevo';
+    $label = $label ?? __('beartropy-ui::ui.new');
     $isLink = $attributes->has('href');
 
     $tag = $isLink ? 'a' : 'button';
@@ -30,15 +30,17 @@
                 $colorPreset['bg_hover'] .
                 ' ' .
                 $sizePreset['buttonIcon'],
+            'aria-label' => $label,
         ]) }}
-        @if ($spinner && $wireTarget) wire:target="{{ $wireTarget }}" @endif
-        @if ($isLink) href="{{ $attributes->get('href') }}" @endif
-        {{ $attributes->except('href', 'class') }}>
+        @if ($spinner && $wireTarget && !$attributes->has('wire:target'))
+            wire:target="{{ $wireTarget }}"
+        @endif
+    >
 
         @if ($spinner && $wireTarget)
             <div wire:loading wire:target="{{ $wireTarget }}">
                 @include('beartropy-ui-svg::beartropy-spinner', [
-                    'class' => 'w-5 h-5 animate-spin',
+                    'class' => $sizePreset['buttonIconIcon'] . ' animate-spin',
                     'tabindex' => '-1',
                 ])
             </div>
@@ -58,5 +60,5 @@
                     set="{{ $iconSet }}" variant="{{ $iconVariant }}" />
             @endif
         @endif
-        </{{ $tag }}>
+    </{{ $tag }}>
 </div>

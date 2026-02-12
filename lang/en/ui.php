@@ -52,4 +52,5 @@ return [
     'second_short' => 'Sec',
     'add_tag' => 'Add tag...',
     'type_message' => 'Type a message...',
+    'new' => 'New',
 ];

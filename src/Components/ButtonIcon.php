@@ -22,7 +22,7 @@ class ButtonIcon extends BeartropyComponent
      * Create a new ButtonIcon component instance.
      *
      * @param string|null $icon        Icon name.
-     * @param string|null $label       Accessible label.
+     * @param string|null $label       Accessible label (used as aria-label).
      * @param string|null $color       Button color.
      * @param string|null $size        Button size.
      * @param bool|null   $spinner     Show spinner on loading.
@@ -30,28 +30,13 @@ class ButtonIcon extends BeartropyComponent
      * @param string|null $iconSet     Icon set.
      * @param string|null $iconVariant Icon variant.
      *
-     * ## Blade Props
+     * ## Magic Attributes (Color)
+     * `beartropy` (default), `red`, `orange`, `amber`, `yellow`, `lime`, `green`, `emerald`,
+     * `teal`, `cyan`, `sky`, `blue`, `indigo`, `violet`, `purple`, `fuchsia`, `pink`, `rose`,
+     * `gray`, `slate`, `stone`, `zinc`, `neutral`.
      *
-     * ### Magic Attributes (Color)
-     * @property bool $primary   Primary color.
-     * @property bool $secondary Secondary color.
-     * @property bool $success   Success color.
-     * @property bool $warning   Warning color.
-     * @property bool $danger    Danger color.
-     * @property bool $info      Info color.
-     *
-     * ### Magic Attributes (Size)
-     * @property bool $xs Extra Small.
-     * @property bool $sm Small.
-     * @property bool $md Medium (default).
-     * @property bool $lg Large.
-     * @property bool $xl Extra Large.
-     *
-     * ### Magic Attributes (Variant)
-     * @property bool $solid   Solid variant.
-     * @property bool $outline Outline variant.
-     * @property bool $ghost   Ghost variant.
-     * @property bool $light   Light variant.
+     * ## Magic Attributes (Size)
+     * `xs`, `sm`, `md` (default), `lg`, `xl`.
      */
     public function __construct(
         public ?string $icon = null,
