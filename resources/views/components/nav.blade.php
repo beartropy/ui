@@ -1,35 +1,3 @@
-@props([
-    'items' => [],
-    'sidebarBind' => '',
-    'highlightMode' => 'standard',
-    'highlightParentClass' => '',
-    'highlightChildClass' => '',
-    'itemClass' => '',
-    'childItemClass' => '',
-    'categoryClass' => '',
-    'iconClass' => '',
-    'childBorderClass' => '',
-    'customBadges' => [],
-
-    'hideCategories' => false,          // Hides category titles
-    'singleOpenExpanded' => false,
-
-    // Collapse button (optional)
-    'collapseButtonAsItem' => true,
-    'collapseButtonLabelCollapse' => 'Collapse',
-    'collapseButtonLabelExpand'  => 'Expand',
-    'collapseButtonIconCollapse' => 'arrows-pointing-in',
-    'collapseButtonIconExpand'   => 'arrows-pointing-out',
-    'rememberCollapse' => null,                 // null = auto (usa collapseButtonAsItem)
-    'rememberCollapseKey' => 'beartropy:sidebar:collapsed',
-
-    // Floating menu header
-    'hoverMenuShowHeader'   => true,
-    'hoverMenuHeaderClass'  => 'sticky top-0 z-10 px-3 py-2 border-b border-gray-200/80 dark:border-gray-700/70 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm',
-    'hoverMenuHeaderTextClass' => 'font-bold text-sm text-gray-700 dark:text-gray-400',
-
-])
-
 @php
     // Hover classes from preset based on mode
     $itemHover  = $highlightMode === 'text' ? $hoverTextClass      : '';
@@ -46,6 +14,9 @@
     $bindVar    = ltrim($bindExpr, '! ');
     $isNegated  = str_starts_with($bindExpr, '!');
 
+    // Localized collapse button labels
+    $collapseButtonLabelCollapse = $collapseButtonLabelCollapse ?? __('beartropy-ui::ui.collapse');
+    $collapseButtonLabelExpand   = $collapseButtonLabelExpand ?? __('beartropy-ui::ui.expand');
 @endphp
 
 <nav
@@ -73,7 +44,7 @@
         closeHoverSoon() { clearTimeout(this.hoverTimer); this.hoverTimer = setTimeout(() => this.hoverId = null, 120); },
         keepHoverOpen()  { clearTimeout(this.hoverTimer); },
 
-        // ---- ACTIVE por Alpine ----
+        // ---- Active state (Alpine) ----
         activePath: window.location.pathname + window.location.search,
 _norm(u) {
   try {
@@ -97,7 +68,7 @@ isActiveHref(href, mode = 'exact') {
   return mode === 'startsWith' ? here.startsWith(there) : here === there;
 },
 hrefFromEl(el) {
-  // 1) data-href renderizado por Blade
+  // 1) data-href rendered by Blade
   if (el?.dataset?.href) return el.dataset.href;
 
   // 2) Ziggy por routeName/params
@@ -108,11 +79,11 @@ hrefFromEl(el) {
     try { return route(name, params); } catch (e) {}
   }
 
-  // 3) atributo href tal cual
+  // 3) raw href attribute
   const attr = el?.getAttribute?.('href');
   if (attr) return attr;
 
-  // 4) href resuelto por el navegador (absoluto)
+  // 4) href resolved by the browser (absolute)
   if (el?.href) return el.href;
 
   return '#';
@@ -221,7 +192,6 @@ _reconcileOpen(activeParents) {
     // Not collapsible: just ensure active items are open
     shouldOpen.forEach(id => { if (!this.open[id]) this.open[id] = true; });
   }
-  this.$nextTick(() => {});
 },
 
 
@@ -336,6 +306,7 @@ _installLocationListeners() {
         },
         isOpen(id) { return !!this.open[id]; }
     }"
+    aria-label="{{ __('beartropy-ui::ui.sidebar_navigation') }}"
     class="flex flex-col h-full overflow-hidden overflow-x-hidden beartropy-thin-scrollbar"
     @click.stop
     @mousedown.stop
@@ -450,6 +421,7 @@ _installLocationListeners() {
 
                                 @if($hasChildren)
                                     @click.prevent="if (!sidebarIsCollapsed) toggle('{{ $itemId }}')"
+                                    :aria-expanded="isOpen('{{ $itemId }}').toString()"
                                 @endif
                                 @mouseenter="if (sidebarIsCollapsed && {{ $hasChildren ? 'true' : 'false' }}) openHover('{{ $itemId }}', $el)"
                                 @mouseleave="if (sidebarIsCollapsed && {{ $hasChildren ? 'true' : 'false' }}) closeHoverSoon()"
@@ -459,6 +431,7 @@ _installLocationListeners() {
                                     isActiveParent($el) ? ' {{ $highlightParentClass }} ' : '',
                                     (sidebarIsCollapsed ? 'justify-center gap-0 px-2' : 'justify-start gap-2 px-2.5')
                                 ]"
+                                :aria-current="isActiveParent($el) ? 'page' : null"
                                 title="{{ $item['tooltip'] ?? '' }}"
                                 @if(!empty($item['tooltip'])) x-tooltip="'{{ $item['tooltip'] }}'" @endif
                                 @if($external) target="_blank" rel="noopener" @endif
@@ -495,9 +468,12 @@ _installLocationListeners() {
                                 @endif
 
                                 @if($hasChildren)
-                                    <i class="fas fa-caret-down ml-auto text-xs opacity-60 transition-transform duration-200 ease-out"
-                                       x-show="!sidebarIsCollapsed"
-                                       :class="{ 'rotate-180': isOpen('{{ $itemId }}'), 'hidden': sidebarIsCollapsed }"></i>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                         class="w-4 h-4 ml-auto shrink-0 opacity-60 transition-transform duration-200 ease-out"
+                                         x-show="!sidebarIsCollapsed"
+                                         :class="{ 'rotate-180': isOpen('{{ $itemId }}'), 'hidden': sidebarIsCollapsed }">
+                                        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
+                                    </svg>
                                 @endif
                             </a>
 
@@ -566,11 +542,12 @@ _installLocationListeners() {
                                             href="{{ $childHref }}" {{ $withnavigate ? "wire:navigate" : "" }}
                                             class="{{ $finalChildClass }}{{ $childDisabled ? ' opacity-60 pointer-events-none' : '' }}"
                                             :class="[
-                                                // highlight: hijos con startsWith para que /users/123 active /users
+                                                // highlight: children use startsWith so /users/123 activates /users
                                                 isActiveEl($el, true) ? ' {{ $highlightChildClass }} ' : '',
                                                 // layout
                                                 (sidebarIsCollapsed ? 'justify-center' : 'justify-start')
                                             ]"
+                                            :aria-current="isActiveEl($el, true) ? 'page' : null"
                                             title="{{ $child['tooltip'] ?? '' }}"
                                             @if(!empty($child['tooltip'])) x-tooltip="'{{ $child['tooltip'] }}'" @endif
                                             @if($childExternal) target="_blank" rel="noopener" @endif
@@ -620,7 +597,7 @@ _installLocationListeners() {
                                                 max-h-[70vh] overflow-auto"
                                             :style="`top:${submenuPos.top}px; left:${submenuPos.left}px; min-width:${submenuPos.minWidth}px`"
                                             role="menu"
-                                            aria-label="Submenu {{ $item['label'] ?? '' }}"
+                                            aria-label="{{ __('beartropy-ui::ui.submenu_for', ['label' => $item['label'] ?? '']) }}"
                                         >
                                         {{-- FLOATING SUBMENU HEADER --}}
                                         @if($hoverMenuShowHeader)

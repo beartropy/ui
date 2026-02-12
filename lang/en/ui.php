@@ -54,4 +54,8 @@ return [
     'type_message' => 'Type a message...',
     'new' => 'New',
     'current' => 'current',
+    'collapse' => 'Collapse',
+    'expand' => 'Expand',
+    'submenu_for' => 'Submenu for :label',
+    'sidebar_navigation' => 'Sidebar navigation',
 ];

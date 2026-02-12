@@ -6,23 +6,28 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Blade;
 
 /**
- * Nav component.
+ * Full-featured sidebar navigation with categories, nested children, permissions, and active state detection.
  *
- * Renders a navigation menu, supporting nested items, permissions, and active state detection.
+ * Renders a `<nav>` element driven by Alpine.js for collapse/expand, hover submenus (via x-teleport),
+ * and client-side active state reconciliation. Supports two highlight modes: 'standard' (background
+ * highlight) and 'text' (text-only highlight with hover). Colors are resolved from `presets/nav.php`.
  *
- * @property array       $items                Navigation items.
- * @property string      $sidebarBind          Sidebar collapse binding.
- * @property string      $highlightMode        'standard' or 'text'.
- * @property string|null $highlightParentClass Custom highlight class for parents.
- * @property string|null $highlightChildClass  Custom highlight class for children.
- * @property string|null $itemClass            Base item class.
- * @property string|null $childItemClass       Base child item class.
- * @property string      $categoryClass        Category header class.
- * @property string      $iconClass            Icon class.
- * @property string      $childBorderClass     Child border class.
- * @property string|null $hoverTextClass       Hover text class.
- * @property string|null $hoverTextChildClass  Child hover text class.
- * @property bool        $withnavigate         Enable Wire:navigate.
+ * Items support permission gating (`can`, `canAny`, `canMatch`) with optional admin bypass,
+ * nested `children`, badges (slot, Alpine, or static), dividers, external links, and tooltips.
+ *
+ * @property array       $items                Resolved and permission-filtered navigation items.
+ * @property string      $sidebarBind          Alpine variable name for sidebar collapse binding.
+ * @property string      $highlightMode        Highlight mode: 'standard' (bg) or 'text' (text-only).
+ * @property string|null $highlightParentClass CSS classes for active parent items.
+ * @property string|null $highlightChildClass  CSS classes for active child items.
+ * @property string|null $itemClass            Base CSS classes for parent items.
+ * @property string|null $childItemClass       Base CSS classes for child items.
+ * @property string      $categoryClass        CSS classes for category headings.
+ * @property string      $iconClass            CSS classes for icon rendering.
+ * @property string      $childBorderClass     CSS classes for child container border.
+ * @property string|null $hoverTextClass       Hover classes for parent items (text mode).
+ * @property string|null $hoverTextChildClass  Hover classes for child items (text mode).
+ * @property bool        $withnavigate         Whether to add wire:navigate to links.
  */
 class Nav extends BeartropyComponent
 {
@@ -40,6 +45,18 @@ class Nav extends BeartropyComponent
     public $hoverTextClass;
     public $hoverTextChildClass;
     public $withnavigate;
+    public $hideCategories;
+    public $singleOpenExpanded;
+    public $collapseButtonAsItem;
+    public $collapseButtonLabelCollapse;
+    public $collapseButtonLabelExpand;
+    public $collapseButtonIconCollapse;
+    public $collapseButtonIconExpand;
+    public $rememberCollapse;
+    public $rememberCollapseKey;
+    public $hoverMenuShowHeader;
+    public $hoverMenuHeaderClass;
+    public $hoverMenuHeaderTextClass;
 
 
     /**
@@ -87,10 +104,34 @@ class Nav extends BeartropyComponent
         $hoverTextClass = null,
         $hoverTextChildClass = null,
         $color = 'beartropy',
-        $withnavigate = false
+        $withnavigate = false,
+        $hideCategories = false,
+        $singleOpenExpanded = false,
+        $collapseButtonAsItem = true,
+        $collapseButtonLabelCollapse = null,
+        $collapseButtonLabelExpand = null,
+        $collapseButtonIconCollapse = 'arrows-pointing-in',
+        $collapseButtonIconExpand = 'arrows-pointing-out',
+        $rememberCollapse = null,
+        $rememberCollapseKey = 'beartropy:sidebar:collapsed',
+        $hoverMenuShowHeader = true,
+        $hoverMenuHeaderClass = 'sticky top-0 z-10 px-3 py-2 border-b border-gray-200/80 dark:border-gray-700/70 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm',
+        $hoverMenuHeaderTextClass = 'font-bold text-sm text-gray-700 dark:text-gray-400',
     ) {
         $this->sidebarBind = $sidebarBind;
         $this->highlightMode = $highlightMode;
+        $this->hideCategories = $hideCategories;
+        $this->singleOpenExpanded = $singleOpenExpanded;
+        $this->collapseButtonAsItem = $collapseButtonAsItem;
+        $this->collapseButtonLabelCollapse = $collapseButtonLabelCollapse;
+        $this->collapseButtonLabelExpand = $collapseButtonLabelExpand;
+        $this->collapseButtonIconCollapse = $collapseButtonIconCollapse;
+        $this->collapseButtonIconExpand = $collapseButtonIconExpand;
+        $this->rememberCollapse = $rememberCollapse;
+        $this->rememberCollapseKey = $rememberCollapseKey;
+        $this->hoverMenuShowHeader = $hoverMenuShowHeader;
+        $this->hoverMenuHeaderClass = $hoverMenuHeaderClass;
+        $this->hoverMenuHeaderTextClass = $hoverMenuHeaderTextClass;
 
         $presets = config('beartropyui.presets.nav')['colors'];
 
@@ -122,9 +163,9 @@ class Nav extends BeartropyComponent
         $this->hoverTextClass = $hoverTextClass ?? $preset['hoverText'];
         $this->hoverTextChildClass = $hoverTextChildClass ?? $preset['hoverTextChild'];
 
-        $this->categoryClass = $preset['categoryClass'] ?? $categoryClass;
-        $this->iconClass = $preset['iconClass'] ?? $iconClass;
-        $this->childBorderClass = $preset['childBorderClass'] ?? $childBorderClass;
+        $this->categoryClass = $categoryClass ?: ($preset['categoryClass'] ?? 'text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase px-3 mb-1 tracking-wide select-none');
+        $this->iconClass = $iconClass ?: ($preset['iconClass'] ?? '');
+        $this->childBorderClass = $childBorderClass ?: ($preset['childBorderClass'] ?? 'border-l border-gray-300 dark:border-gray-700');
         $resolved = $this->resolveItems($items);
         $this->items = $this->filterNavCategories($resolved);
         $this->withnavigate = $withnavigate;
@@ -271,7 +312,7 @@ class Nav extends BeartropyComponent
             return $icon;
         }
 
-        $iconComponent = new \Beartropy\Ui\Components\Icon(name: $icon, class: 'w-4 h-4 shrink-0');
+        $iconComponent = new \Beartropy\Ui\Components\Icon(name: $icon, class: $iconClass ?: 'w-4 h-4 shrink-0');
         return Blade::renderComponent($iconComponent);
     }
 
