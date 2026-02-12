@@ -72,7 +72,7 @@
                        p-2 md:p-1.5"
             >
                 <span class="sr-only">Close</span>
-                <svg class="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor" fill="none">
+                <svg class="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor" fill="none" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
@@ -90,7 +90,8 @@
                         <svg class="h-9 w-9" fill="none" viewBox="0 0 24 24"
                              stroke-width="1.8"
                              :class="typeStyles[type]?.iconText"
-                             stroke="currentColor">
+                             stroke="currentColor"
+                             aria-hidden="true">
                             {{-- check-circle --}}
                             <path
                                 x-show="icon === 'check-circle'"
@@ -162,6 +163,7 @@
                                 fill="none"
                                 stroke="currentColor"
                                 stroke-width="2"
+                                aria-hidden="true"
                             >
                                 <circle class="opacity-25" cx="12" cy="12" r="10"></circle>
                                 <path class="opacity-75" d="M4 12a8 8 0 018-8"></path>
@@ -193,6 +195,7 @@
                                 fill="none"
                                 stroke="currentColor"
                                 stroke-width="2"
+                                aria-hidden="true"
                             >
                                 <circle class="opacity-25" cx="12" cy="12" r="10"></circle>
                                 <path class="opacity-75" d="M4 12a8 8 0 018-8"></path>

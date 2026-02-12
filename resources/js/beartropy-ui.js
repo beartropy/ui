@@ -76,7 +76,7 @@
   }
 
   // resources/js/modules/toast.js
-  function toast(type, title, message = "", duration = 4e3, position = "top-right", action = null, actionUrl = null) {
+  function toast(type, title, message = "", duration = 4e3, position = "top-right", action2 = null, actionUrl = null) {
     const toastObj = {
       id: window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() : "toast-" + Math.random().toString(36).slice(2) + Date.now(),
       type,
@@ -84,7 +84,7 @@
       message,
       duration,
       position,
-      action,
+      action: action2,
       actionUrl
     };
     if (window.Alpine && Alpine.store("toasts")) {
@@ -96,7 +96,7 @@
     }
   }
   ["success", "error", "warning", "info"].forEach((type) => {
-    toast[type] = (title, message, duration, position, action, actionUrl) => toast(type, title, message, duration, position, action, actionUrl);
+    toast[type] = (title, message, duration, position, action2, actionUrl) => toast(type, title, message, duration, position, action2, actionUrl);
   });
 
   // resources/js/modules/table.js
@@ -1182,8 +1182,8 @@
       // ===== core =====
       handle(ev) {
         const d = this._norm(ev.detail);
-        const target = d.target ?? this.id;
-        if (target !== this.id) return;
+        const target2 = d.target ?? this.id;
+        if (target2 !== this.id) return;
         this.closeOnBackdrop = typeof d.closeOnBackdrop === "boolean" ? d.closeOnBackdrop : true;
         this.closeOnEscape = typeof d.closeOnEscape === "boolean" ? d.closeOnEscape : true;
         this.effect = d.effect || "zoom";
@@ -2092,6 +2092,93 @@
     };
   }
 
+  // resources/js/modules/command-palette.js
+  function btCommandPalette({ initial }) {
+    return {
+      open: false,
+      query: "",
+      all: initial || [],
+      selectedIndex: 0,
+      get filtered() {
+        const q = (this.query || "").toLowerCase().trim();
+        if (!q) return (this.all || []).slice(0, 5);
+        const terms = q.split(/\s+/);
+        const results = (this.all || []).filter((i) => {
+          const text = [
+            i.title ?? "",
+            i.description ?? "",
+            Array.isArray(i.tags) ? i.tags.join(" ") : "",
+            i.action ?? ""
+          ].join(" ").toLowerCase();
+          return terms.every((t) => text.includes(t));
+        });
+        if (results.length && this.selectedIndex >= results.length) this.selectedIndex = 0;
+        return results;
+      },
+      scrollIntoView() {
+        this.$nextTick(() => {
+          const el = document.querySelector(`[data-cp-index="${this.selectedIndex}"]`);
+          if (el) el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        });
+      },
+      handleKey(e) {
+        if (!this.filtered.length) return;
+        if (["ArrowDown", "Tab"].includes(e.key) && !e.shiftKey) {
+          e.preventDefault();
+          this.selectedIndex = (this.selectedIndex + 1) % this.filtered.length;
+          this.scrollIntoView();
+        } else if (["ArrowUp"].includes(e.key) || e.key === "Tab" && e.shiftKey) {
+          e.preventDefault();
+          this.selectedIndex = (this.selectedIndex - 1 + this.filtered.length) % this.filtered.length;
+          this.scrollIntoView();
+        } else if (e.key === "Enter") {
+          e.preventDefault();
+          const item2 = this.filtered[this.selectedIndex];
+          if (item2) this.execute(item2);
+        }
+      },
+      execute(item) {
+        const action = (item.action || "").trim();
+        const routes = this.routes || {};
+        const target = (item.target || item?.options?.target || "_self").toLowerCase();
+        const openUrl = (url) => {
+          if (!url) return;
+          if (target === "_blank") {
+            window.open(url, "_blank", "noopener,noreferrer");
+          } else {
+            window.location.href = url;
+          }
+        };
+        if (action.startsWith("route:")) {
+          const name = action.replace("route:", "").trim();
+          let url = null;
+          if (typeof window.route === "function") {
+            const params = item.params || item.route_params || {};
+            url = route(name, params);
+          } else if (routes[name]) {
+            url = typeof routes[name] === "function" ? routes[name](item.params || item.route_params || {}) : routes[name];
+          } else {
+            console.warn(`Could not resolve route "${name}".`);
+          }
+          openUrl(url);
+        } else if (action.startsWith("url:")) {
+          openUrl(action.replace("url:", "").trim());
+        } else if (/^(https?:\/\/|\/)/i.test(action)) {
+          openUrl(action);
+        } else if (action.startsWith("dispatch:")) {
+          this.$dispatch(action.replace("dispatch:", "").trim());
+        } else if (action.startsWith("js:")) {
+          try {
+            eval(action.replace("js:", ""));
+          } catch (e) {
+            console.error(e);
+          }
+        }
+        this.open = false;
+      }
+    };
+  }
+
   // resources/js/index.js
   window.$beartropy = window.$beartropy || {};
   window.$beartropy.dialog = dialog;
@@ -2111,6 +2198,7 @@
     Alpine.data("beartropyChatInput", beartropyChatInput);
     Alpine.data("beartropyLookup", beartropyLookup);
     Alpine.data("btToggleTheme", btToggleTheme);
+    Alpine.data("btCommandPalette", btCommandPalette);
     window.$beartropy.beartropyTable = beartropyTable;
     window.$beartropy.beartropyDatetimepicker = beartropyDatetimepicker;
     window.$beartropy.beartropyTimepicker = beartropyTimepicker;
@@ -2122,5 +2210,6 @@
     window.$beartropy.beartropyChatInput = beartropyChatInput;
     window.$beartropy.beartropyLookup = beartropyLookup;
     window.$beartropy.btToggleTheme = btToggleTheme;
+    window.$beartropy.btCommandPalette = btCommandPalette;
   });
 })();

@@ -161,6 +161,7 @@ class BeartropyUiServiceProvider extends ServiceProvider
 
         $this->commands([
             \Beartropy\Ui\Commands\AddPreset::class,
+            \Beartropy\Ui\Commands\InstallSkills::class,
         ]);
 
         if (class_exists(\Livewire\LivewireServiceProvider::class)) {

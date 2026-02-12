@@ -13,6 +13,7 @@ import { beartropyFileDropzone } from './modules/file-dropzone.js';
 import { beartropyChatInput } from './modules/chat-input.js';
 import { beartropyLookup } from './modules/lookup.js';
 import { initTheme, btToggleTheme } from './modules/toggle-theme.js';
+import { btCommandPalette } from './modules/command-palette.js';
 
 // Initialize global namespace
 window.$beartropy = window.$beartropy || {};
@@ -39,6 +40,7 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('beartropyChatInput', beartropyChatInput);
     Alpine.data('beartropyLookup', beartropyLookup);
     Alpine.data('btToggleTheme', btToggleTheme);
+    Alpine.data('btCommandPalette', btCommandPalette);
 
     // Keep global references for legacy/external usage if needed
     window.$beartropy.beartropyTable = beartropyTable;
@@ -52,4 +54,5 @@ document.addEventListener('alpine:init', () => {
     window.$beartropy.beartropyChatInput = beartropyChatInput;
     window.$beartropy.beartropyLookup = beartropyLookup;
     window.$beartropy.btToggleTheme = btToggleTheme;
+    window.$beartropy.btCommandPalette = btCommandPalette;
 });

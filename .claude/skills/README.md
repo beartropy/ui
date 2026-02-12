@@ -119,9 +119,9 @@ Beartropy UI provides 40+ components for the TALL stack:
 
 **Overlays:** Modal, Dialog, Dropdown, Tooltip, CommandPalette
 
-**Layout:** Layout, Nav, Sidebar, Header, Menu, Table
+**Layout:** Nav, Menu, Table
 
-**Special:** ChatInput, Icon, Loading, ToggleTheme
+**Special:** ChatInput, Icon, ToggleTheme, DebugBreakpoints
 
 ## Quick Examples
 

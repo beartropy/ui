@@ -37,7 +37,7 @@
             @else
                 <svg x-show="!dark"
                     :class="`{{ $viewData->iconLightClasses }}` + (rotating ? ' theme-rotate' : '')"
-                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                     <circle cx="12" cy="12" r="5"/>
                     <path d="M12 1v2m0 18v2m11-11h-2M3 12H1
                         m16.95 7.07l-1.41-1.41
@@ -59,7 +59,7 @@
             @else
                 <svg x-show="dark"
                     :class="`{{ $viewData->iconDarkClasses }}` + (rotating ? ' theme-rotate' : '')"
-                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M21 12.79A9 9 0 1111.21 3 a7 7 0 109.79 9.79z"/>
                 </svg>
             @endif
@@ -92,7 +92,7 @@
             @else
                 <svg x-show="!dark"
                     :class="`{{ $viewData->iconLightClasses }}` + (rotating ? ' theme-rotate' : '')"
-                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                     <circle cx="12" cy="12" r="5"/>
                     <path d="M12 1v2m0 18v2m11-11h-2M3 12H1
                         m16.95 7.07l-1.41-1.41
@@ -114,7 +114,7 @@
             @else
                 <svg x-show="dark"
                     :class="`{{ $viewData->iconDarkClasses }}` + (rotating ? ' theme-rotate' : '')"
-                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M21 12.79A9 9 0 1111.21 3 a7 7 0 109.79 9.79z"/>
                 </svg>
             @endif
@@ -140,7 +140,7 @@
             @else
                 <svg x-show="!dark"
                     :class="`{{ $viewData->iconLightClasses }}` + (rotating ? ' theme-rotate' : '')"
-                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                     <circle cx="12" cy="12" r="5"/>
                     <path d="M12 1v2m0 18v2m11-11h-2M3 12H1
                         m16.95 7.07l-1.41-1.41
@@ -162,7 +162,7 @@
             @else
                 <svg x-show="dark"
                     :class="`{{ $viewData->iconDarkClasses }}` + (rotating ? ' theme-rotate' : '')"
-                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M21 12.79A9 9 0 1111.21 3 a7 7 0 109.79 9.79z"/>
                 </svg>
             @endif

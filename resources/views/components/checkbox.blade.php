@@ -43,7 +43,7 @@
             </span>
             <span class="{{ $sizePreset['box'] }} top-0 left-0 absolute text-white dark:text-neutral-900 scale-0 peer-checked:scale-100 transition pointer-events-none">
                 <svg
-                    viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="3">
+                    viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
                     <path d="M4 8l3 3 5-5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </span>

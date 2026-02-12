@@ -397,7 +397,7 @@ class FileUpload extends Component
 ```blade
 <div wire:loading.delay class="flex items-center justify-center py-12">
     <div class="text-center">
-        <x-bt-loading size="lg" />
+        <x-bt-icon name="arrow-path" class="w-8 h-8 animate-spin text-gray-400" />
         <p class="mt-4 text-gray-600 dark:text-gray-400">
             Loading...
         </p>

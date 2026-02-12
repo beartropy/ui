@@ -201,16 +201,16 @@
                 <template x-if="autosave && saveState !== 'idle'">
                     <span class="grid place-items-center w-5 h-5">
                         <!-- saving -->
-                        <svg x-show="saveState==='saving'" class="w-4 h-4 animate-spin text-gray-400" viewBox="0 0 24 24" fill="none">
+                        <svg x-show="saveState==='saving'" class="w-4 h-4 animate-spin text-gray-400" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                             <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity=".25"/>
                             <path d="M21 12a9 9 0 0 1-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
                         <!-- ok -->
-                        <svg x-show="saveState==='ok'" class="w-5 h-5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg x-show="saveState==='ok'" class="w-5 h-5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                         </svg>
                         <!-- error -->
-                        <svg x-show="saveState==='error'" class="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg x-show="saveState==='error'" class="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
                     </span>
@@ -219,7 +219,7 @@
                 {{-- Spinner Livewire --}}
                 <template x-if="showSpinner">
                     <span class="grid place-items-center w-5 h-5" wire:loading wire:target="{{ $wireModelValue }}">
-                        <svg class="w-4 h-4 animate-spin text-gray-400" viewBox="0 0 24 24" fill="none">
+                        <svg class="w-4 h-4 animate-spin text-gray-400" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                             <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity=".25"/>
                             <path d="M21 12a9 9 0 0 1-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
@@ -236,6 +236,7 @@
                         class="w-4.5 h-4.5 transition-transform duration-200 {{ $colorDropdown['option_icon'] ?? '' }}"
                         :class="{ 'rotate-180': open }"
                         fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                        aria-hidden="true"
                     >
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                     </svg>
@@ -348,7 +349,7 @@
                     </template>
                     <template x-if="loading">
                         <li class="flex items-center justify-center gap-2 p-2 {{ $colorDropdown['loading_text'] ?? 'text-xs text-gray-500' }}">
-                            <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                            <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                 <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity=".25"/>
                                 <path d="M21 12a9 9 0 0 1-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             </svg>

@@ -6,8 +6,8 @@ return [
     | Blade Component Prefix
     |--------------------------------------------------------------------------
     | Set the prefix you want to use for all registered Blade components.
-    | If left empty, components will be registered as <x-button>, <x-sidebar>, etc.
-    | For example, setting 'bt' will register <x-bt-button>, <x-bt-sidebar>, etc.
+    | If left empty, components will be registered as <x-button>, <x-alert>, etc.
+    | For example, setting 'bt' will register <x-bt-button>, <x-bt-alert>, etc.
     */
     'prefix' => env('BEARTROPY_UI_PREFIX', 'bt'),
 

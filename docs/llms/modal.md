@@ -103,8 +103,8 @@ closeModal(id) // lowercases id, dispatches close-modal-{id}
 </x-bt-modal>
 
 {{-- Persistent (no outside click, no close button, no escape) --}}
-<x-bt-modal :closeOnClickOutside="false" :showCloseButton="false" id="loading">
-    <x-bt-loading /> Processing...
+<x-bt-modal :closeOnClickOutside="false" :showCloseButton="false" id="processing">
+    <x-bt-icon name="arrow-path" class="w-6 h-6 animate-spin" /> Processing...
 </x-bt-modal>
 
 {{-- Centered, blurred, custom size --}}

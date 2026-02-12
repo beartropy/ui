@@ -231,41 +231,42 @@ it('renders tags with click-to-search behavior', function () {
     expect($html)->toContain('@click.stop="query = tag"');
 });
 
-// --- Alpine script ---
+// --- Alpine JS module ---
 
-it('includes btCommandPalette Alpine component script', function () {
+it('does not include inline script tag', function () {
     $html = Blade::render('<x-bt-command-palette :items="[]" />');
 
-    expect($html)
-        ->toContain('function btCommandPalette(')
+    expect($html)->not->toContain('<script>');
+});
+
+it('references btCommandPalette Alpine component via x-data', function () {
+    $html = Blade::render('<x-bt-command-palette :items="[]" />');
+
+    expect($html)->toContain('x-data="btCommandPalette(');
+});
+
+it('JS module exports btCommandPalette with all required methods', function () {
+    $jsPath = realpath(__DIR__ . '/../../resources/js/modules/command-palette.js');
+    $js = file_get_contents($jsPath);
+
+    expect($js)
+        ->toContain('export function btCommandPalette(')
         ->toContain('get filtered()')
         ->toContain('handleKey(e)')
         ->toContain('execute(item)')
         ->toContain('scrollIntoView()');
 });
 
-it('script supports route: action type', function () {
-    $html = Blade::render('<x-bt-command-palette :items="[]" />');
+it('JS module supports all action types', function () {
+    $jsPath = realpath(__DIR__ . '/../../resources/js/modules/command-palette.js');
+    $js = file_get_contents($jsPath);
 
-    expect($html)->toContain("action.startsWith('route:')");
-});
-
-it('script supports url: action type', function () {
-    $html = Blade::render('<x-bt-command-palette :items="[]" />');
-
-    expect($html)->toContain("action.startsWith('url:')");
-});
-
-it('script supports dispatch: action type', function () {
-    $html = Blade::render('<x-bt-command-palette :items="[]" />');
-
-    expect($html)->toContain("action.startsWith('dispatch:')");
-});
-
-it('script opens _blank links with noopener noreferrer', function () {
-    $html = Blade::render('<x-bt-command-palette :items="[]" />');
-
-    expect($html)->toContain("'noopener,noreferrer'");
+    expect($js)
+        ->toContain("action.startsWith('route:')")
+        ->toContain("action.startsWith('url:')")
+        ->toContain("action.startsWith('dispatch:')")
+        ->toContain("action.startsWith('js:')")
+        ->toContain("'noopener,noreferrer'");
 });
 
 // --- Permission filtering ---
