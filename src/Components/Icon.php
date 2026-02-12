@@ -5,39 +5,28 @@ namespace Beartropy\Ui\Components;
 /**
  * Icon Component.
  *
- * Renders icons from various sets (Heroicons, Lucide, FontAwesome, etc.) or strings.
+ * Renders icons from various sets (Heroicons, Lucide, FontAwesome, Beartropy SVG).
+ * Colors are applied via Tailwind classes on the `class` prop — no color presets.
+ *
+ * ## Blade Props
+ *
+ * ### Magic Attributes (Size)
+ * @property bool $xs Extra Small.
+ * @property bool $sm Small.
+ * @property bool $md Medium (default).
+ * @property bool $lg Large.
+ * @property bool $xl Extra Large.
  */
 class Icon extends BeartropyComponent
 {
     /**
-     * Create a new Icon component instance.
-     *
-     * @param string      $name      Icon name (e.g. 'home', 'fa-home', emoji).
-     * @param string|null $size      Icon size class.
-     * @param string      $class     Additional CSS classes.
-     * @param bool        $solid     Force solid variant.
-     * @param bool        $outline   Force outline variant.
-     * @param string|null $set       Icon set override.
-     * @param string|null $variant   Variant override.
-     * @param string|null $sizeClass Size class? (seemingly redundant with size, but kept for legacy).
-     *
-     * ## Blade Props
-     *
-     * ### Magic Attributes (Size)
-     * @property bool $xs Extra Small.
-     * @property bool $sm Small.
-     * @property bool $md Medium (default).
-     * @property bool $lg Large.
-     * @property bool $xl Extra Large.
-     * @property bool $2xl Double Extra Large.
-     *
-     * ### Magic Attributes (Color)
-     * @property bool $primary   Primary color.
-     * @property bool $secondary Secondary color.
-     * @property bool $success   Success color.
-     * @property bool $warning   Warning color.
-     * @property bool $danger    Danger color.
-     * @property bool $info      Info color.
+     * @param string      $name    Icon name (e.g. 'home', 'heroicon-s-home', 'fa-home').
+     * @param string|null $size    Size preset key (xs, sm, md, lg, xl).
+     * @param string      $class   Additional CSS classes.
+     * @param bool        $solid   Force solid variant.
+     * @param bool        $outline Force outline variant.
+     * @param string|null $set     Icon set override (heroicons, lucide, fontawesome, beartropy).
+     * @param string|null $variant Variant override (solid, outline).
      */
     public function __construct(
         public string $name,
@@ -47,7 +36,6 @@ class Icon extends BeartropyComponent
         public bool $outline = false,
         public ?string $set = null,
         public ?string $variant = null,
-        public ?string $sizeClass = null,
     ) {}
 
     /**
@@ -57,7 +45,7 @@ class Icon extends BeartropyComponent
      *
      * @param string|null $iconSize Size classes.
      *
-     * @return object{allClasses: string, iconComponent: string|null, fa: string|null, set: string|null, variant: string|null, name: string, class: string, sizeClass: string|null}
+     * @return object{allClasses: string, iconComponent: string|null, fa: string|null, set: string|null, variant: string|null, name: string, class: string}
      */
     public function getClasses(?string $iconSize): object
     {
@@ -105,7 +93,6 @@ class Icon extends BeartropyComponent
             'variant' => $this->variant,
             'name' => $this->name,
             'class' => $this->class,
-            'sizeClass' => $this->sizeClass,
         ];
     }
 

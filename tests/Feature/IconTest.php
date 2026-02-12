@@ -8,71 +8,136 @@ beforeEach(function () {
     $this->app->register(\BladeUI\Heroicons\BladeHeroiconsServiceProvider::class);
 });
 
-it('can render basic icon component', function () {
+it('renders an SVG for heroicon', function () {
     $html = Blade::render('<x-bt-icon name="home" />');
 
-    expect($html)->not->toBeEmpty();
-});
-
-it('uses heroicons set by default', function () {
-    $html = Blade::render('<x-bt-icon name="home" />');
-
-    expect($html)->not->toBeEmpty();
+    expect($html)->toContain('<svg');
 });
 
 it('uses outline variant by default', function () {
-    $html = Blade::render('<x-bt-icon name="home" />');
+    $component = new \Beartropy\Ui\Components\Icon(name: 'home');
+    $data = $component->getClasses('w-5 h-5');
 
-    expect($html)->not->toBeEmpty();
+    expect($data->variant)->toBe('outline');
+    expect($data->iconComponent)->toBe('heroicon-o-home');
 });
 
-it('can force solid variant', function () {
-    $html = Blade::render('<x-bt-icon name="home" :solid="true" />');
+it('forces solid variant via solid prop', function () {
+    $component = new \Beartropy\Ui\Components\Icon(name: 'home', solid: true);
+    $data = $component->getClasses('w-5 h-5');
 
-    expect($html)->not->toBeEmpty();
+    expect($data->variant)->toBe('solid');
+    expect($data->iconComponent)->toBe('heroicon-s-home');
 });
 
-it('can force outline variant', function () {
-    $html = Blade::render('<x-bt-icon name="home" :outline="true" />');
+it('forces outline variant via outline prop', function () {
+    $component = new \Beartropy\Ui\Components\Icon(name: 'home', outline: true);
+    $data = $component->getClasses('w-5 h-5');
 
-    expect($html)->not->toBeEmpty();
+    expect($data->variant)->toBe('outline');
+    expect($data->iconComponent)->toBe('heroicon-o-home');
 });
 
-it('can render with custom classes', function () {
+it('overrides variant via variant prop', function () {
+    $component = new \Beartropy\Ui\Components\Icon(name: 'home', variant: 'solid');
+    $data = $component->getClasses('w-5 h-5');
+
+    expect($data->variant)->toBe('solid');
+    expect($data->iconComponent)->toBe('heroicon-s-home');
+});
+
+it('parses heroicon-o- prefix as outline', function () {
+    $component = new \Beartropy\Ui\Components\Icon(name: 'heroicon-o-home');
+    $data = $component->getClasses('w-5 h-5');
+
+    expect($data->variant)->toBe('outline');
+    expect($data->name)->toBe('home');
+    expect($data->iconComponent)->toBe('heroicon-o-home');
+});
+
+it('parses heroicon-s- prefix as solid', function () {
+    $component = new \Beartropy\Ui\Components\Icon(name: 'heroicon-s-home');
+    $data = $component->getClasses('w-5 h-5');
+
+    expect($data->variant)->toBe('solid');
+    expect($data->name)->toBe('home');
+    expect($data->iconComponent)->toBe('heroicon-s-home');
+});
+
+it('applies custom class to output', function () {
     $html = Blade::render('<x-bt-icon name="home" class="text-red-500" />');
 
-    expect($html)->not->toBeEmpty();
+    expect($html)->toContain('text-red-500');
 });
 
-it('supports size parameter', function () {
-    $html = Blade::render('<x-bt-icon name="home" size="w-6 h-6" />');
+it('merges iconSize and class into allClasses', function () {
+    $component = new \Beartropy\Ui\Components\Icon(name: 'home', class: 'text-blue-500');
+    $data = $component->getClasses('w-5 h-5');
 
-    expect($html)->not->toBeEmpty();
+    expect($data->allClasses)->toContain('w-5 h-5');
+    expect($data->allClasses)->toContain('text-blue-500');
 });
 
-it('supports different sizes', function () {
-    $sizes = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'];
+it('uses default md size preset producing w-5 h-5', function () {
+    $html = Blade::render('<x-bt-icon name="home" />');
 
-    foreach ($sizes as $size) {
-        $html = Blade::render("<x-bt-icon name=\"home\" size=\"{$size}\" />");
-        expect($html)->not->toBeEmpty();
-    }
+    expect($html)->toContain('w-5');
+    expect($html)->toContain('h-5');
 });
 
-it('can override variant', function () {
-    $html = Blade::render('<x-bt-icon name="home" variant="solid" />');
+it('applies sm size preset via magic attribute', function () {
+    $html = Blade::render('<x-bt-icon name="home" sm />');
 
-    expect($html)->not->toBeEmpty();
+    expect($html)->toContain('w-4');
+    expect($html)->toContain('h-4');
 });
 
-it('handles heroicon prefixes', function () {
-    $html = Blade::render('<x-bt-icon name="heroicon-o-home" />');
+it('applies lg size preset via magic attribute', function () {
+    $html = Blade::render('<x-bt-icon name="home" lg />');
 
-    expect($html)->not->toBeEmpty();
+    expect($html)->toContain('w-6');
+    expect($html)->toContain('h-6');
 });
 
-it('can render all features combined', function () {
-    $html = Blade::render('<x-bt-icon name="home" set="heroicons" variant="solid" size="w-8 h-8" class="text-blue-500" />');
+it('renders fontawesome icon as i tag', function () {
+    $html = Blade::render('<x-bt-icon name="fa-solid fa-house" set="fontawesome" />');
 
-    expect($html)->not->toBeEmpty();
+    expect($html)->toContain('<i');
+    expect($html)->toContain('fa-solid fa-house');
+});
+
+it('renders beartropy icon as SVG', function () {
+    $html = Blade::render('<x-bt-icon name="search" set="beartropy" />');
+
+    expect($html)->toContain('<svg');
+});
+
+it('renders unknown set as ? fallback with text-red-600', function () {
+    $html = Blade::render('<x-bt-icon name="foo" set="unknown-set" />');
+
+    expect($html)->toContain('?');
+    expect($html)->toContain('text-red-600');
+});
+
+it('overrides set via set prop', function () {
+    $component = new \Beartropy\Ui\Components\Icon(name: 'search', set: 'beartropy');
+    $data = $component->getClasses('w-5 h-5');
+
+    expect($data->set)->toBe('beartropy');
+    expect($data->iconComponent)->toBe('beartropy-ui-svg::beartropy-search');
+});
+
+it('passes custom attributes through', function () {
+    $html = Blade::render('<x-bt-icon name="home" data-testid="icon-home" />');
+
+    expect($html)->toContain('data-testid="icon-home"');
+});
+
+it('combines variant, class, and size', function () {
+    $html = Blade::render('<x-bt-icon name="home" :solid="true" class="text-blue-500" lg />');
+
+    expect($html)->toContain('<svg');
+    expect($html)->toContain('text-blue-500');
+    expect($html)->toContain('w-6');
+    expect($html)->toContain('h-6');
 });
