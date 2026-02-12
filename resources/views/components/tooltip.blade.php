@@ -9,7 +9,7 @@
             const target = $refs.trigger;
             const rect = target.getBoundingClientRect();
 
-            // Calculamos posición relativa al documento completo
+            // Calculate position relative to the full document
             const scrollY = window.scrollY;
             const scrollX = window.scrollX;
 
@@ -53,7 +53,7 @@
         hideTooltip() {
             clearTimeout(this.timeout);
             this.show = false;
-            // Pequeño delay para resetear ready después de la animación de salida
+            // Small delay to reset ready after the exit animation
             setTimeout(() => { this.ready = false }, 300);
         }
     }"

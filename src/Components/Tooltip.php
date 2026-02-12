@@ -5,11 +5,13 @@ namespace Beartropy\Ui\Components;
 /**
  * Tooltip component.
  *
- * Renders a tooltip on hover.
+ * Renders a floating tooltip on hover via Alpine.js and `x-teleport` to portal
+ * the tooltip panel to `<body>`. Supports four positions (top, bottom, left,
+ * right) and a configurable show-delay in milliseconds.
  *
- * @property string|null $label    Tooltip text.
- * @property int|null    $delay    Delay in ms.
- * @property string|null $position Position (top, bottom, left, right).
+ * @property string|null $label    Tooltip text displayed inside the floating panel.
+ * @property int|null    $delay    Delay in ms before showing (default 0).
+ * @property string|null $position Position relative to trigger: top, bottom, left, right (default right).
  */
 class Tooltip extends BeartropyComponent
 {
