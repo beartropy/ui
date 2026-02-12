@@ -16,7 +16,7 @@
 <div class="flex items-center h-full">
     <div class="inline-block relative">
         @if($src)
-            <img src="{{ $src }}" alt="{{ $alt ?? '' }}" class="object-cover rounded-full {{ $colorPreset['border'] ?? '' }} {{ ($customSize ? $customSize : $sizePreset['avatar'] ?? '') }} {{ $attributes->get('class') }}">
+            <img src="{{ $src }}" alt="{{ $alt ?? '' }}" {{ $attributes->merge(['class' => 'object-cover ' . $classes]) }}>
         @elseif($initials)
             <span {{ $attributes->merge(['class' => $classes]) }}>
                 {{ $initials }}

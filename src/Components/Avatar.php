@@ -40,7 +40,6 @@ class Avatar extends BeartropyComponent
      * @property bool $md Medium (default).
      * @property bool $lg Large.
      * @property bool $xl Extra Large.
-     * @property bool $2xl Double Extra Large.
      *
      * ### Magic Attributes (Color)
      * @property bool $primary   Primary color.

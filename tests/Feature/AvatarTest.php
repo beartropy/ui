@@ -90,22 +90,53 @@ it('supports status slot', function () {
     expect($html)->toContain('right-0');
 });
 
-it('supports different sizes', function () {
-    $sizes = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'];
+it('supports different sizes with correct classes', function () {
+    $sizeMap = [
+        'xs' => ['w-6', 'h-6', 'text-xs'],
+        'sm' => ['w-8', 'h-8', 'text-sm'],
+        'md' => ['w-10', 'h-10', 'text-base'],
+        'lg' => ['w-12', 'h-12', 'text-lg'],
+        'xl' => ['w-16', 'h-16', 'text-xl'],
+    ];
 
-    foreach ($sizes as $size) {
+    foreach ($sizeMap as $size => $expectedClasses) {
         $html = Blade::render("<x-bt-avatar size=\"{$size}\" />");
-        expect($html)->toContain('rounded-full');
+
+        foreach ($expectedClasses as $class) {
+            expect($html)->toContain($class);
+        }
     }
 });
 
-it('supports different colors', function () {
-    $colors = ['primary', 'secondary', 'success', 'warning', 'danger', 'info'];
+it('supports different colors with bg classes', function () {
+    $colorMap = [
+        'red' => 'bg-red-600',
+        'blue' => 'bg-blue-600',
+        'green' => 'bg-green-600',
+        'purple' => 'bg-purple-600',
+    ];
 
-    foreach ($colors as $color) {
+    foreach ($colorMap as $color => $expectedBg) {
         $html = Blade::render("<x-bt-avatar color=\"{$color}\" />");
-        expect($html)->toContain('rounded-full');
+        expect($html)->toContain($expectedBg);
     }
+});
+
+it('applies color preset classes to image branch', function () {
+    $html = Blade::render('<x-bt-avatar src="/avatar.jpg" color="red" />');
+
+    expect($html)->toContain('<img');
+    expect($html)->toContain('bg-red-600');
+    expect($html)->toContain('border');
+    expect($html)->toContain('font-bold');
+});
+
+it('applies size preset classes to image branch', function () {
+    $html = Blade::render('<x-bt-avatar src="/avatar.jpg" size="lg" />');
+
+    expect($html)->toContain('<img');
+    expect($html)->toContain('w-12');
+    expect($html)->toContain('h-12');
 });
 
 it('can render with custom size class', function () {
@@ -114,13 +145,28 @@ it('can render with custom size class', function () {
     expect($html)->toContain('h-20 w-20');
 });
 
+it('merges custom class attribute', function () {
+    $html = Blade::render('<x-bt-avatar class="my-custom-class" />');
+
+    expect($html)->toContain('my-custom-class');
+    expect($html)->toContain('rounded-full');
+});
+
+it('merges custom class attribute on image branch', function () {
+    $html = Blade::render('<x-bt-avatar src="/avatar.jpg" class="my-img-class" />');
+
+    expect($html)->toContain('my-img-class');
+    expect($html)->toContain('object-cover');
+    expect($html)->toContain('rounded-full');
+});
+
 it('can render with all features combined', function () {
     $html = Blade::render('
-        <x-bt-avatar 
+        <x-bt-avatar
             src="/user.jpg"
             alt="John Doe"
             size="lg"
-            color="primary"
+            color="red"
         >
             <x-slot:status>
                 <span class="online"></span>
@@ -131,4 +177,6 @@ it('can render with all features combined', function () {
     expect($html)->toContain('src="/user.jpg"');
     expect($html)->toContain('alt="John Doe"');
     expect($html)->toContain('online');
+    expect($html)->toContain('w-12');
+    expect($html)->toContain('bg-red-600');
 });
