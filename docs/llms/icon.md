@@ -71,7 +71,7 @@ No color presets. Apply via Tailwind classes: `class="text-red-500"`.
 
 ## Beartropy SVG Icons
 
-Available names: `search`, `check`, `x-mark`, `edit`, `trash`, `eye`, `eye-slash`, `calendar`, `clock`, `clipboard`, `upload`, `spinner`, `paper-airplane-right`.
+Available names: `search`, `check`, `x-mark`, `edit`, `trash`, `eye`, `eye-slash`, `calendar`, `clock`, `clipboard`, `upload`, `spinner`, `paper-airplane-right`, `floppy-disk`, `sync`.
 
 ## Common Patterns
 

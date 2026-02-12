@@ -76,7 +76,7 @@ Colors are applied via Tailwind classes on the `class` prop (no color presets):
 
 ### Beartropy SVG
 
-Custom SVG icons: `search`, `check`, `x-mark`, `edit`, `trash`, `eye`, `eye-slash`, `calendar`, `clock`, `clipboard`, `upload`, `spinner`, `paper-airplane-right`.
+Custom SVG icons: `search`, `check`, `x-mark`, `edit`, `trash`, `eye`, `eye-slash`, `calendar`, `clock`, `clipboard`, `upload`, `spinner`, `paper-airplane-right`, `floppy-disk`, `sync`.
 
 ```blade
 <x-bt-icon name="search" set="beartropy" />
