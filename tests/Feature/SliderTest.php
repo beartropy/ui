@@ -8,163 +8,303 @@ beforeEach(function () {
     $this->app->register(\BladeUI\Heroicons\BladeHeroiconsServiceProvider::class);
 });
 
-it('can render basic slider component', function () {
+// --- Structure ---
+
+it('renders default structure with Alpine state and dialog role', function () {
     $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
 
-    expect($html)->toContain('Content');
-    expect($html)->toContain('x-data');
+    expect($html)
+        ->toContain('x-data=')
+        ->toContain('x-cloak')
+        ->toContain('x-modelable="show"')
+        ->toContain('role="dialog"')
+        ->toContain('aria-modal="true"')
+        ->toContain('class="relative z-50"');
 });
 
-it('renders with Alpine.js data', function () {
+it('renders aria-labelledby linked to title id', function () {
+    $html = Blade::render('<x-bt-slider name="settings">Content</x-bt-slider>');
+
+    expect($html)
+        ->toContain('aria-labelledby="slider-settings-title"')
+        ->toContain('id="slider-settings-title"');
+});
+
+it('generates unique slider id when no name is given', function () {
+    $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
+
+    expect($html)->toMatch('/aria-labelledby="slider-[a-f0-9]+-title"/');
+});
+
+it('renders focus trap directive', function () {
+    $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
+
+    expect($html)->toContain('x-trap.noscroll="show"');
+});
+
+// --- Alpine State ---
+
+it('initializes show as false by default', function () {
     $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
 
     expect($html)->toContain('show:');
-    expect($html)->toContain('x-data');
 });
 
-it('can render on right side by default', function () {
+it('registers event listeners when name is set', function () {
+    $html = Blade::render('<x-bt-slider name="my-panel">Content</x-bt-slider>');
+
+    expect($html)
+        ->toContain("sliderName: 'my-panel'")
+        ->toContain("window.addEventListener('open-slider'")
+        ->toContain("window.addEventListener('close-slider'")
+        ->toContain("window.addEventListener('toggle-slider'");
+});
+
+it('cleans up event listeners on destroy', function () {
+    $html = Blade::render('<x-bt-slider name="my-panel">Content</x-bt-slider>');
+
+    expect($html)
+        ->toContain('destroy()')
+        ->toContain("window.removeEventListener('open-slider'")
+        ->toContain("window.removeEventListener('close-slider'")
+        ->toContain("window.removeEventListener('toggle-slider'");
+});
+
+it('does not register event listeners when name is not set', function () {
     $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
 
-    expect($html)->toContain('right');
+    expect($html)
+        ->not->toContain("window.addEventListener('open-slider'")
+        ->not->toContain("window.addEventListener('close-slider'");
 });
 
-it('can render on left side', function () {
-    $html = Blade::render('<x-bt-slider side="left">Content</x-bt-slider>');
+// --- Backdrop ---
 
-    expect($html)->toContain('left');
-});
-
-it('can render with backdrop by default', function () {
+it('renders backdrop by default', function () {
     $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
 
-    expect($html)->toContain('backdrop');
+    expect($html)
+        ->toContain('bg-gray-500/75')
+        ->toContain('dark:bg-gray-900/80')
+        ->toContain('transition-opacity');
 });
 
-it('can render with blur by default', function () {
+it('renders backdrop with blur by default', function () {
     $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
 
-    expect($html)->toContain('backdrop-blur');
+    expect($html)->toContain('backdrop-blur-sm');
 });
 
-it('can render without blur', function () {
+it('renders backdrop without blur when disabled', function () {
     $html = Blade::render('<x-bt-slider :blur="false">Content</x-bt-slider>');
 
-    expect($html)->not->toContain('backdrop-blur');
+    expect($html)->not->toContain('backdrop-blur-sm');
 });
 
-it('can render with default max width', function () {
+it('hides backdrop when disabled', function () {
+    $html = Blade::render('<x-bt-slider :backdrop="false">Content</x-bt-slider>');
+
+    expect($html)->not->toContain('bg-gray-500/75');
+});
+
+it('allows backdrop click to close by default', function () {
     $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
 
-    expect($html)->toContain('max-w-xl');
+    // Backdrop div should have click handler
+    expect($html)->toMatch('/bg-gray-500\/75.*x-on:click="show = false"/s');
 });
 
-it('can render with custom max width', function () {
+it('prevents backdrop click close in static mode', function () {
+    $html = Blade::render('<x-bt-slider :static="true">Content</x-bt-slider>');
+
+    // Backdrop should exist but without click handler on it
+    expect($html)
+        ->toContain('bg-gray-500/75')
+        ->not->toMatch('/bg-gray-500\/75[^<]*x-on:click="show = false"/s');
+});
+
+// --- Side ---
+
+it('slides from right by default', function () {
+    $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
+
+    expect($html)
+        ->toContain('right-0 pl-10')
+        ->toContain('x-transition:enter-start="translate-x-full"')
+        ->toContain('x-transition:leave-end="translate-x-full"');
+});
+
+it('slides from left when side is left', function () {
+    $html = Blade::render('<x-bt-slider side="left">Content</x-bt-slider>');
+
+    expect($html)
+        ->toContain('left-0 pr-10')
+        ->toContain('x-transition:enter-start="-translate-x-full"')
+        ->toContain('x-transition:leave-end="-translate-x-full"');
+});
+
+// --- Panel ---
+
+it('renders default max width', function () {
+    $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
+
+    expect($html)->toContain('max-w-xl 2xl:max-w-4xl');
+});
+
+it('renders custom max width', function () {
     $html = Blade::render('<x-bt-slider max-width="max-w-7xl">Content</x-bt-slider>');
 
     expect($html)->toContain('max-w-7xl');
 });
 
-it('can render with footer slot', function () {
-    $html = Blade::render('
-        <x-bt-slider>
-            Body Content
-            <x-slot:footer>
-                Footer Actions
-            </x-slot:footer>
-        </x-bt-slider>
-    ');
+it('renders panel with slide transitions', function () {
+    $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
 
-    expect($html)->toContain('Body Content');
-    expect($html)->toContain('Footer Actions');
+    expect($html)
+        ->toContain('transform transition ease-in-out duration-500 sm:duration-700')
+        ->toContain('translate-x-0');
 });
 
-it('can render with title', function () {
+it('renders panel container with shadow', function () {
+    $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
+
+    expect($html)->toContain('bg-gray-50 dark:bg-gray-900 shadow-xl');
+});
+
+// --- Header ---
+
+it('renders title in header', function () {
     $html = Blade::render('<x-bt-slider title="Settings">Content</x-bt-slider>');
 
     expect($html)->toContain('Settings');
 });
 
-it('renders close button', function () {
+it('renders default header padding', function () {
     $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
 
-    expect($html)->toContain('x-on:click');
-    expect($html)->toContain('show = false');
+    expect($html)->toContain('px-4 py-3 sm:px-6');
 });
 
-it('can render with custom header padding', function () {
+it('renders custom header padding', function () {
     $html = Blade::render('<x-bt-slider header-padding="p-8">Content</x-bt-slider>');
 
     expect($html)->toContain('p-8');
 });
 
-it('handles ESC key to close', function () {
+it('renders close button with localized sr-only text', function () {
     $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
 
-    expect($html)->toContain('keydown.escape');
+    expect($html)
+        ->toContain('x-on:click="show = false"')
+        ->toContain('<span class="sr-only">Close</span>');
 });
 
-it('renders with slide animation classes', function () {
-    $html = Blade::render('<x-bt-slider side="right">Content</x-bt-slider>');
+// --- Body ---
 
-    expect($html)->toContain('translate-x');
+it('renders body content in scrollable area', function () {
+    $html = Blade::render('<x-bt-slider>Body content here</x-bt-slider>');
+
+    expect($html)
+        ->toContain('Body content here')
+        ->toContain('flex-1 overflow-y-auto');
 });
 
-it('can render with custom classes', function () {
+it('renders default body padding', function () {
+    $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
+
+    // Body div should include p-4 (default bodyPadding)
+    expect($html)->toMatch('/flex-1 overflow-y-auto dark:text-gray-300 p-4/');
+});
+
+it('renders custom body padding', function () {
+    $html = Blade::render('<x-bt-slider body-padding="p-6 sm:p-8">Content</x-bt-slider>');
+
+    expect($html)->toContain('p-6 sm:p-8');
+});
+
+// --- Footer ---
+
+it('renders footer slot when provided', function () {
+    $html = Blade::render('
+        <x-bt-slider>
+            Body
+            <x-slot:footer>
+                <button>Save</button>
+            </x-slot:footer>
+        </x-bt-slider>
+    ');
+
+    expect($html)
+        ->toContain('<button>Save</button>')
+        ->toContain('border-t border-gray-200 dark:border-gray-700');
+});
+
+it('does not render footer when slot is not provided', function () {
+    $html = Blade::render('<x-bt-slider>Body only</x-bt-slider>');
+
+    // Footer has a specific shadow style — should not be present
+    expect($html)->not->toContain('shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]');
+});
+
+it('renders footer with dark mode styles', function () {
+    $html = Blade::render('
+        <x-bt-slider>
+            Body
+            <x-slot:footer>Footer</x-slot:footer>
+        </x-bt-slider>
+    ');
+
+    expect($html)->toContain('dark:bg-gray-800');
+});
+
+// --- Keyboard ---
+
+it('closes on ESC key', function () {
+    $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
+
+    expect($html)->toContain('x-on:keydown.escape.window="show = false"');
+});
+
+// --- Custom Attributes ---
+
+it('passes through custom classes', function () {
     $html = Blade::render('<x-bt-slider class="custom-slider">Content</x-bt-slider>');
 
     expect($html)->toContain('custom-slider');
 });
 
-it('renders as dialog with proper ARIA', function () {
-    $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
+// --- Combined ---
 
-    expect($html)->toContain('role="dialog"');
-    expect($html)->toContain('aria-modal="true"');
-});
-
-it('can render with all features combined', function () {
+it('renders with all features combined', function () {
     $html = Blade::render('
-        <x-bt-slider 
+        <x-bt-slider
+            name="full"
             side="left"
-            title="User Settings"
+            title="Full Example"
             max-width="max-w-2xl"
             :backdrop="true"
             :blur="true"
             header-padding="p-6"
-            class="custom-settings-slider"
+            body-padding="p-8"
         >
+            Body content
             <x-slot:footer>
-                <button>Save</button>
                 <button>Cancel</button>
+                <button>Save</button>
             </x-slot:footer>
-            
-            Settings content here
         </x-bt-slider>
     ');
 
-    expect($html)->toContain('User Settings');
-    expect($html)->toContain('Settings content here');
-    expect($html)->toContain('Save');
-    expect($html)->toContain('Cancel');
-    expect($html)->toContain('max-w-2xl');
-    expect($html)->toContain('custom-settings-slider');
-});
-
-it('can render simple slider with minimal props', function () {
-    $html = Blade::render('<x-bt-slider>Minimal Content</x-bt-slider>');
-
-    expect($html)->toContain('Minimal Content');
-    expect($html)->toContain('x-data');
-});
-
-it('renders transition classes', function () {
-    $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
-
-    expect($html)->toContain('transition');
-});
-
-it('renders with proper z-index', function () {
-    $html = Blade::render('<x-bt-slider>Content</x-bt-slider>');
-
-    expect($html)->toContain('z-50');
+    expect($html)
+        ->toContain('Full Example')
+        ->toContain('Body content')
+        ->toContain('Cancel')
+        ->toContain('Save')
+        ->toContain('max-w-2xl')
+        ->toContain('left-0 pr-10')
+        ->toContain('p-6')
+        ->toContain('p-8')
+        ->toContain('x-trap.noscroll="show"')
+        ->toContain('aria-labelledby="slider-full-title"')
+        ->toContain('id="slider-full-title"');
 });

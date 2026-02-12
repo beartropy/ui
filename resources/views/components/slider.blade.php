@@ -7,6 +7,8 @@
 
     $focusRing = $colorPreset['ring'] ?? 'focus:ring-indigo-500';
     $iconHover = $colorPreset['hover'] ?? 'hover:text-gray-500 dark:hover:text-gray-300';
+
+    $sliderId = $name ? 'slider-' . $name : 'slider-' . uniqid();
 @endphp
 
 <div x-cloak x-data="{
@@ -14,22 +16,31 @@
     sliderName: '{{ $name }}',
     init() {
         @if ($name)
-            window.addEventListener('open-slider', (e) => {
-                if (e.detail === this.sliderName) this.show = true;
-            });
-            window.addEventListener('close-slider', (e) => {
-                if (e.detail === this.sliderName) this.show = false;
-            });
-            window.addEventListener('toggle-slider', (e) => {
-                if (e.detail === this.sliderName) this.show = !this.show;
-            });
+            this._handlers = {
+                open: (e) => { if (e.detail === this.sliderName) this.show = true; },
+                close: (e) => { if (e.detail === this.sliderName) this.show = false; },
+                toggle: (e) => { if (e.detail === this.sliderName) this.show = !this.show; },
+            };
+            window.addEventListener('open-slider', this._handlers.open);
+            window.addEventListener('close-slider', this._handlers.close);
+            window.addEventListener('toggle-slider', this._handlers.toggle);
+        @endif
+    },
+    destroy() {
+        @if ($name)
+            if (this._handlers) {
+                window.removeEventListener('open-slider', this._handlers.open);
+                window.removeEventListener('close-slider', this._handlers.close);
+                window.removeEventListener('toggle-slider', this._handlers.toggle);
+            }
         @endif
     }
 }"
     x-modelable="show"
     x-on:keydown.escape.window="show = false"
+    x-trap.noscroll="show"
     class="relative z-50"
-    role="dialog" aria-modal="true" {{ $attributes->whereDoesntStartWith('wire:model') }}>
+    role="dialog" aria-modal="true" aria-labelledby="{{ $sliderId }}-title" {{ $attributes->whereDoesntStartWith('wire:model') }}>
     @if ($backdrop)
         {{-- BACKDROP --}}
         <div x-show="show" x-transition:enter="ease-in-out duration-500" x-transition:enter-start="opacity-0"
@@ -56,14 +67,14 @@
                             class="bg-gray-50 dark:bg-gray-900 {{ $headerPadding }} border-b border-gray-200 dark:border-gray-700">
                             <div class="flex items-start justify-between">
                                 <h2 class="text-lg font-semibold leading-6 text-gray-900 dark:text-gray-100"
-                                    id="slide-over-title">
-                                    {{ $title ?? '' }}
+                                    id="{{ $sliderId }}-title">
+                                    {{ $title }}
                                 </h2>
                                 <div class="ml-3 flex h-7 items-center">
                                     <button type="button"
                                         class="relative rounded-md bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-400 {{ $iconHover }} focus:outline-none focus:ring-2 {{ $focusRing }} focus:ring-offset-2"
                                         x-on:click="show = false">
-                                        <span class="sr-only">Close</span>
+                                        <span class="sr-only">{{ __('beartropy-ui::ui.close') }}</span>
                                         @include('beartropy-ui-svg::beartropy-x-mark', [
                                             'class' => 'w-6 h-6 shrink-0',
                                         ])
@@ -73,7 +84,7 @@
                         </div>
 
                         {{-- BODY --}}
-                        <div class="relative flex-1 overflow-y-auto dark:text-gray-300 p-4" x-ref="scrollContainer">
+                        <div class="relative flex-1 overflow-y-auto dark:text-gray-300 {{ $bodyPadding }}" x-ref="scrollContainer">
                             {{ $slot }}
                         </div>
 
