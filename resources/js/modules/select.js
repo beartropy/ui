@@ -98,10 +98,21 @@ export function beartropySelect(cfg) {
 
         triggerAutosave() {
             if (!this.autosave || !this.autosaveMethod || !this.autosaveKey) { return; }
+
+            clearTimeout(this._saveT);
             this.saveState = 'saving';
-            this.$wire.call(this.autosaveMethod, this.value, this.autosaveKey)
-                .then(() => { this.saveState = 'ok'; })
-                .catch(() => { this.saveState = 'error'; });
+
+            this._saveT = setTimeout(() => {
+                this.$wire.call(this.autosaveMethod, this.value, this.autosaveKey)
+                    .then(() => {
+                        this.saveState = 'ok';
+                        setTimeout(() => { if (this.saveState === 'ok') { this.saveState = 'idle'; } }, 2000);
+                    })
+                    .catch(() => {
+                        this.saveState = 'error';
+                        setTimeout(() => { if (this.saveState === 'error') { this.saveState = 'idle'; } }, 3000);
+                    });
+            }, this.autosaveDebounce);
         },
 
         filteredOptions() {

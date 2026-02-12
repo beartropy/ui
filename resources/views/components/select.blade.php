@@ -90,6 +90,13 @@
         has-error="{{ $hasError }}"
         {{ $attributes->only(['fill', 'outline']) }}
         x-bind:data-state="hasFieldError ? 'error' : saveState"
+        x-bind:style="(() => {
+            const s = hasFieldError ? 'error' : saveState;
+            if (s === 'ok')     return 'border-color: #10b981; box-shadow: 0 0 0 1px #34d399; transition: border-color .2s, box-shadow .2s';
+            if (s === 'error')  return 'border-color: #ef4444; box-shadow: 0 0 0 1px #f87171; transition: border-color .2s, box-shadow .2s';
+            if (s === 'saving') return 'border-color: #9ca3af; box-shadow: 0 0 0 1px rgba(156,163,175,.5); transition: border-color .2s, box-shadow .2s';
+            return '';
+        })()"
         bind="open"
     >
         @isset($start)
