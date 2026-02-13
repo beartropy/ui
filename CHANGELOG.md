@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.2] - 2026-02-13
+
+### Added
+- **MCP**: Add `beartropy-project-context` tool that returns project configuration (version, prefix, icon set, component defaults).
+
+### Changed
+- **MCP**: Make `ListComponents::CATEGORIES` constant public for cross-tool reuse.
+
 ## [v1.0.1] - 2026-02-13
 
 ### Added

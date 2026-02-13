@@ -79,10 +79,12 @@ Show the user a summary of what will be committed:
 
 Ask for confirmation before proceeding with git operations.
 
-### 7. Configure git user
+### 7. Configure git and GitHub identity
+
+Set the git user for the commit and ensure the `beartropy` GitHub account is active (required for push and release permissions):
 
 ```bash
-cd /var/www/beartropy/ui && git config user.name "beartropy" && git config user.email "beartropy@gmail.com"
+cd /var/www/beartropy/ui && git config user.name "beartropy" && git config user.email "beartropy@gmail.com" && gh auth switch --user beartropy
 ```
 
 ### 8. Commit all changes

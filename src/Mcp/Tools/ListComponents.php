@@ -15,7 +15,7 @@ class ListComponents extends Tool
     protected string $description = 'List all available Beartropy UI components with their categories. Use this to discover component names before calling beartropy-component-docs.';
 
     /** @var array<string, list<string>> */
-    protected const CATEGORIES = [
+    public const CATEGORIES = [
         'forms' => [
             'button',
             'button-icon',

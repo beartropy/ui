@@ -74,6 +74,7 @@ class BeartropyUiServiceProvider extends ServiceProvider
         $include = config('boost.mcp.tools.include', []);
         $include[] = \Beartropy\Ui\Mcp\Tools\ComponentDocs::class;
         $include[] = \Beartropy\Ui\Mcp\Tools\ListComponents::class;
+        $include[] = \Beartropy\Ui\Mcp\Tools\ProjectContext::class;
         config(['boost.mcp.tools.include' => $include]);
     }
 
