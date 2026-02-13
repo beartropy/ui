@@ -139,8 +139,8 @@ it('normalizes with custom optionLabel and optionValue', function () {
     $component = new Lookup(options: $options, optionLabel: 'title', optionValue: 'code');
 
     expect($component->options)->toBe([
-        ['id' => 'ar', 'name' => 'Argentina'],
-        ['id' => 'br', 'name' => 'Brasil'],
+        ['code' => 'ar', 'title' => 'Argentina'],
+        ['code' => 'br', 'title' => 'Brasil'],
     ]);
 });
 

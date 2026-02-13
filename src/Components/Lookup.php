@@ -67,7 +67,7 @@ class Lookup extends BeartropyComponent
      * @param string|null $color       Color theme.
      * @param string|null $size        Component size.
      * @param string|null $placeholder Placeholder text.
-     * @param array       $options     Options array.
+     * @param array|\Illuminate\Support\Collection $options Options array or Collection.
      * @param string      $optionLabel Label key for options.
      * @param string      $optionValue Value key for options.
      * @param mixed       $value       Initial value.
@@ -87,7 +87,7 @@ class Lookup extends BeartropyComponent
         public ?string $color = null,
         public ?string $size = null,
         public ?string $placeholder = null,
-        public array $options = [],
+        public array|\Illuminate\Support\Collection $options = [],
         public string $optionLabel = 'name',
         public string $optionValue = 'id',
         public mixed $value = null,
@@ -102,7 +102,6 @@ class Lookup extends BeartropyComponent
     ) {
         $this->id = $id ?? ('beartropy-lookup-' . uniqid());
         $this->name = $name ?? $this->id;
-        $this->color = $color ?? config('beartropyui.component_defaults.lookup.color');
         $this->normalizeOptions($options);
     }
 
@@ -111,33 +110,36 @@ class Lookup extends BeartropyComponent
      *
      * Supports simple arrays, arrays of objects/arrays, and single key-value pairs.
      *
-     * @param array $options Raw options.
+     * @param array|\Illuminate\Support\Collection $options Raw options.
      */
-    public function normalizeOptions(array $options): void
+    public function normalizeOptions(array|\Illuminate\Support\Collection $options): void
     {
+        $vKey = $this->optionValue;
+        $lKey = $this->optionLabel;
+
         $this->options = collect($options)
-            ->map(function ($item) {
+            ->map(function ($item) use ($vKey, $lKey) {
                 // Simple list: ["asd", "dsa", 123, ...]
                 if (is_scalar($item)) {
                     $val = (string) $item;
 
-                    return ['id' => $val, 'name' => $val];
+                    return [$vKey => $val, $lKey => $val];
                 }
 
-                // Array/object with dynamic keys (uses $this->optionValue / $this->optionLabel)
-                $id = data_get($item, $this->optionValue);
-                $name = data_get($item, $this->optionLabel);
+                // Array/object with dynamic keys
+                $id = data_get($item, $vKey);
+                $name = data_get($item, $lKey);
 
                 // Single key-value pair: ["ar" => "Argentina"]
                 if (is_null($id) && is_null($name) && is_array($item) && count($item) === 1) {
                     $k = array_key_first($item);
 
-                    return ['id' => (string) $k, 'name' => (string) $item[$k]];
+                    return [$vKey => (string) $k, $lKey => (string) $item[$k]];
                 }
 
-                // If id exists but name is missing, use id as name
+                // If value exists but label is missing, use value as label
                 if (! is_null($id)) {
-                    return ['id' => (string) $id, 'name' => (string) ($name ?? $id)];
+                    return [$vKey => (string) $id, $lKey => (string) ($name ?? $id)];
                 }
 
                 // Unrecognizable format: discard

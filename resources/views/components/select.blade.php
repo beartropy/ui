@@ -312,7 +312,7 @@
                                 class="w-full text-left px-4 py-2 flex items-center gap-2 {{ $colorDropdown['option_text'] ?? '' }} {{ $colorDropdown['option_hover'] ?? '' }}"
                                 :class="{
                                     '{{ $colorDropdown['option_active'] ?? '' }} {{ $colorDropdown['option_selected'] ?? '' }}': isSelected(id),
-                                    'bg-neutral-100 dark:bg-neutral-800': idx === highlightedIndex,
+                                    '{{ $colorDropdown['option_active'] ?? 'bg-neutral-100 dark:bg-neutral-800' }}': idx === highlightedIndex && !isSelected(id),
                                 }"
                             >
                                 <div class="flex flex-col items-start w-full">

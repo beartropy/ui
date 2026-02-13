@@ -1,5 +1,6 @@
 @php
     [$colorPreset, $sizePreset, $shouldFill, $presetNames] = $getComponentPresets('input');
+    [$colorDropdown] = $getComponentPresets('select');
     [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
 
     $inputId = $id;
@@ -147,8 +148,8 @@
                         <template x-for="(opt, idx) in filtered" :key="idx">
                             <li
                                 role="option"
-                                class="px-3 py-2 cursor-pointer select-none text-gray-700 dark:text-gray-300 text-sm"
-                                :class="idx === highlighted ? 'bg-neutral-100 dark:bg-neutral-800' : ''"
+                                class="px-3 py-2 cursor-pointer select-none text-sm {{ $colorDropdown['option_text'] ?? 'text-gray-700 dark:text-gray-300' }} {{ $colorDropdown['option_hover'] ?? '' }}"
+                                :class="idx === highlighted ? '{{ $colorDropdown['option_active'] ?? 'bg-neutral-100 dark:bg-neutral-800' }}' : ''"
                                 @mouseenter="highlighted = idx"
                                 @mousedown.prevent="choose(idx)"
                             >
