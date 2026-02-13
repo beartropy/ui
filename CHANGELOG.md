@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.1] - 2026-02-13
+
+### Added
+- **MCP Integration**: Added Laravel Boost MCP tools (`beartropy-component-docs`, `beartropy-list-components`) for automatic component documentation access.
+- **Skills**: Added multi-agent support to `beartropy:skills` command (Claude, Codex, Copilot, Cursor, Windsurf).
+- **Skills**: Rewritten all published skills with improved v2.0.0 content.
+- **Dev Skills**: Added internal `release` and `beartropy-docs-maintenance` skills for maintainers.
+
 ## [v0.11.22] - 2026-02-02
 
 ### Added
