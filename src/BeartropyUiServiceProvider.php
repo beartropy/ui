@@ -2,11 +2,11 @@
 
 namespace Beartropy\Ui;
 
-use Illuminate\Support\Str;
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 /**
  * Beartropy UI Service Provider.
@@ -29,29 +29,30 @@ class BeartropyUiServiceProvider extends ServiceProvider
     public function boot()
     {
 
-        $this->loadRoutesFrom(__DIR__ . '/routes.php');
+        $this->loadRoutesFrom(__DIR__.'/routes.php');
 
-        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'beartropy-ui');
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'beartropy-ui');
 
-        $this->loadViewsFrom(__DIR__ . '/../resources/views/components', 'beartropy-ui');
-        $this->loadViewsFrom(__DIR__ . '/../resources/views/svg', 'beartropy-ui-svg');
+        $this->loadViewsFrom(__DIR__.'/../resources/views/components', 'beartropy-ui');
+        $this->loadViewsFrom(__DIR__.'/../resources/views/svg', 'beartropy-ui-svg');
 
         $this->registerCustomComponents();
 
         Blade::componentNamespace('Beartropy\\Ui\\Components', 'beartropy-ui');
 
         $this->publishes([
-            __DIR__ . '/../config/beartropyui.php' => config_path('beartropyui.php'),
+            __DIR__.'/../config/beartropyui.php' => config_path('beartropyui.php'),
         ], 'beartropy-ui-config');
 
         $this->publishes([
-            __DIR__ . '/../resources/views/presets' => resource_path('views/vendor/beartropy/ui/presets'),
+            __DIR__.'/../resources/views/presets' => resource_path('views/vendor/beartropy/ui/presets'),
         ], 'beartropy-ui-presets');
 
         $this->publishIndividualPresets();
 
         Blade::directive('BeartropyAssets', function () {
             $ziggyUrl = route('beartropy.assets.ziggy');
+
             return <<<BLADE
         <?php
             echo app('beartropy.assets')->render();
@@ -59,6 +60,21 @@ class BeartropyUiServiceProvider extends ServiceProvider
         <script src="{$ziggyUrl}" defer data-navigate-once></script>
         BLADE;
         });
+
+        if (class_exists(\Laravel\Boost\BoostServiceProvider::class)) {
+            $this->registerBoostTools();
+        }
+    }
+
+    /**
+     * Register Beartropy MCP tools with Laravel Boost when available.
+     */
+    protected function registerBoostTools(): void
+    {
+        $include = config('boost.mcp.tools.include', []);
+        $include[] = \Beartropy\Ui\Mcp\Tools\ComponentDocs::class;
+        $include[] = \Beartropy\Ui\Mcp\Tools\ListComponents::class;
+        config(['boost.mcp.tools.include' => $include]);
     }
 
     /**
@@ -70,15 +86,15 @@ class BeartropyUiServiceProvider extends ServiceProvider
      */
     protected function publishIndividualPresets()
     {
-        $sourcePresets = __DIR__ . '/../resources/views/presets';
+        $sourcePresets = __DIR__.'/../resources/views/presets';
         $publishPath = resource_path('views/vendor/beartropy/ui/presets');
 
-        foreach (glob($sourcePresets . '/*.php') as $presetFile) {
+        foreach (glob($sourcePresets.'/*.php') as $presetFile) {
             $name = basename($presetFile, '.php');
-            $tag = 'beartropyui-preset-' . $name;
+            $tag = 'beartropyui-preset-'.$name;
 
             $this->publishes([
-                $presetFile => $publishPath . '/' . $name . '.php'
+                $presetFile => $publishPath.'/'.$name.'.php',
             ], $tag);
         }
     }
@@ -94,24 +110,30 @@ class BeartropyUiServiceProvider extends ServiceProvider
     protected function registerCustomComponents()
     {
         $prefix = config('beartropyui.prefix');
-        $prefix = $prefix ? $prefix . '-' : '';
+        $prefix = $prefix ? $prefix.'-' : '';
 
         // Paths relativos a src
         $paths = [
             'Components' => '',
-            'Components/Base' => 'base.'
+            'Components/Base' => 'base.',
         ];
 
         foreach ($paths as $folder => $aliasPrefix) {
-            $dir = __DIR__ . '/' . $folder; // Asumiendo que estás en src
-            if (!is_dir($dir)) continue;
+            $dir = __DIR__.'/'.$folder; // Asumiendo que estás en src
+            if (! is_dir($dir)) {
+                continue;
+            }
 
             $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
             foreach ($files as $file) {
-                if ($file->isDir() || $file->getExtension() !== 'php') continue;
+                if ($file->isDir() || $file->getExtension() !== 'php') {
+                    continue;
+                }
 
-                $class = 'Beartropy\\Ui\\' . str_replace('/', '\\', $folder) . '\\' . $file->getBasename('.php');
-                if (!class_exists($class)) continue;
+                $class = 'Beartropy\\Ui\\'.str_replace('/', '\\', $folder).'\\'.$file->getBasename('.php');
+                if (! class_exists($class)) {
+                    continue;
+                }
 
                 $basename = $file->getBasename('.php');
 
@@ -121,16 +143,16 @@ class BeartropyUiServiceProvider extends ServiceProvider
 
                 // Icon es caso especial
                 $alias = $basename === 'Icon'
-                    ? ($prefix . ($prefix ? 'icon' : 'bt-icon'))
-                    : ($prefix . $aliasPrefix . Str::kebab($basename));
+                    ? ($prefix.($prefix ? 'icon' : 'bt-icon'))
+                    : ($prefix.$aliasPrefix.Str::kebab($basename));
 
                 Blade::component($class, $alias);
             }
         }
 
-        \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.item', $prefix . 'dropdown.item');
-        \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.header', $prefix . 'dropdown.header');
-        \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.separator', $prefix . 'dropdown.separator');
+        \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.item', $prefix.'dropdown.item');
+        \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.header', $prefix.'dropdown.header');
+        \Illuminate\Support\Facades\Blade::component('beartropy-ui::partials.dropdown.separator', $prefix.'dropdown.separator');
     }
 
     /**
@@ -147,15 +169,15 @@ class BeartropyUiServiceProvider extends ServiceProvider
     {
 
         $this->app->singleton('beartropy.assets', function () {
-            return new \Beartropy\Ui\Support\BeartropyAssets();
+            return new \Beartropy\Ui\Support\BeartropyAssets;
         });
 
         $this->app->singleton('beartropy', function ($app) {
-            return new \Beartropy\Ui\Beartropy();
+            return new \Beartropy\Ui\Beartropy;
         });
 
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/beartropyui.php',
+            __DIR__.'/../config/beartropyui.php',
             'beartropyui'
         );
 
