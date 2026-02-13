@@ -1,7 +1,7 @@
 ---
 name: beartropy-patterns
 description: Common UI patterns and complete examples using Beartropy UI components
-version: 1.0.0
+version: 2.0.0
 author: Beartropy
 tags: [beartropy, patterns, examples, ui, layouts]
 ---
@@ -9,6 +9,8 @@ tags: [beartropy, patterns, examples, ui, layouts]
 # Beartropy UI Patterns
 
 You are an expert in building common UI patterns using Beartropy UI components. Provide complete, production-ready examples.
+
+All components use the `<x-bt-*>` tag prefix (short alias for `<x-beartropy-ui::*>`).
 
 ## Your Task
 
@@ -18,13 +20,12 @@ When users ask for a specific UI pattern or page, provide:
 2. **Complete Blade template** with Beartropy components
 3. **Styling recommendations** using Tailwind CSS
 4. **Best practices** and accessibility considerations
-5. **Variations** or customization options
 
-## Common Patterns
+---
 
-### Login Page
+## Login Page
 
-**Livewire Component (app/Livewire/Auth/Login.php):**
+**Livewire Component:**
 ```php
 <?php
 
@@ -63,58 +64,41 @@ class Login extends Component
 }
 ```
 
-**Blade Template (resources/views/livewire/auth/login.blade.php):**
+**Blade Template:**
 ```blade
 <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
-        <div>
-            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-                Sign in to your account
-            </h2>
-        </div>
+        <h2 class="text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+            Sign in to your account
+        </h2>
 
         <form wire:submit="login" class="mt-8 space-y-6">
-           <x-bt-input
+            <x-bt-input
                 wire:model="email"
                 type="email"
                 label="Email address"
                 placeholder="you@example.com"
                 iconStart="envelope"
-                autocomplete="email"
             />
 
-           <x-bt-input
+            <x-bt-input
                 wire:model="password"
                 type="password"
                 label="Password"
                 placeholder="••••••••"
                 iconStart="lock-closed"
-                autocomplete="current-password"
             />
 
             <div class="flex items-center justify-between">
-               <x-bt-checkbox
-                    wire:model="remember"
-                    label="Remember me"
-                />
-
+                <x-bt-checkbox wire:model="remember" label="Remember me" />
                 <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-500">
                     Forgot password?
                 </a>
             </div>
 
-           <x-bt-button type="submit" primary class="w-full" lg>
+            <x-bt-button type="submit" primary class="w-full" lg>
                 Sign in
             </x-bt-button>
-
-            <div class="text-center">
-                <span class="text-sm text-gray-600 dark:text-gray-400">
-                    Don't have an account?
-                    <a href="{{ route('register') }}" class="text-blue-600 hover:text-blue-500 font-medium">
-                        Sign up
-                    </a>
-                </span>
-            </div>
         </form>
     </div>
 </div>
@@ -122,7 +106,7 @@ class Login extends Component
 
 ---
 
-### Registration Form
+## Registration Form
 
 **Livewire Component:**
 ```php
@@ -155,7 +139,7 @@ class Register extends Component
     public function register()
     {
         if (!$this->agreedToTerms) {
-            $this->addError('agreedToTerms', 'You must agree to the terms and conditions.');
+            $this->addError('agreedToTerms', 'You must agree to the terms.');
             return;
         }
 
@@ -188,59 +172,12 @@ class Register extends Component
         </h2>
 
         <form wire:submit="register" class="space-y-6">
-           <x-bt-input
-                wire:model="name"
-                label="Full Name"
-                placeholder="John Doe"
-                iconStart="user"
-                autocomplete="name"
-            />
-
-           <x-bt-input
-                wire:model="email"
-                type="email"
-                label="Email Address"
-                placeholder="you@example.com"
-                iconStart="envelope"
-                autocomplete="email"
-            />
-
-           <x-bt-input
-                wire:model="password"
-                type="password"
-                label="Password"
-                placeholder="••••••••"
-                iconStart="lock-closed"
-                hint="Must be at least 8 characters"
-                autocomplete="new-password"
-            />
-
-           <x-bt-input
-                wire:model="password_confirmation"
-                type="password"
-                label="Confirm Password"
-                placeholder="••••••••"
-                iconStart="lock-closed"
-                autocomplete="new-password"
-            />
-
-           <x-bt-checkbox
-                wire:model="agreedToTerms"
-                label="I agree to the Terms and Conditions"
-            />
-
-           <x-bt-button type="submit" primary class="w-full" lg>
-                Create Account
-            </x-bt-button>
-
-            <div class="text-center">
-                <span class="text-sm text-gray-600 dark:text-gray-400">
-                    Already have an account?
-                    <a href="{{ route('login') }}" class="text-blue-600 hover:text-blue-500 font-medium">
-                        Sign in
-                    </a>
-                </span>
-            </div>
+            <x-bt-input wire:model="name" label="Full Name" placeholder="John Doe" iconStart="user" />
+            <x-bt-input wire:model="email" type="email" label="Email" placeholder="you@example.com" iconStart="envelope" />
+            <x-bt-input wire:model="password" type="password" label="Password" iconStart="lock-closed" hint="At least 8 characters" />
+            <x-bt-input wire:model="password_confirmation" type="password" label="Confirm Password" iconStart="lock-closed" />
+            <x-bt-checkbox wire:model="agreedToTerms" label="I agree to the Terms and Conditions" />
+            <x-bt-button type="submit" primary class="w-full" lg>Create Account</x-bt-button>
         </form>
     </div>
 </div>
@@ -248,7 +185,7 @@ class Register extends Component
 
 ---
 
-### User Profile Edit
+## User Profile Edit
 
 **Livewire Component:**
 ```php
@@ -259,10 +196,11 @@ namespace App\Livewire\Profile;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
+use Beartropy\Ui\Traits\HasToasts;
 
 class EditProfile extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, HasToasts;
 
     #[Validate('required|min:3')]
     public $name;
@@ -270,7 +208,6 @@ class EditProfile extends Component
     #[Validate('required|email')]
     public $email;
 
-    #[Validate('nullable')]
     public $bio;
 
     #[Validate('nullable|image|max:1024')]
@@ -303,7 +240,7 @@ class EditProfile extends Component
             'bio' => $this->bio,
         ]);
 
-        session()->flash('success', 'Profile updated successfully!');
+        $this->toast()->success('Saved!', 'Profile updated successfully.');
     }
 
     public function render()
@@ -318,69 +255,33 @@ class EditProfile extends Component
 <div class="max-w-2xl mx-auto p-6">
     <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Edit Profile</h1>
 
-    @if (session('success'))
-       <x-bt-alert success class="mb-6">
-            {{ session('success') }}
-        </x-bt-alert>
-    @endif
-
     <form wire:submit="save" class="space-y-6">
-       <x-bt-card>
+        <x-bt-card>
             <div class="space-y-6">
                 <div class="flex items-center gap-6">
-                   <x-bt-avatar
-                        :src="$currentAvatar"
-                        :alt="$name"
-                        size="2xl"
-                    />
-
-                   <x-bt-file-input
-                        wire:model="avatar"
-                        label="Profile Picture"
-                        accept="image/*"
-                        hint="JPG, PNG or GIF (max 1MB)"
-                    />
+                    <x-bt-avatar :src="$currentAvatar" :alt="$name" size="2xl" />
+                    <x-bt-file-input wire:model="avatar" label="Profile Picture" accept="image/*" hint="JPG, PNG or GIF (max 1MB)" />
                 </div>
 
-               <x-bt-input
-                    wire:model="name"
-                    label="Full Name"
-                    iconStart="user"
-                />
-
-               <x-bt-input
-                    wire:model="email"
-                    type="email"
-                    label="Email Address"
-                    iconStart="envelope"
-                />
-
-               <x-bt-textarea
-                    wire:model="bio"
-                    label="Bio"
-                    placeholder="Tell us about yourself..."
-                    rows="4"
-                    hint="Brief description for your profile"
-                />
+                <x-bt-input wire:model="name" label="Full Name" iconStart="user" />
+                <x-bt-input wire:model="email" type="email" label="Email" iconStart="envelope" />
+                <x-bt-textarea wire:model="bio" label="Bio" placeholder="Tell us about yourself..." rows="4" />
             </div>
         </x-bt-card>
 
         <div class="flex justify-end gap-4">
-           <x-bt-button type="button" outline href="/profile">
-                Cancel
-            </x-bt-button>
-
-           <x-bt-button type="submit" primary iconStart="check">
-                Save Changes
-            </x-bt-button>
+            <x-bt-button type="button" outline href="/profile">Cancel</x-bt-button>
+            <x-bt-button type="submit" primary iconStart="check">Save Changes</x-bt-button>
         </div>
     </form>
+
+    <x-bt-toast />
 </div>
 ```
 
 ---
 
-### Data Table with Search and Filter
+## Data Table with Search and Filter
 
 **Livewire Component:**
 ```php
@@ -391,10 +292,12 @@ namespace App\Livewire;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Beartropy\Ui\Traits\HasDialogs;
+use Beartropy\Ui\Traits\HasToasts;
 
 class UserTable extends Component
 {
-    use WithPagination;
+    use WithPagination, HasDialogs, HasToasts;
 
     public $search = '';
     public $statusFilter = '';
@@ -405,15 +308,22 @@ class UserTable extends Component
         $this->resetPage();
     }
 
-    public function updatingStatusFilter()
+    public function confirmDelete($userId)
     {
-        $this->resetPage();
+        $this->dialog()->delete(
+            'Delete this user?',
+            'This action cannot be undone. All their data will be removed.',
+            [
+                'method' => 'deleteUser',
+                'params' => [$userId],
+            ]
+        );
     }
 
     public function deleteUser($userId)
     {
         User::find($userId)->delete();
-        session()->flash('success', 'User deleted successfully!');
+        $this->toast()->success('Deleted', 'User removed successfully.');
     }
 
     public function render()
@@ -438,15 +348,12 @@ class UserTable extends Component
 <div class="space-y-4">
     <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Users</h1>
-
-       <x-bt-button primary iconStart="plus" href="/users/create">
-            Add User
-        </x-bt-button>
+        <x-bt-button primary iconStart="plus" href="/users/create">Add User</x-bt-button>
     </div>
 
-   <x-bt-card>
+    <x-bt-card>
         <div class="flex flex-col sm:flex-row gap-4 mb-6">
-           <x-bt-input
+            <x-bt-input
                 wire:model.live.debounce.300ms="search"
                 placeholder="Search users..."
                 iconStart="magnifying-glass"
@@ -454,7 +361,7 @@ class UserTable extends Component
                 class="flex-1"
             />
 
-           <x-bt-select
+            <x-bt-select
                 wire:model.live="statusFilter"
                 :options="['active' => 'Active', 'inactive' => 'Inactive', 'pending' => 'Pending']"
                 placeholder="All Statuses"
@@ -462,14 +369,14 @@ class UserTable extends Component
                 class="w-full sm:w-48"
             />
 
-           <x-bt-select
+            <x-bt-select
                 wire:model.live="perPage"
-                :options="[10 => '10 per page', 25 => '25 per page', 50 => '50 per page', 100 => '100 per page']"
+                :options="[10 => '10 per page', 25 => '25 per page', 50 => '50 per page']"
                 class="w-full sm:w-40"
             />
         </div>
 
-       <x-bt-table>
+        <x-bt-table>
             <x-slot:header>
                 <tr>
                     <th>Name</th>
@@ -485,59 +392,43 @@ class UserTable extends Component
                     <tr>
                         <td>
                             <div class="flex items-center gap-3">
-                               <x-bt-avatar :src="$user->avatar" :alt="$user->name" />
+                                <x-bt-avatar :src="$user->avatar" :alt="$user->name" />
                                 <span class="font-medium">{{ $user->name }}</span>
                             </div>
                         </td>
                         <td>{{ $user->email }}</td>
                         <td>
-                           <x-bt-badge
-                                :color="$user->status === 'active' ? 'success' : 'secondary'"
-                            >
+                            <x-bt-badge :color="$user->status === 'active' ? 'success' : 'secondary'">
                                 {{ ucfirst($user->status) }}
                             </x-bt-badge>
                         </td>
                         <td>{{ $user->created_at->format('M d, Y') }}</td>
                         <td>
                             <div class="flex gap-2">
-                               <x-bt-button-icon
-                                    icon="pencil"
-                                    href="/users/{{ $user->id }}/edit"
-                                    sm
-                                    ghost
-                                />
-
-                               <x-bt-button-icon
-                                    icon="trash"
-                                    wire:click="deleteUser({{ $user->id }})"
-                                    wire:confirm="Are you sure you want to delete this user?"
-                                    sm
-                                    ghost
-                                    danger
-                                />
+                                <x-bt-button-icon icon="pencil" href="/users/{{ $user->id }}/edit" sm ghost />
+                                <x-bt-button-icon icon="trash" wire:click="confirmDelete({{ $user->id }})" sm ghost danger />
                             </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center text-gray-500 py-8">
-                            No users found
-                        </td>
+                        <td colspan="5" class="text-center text-gray-500 py-8">No users found</td>
                     </tr>
                 @endforelse
             </x-slot:body>
         </x-bt-table>
 
-        <div class="mt-4">
-            {{ $users->links() }}
-        </div>
+        <div class="mt-4">{{ $users->links() }}</div>
     </x-bt-card>
+
+    <x-bt-dialog />
+    <x-bt-toast />
 </div>
 ```
 
 ---
 
-### Settings Page with Tabs
+## Settings Page with Tabs
 
 **Livewire Component:**
 ```php
@@ -547,29 +438,27 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\Attributes\Validate;
+use Beartropy\Ui\Traits\HasToasts;
 
 class Settings extends Component
 {
+    use HasToasts;
+
     public $activeTab = 'general';
 
-    // General Settings
     #[Validate('required')]
     public $siteName;
 
     #[Validate('required|email')]
     public $adminEmail;
 
-    // Notification Settings
     public $emailNotifications = true;
     public $pushNotifications = false;
-
-    // Privacy Settings
     public $profileVisibility = 'public';
     public $showEmail = false;
 
     public function mount()
     {
-        // Load settings from database or config
         $this->siteName = config('app.name');
         $this->adminEmail = auth()->user()->email;
     }
@@ -578,24 +467,20 @@ class Settings extends Component
     {
         $this->validateOnly('siteName');
         $this->validateOnly('adminEmail');
-
-        // Save settings...
-
-        session()->flash('success', 'General settings saved!');
+        // Save...
+        $this->toast()->success('Saved!', 'General settings updated.');
     }
 
     public function saveNotifications()
     {
-        // Save notification preferences...
-
-        session()->flash('success', 'Notification settings saved!');
+        // Save...
+        $this->toast()->success('Saved!', 'Notification preferences updated.');
     }
 
     public function savePrivacy()
     {
-        // Save privacy settings...
-
-        session()->flash('success', 'Privacy settings saved!');
+        // Save...
+        $this->toast()->success('Saved!', 'Privacy settings updated.');
     }
 
     public function render()
@@ -610,181 +495,315 @@ class Settings extends Component
 <div class="max-w-4xl mx-auto p-6">
     <h1 class="text-2xl font-bold mb-6">Settings</h1>
 
-    @if (session('success'))
-       <x-bt-alert success class="mb-6">
-            {{ session('success') }}
-        </x-bt-alert>
-    @endif
-
-   <x-bt-nav tabs>
+    <x-bt-nav tabs>
         <x-slot:items>
-            <button
-                wire:click="$set('activeTab', 'general')"
-                @class(['active' => $activeTab === 'general'])
-            >
-                General
-            </button>
-            <button
-                wire:click="$set('activeTab', 'notifications')"
-                @class(['active' => $activeTab === 'notifications'])
-            >
-                Notifications
-            </button>
-            <button
-                wire:click="$set('activeTab', 'privacy')"
-                @class(['active' => $activeTab === 'privacy'])
-            >
-                Privacy
-            </button>
+            <button wire:click="$set('activeTab', 'general')" @class(['active' => $activeTab === 'general'])>General</button>
+            <button wire:click="$set('activeTab', 'notifications')" @class(['active' => $activeTab === 'notifications'])>Notifications</button>
+            <button wire:click="$set('activeTab', 'privacy')" @class(['active' => $activeTab === 'privacy'])>Privacy</button>
         </x-slot:items>
     </x-bt-nav>
 
     <div class="mt-6">
         @if($activeTab === 'general')
             <form wire:submit="saveGeneral" class="space-y-6">
-               <x-bt-card>
+                <x-bt-card>
                     <h3 class="text-lg font-semibold mb-4">General Settings</h3>
-
                     <div class="space-y-4">
-                       <x-bt-input
-                            wire:model="siteName"
-                            label="Site Name"
-                            iconStart="globe-alt"
-                        />
-
-                       <x-bt-input
-                            wire:model="adminEmail"
-                            type="email"
-                            label="Admin Email"
-                            iconStart="envelope"
-                        />
+                        <x-bt-input wire:model="siteName" label="Site Name" iconStart="globe-alt" />
+                        <x-bt-input wire:model="adminEmail" type="email" label="Admin Email" iconStart="envelope" />
                     </div>
                 </x-bt-card>
-
-               <x-bt-button type="submit" primary>
-                    Save Changes
-                </x-bt-button>
+                <x-bt-button type="submit" primary>Save Changes</x-bt-button>
             </form>
         @endif
 
         @if($activeTab === 'notifications')
             <form wire:submit="saveNotifications" class="space-y-6">
-               <x-bt-card>
+                <x-bt-card>
                     <h3 class="text-lg font-semibold mb-4">Notification Preferences</h3>
-
                     <div class="space-y-4">
-                       <x-bt-toggle
-                            wire:model="emailNotifications"
-                            label="Email Notifications"
-                            description="Receive notifications via email"
-                        />
-
-                       <x-bt-toggle
-                            wire:model="pushNotifications"
-                            label="Push Notifications"
-                            description="Receive push notifications on your device"
-                        />
+                        <x-bt-toggle wire:model="emailNotifications" label="Email Notifications" description="Receive notifications via email" />
+                        <x-bt-toggle wire:model="pushNotifications" label="Push Notifications" description="Receive push notifications on your device" />
                     </div>
                 </x-bt-card>
-
-               <x-bt-button type="submit" primary>
-                    Save Changes
-                </x-bt-button>
+                <x-bt-button type="submit" primary>Save Changes</x-bt-button>
             </form>
         @endif
 
         @if($activeTab === 'privacy')
             <form wire:submit="savePrivacy" class="space-y-6">
-               <x-bt-card>
+                <x-bt-card>
                     <h3 class="text-lg font-semibold mb-4">Privacy Settings</h3>
-
                     <div class="space-y-4">
-                       <x-bt-radio-group wire:model="profileVisibility" label="Profile Visibility">
-                           <x-bt-radio value="public" label="Public - Anyone can see" />
-                           <x-bt-radio value="friends" label="Friends only" />
-                           <x-bt-radio value="private" label="Private - Only me" />
-                        </x-bt-radio-group>
-
-                       <x-bt-checkbox
-                            wire:model="showEmail"
-                            label="Show email on profile"
-                        />
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium">Profile Visibility</label>
+                            <x-bt-radio wire:model="profileVisibility" value="public" label="Public — Anyone can see" />
+                            <x-bt-radio wire:model="profileVisibility" value="friends" label="Friends only" />
+                            <x-bt-radio wire:model="profileVisibility" value="private" label="Private — Only me" />
+                        </div>
+                        <x-bt-checkbox wire:model="showEmail" label="Show email on profile" />
                     </div>
                 </x-bt-card>
-
-               <x-bt-button type="submit" primary>
-                    Save Changes
-                </x-bt-button>
+                <x-bt-button type="submit" primary>Save Changes</x-bt-button>
             </form>
         @endif
     </div>
+
+    <x-bt-toast />
 </div>
 ```
 
 ---
 
-### Confirmation Dialog Pattern
+## Dialog Pattern (Programmatic Confirm/Alert)
+
+**Important:** Dialog is event-driven and programmatic. It does NOT use `wire:model` or Blade slots for content. Place `<x-bt-dialog />` once per page.
+
+**Livewire Component:**
+```php
+use Beartropy\Ui\Traits\HasDialogs;
+
+class MyComponent extends Component
+{
+    use HasDialogs;
+
+    // Simple alerts
+    public function showSuccess()
+    {
+        $this->dialog()->success('Saved!', 'Your changes have been saved.');
+    }
+
+    public function showError()
+    {
+        $this->dialog()->error('Failed', 'Could not save your changes.');
+    }
+
+    // Confirmation dialog
+    public function confirmDelete($id)
+    {
+        $this->dialog()->delete(
+            'Delete this item?',
+            'This action cannot be undone.',
+            [
+                'method' => 'deleteItem',
+                'params' => [$id],
+            ]
+        );
+    }
+
+    // Custom confirm
+    public function confirmPublish()
+    {
+        $this->dialog()->confirm([
+            'title' => 'Publish this article?',
+            'description' => 'It will be visible to all users immediately.',
+            'accept' => [
+                'label' => 'Yes, publish',
+                'method' => 'publish',
+            ],
+            'reject' => [
+                'label' => 'Not yet',
+            ],
+        ]);
+    }
+
+    public function deleteItem($id)
+    {
+        // Delete logic...
+    }
+
+    public function publish()
+    {
+        // Publish logic...
+    }
+}
+```
+
+**Blade Template:**
+```blade
+<div>
+    <x-bt-button wire:click="confirmDelete({{ $item->id }})" danger>
+        Delete
+    </x-bt-button>
+
+    <x-bt-button wire:click="confirmPublish" primary>
+        Publish
+    </x-bt-button>
+
+    {{-- Place once in the layout — NO slots, NO wire:model --}}
+    <x-bt-dialog />
+</div>
+```
+
+**JS Alternative (no Livewire needed):**
+```js
+// From JavaScript
+dialog.success('Saved!', 'Your changes have been saved.');
+dialog.confirm({
+    title: 'Are you sure?',
+    accept: { label: 'Yes', method: 'doAction', params: [1] },
+    reject: { label: 'Cancel' },
+    componentId: 'livewire-component-id',
+});
+```
+
+---
+
+## Toast Notification Pattern
+
+**Important:** Toast is also event-driven. Place `<x-bt-toast />` once in your layout.
+
+**Livewire Component:**
+```php
+use Beartropy\Ui\Traits\HasToasts;
+
+class MyComponent extends Component
+{
+    use HasToasts;
+
+    public function save()
+    {
+        // Save logic...
+        $this->toast()->success('Saved!', 'Your changes have been saved.');
+    }
+
+    public function delete()
+    {
+        // Delete logic...
+        $this->toast()->success('Deleted', 'Item removed.', 5000, null, 'Undo', '/restore/123');
+    }
+
+    public function handleError()
+    {
+        $this->toast()->error('Error', 'Could not complete the operation.');
+    }
+}
+```
+
+**Blade Template (in layout):**
+```blade
+{{-- Place once in your main layout, not per-page --}}
+<x-bt-toast />
+
+{{-- Custom position and limit --}}
+<x-bt-toast position="bottom-right" :max-visible="3" />
+```
+
+**JS Alternative:**
+```js
+window.$beartropy.toast.success('Saved!', 'Your changes have been saved.');
+window.$beartropy.toast.error('Error', 'Something went wrong.');
+```
+
+---
+
+## File Upload Pattern
+
+**Compact (File Input):**
+```blade
+<x-bt-file-input
+    wire:model="document"
+    label="Upload Document"
+    accept=".pdf,.doc,.docx"
+    hint="Max 10MB"
+/>
+```
+
+**Full Upload Zone (File Dropzone):**
+
+```php
+use Livewire\WithFileUploads;
+
+class DocumentUploader extends Component
+{
+    use WithFileUploads;
+
+    public $documents = [];
+
+    public function upload()
+    {
+        $this->validate([
+            'documents.*' => 'file|max:10240',
+        ]);
+
+        foreach ($this->documents as $doc) {
+            $doc->store('documents');
+        }
+    }
+}
+```
+
+```blade
+<form wire:submit="upload" class="space-y-4">
+    <x-bt-file-dropzone
+        wire:model="documents"
+        label="Project Documents"
+        accept=".pdf,.doc,.docx"
+        :maxFileSize="10485760"
+        :maxFiles="5"
+        help="Max 10MB per file, up to 5 files"
+    />
+
+    <x-bt-button type="submit" primary>Upload All</x-bt-button>
+</form>
+```
+
+**With Existing Files (edit mode):**
+```blade
+<x-bt-file-dropzone
+    wire:model="newDocuments"
+    :existing-files="[
+        ['name' => 'report.pdf', 'url' => '/storage/report.pdf', 'size' => 1024, 'type' => 'application/pdf'],
+    ]"
+    label="Documents"
+/>
+```
+
+---
+
+## Modal with Form
+
+**Important:** Modal is slot-based and controlled with `wire:model`. Use Modal for custom content (forms, layouts). Use Dialog for programmatic alerts/confirms.
+
+```php
+class CreateUser extends Component
+{
+    public $showModal = false;
+
+    #[Validate('required')]
+    public $name = '';
+
+    #[Validate('required|email')]
+    public $email = '';
+
+    public function save()
+    {
+        $this->validate();
+        // Create user...
+        $this->showModal = false;
+        $this->reset(['name', 'email']);
+    }
+}
+```
 
 ```blade
 <div>
-    {{-- Trigger --}}
-   <x-bt-button wire:click="$set('showDeleteDialog', true)" danger>
-        Delete Account
-    </x-bt-button>
+    <x-bt-button wire:click="$set('showModal', true)" primary>Create User</x-bt-button>
 
-    {{-- Dialog --}}
-   <x-bt-dialog wire:model="showDeleteDialog">
-        <x-slot:title>Delete Account</x-slot:title>
+    <x-bt-modal wire:model="showModal">
+        <x-slot:title>Create New User</x-slot:title>
 
-        <p class="text-gray-600 dark:text-gray-400">
-            Are you sure you want to delete your account? This action cannot be undone.
-            All your data will be permanently removed.
-        </p>
+        <div class="space-y-4">
+            <x-bt-input wire:model="name" label="Name" />
+            <x-bt-input wire:model="email" label="Email" type="email" />
+        </div>
 
         <x-slot:footer>
-           <x-bt-button
-                wire:click="deleteAccount"
-                danger
-            >
-                Yes, Delete Account
-            </x-bt-button>
-
-           <x-bt-button
-                wire:click="$set('showDeleteDialog', false)"
-                outline
-            >
-                Cancel
-            </x-bt-button>
+            <x-bt-button wire:click="save" primary>Create</x-bt-button>
+            <x-bt-button wire:click="$set('showModal', false)" outline>Cancel</x-bt-button>
         </x-slot:footer>
-    </x-bt-dialog>
+    </x-bt-modal>
 </div>
-```
-
----
-
-### Toast Notification Pattern
-
-```blade
-{{-- In your layout or main component --}}
-@if (session('success'))
-   <x-bt-toast success>
-        {{ session('success') }}
-    </x-bt-toast>
-@endif
-
-@if (session('error'))
-   <x-bt-toast danger>
-        {{ session('error') }}
-    </x-bt-toast>
-@endif
-
-{{-- In your Livewire component --}}
-public function save()
-{
-    // ... save logic
-
-    session()->flash('success', 'Saved successfully!');
-}
 ```
 
 ---
@@ -808,16 +827,18 @@ public function save()
 ### Two-Column Layout
 ```blade
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    {{-- Sidebar --}}
-    <aside class="lg:col-span-1">
-        {{-- Sidebar content --}}
-    </aside>
-
-    {{-- Main content --}}
-    <main class="lg:col-span-2">
-        {{-- Main content --}}
-    </main>
+    <aside class="lg:col-span-1">{{-- Sidebar --}}</aside>
+    <main class="lg:col-span-2">{{-- Main content --}}</main>
 </div>
 ```
 
-When creating UI patterns, always use Beartropy components, follow responsive design principles, and include proper accessibility attributes.
+---
+
+## Key Distinctions
+
+| Want to... | Use this | API Style |
+|---|---|---|
+| Show alert/confirm popup | `<x-bt-dialog />` | **Programmatic:** `$this->dialog()->success(...)` — no slots, no wire:model |
+| Show custom popup with forms | `<x-bt-modal>` | **Slot-based:** `wire:model`, `<x-slot:title>`, `<x-slot:footer>` |
+| Show brief auto-dismiss message | `<x-bt-toast />` | **Programmatic:** `$this->toast()->success(...)` — no slots, no wire:model |
+| Show inline page message | `<x-bt-alert>` | **Blade component:** `<x-bt-alert success>Message</x-bt-alert>` |

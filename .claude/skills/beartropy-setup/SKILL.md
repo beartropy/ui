@@ -1,7 +1,7 @@
 ---
 name: beartropy-setup
 description: Help users install and configure Beartropy UI in their Laravel/Livewire projects
-version: 1.0.0
+version: 2.0.0
 author: Beartropy
 tags: [beartropy, installation, setup, configuration, getting-started]
 ---
@@ -10,26 +10,19 @@ tags: [beartropy, installation, setup, configuration, getting-started]
 
 You are an expert in helping users install and configure Beartropy UI in their Laravel/Livewire applications.
 
-## Your Task
+---
 
-When users need help with installation or setup:
+## Requirements
 
-1. **Determine their current setup** - Ask about Laravel version, Livewire version, and what they've installed
-2. **Guide through installation** - Provide step-by-step installation instructions
-3. **Help with configuration** - Assist with config file customization
-4. **Troubleshoot issues** - Help resolve common installation problems
-5. **Verify installation** - Show how to test that everything works
-
-## Installation Steps
-
-### Requirements
-
-Before installing Beartropy UI, ensure:
-- PHP >= 8.0
-- Laravel >= 10.x
+- PHP >= 8.1
+- Laravel >= 11.x
 - Livewire 3.x
 - Tailwind CSS configured
-- Alpine.js included (comes with Livewire 3)
+- Alpine.js (comes with Livewire 3)
+
+---
+
+## Installation
 
 ### Step 1: Install via Composer
 
@@ -37,26 +30,9 @@ Before installing Beartropy UI, ensure:
 composer require beartropy/ui
 ```
 
-### Step 2: Publish Assets (Optional)
+### Step 2: Include Assets
 
-Publish configuration and views if you want to customize:
-
-```bash
-# Publish config file
-php artisan vendor:publish --tag=beartropy-ui-config
-
-# Publish views (for customization)
-php artisan vendor:publish --tag=beartropy-ui-views
-
-# Publish all
-php artisan vendor:publish --provider="Beartropy\Ui\BeartropyUiServiceProvider"
-```
-
-### Step 3: Include CSS and JS
-
-Add Beartropy UI assets to your layout:
-
-**In your app layout (e.g., `resources/views/layouts/app.blade.php`):**
+Add the `@BeartropyAssets` Blade directive to your layout file:
 
 ```blade
 <!DOCTYPE html>
@@ -66,36 +42,35 @@ Add Beartropy UI assets to your layout:
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name') }}</title>
 
-    {{-- Tailwind CSS --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    {{-- Beartropy UI Styles --}}
-    <link rel="stylesheet" href="{{ asset('vendor/beartropy-ui/css/beartropy-ui.css') }}">
+    @BeartropyAssets
 
     @livewireStyles
 </head>
 <body>
     {{ $slot }}
 
-    {{-- Beartropy UI Scripts --}}
-    <script src="{{ asset('vendor/beartropy-ui/js/beartropy-ui.js') }}"></script>
-
     @livewireScripts
 </body>
 </html>
 ```
 
-### Step 4: Configure Tailwind CSS
+The `@BeartropyAssets` directive automatically includes the required CSS and JS files with cache-busting version parameters.
 
-Update your `tailwind.config.js` to include Beartropy UI paths:
+### Step 3: Configure Tailwind CSS
+
+Add the Beartropy UI preset and content paths to your `tailwind.config.js`:
 
 ```javascript
+const beartropyPreset = require('./vendor/beartropy/ui/tailwind.config.js');
+
 export default {
+    presets: [beartropyPreset],
     content: [
         './resources/**/*.blade.php',
         './resources/**/*.js',
         './app/Livewire/**/*.php',
-        './vendor/beartropy/ui/resources/views/**/*.blade.php', // Add this line
+        './vendor/beartropy/ui/resources/views/**/*.blade.php',
     ],
     darkMode: 'class',
     theme: {
@@ -105,309 +80,205 @@ export default {
 }
 ```
 
+The preset adds the `beartropy` custom color palette. Including the vendor views path ensures Tailwind generates the utility classes used by Beartropy components.
+
+### Step 4: Rebuild Assets
+
+```bash
+npm run build
+```
+
+Or for development:
+
+```bash
+npm run dev
+```
+
 ### Step 5: Verify Installation
 
-Create a simple test view to verify installation:
+Create a quick test:
 
-**routes/web.php:**
-```php
-Route::get('/beartropy-test', function () {
-    return view('beartropy-test');
-});
-```
-
-**resources/views/beartropy-test.blade.php:**
 ```blade
-<!DOCTYPE html>
-<html lang="en" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beartropy UI Test</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="h-full bg-gray-50 dark:bg-gray-900">
-    <div class="max-w-4xl mx-auto p-6 space-y-6">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-            Beartropy UI Installation Test
-        </h1>
-
-       <x-bt-alert success>
-            ✓ Beartropy UI is working correctly!
-        </x-bt-alert>
-
-       <x-bt-card>
-            <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Test Components</h2>
-
-            <div class="space-y-4">
-               <x-bt-button primary>
-                    Primary Button
-                </x-bt-button>
-
-               <x-bt-input
-                    label="Test Input"
-                    placeholder="Type something..."
-                    iconStart="user"
-                />
-
-               <x-bt-select
-                    :options="['option1' => 'Option 1', 'option2' => 'Option 2']"
-                    label="Test Select"
-                    placeholder="Choose an option"
-                />
-
-               <x-bt-checkbox
-                    label="Test Checkbox"
-                    description="This is a test checkbox"
-                />
-            </div>
-        </x-bt-card>
-
-       <x-bt-card>
-            <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Next Steps</h3>
-            <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-400">
-                <li>Explore all available components</li>
-                <li>Use <code class="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">/beartropy-form</code> skill to create forms</li>
-                <li>Check <code class="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">/beartropy-patterns</code> for complete examples</li>
-            </ul>
-        </x-bt-card>
-    </div>
-</body>
-</html>
+{{-- resources/views/beartropy-test.blade.php --}}
+<div class="max-w-md mx-auto p-6 space-y-4">
+    <x-bt-alert success>Beartropy UI is working!</x-bt-alert>
+    <x-bt-button primary>Test Button</x-bt-button>
+    <x-bt-input label="Test Input" placeholder="Type something..." iconStart="user" />
+</div>
 ```
 
-Visit `/beartropy-test` to verify components render correctly. You should see styled components with proper colors, icons, and interactions.
+---
+
+## Publish & Customize
+
+### Publish Configuration
+
+```bash
+php artisan vendor:publish --tag=beartropy-ui-config
+```
+
+This creates `config/beartropyui.php` where you can set global defaults.
+
+### Publish All Presets
+
+```bash
+php artisan vendor:publish --tag=beartropy-ui-presets
+```
+
+Presets define the Tailwind classes for each component's colors, sizes, and variants. Published presets go to `resources/views/vendor/beartropy/ui/presets/`.
+
+### Publish Individual Preset
+
+```bash
+php artisan vendor:publish --tag=beartropyui-preset-button
+php artisan vendor:publish --tag=beartropyui-preset-input
+php artisan vendor:publish --tag=beartropyui-preset-select
+```
+
+Replace `button`, `input`, `select` with any component name.
+
+### Publish Views
+
+```bash
+php artisan vendor:publish --tag=beartropy-ui-views
+```
+
+Published views go to `resources/views/vendor/beartropy-ui/` for full template customization.
+
+---
 
 ## Configuration
 
-### Config File (config/beartropyui.php)
+### Component Defaults (`config/beartropyui.php`)
 
-After publishing, you can customize:
+Set global defaults for colors, sizes, and behavior:
 
 ```php
 <?php
 
 return [
-    /*
-    |--------------------------------------------------------------------------
-    | Default Component Presets
-    |--------------------------------------------------------------------------
-    |
-    | Define default sizes, colors, and variants for components.
-    |
-    */
-    'presets' => [
+    'component_defaults' => [
         'button' => [
-            'size' => 'md',
-            'variant' => 'solid',
-            'color' => 'primary',
+            'color' => env('BEARTROPY_UI_BUTTON_COLOR', 'beartropy'),
+            'size' => env('BEARTROPY_UI_BUTTON_SIZE', 'md'),
+            'variant' => env('BEARTROPY_UI_BUTTON_VARIANT', 'solid'),
         ],
         'input' => [
-            'size' => 'md',
-            'color' => 'primary',
+            'color' => env('BEARTROPY_UI_INPUT_COLOR', 'primary'),
+            'size' => env('BEARTROPY_UI_INPUT_SIZE', 'md'),
         ],
-        // ... other component defaults
+        'select' => [
+            'color' => env('BEARTROPY_UI_SELECT_COLOR', 'beartropy'),
+        ],
+        'alert' => [
+            'color' => env('BEARTROPY_UI_ALERT_COLOR', 'beartropy'),
+            'variant' => env('BEARTROPY_UI_ALERT_VARIANT', 'soft'),
+        ],
+        // ... other components
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Icon Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Configure which icon set to use (heroicons, fontawesome, etc.)
-    |
-    */
     'icons' => [
-        'set' => 'heroicons',
-        'variant' => 'outline', // outline or solid
+        'variant' => 'outline', // 'outline' or 'solid'
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Dark Mode
-    |--------------------------------------------------------------------------
-    |
-    | Enable or disable dark mode support
-    |
-    */
-    'dark_mode' => true,
 ];
 ```
 
-### Customizing Component Presets
+### Adding Custom Color Presets
 
-You can add custom presets using the artisan command:
+Use the artisan command to add a custom color:
 
 ```bash
 php artisan beartropy:add-preset
 ```
 
-Or define them in the config file:
+Or manually edit a published preset file. Each color is an array of Tailwind class strings for different states (normal, hover, focus, error, disabled, etc.).
 
-```php
-'presets' => [
-    'button' => [
-        'colors' => [
-            'brand' => [
-                'solid' => 'bg-purple-600 hover:bg-purple-700 text-white',
-                'outline' => 'border-purple-600 text-purple-600 hover:bg-purple-50',
-            ],
-        ],
-    ],
-],
+---
+
+## AI Coding Skills
+
+Install Beartropy skills for AI assistants:
+
+```bash
+# Install for Claude Code (default)
+php artisan beartropy:skills
+
+# Install for a specific agent
+php artisan beartropy:skills --agent=cursor
+php artisan beartropy:skills --agent=copilot
+php artisan beartropy:skills --agent=windsurf
+php artisan beartropy:skills --agent=codex
+
+# Install for all agents
+php artisan beartropy:skills --agent=all
+
+# Update after upgrading Beartropy UI
+php artisan beartropy:skills --force
+
+# Remove all skills
+php artisan beartropy:skills --remove
 ```
 
-Then use:
-```blade
-<x-beartropy-ui::button brand>Custom Color</x-bt-button>
-```
+Available skills:
+- `/beartropy-setup` — Installation and configuration
+- `/beartropy-form` — Form building with validation
+- `/beartropy-component` — Complete component reference
+- `/beartropy-livewire` — Livewire integration patterns
+- `/beartropy-patterns` — Production-ready UI patterns
+
+---
 
 ## Common Issues & Solutions
 
-### Issue: Components not rendering / blank page
+### Components not rendering / blank page
 
-**Solution:**
-1. Ensure you've included Beartropy UI CSS and JS in your layout
-2. Check that Tailwind content paths include Beartropy UI
-3. Rebuild your assets: `npm run build` or `npm run dev`
+1. Ensure `@BeartropyAssets` is in your layout's `<head>`
+2. Check that Tailwind content paths include `vendor/beartropy/ui/resources/views/**/*.blade.php`
+3. Rebuild assets: `npm run build`
 4. Clear cache: `php artisan view:clear`
 
-### Issue: Icons not showing
+### Icons not showing
 
-**Solution:**
-1. Verify Heroicons package is installed: `composer require blade-ui-kit/blade-heroicons`
-2. Check icon names are valid Heroicon names (see https://heroicons.com)
-3. Ensure icon set is configured in config file
+1. Beartropy UI includes Blade Heroicons — no separate install needed
+2. Check icon names at heroicons.com
+3. Use `outline` (default) or `solid` variant via config
 
-### Issue: Styles look broken / no dark mode
+### Styles broken / no dark mode
 
-**Solution:**
 1. Add `darkMode: 'class'` to your `tailwind.config.js`
-2. Ensure Beartropy UI paths are in Tailwind content array
-3. Rebuild Tailwind: `npm run build`
+2. Ensure the Beartropy preset is in your `presets` array
+3. Rebuild: `npm run build`
 
-### Issue: Livewire validation not showing
+### Validation errors not showing
 
-**Solution:**
-1. Ensure you're using Livewire 3.x
-2. Check property names match between `wire:model` and Livewire component
-3. Verify validation rules are defined in component
+1. Ensure Livewire 3.x is installed
+2. Check `wire:model` property names match Livewire component properties
+3. Verify validation rules are defined
 
-### Issue: Alpine.js features not working
+### Livewire features not working
 
-**Solution:**
-1. Livewire 3 includes Alpine.js automatically
-2. If using Livewire 2, manually include Alpine: `<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>`
+1. Ensure `@livewireStyles` and `@livewireScripts` are in your layout
+2. For Livewire 3, Alpine.js is included automatically
+3. Check that your component extends `Livewire\Component`
 
-## Project Structure
-
-After installation, your project should look like:
-
-```
-your-app/
-├── app/
-│   └── Livewire/
-│       └── YourComponents.php
-├── config/
-│   └── beartropyui.php (after publishing)
-├── resources/
-│   ├── css/
-│   │   └── app.css
-│   ├── js/
-│   │   └── app.js
-│   └── views/
-│       ├── layouts/
-│       │   └── app.blade.php
-│       ├── livewire/
-│       │   └── your-components.blade.php
-│       └── vendor/
-│           └── beartropy-ui/ (after publishing views)
-├── tailwind.config.js
-├── package.json
-└── composer.json
-```
-
-## Quick Start Example
-
-Once installed, you can immediately start using components in your Blade views or Livewire components.
-
-**Simple standalone test (no Livewire required):**
-
-Create a route and view to test components:
-
-```php
-// routes/web.php
-Route::get('/demo', function () {
-    return view('demo');
-});
-```
-
-```blade
-{{-- resources/views/demo.blade.php --}}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beartropy UI Demo</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-50 dark:bg-gray-900">
-    <div class="max-w-md mx-auto p-6 space-y-6">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Component Demo</h1>
-
-       <x-bt-card>
-            <div class="space-y-4">
-               <x-bt-button primary>
-                    Click Me
-                </x-bt-button>
-
-               <x-bt-input
-                    label="Your Name"
-                    placeholder="John Doe"
-                    iconStart="user"
-                />
-
-               <x-bt-checkbox
-                    label="I agree to the terms"
-                />
-            </div>
-        </x-bt-card>
-
-       <x-bt-alert success>
-            Components are working! 🎉
-        </x-bt-alert>
-    </div>
-</body>
-</html>
-```
-
-Visit `/demo` to see the components in action!
-
-**For interactive forms with Livewire, use the `/beartropy-form` skill to get complete examples.**
-
-## Next Steps
-
-After installation:
-1. Explore available components in the documentation
-2. Try building a form using `beartropy-form` skill
-3. Check out UI patterns with `beartropy-patterns` skill
-4. Learn Livewire integration with `beartropy-livewire` skill
+---
 
 ## Upgrading
-
-To upgrade to the latest version:
 
 ```bash
 composer update beartropy/ui
 php artisan view:clear
 npm run build
+
+# Update AI skills to match new version
+php artisan beartropy:skills --force
 ```
 
-## Getting Help
+---
 
-- Documentation: https://beartropy.com/ui
-- GitHub Issues: https://github.com/beartropy/ui/issues
-- Use Claude Code skills: `/beartropy-form`, `/beartropy-component`, etc.
+## Next Steps
 
-When helping users with setup, always ask about their current environment first, then provide tailored instructions.
+1. Explore available components — use `/beartropy-component` skill
+2. Build a form — use `/beartropy-form` skill
+3. See full page patterns — use `/beartropy-patterns` skill
+4. Learn Livewire integration — use `/beartropy-livewire` skill

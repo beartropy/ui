@@ -507,10 +507,20 @@ class InstallSkills extends Command
 
     /**
      * Build the beartropy-component SKILL.md from LLM docs.
+     *
+     * Uses the static SKILL.md as the header (which includes intent-mapping
+     * and component selection guides), then appends all per-component LLM
+     * reference docs.
      */
     protected function buildComponentSkill(string $llmsDir): string
     {
-        $header = <<<'SKILL'
+        $packageRoot = dirname(__DIR__, 2);
+        $staticSkill = $packageRoot.'/.claude/skills/beartropy-component/SKILL.md';
+
+        if (File::exists($staticSkill)) {
+            $header = trim(File::get($staticSkill))."\n\n---\n\n# Per-Component Reference\n\nDetailed props, slots, architecture, and examples for every component.\n\n---\n\n";
+        } else {
+            $header = <<<'SKILL'
 ---
 name: beartropy-component
 description: Get detailed information and examples for specific Beartropy UI components
@@ -523,15 +533,10 @@ tags: [beartropy, ui, components, documentation, examples]
 
 You are an expert in Beartropy UI components. Below is the complete reference for every component in the library.
 
-When a user asks about a specific component:
-1. Find the relevant section below
-2. Provide the props, slots, and examples they need
-3. Show practical usage patterns
-4. Mention related components that work well together
-
 ---
 
 SKILL;
+        }
 
         $docs = glob($llmsDir.'/*.md');
         sort($docs);
@@ -541,7 +546,7 @@ SKILL;
             $sections[] = trim(File::get($docPath));
         }
 
-        return $header."\n".implode("\n\n---\n\n", $sections)."\n";
+        return $header.implode("\n\n---\n\n", $sections)."\n";
     }
 
     /**
