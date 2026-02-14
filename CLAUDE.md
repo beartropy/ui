@@ -302,11 +302,11 @@ Using **Pest PHP** with Livewire testing:
 ## Skills Available
 
 Claude Code skills are in `.claude/skills/`:
-- **beartropy-setup** - Installation & configuration
-- **beartropy-form** - Form building
-- **beartropy-component** - Component docs
-- **beartropy-livewire** - Livewire patterns
-- **beartropy-patterns** - UI patterns
+- **bt-ui-setup** - Installation & configuration
+- **bt-ui-form** - Form building
+- **bt-ui-component** - Component docs
+- **bt-ui-livewire** - Livewire patterns
+- **bt-ui-patterns** - UI patterns
 
 Use them with `/skill-name` in Claude Code.
 

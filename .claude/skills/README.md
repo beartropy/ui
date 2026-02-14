@@ -4,7 +4,7 @@ This directory contains public Claude Code skills to help developers use Beartro
 
 ## Available Skills
 
-### 🚀 `/beartropy-setup`
+### 🚀 `/bt-ui-setup`
 **Installation and configuration guide**
 
 Get help installing Beartropy UI, configuring Tailwind CSS, publishing assets, and troubleshooting common setup issues.
@@ -19,7 +19,7 @@ Get help installing Beartropy UI, configuring Tailwind CSS, publishing assets, a
 
 ---
 
-### 📝 `/beartropy-form`
+### 📝 `/bt-ui-form`
 **Form building with Beartropy UI components**
 
 Create forms using Beartropy UI components with proper Livewire integration, validation, and loading states.
@@ -34,7 +34,7 @@ Create forms using Beartropy UI components with proper Livewire integration, val
 
 ---
 
-### 🧩 `/beartropy-component`
+### 🧩 `/bt-ui-component`
 **Detailed component documentation and examples**
 
 Get comprehensive information about any specific Beartropy UI component including all props, slots, examples, and best practices.
@@ -49,7 +49,7 @@ Get comprehensive information about any specific Beartropy UI component includin
 
 ---
 
-### ⚡ `/beartropy-livewire`
+### ⚡ `/bt-ui-livewire`
 **Livewire integration patterns**
 
 Learn best practices for integrating Beartropy UI with Laravel Livewire including wire:model, validation, loading states, and reactive patterns.
@@ -65,7 +65,7 @@ Learn best practices for integrating Beartropy UI with Laravel Livewire includin
 
 ---
 
-### 🎨 `/beartropy-patterns`
+### 🎨 `/bt-ui-patterns`
 **Common UI patterns and complete examples**
 
 Get production-ready examples of common UI patterns like login pages, data tables, settings pages, and more.
@@ -88,7 +88,7 @@ Get production-ready examples of common UI patterns like login pages, data table
 Simply invoke a skill by typing `/` followed by the skill name:
 
 ```
-/beartropy-form
+/bt-ui-form
 ```
 
 Then describe what you need:
@@ -101,11 +101,11 @@ Create a user registration form with name, email, password, and terms checkbox
 
 You can use multiple skills in sequence:
 
-1. Start with `/beartropy-setup` to install
-2. Use `/beartropy-form` to create your first form
-3. Reference `/beartropy-component` for specific component details
-4. Use `/beartropy-livewire` for advanced reactive features
-5. Check `/beartropy-patterns` for complete page examples
+1. Start with `/bt-ui-setup` to install
+2. Use `/bt-ui-form` to create your first form
+3. Reference `/bt-ui-component` for specific component details
+4. Use `/bt-ui-livewire` for advanced reactive features
+5. Check `/bt-ui-patterns` for complete page examples
 
 ## Component Overview
 
@@ -175,7 +175,7 @@ Beartropy UI provides 40+ components for the TALL stack:
 composer require beartropy/ui
 ```
 
-For detailed installation instructions, use the `/beartropy-setup` skill.
+For detailed installation instructions, use the `/bt-ui-setup` skill.
 
 ## Resources
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Tests for the data layer used by the beartropy-project-context MCP tool.
+ * Tests for the data layer used by the bt-ui-project-context MCP tool.
  *
  * Verifies that the data sources the tool relies on (composer.json version,
  * config keys, component_defaults references) are present and consistent.

@@ -1,5 +1,5 @@
 ---
-name: beartropy-form
+name: bt-ui-form
 description: Create forms using Beartropy UI components with proper validation and Livewire integration
 version: 2.0.0
 author: Beartropy

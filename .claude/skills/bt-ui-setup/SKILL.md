@@ -1,5 +1,5 @@
 ---
-name: beartropy-setup
+name: bt-ui-setup
 description: Help users install and configure Beartropy UI in their Laravel/Livewire projects
 version: 2.0.0
 author: Beartropy
@@ -220,11 +220,11 @@ php artisan beartropy:skills --remove
 ```
 
 Available skills:
-- `/beartropy-setup` — Installation and configuration
-- `/beartropy-form` — Form building with validation
-- `/beartropy-component` — Complete component reference
-- `/beartropy-livewire` — Livewire integration patterns
-- `/beartropy-patterns` — Production-ready UI patterns
+- `/bt-ui-setup` — Installation and configuration
+- `/bt-ui-form` — Form building with validation
+- `/bt-ui-component` — Complete component reference
+- `/bt-ui-livewire` — Livewire integration patterns
+- `/bt-ui-patterns` — Production-ready UI patterns
 
 ---
 
@@ -278,7 +278,7 @@ php artisan beartropy:skills --force
 
 ## Next Steps
 
-1. Explore available components — use `/beartropy-component` skill
-2. Build a form — use `/beartropy-form` skill
-3. See full page patterns — use `/beartropy-patterns` skill
-4. Learn Livewire integration — use `/beartropy-livewire` skill
+1. Explore available components — use `/bt-ui-component` skill
+2. Build a form — use `/bt-ui-form` skill
+3. See full page patterns — use `/bt-ui-patterns` skill
+4. Learn Livewire integration — use `/bt-ui-livewire` skill

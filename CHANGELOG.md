@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.3] - 2026-02-14
+
+### Changed
+- **InstallSkills**: Cross-package skill discovery — auto-discovers skills from all installed `beartropy/*` packages via convention-based scanning and optional `skills.json` manifest.
+- **InstallSkills**: Installation now cleans up stale skills before writing the new set, ensuring `--force` produces a clean state.
+- **InstallSkills**: README.md is now dynamically generated from discovered skills instead of copied from a static file.
+- **InstallSkills**: Output grouped by package with generic `/bt-*` slash command hint.
+- **Skills**: Renamed skill directories from `beartropy-*` to `bt-ui-*` prefix for consistency with the convention-based discovery pattern.
+- **MCP Tools**: Updated namespace references from `beartropy` to `bt` prefix.
+- **Docs**: Updated AI assistant documentation and project README.
+
 ## [v1.0.2] - 2026-02-13
 
 ### Added

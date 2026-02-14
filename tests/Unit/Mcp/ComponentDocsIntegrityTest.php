@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Tests for the data layer used by the beartropy-component-docs MCP tool.
+ * Tests for the data layer used by the bt-ui-component-docs MCP tool.
  *
  * Verifies that every component listed by the tool has valid documentation
  * files and that those files contain the expected structure.

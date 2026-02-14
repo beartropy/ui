@@ -1,5 +1,5 @@
 ---
-name: beartropy-livewire
+name: bt-ui-livewire
 description: Best practices for integrating Beartropy UI components with Laravel Livewire
 version: 2.0.0
 author: Beartropy

@@ -26,11 +26,11 @@ Beartropy UI includes comprehensive AI assistant integration to help you build T
 beartropy/ui/
 ├── .claude/
 │   └── skills/                    # Claude Code skills (slash commands)
-│       ├── beartropy-setup/
-│       ├── beartropy-form/
-│       ├── beartropy-component/
-│       ├── beartropy-livewire/
-│       ├── beartropy-patterns/
+│       ├── bt-ui-setup/
+│       ├── bt-ui-form/
+│       ├── bt-ui-component/
+│       ├── bt-ui-livewire/
+│       ├── bt-ui-patterns/
 │       └── README.md
 │
 └── docs/
@@ -52,16 +52,16 @@ beartropy/ui/
 **Install Beartropy UI**, then use built-in skills:
 
 ```bash
-/beartropy-setup          # Installation & configuration help
-/beartropy-form           # Create forms with components
-/beartropy-component      # Component documentation & examples
-/beartropy-livewire       # Livewire integration patterns
-/beartropy-patterns       # Complete UI patterns (login, tables, etc.)
+/bt-ui-setup              # Installation & configuration help
+/bt-ui-form               # Create forms with components
+/bt-ui-component          # Component documentation & examples
+/bt-ui-livewire           # Livewire integration patterns
+/bt-ui-patterns           # Complete UI patterns (login, tables, etc.)
 ```
 
 **Example:**
 ```
-/beartropy-form
+/bt-ui-form
 
 Create a registration form with name, email, password confirmation,
 and terms checkbox
@@ -145,11 +145,11 @@ for component syntax. Create a contact form with name, email, and message fields
 ## 📚 Available Resources
 
 ### Skills (Claude Code)
-- **beartropy-setup** - Installation, configuration, troubleshooting
-- **beartropy-form** - Form building with validation
-- **beartropy-component** - Component reference and examples
-- **beartropy-livewire** - Livewire integration patterns
-- **beartropy-patterns** - Complete UI patterns
+- **bt-ui-setup** - Installation, configuration, troubleshooting
+- **bt-ui-form** - Form building with validation
+- **bt-ui-component** - Component reference and examples
+- **bt-ui-livewire** - Livewire integration patterns
+- **bt-ui-patterns** - Complete UI patterns
 
 ### Universal Guide
 - **BEARTROPY_GUIDE.md** - Complete component reference
@@ -218,15 +218,15 @@ All Beartropy UI components use the `x-bt-` prefix:
 ### Beginners
 1. Read **BEARTROPY_GUIDE.md** - Component overview
 2. Try **examples/forms.md** - Simple form examples
-3. Use **beartropy-setup** skill (Claude Code) or reference setup section
+3. Use **bt-ui-setup** skill (Claude Code) or reference setup section
 
 ### Intermediate
-1. Explore **beartropy-livewire** - Reactive patterns
+1. Explore **bt-ui-livewire** - Reactive patterns
 2. Study **examples/tables.md** - Data tables with filters
 3. Build custom forms with validation
 
 ### Advanced
-1. Review **beartropy-patterns** - Complete applications
+1. Review **bt-ui-patterns** - Complete applications
 2. Combine components for complex UIs
 3. Custom presets and theming
 
@@ -235,7 +235,7 @@ All Beartropy UI components use the `x-bt-` prefix:
 ### With Claude Code
 Use the help skills:
 ```
-/beartropy-component
+/bt-ui-component
 How do I use the Select component with remote data?
 ```
 
@@ -252,17 +252,17 @@ How do I use the Select component with remote data?
 ## 🎯 Common Use Cases
 
 ### Creating Forms
-- **Claude Code**: `/beartropy-form`
+- **Claude Code**: `/bt-ui-form`
 - **Cursor**: "Create form" (with .cursorrules)
 - **Other**: Reference `examples/forms.md`
 
 ### Building Data Tables
-- **Claude Code**: `/beartropy-patterns` → Data table example
+- **Claude Code**: `/bt-ui-patterns` → Data table example
 - **Cursor**: "Create user table with search"
 - **Other**: Reference `examples/tables.md`
 
 ### Livewire Integration
-- **Claude Code**: `/beartropy-livewire`
+- **Claude Code**: `/bt-ui-livewire`
 - **Cursor**: Mention "Livewire" in prompt
 - **Other**: Reference Livewire section in `BEARTROPY_GUIDE.md`
 

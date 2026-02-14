@@ -43,11 +43,11 @@ Beartropy UI includes comprehensive AI coding assistant integration to help you 
 ### Claude Code
 Built-in skills with slash commands:
 ```bash
-/beartropy-form           # Create forms with components
-/beartropy-component      # Component documentation
-/beartropy-livewire       # Livewire integration
-/beartropy-patterns       # Complete UI examples
-/beartropy-setup          # Installation help
+/bt-ui-form               # Create forms with components
+/bt-ui-component          # Component documentation
+/bt-ui-livewire           # Livewire integration
+/bt-ui-patterns           # Complete UI examples
+/bt-ui-setup              # Installation help
 ```
 
 ### Cursor

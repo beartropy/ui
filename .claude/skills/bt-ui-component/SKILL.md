@@ -1,5 +1,5 @@
 ---
-name: beartropy-component
+name: bt-ui-component
 description: Get detailed information and examples for specific Beartropy UI components
 version: 2.0.0
 author: Beartropy

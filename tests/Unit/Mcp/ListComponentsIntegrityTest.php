@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Tests for the data layer used by the beartropy-list-components MCP tool.
+ * Tests for the data layer used by the bt-ui-list-components MCP tool.
  *
  * Verifies that the hardcoded CATEGORIES constant in ListComponents stays in
  * sync with the actual documentation files, preventing the tool from

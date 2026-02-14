@@ -1,5 +1,5 @@
 ---
-name: beartropy-docs-maintenance
+name: bt-ui-docs-maintenance
 description: Update documentation and AI integrations (skills + MCP) when adding or modifying Beartropy UI components
 version: 1.0.0
 author: Beartropy
@@ -29,7 +29,7 @@ src/
 │   ├── ComponentDocs.php   ← Reads docs/llms + docs/components dynamically
 │   └── ListComponents.php  ← Hardcoded CATEGORIES const (forms vs ui)
 └── Commands/
-    └── InstallSkills.php   ← Generates beartropy-component skill from docs/llms/*.md
+    └── InstallSkills.php   ← Generates bt-ui-component skill from docs/llms/*.md
 ```
 
 ---
@@ -186,12 +186,12 @@ Keep each list in **alphabetical order**.
 ### Skills (`InstallSkills` command)
 
 ```
-docs/llms/*.md  ──glob──▶  buildComponentSkill()  ──▶  beartropy-component/SKILL.md
+docs/llms/*.md  ──glob──▶  buildComponentSkill()  ──▶  bt-ui-component/SKILL.md
                            (concatenates all docs)      (written to user's project)
 ```
 
-- Static skills (`beartropy-setup`, `beartropy-form`, `beartropy-livewire`, `beartropy-patterns`) are copied as-is from `.claude/skills/`
-- `beartropy-component` is **generated** by concatenating all `docs/llms/*.md` files
+- Static skills (`bt-ui-setup`, `bt-ui-form`, `bt-ui-livewire`, `bt-ui-patterns`) are copied as-is from `.claude/skills/`
+- `bt-ui-component` is **generated** by concatenating all `docs/llms/*.md` files
 - Supports 5 agents: Claude, Codex, Copilot, Cursor, Windsurf — each with format-specific output
 
 ### MCP (Boost integration)

@@ -10,7 +10,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 #[IsReadOnly]
 class ProjectContext extends Tool
 {
-    protected string $name = 'beartropy-project-context';
+    protected string $name = 'bt-ui-project-context';
 
     protected string $description = 'Returns this project\'s Beartropy UI configuration: component defaults, color presets, icon set, and installed version.';
 
@@ -102,7 +102,7 @@ class ProjectContext extends Tool
 
         $lines[] = "- **total**: {$total} components";
         $lines[] = '';
-        $lines[] = '> Use `beartropy-list-components` for full names, `beartropy-component-docs` for per-component details.';
+        $lines[] = '> Use `bt-ui-list-components` for full names, `bt-ui-component-docs` for per-component details.';
 
         return Response::text(implode("\n", $lines));
     }

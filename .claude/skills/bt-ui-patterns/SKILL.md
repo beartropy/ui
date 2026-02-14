@@ -1,5 +1,5 @@
 ---
-name: beartropy-patterns
+name: bt-ui-patterns
 description: Common UI patterns and complete examples using Beartropy UI components
 version: 2.0.0
 author: Beartropy

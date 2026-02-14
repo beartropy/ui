@@ -10,7 +10,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 #[IsReadOnly]
 class ComponentDocs extends Tool
 {
-    protected string $name = 'beartropy-component-docs';
+    protected string $name = 'bt-ui-component-docs';
 
     protected string $description = 'Get detailed documentation for a specific Beartropy UI component including props, slots, examples, and architecture details.';
 
@@ -18,7 +18,7 @@ class ComponentDocs extends Tool
     {
         return [
             'component' => $schema->string()
-                ->description('Component name in kebab-case (e.g., "button", "select", "file-dropzone"). Use beartropy-list-components to see all available names.')
+                ->description('Component name in kebab-case (e.g., "button", "select", "file-dropzone"). Use bt-ui-list-components to see all available names.')
                 ->required(),
         ];
     }

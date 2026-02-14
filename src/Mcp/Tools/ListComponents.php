@@ -10,9 +10,9 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 #[IsReadOnly]
 class ListComponents extends Tool
 {
-    protected string $name = 'beartropy-list-components';
+    protected string $name = 'bt-ui-list-components';
 
-    protected string $description = 'List all available Beartropy UI components with their categories. Use this to discover component names before calling beartropy-component-docs.';
+    protected string $description = 'List all available Beartropy UI components with their categories. Use this to discover component names before calling bt-ui-component-docs.';
 
     /** @var array<string, list<string>> */
     public const CATEGORIES = [
