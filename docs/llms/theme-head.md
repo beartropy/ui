@@ -16,6 +16,8 @@
 
 Outputs a **blocking inline `<script>`** that applies the saved dark/light theme to `<html>` before any CSS or body content renders. Without this component, pages flash light then switch to dark when the JS bundle loads.
 
+**Note:** If you use `@beartropyAssets`, the inline theme script is already included automatically. You only need `<x-bt-theme-head />` if you load Beartropy assets manually (e.g., via `@vite`) or need the script earlier in `<head>`.
+
 **Must be placed in `<head>` before stylesheets.**
 
 ## Props (Constructor)

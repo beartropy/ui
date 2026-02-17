@@ -99,7 +99,9 @@ Or provide fully custom SVG/HTML via slots:
 
 ## FOUC Prevention
 
-To prevent the light-to-dark flash on page load and during `wire:navigate` navigation, add `<x-bt-theme-head />` to your layout's `<head>`:
+`@beartropyAssets` automatically includes an inline theme script that prevents the light-to-dark flash on page load and during `wire:navigate` navigation.
+
+If you load assets manually (e.g., via `@vite`), add `<x-bt-theme-head />` to your layout's `<head>` before stylesheets:
 
 ```blade
 <head>

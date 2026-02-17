@@ -129,7 +129,7 @@ window.__setTheme('dark');  // Programmatic theme setter
 ```
 
 ## FOUC Prevention
-To prevent the light-to-dark flash on page load, add `<x-bt-theme-head />` to your layout's `<head>` before stylesheets. See [theme-head](theme-head.md) for details.
+`@beartropyAssets` automatically includes an inline theme script that prevents the light-to-dark flash. If you load assets manually (e.g., via `@vite`), add `<x-bt-theme-head />` to your layout's `<head>` before stylesheets. See [theme-head](theme-head.md) for details.
 
 ## Key Notes
 - Icon mode renders a `<button>` (not bare SVG) — proper semantics + keyboard accessible

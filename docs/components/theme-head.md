@@ -2,6 +2,12 @@
 
 A blocking inline script that applies the saved dark/light theme before the page renders, preventing the flash of light mode (FOUC) when the user has dark mode enabled. Designed to work with `<x-bt-toggle-theme />` but can be used independently.
 
+## When Do You Need This?
+
+If you use `@beartropyAssets`, the inline theme script is **already included automatically** — you don't need this component.
+
+Use `<x-bt-theme-head />` only if you load Beartropy assets manually (e.g., via `@vite`) or need the script earlier in `<head>` than where `@beartropyAssets` is placed.
+
 ## Basic Usage
 
 Place in your layout's `<head>`, **before any stylesheets**:

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.6] - 2026-02-17
+
+### Changed
+- **BeartropyAssets**: `@beartropyAssets` now includes an inline theme script automatically, preventing FOUC without requiring `<x-bt-theme-head />`.
+- **Docs**: Updated `toggle-theme` and `theme-head` docs to clarify that `@beartropyAssets` handles FOUC prevention automatically.
+
 ## [v1.0.5] - 2026-02-17
 
 ### Added
