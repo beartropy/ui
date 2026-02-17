@@ -97,6 +97,19 @@ Or provide fully custom SVG/HTML via slots:
 </x-bt-toggle-theme>
 ```
 
+## FOUC Prevention
+
+To prevent the light-to-dark flash on page load and during `wire:navigate` navigation, add `<x-bt-theme-head />` to your layout's `<head>`:
+
+```blade
+<head>
+    <x-bt-theme-head />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+```
+
+See [Theme Head](theme-head.md) for details.
+
 ## How It Works
 
 1. **Global script** runs before CSS, reads `localStorage.theme`, applies `dark` class + `colorScheme` to `<html>`

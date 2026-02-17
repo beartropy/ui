@@ -52,6 +52,7 @@ class ListComponents extends Tool
             'skeleton',
             'slider',
             'table',
+            'theme-head',
             'toast',
             'toggle-theme',
             'tooltip',

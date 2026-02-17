@@ -19,7 +19,7 @@ export function initTheme() {
         document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
     }
 
-    // Apply before CSS loads to prevent FOUC
+    // Apply theme (acts as fallback if <x-bt-theme-head /> is not in <head>)
     applyTheme(computeDark());
 
     // Expose global setter for external use
@@ -30,10 +30,14 @@ export function initTheme() {
         window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: dark ? 'dark' : 'light' } }));
     };
 
-    // Reapply on each Livewire navigation
-    window.addEventListener('livewire:navigated', () => {
-        applyTheme(computeDark());
-    });
+    // Reapply on Livewire navigation (guard against duplicate listeners
+    // if <x-bt-theme-head /> already registered one)
+    if (!window.__btThemeNavigated) {
+        window.__btThemeNavigated = true;
+        document.addEventListener('livewire:navigated', () => {
+            applyTheme(computeDark());
+        });
+    }
 }
 
 /**

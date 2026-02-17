@@ -128,6 +128,9 @@ window.__setTheme('dark');  // Programmatic theme setter
 <x-bt-toggle-theme mode="button" label="Theme" size="sm" class="ml-auto" />
 ```
 
+## FOUC Prevention
+To prevent the light-to-dark flash on page load, add `<x-bt-theme-head />` to your layout's `<head>` before stylesheets. See [theme-head](theme-head.md) for details.
+
 ## Key Notes
 - Icon mode renders a `<button>` (not bare SVG) — proper semantics + keyboard accessible
 - All 3 modes have `aria-label` and `:aria-pressed="dark"`

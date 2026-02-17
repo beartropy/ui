@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.5] - 2026-02-17
+
+### Added
+- **ThemeHead**: New `<x-bt-theme-head />` component — a blocking inline script for `<head>` that applies the saved dark/light theme before CSS renders, preventing the light-to-dark FOUC on page load and during `wire:navigate` navigation.
+
+### Changed
+- **ToggleTheme**: `initTheme()` now guards against duplicate `livewire:navigated` listeners when `<x-bt-theme-head />` is present.
+
 ## [v1.0.4] - 2026-02-16
 
 ### Added

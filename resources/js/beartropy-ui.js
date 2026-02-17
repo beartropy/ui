@@ -2081,9 +2081,12 @@
       applyTheme(dark);
       window.dispatchEvent(new CustomEvent("theme-change", { detail: { theme: dark ? "dark" : "light" } }));
     };
-    window.addEventListener("livewire:navigated", () => {
-      applyTheme(computeDark());
-    });
+    if (!window.__btThemeNavigated) {
+      window.__btThemeNavigated = true;
+      document.addEventListener("livewire:navigated", () => {
+        applyTheme(computeDark());
+      });
+    }
   }
   function btToggleTheme() {
     return {
