@@ -74,6 +74,7 @@ class Datetime extends BeartropyComponent
         public ?string $name = null,
         public ?string $label = null,
         public ?string $color = null,
+        public ?string $size = null,
         public mixed $value = null,
         public ?string $min = null,
         public ?string $max = null,

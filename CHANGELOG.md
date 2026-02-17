@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.4] - 2026-02-16
+
+### Added
+- **Datetime**: Added `size` prop to support magic size attributes.
+
 ## [v1.0.3] - 2026-02-14
 
 ### Changed
