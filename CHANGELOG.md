@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.7] - 2026-02-19
+
+### Fixed
+- **Select**: Dropdown now closes on outside click inside modals and containers that use `stopPropagation`.
+- **Select**: Highlighted option no longer uses the selected/active color — uses neutral gray to avoid confusion with the actual selection.
+- **Modal**: Removed unnecessary `@click.stop` on modal container that broke `@click.outside` for nested components.
+
 ## [v1.0.6] - 2026-02-17
 
 ### Changed

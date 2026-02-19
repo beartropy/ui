@@ -43,7 +43,7 @@
         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
 
     <!-- Modal Container -->
-    <div x-show="localOpen" @click.stop
+    <div x-show="localOpen"
         class="relative w-full {{ $widthClass }} mx-auto {{ $centered ? '' : 'mt-24 sm:mt-32' }} rounded-xl shadow-[0_8px_48px_0_rgba(0,0,0,0.18)] p-4 {{ $bgColor }} {{ $blurClass }} transition-all {{ $zIndexClass }} overflow-y-auto max-h-[80vh]"
         x-transition:enter="ease-[cubic-bezier(.4,0,.2,1)] duration-300"
         x-transition:enter-start="opacity-0 scale-95 translate-y-6"

@@ -1481,6 +1481,22 @@
             this.focusSearch();
           }
         });
+        this._outsideClickHandler = (e) => {
+          if (!this.open) return;
+          if (this.$root.contains(e.target)) return;
+          const list = document.getElementById(this._cfg.selectId + "-list");
+          if (list) {
+            const panel = list.closest('[role="menu"]') || list.closest("[data-dd-mobile-overlay]");
+            if (panel && panel.contains(e.target)) return;
+          }
+          this.close();
+        };
+        document.addEventListener("click", this._outsideClickHandler, true);
+      },
+      destroy() {
+        if (this._outsideClickHandler) {
+          document.removeEventListener("click", this._outsideClickHandler, true);
+        }
       },
       toggle() {
         this.open = !this.open;
