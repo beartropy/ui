@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.8] - 2026-02-23
+
+### Fixed
+- **FileInput**: Moved status indicators (spinner, error, success icons) from the `end` slot into the `start` area so the `end` slot is exclusively available for user-provided content.
+- **FileInput**: Simplified input ID generation to use the base class `$id` property.
+
 ## [v1.0.7] - 2026-02-19
 
 ### Fixed

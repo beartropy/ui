@@ -3,7 +3,7 @@
     [$hasError, $finalError] = $getErrorState($attributes, $errors ?? null, $customError ?? null);
     [$hasWireModel, $wireModelValue] = $getWireModelState();
 
-    $inputId = $attributes->get('id') ?? 'input-file-' . uniqid();
+    $inputId = $id;
     $placeholder = $placeholder ?? __('beartropy-ui::ui.choose_file');
     $labelClass = $hasError ? ($colorPreset['label_error'] ?? $colorPreset['label']) : $colorPreset['label'];
 
@@ -142,50 +142,52 @@
                     <span>
                         <x-beartropy-ui::icon name="arrow-up-tray" class="w-4 h-4 opacity-70 shrink-0 text-gray-700 dark:text-gray-300" />
                     </span>
+
+                    <span
+                        x-show="uploading"
+                        aria-label="{{ __('beartropy-ui::ui.loading') }}"
+                        class="inline-flex items-center"
+                        x-cloak
+                    >
+                        @include('beartropy-ui-svg::beartropy-spinner', [
+                            'class' => 'animate-spin shrink-0 text-gray-500 dark:text-gray-400 ' . ($sizePreset['iconSize'] ?? '')
+                        ])
+                    </span>
+
+                    @if ($hasError)
+                        <span
+                            x-show="!uploading"
+                            aria-label="{{ __('beartropy-ui::ui.validation_error') }}"
+                            class="inline-flex items-center"
+                            x-cloak
+                        >
+                            @include('beartropy-ui-svg::beartropy-x-mark', [
+                                'class' => 'shrink-0 text-red-600 dark:text-red-400 ' . ($sizePreset['iconSize'] ?? '')
+                            ])
+                        </span>
+                    @else
+                        <span
+                            x-show="!uploading && uploaded"
+                            aria-label="{{ __('beartropy-ui::ui.uploaded') }}"
+                            class="inline-flex items-center"
+                            x-cloak
+                        >
+                            @include('beartropy-ui-svg::beartropy-check', [
+                                'class' => 'shrink-0 text-emerald-600 dark:text-emerald-400 ' . ($sizePreset['iconSize'] ?? '')
+                            ])
+                        </span>
+                    @endif
                 </span>
             </div>
         </x-slot>
 
-        <x-slot name="end">
-            <span
-                x-show="uploading"
-                aria-label="{{ __('beartropy-ui::ui.loading') }}"
-                class="inline-flex items-center"
-                x-cloak
-            >
-                @include('beartropy-ui-svg::beartropy-spinner', [
-                    'class' => 'animate-spin shrink-0 text-gray-500 dark:text-gray-400 ' . ($sizePreset['iconSize'] ?? '')
-                ])
-            </span>
-
-            @if ($hasError)
-                <span
-                    x-show="!uploading"
-                    aria-label="{{ __('beartropy-ui::ui.validation_error') }}"
-                    class="inline-flex items-center"
-                    x-cloak
-                >
-                    @include('beartropy-ui-svg::beartropy-x-mark', [
-                        'class' => 'shrink-0 text-red-600 dark:text-red-400 ' . ($sizePreset['iconSize'] ?? '')
-                    ])
-                </span>
-            @else
-                <span
-                    x-show="!uploading && uploaded"
-                    aria-label="{{ __('beartropy-ui::ui.uploaded') }}"
-                    class="inline-flex items-center"
-                    x-cloak
-                >
-                    @include('beartropy-ui-svg::beartropy-check', [
-                        'class' => 'shrink-0 text-emerald-600 dark:text-emerald-400 ' . ($sizePreset['iconSize'] ?? '')
-                    ])
-                </span>
-            @endif
-
-            @isset($end)
-                {!! $end !!}
-            @endisset
-        </x-slot>
+        @isset($end)
+            <x-slot name="end">
+                <div class="flex items-center gap-1 px-2">
+                    {!! $end !!}
+                </div>
+            </x-slot>
+        @endisset
     </x-beartropy-ui::base.input-trigger-base>
     <x-beartropy-ui::support.field-help
         :error-message="$finalError"
