@@ -50,25 +50,31 @@
     x-on:livewire-upload-start.window="
         const n = $event.detail?.property ?? '';
         @if($wireModelValue)
-            if (n === '{{ $wireModelValue }}' || n.startsWith('{{ $wireModelValue }}.')) {
+            if (!n || n === '{{ $wireModelValue }}' || n.startsWith('{{ $wireModelValue }}.')) {
                 uploading = true; uploaded = false; validationErrors = false;
             }
+        @else
+            uploading = true; uploaded = false; validationErrors = false;
         @endif
     "
     x-on:livewire-upload-finish.window="
         const n = $event.detail?.property ?? '';
         @if($wireModelValue)
-            if (n === '{{ $wireModelValue }}' || n.startsWith('{{ $wireModelValue }}.')) {
+            if (!n || n === '{{ $wireModelValue }}' || n.startsWith('{{ $wireModelValue }}.')) {
                 uploading = false; uploaded = true; validationErrors = false;
             }
+        @else
+            uploading = false; uploaded = true; validationErrors = false;
         @endif
     "
     x-on:livewire-upload-error.window="
         const n = $event.detail?.property ?? '';
         @if($wireModelValue)
-            if (n === '{{ $wireModelValue }}' || n.startsWith('{{ $wireModelValue }}.')) {
+            if (!n || n === '{{ $wireModelValue }}' || n.startsWith('{{ $wireModelValue }}.')) {
                 uploading = false; uploaded = false; validationErrors = true;
             }
+        @else
+            uploading = false; uploaded = false; validationErrors = true;
         @endif
     "
     x-effect="

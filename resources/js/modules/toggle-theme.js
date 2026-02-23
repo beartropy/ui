@@ -27,6 +27,7 @@ export function initTheme() {
         const dark = computeDark();
         d.classList.toggle('dark', dark);
         d.style.colorScheme = dark ? 'dark' : 'light';
+        d.setAttribute('data-bt-theme', dark ? 'dark' : 'light');
         setThemeCookie(dark);
     }
 

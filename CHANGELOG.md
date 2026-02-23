@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.11] - 2026-02-23
+
+### Fixed
+- **ToggleTheme / ThemeHead**: Added opacity guard (`html:not([data-bt-theme]) body{opacity:0}`) to prevent dark-mode FOUC on Chrome/Linux. The inline script now sets `data-bt-theme` on `<html>` before body renders, lifting the guard instantly.
+- **FileInput**: Fixed upload spinner/status indicators not working on Livewire 3.4. Made `detail.property` check forgiving when the field is absent, and added fallback branches for when `wire:model` value is not available.
+
 ## [v1.0.10] - 2026-02-23
 
 ### Added
