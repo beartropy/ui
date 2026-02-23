@@ -2080,28 +2080,34 @@
 
   // resources/js/modules/toggle-theme.js
   function initTheme() {
+    const d = document.documentElement;
     function computeDark() {
       const saved = localStorage.getItem("theme");
       if (saved === "dark") return true;
       if (saved === "light") return false;
       return window.matchMedia("(prefers-color-scheme: dark)").matches;
     }
-    function applyTheme(dark) {
-      document.documentElement.classList.toggle("dark", dark);
-      document.documentElement.style.colorScheme = dark ? "dark" : "light";
+    function applyTheme() {
+      const dark = computeDark();
+      d.classList.toggle("dark", dark);
+      d.style.colorScheme = dark ? "dark" : "light";
     }
-    applyTheme(computeDark());
+    applyTheme();
     window.__setTheme = function(mode) {
       const dark = mode === "dark";
       localStorage.setItem("theme", dark ? "dark" : "light");
-      applyTheme(dark);
+      applyTheme();
       window.dispatchEvent(new CustomEvent("theme-change", { detail: { theme: dark ? "dark" : "light" } }));
     };
-    if (!window.__btThemeNavigated) {
-      window.__btThemeNavigated = true;
-      document.addEventListener("livewire:navigated", () => {
-        applyTheme(computeDark());
-      });
+    if (!window.__btThemeGuard) {
+      window.__btThemeGuard = true;
+      new MutationObserver(() => {
+        const dark = computeDark();
+        if (d.classList.contains("dark") !== dark) {
+          d.classList.toggle("dark", dark);
+          d.style.colorScheme = dark ? "dark" : "light";
+        }
+      }).observe(d, { attributes: true, attributeFilter: ["class"] });
     }
   }
   function btToggleTheme() {

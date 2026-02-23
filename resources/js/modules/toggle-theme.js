@@ -7,6 +7,8 @@
  * Re-applies on Livewire navigated events.
  */
 export function initTheme() {
+    const d = document.documentElement;
+
     function computeDark() {
         const saved = localStorage.getItem('theme');
         if (saved === 'dark') return true;
@@ -14,29 +16,34 @@ export function initTheme() {
         return window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
 
-    function applyTheme(dark) {
-        document.documentElement.classList.toggle('dark', dark);
-        document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+    function applyTheme() {
+        const dark = computeDark();
+        d.classList.toggle('dark', dark);
+        d.style.colorScheme = dark ? 'dark' : 'light';
     }
 
     // Apply theme (acts as fallback if <x-bt-theme-head /> is not in <head>)
-    applyTheme(computeDark());
+    applyTheme();
 
     // Expose global setter for external use
     window.__setTheme = function (mode) {
         const dark = mode === 'dark';
         localStorage.setItem('theme', dark ? 'dark' : 'light');
-        applyTheme(dark);
+        applyTheme();
         window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: dark ? 'dark' : 'light' } }));
     };
 
-    // Reapply on Livewire navigation (guard against duplicate listeners
-    // if <x-bt-theme-head /> already registered one)
-    if (!window.__btThemeNavigated) {
-        window.__btThemeNavigated = true;
-        document.addEventListener('livewire:navigated', () => {
-            applyTheme(computeDark());
-        });
+    // MutationObserver catches Livewire wire:navigate morphing <html> class.
+    // Fires before the browser repaints, preventing the light-mode flash.
+    if (!window.__btThemeGuard) {
+        window.__btThemeGuard = true;
+        new MutationObserver(() => {
+            const dark = computeDark();
+            if (d.classList.contains('dark') !== dark) {
+                d.classList.toggle('dark', dark);
+                d.style.colorScheme = dark ? 'dark' : 'light';
+            }
+        }).observe(d, { attributes: true, attributeFilter: ['class'] });
     }
 }
 
