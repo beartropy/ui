@@ -25,14 +25,11 @@ class BeartropyAssets
         $cssVersion = file_exists($cssPath) ? filemtime($cssPath) : time();
         $jsVersion  = file_exists($jsPath) ? filemtime($jsPath) : time();
 
-        $themeScript = <<<'THEME'
-            <script>(function(){var d=document.documentElement;function t(){var s=localStorage.getItem('theme'),k=s==='dark'||(s!=='light'&&window.matchMedia('(prefers-color-scheme:dark)').matches);d.classList.toggle('dark',k);d.style.colorScheme=k?'dark':'light'}t();if(!window.__btThemeGuard){window.__btThemeGuard=true;new MutationObserver(function(){var s=localStorage.getItem('theme'),k=s==='dark'||(s!=='light'&&window.matchMedia('(prefers-color-scheme:dark)').matches),h=d.classList.contains('dark');if(h!==k){d.classList.toggle('dark',k);d.style.colorScheme=k?'dark':'light'}}).observe(d,{attributes:true,attributeFilter:['class']})}})();</script>
-        THEME;
-
         return <<<HTML
-            {$themeScript}
-            <link rel="stylesheet" href="/beartropy-ui-assets/beartropy-ui.css?v={$cssVersion}">
-            <script src="/beartropy-ui-assets/beartropy-ui.js?v={$jsVersion}"></script>
+            <style data-navigate-once>html.dark{color-scheme:dark}html:not(.dark){color-scheme:light}</style>
+            <script data-navigate-once>(function(){var d=document.documentElement;function c(){var s=localStorage.getItem("theme");return s==="dark"||(s!=="light"&&window.matchMedia("(prefers-color-scheme:dark)").matches)}function a(){var k=c();d.classList.toggle("dark",k);d.style.colorScheme=k?"dark":"light";try{document.cookie="bt_theme="+(k?"dark":"light")+";path=/;max-age=31536000;SameSite=Lax"}catch(e){}}a();if(!window.__btThemeGuard){window.__btThemeGuard=true;new MutationObserver(function(){var k=c(),h=d.classList.contains("dark");if(h!==k){d.classList.toggle("dark",k);d.style.colorScheme=k?"dark":"light"}}).observe(d,{attributes:true,attributeFilter:["class"]})}})();</script>
+            <link rel="stylesheet" href="/beartropy-ui-assets/beartropy-ui.css?v={$cssVersion}" data-navigate-once>
+            <script src="/beartropy-ui-assets/beartropy-ui.js?v={$jsVersion}" data-navigate-once></script>
         HTML;
     }
 }

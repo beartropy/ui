@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.10] - 2026-02-23
+
+### Added
+- **ToggleTheme**: `@beartropyHtmlClass` Blade directive — reads a `bt_theme` cookie server-side and renders the `dark` class on `<html>` for zero-FOUC on first paint.
+- **ToggleTheme**: Theme preference is now persisted to a `bt_theme` cookie alongside `localStorage`, enabling server-side rendering.
+
+### Fixed
+- **ToggleTheme**: Eliminated dark-mode FOUC on `wire:navigate` by adding `data-navigate-once` to all `@BeartropyAssets` head elements, preventing Livewire from removing and re-adding the stylesheet during navigation.
+- **ToggleTheme**: Added inline `<style>` with `color-scheme` CSS rules so native form controls (inputs, selects) respect dark mode without waiting for JS.
+
 ## [v1.0.9] - 2026-02-23
 
 ### Fixed

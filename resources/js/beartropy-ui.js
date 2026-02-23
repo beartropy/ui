@@ -2079,6 +2079,12 @@
   }
 
   // resources/js/modules/toggle-theme.js
+  function setThemeCookie(dark) {
+    try {
+      document.cookie = "bt_theme=" + (dark ? "dark" : "light") + ";path=/;max-age=31536000;SameSite=Lax";
+    } catch (e) {
+    }
+  }
   function initTheme() {
     const d = document.documentElement;
     function computeDark() {
@@ -2091,6 +2097,7 @@
       const dark = computeDark();
       d.classList.toggle("dark", dark);
       d.style.colorScheme = dark ? "dark" : "light";
+      setThemeCookie(dark);
     }
     applyTheme();
     window.__setTheme = function(mode) {
@@ -2126,6 +2133,7 @@
         document.documentElement.classList.toggle("dark", this.dark);
         document.documentElement.style.colorScheme = this.dark ? "dark" : "light";
         localStorage.theme = this.dark ? "dark" : "light";
+        setThemeCookie(this.dark);
         window.dispatchEvent(new CustomEvent("theme-change", { detail: { theme: this.dark ? "dark" : "light" } }));
         this.$nextTick(() => {
           this.rotating = true;

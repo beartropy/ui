@@ -50,6 +50,10 @@ class BeartropyUiServiceProvider extends ServiceProvider
 
         $this->publishIndividualPresets();
 
+        Blade::directive('beartropyHtmlClass', function () {
+            return "<?php echo (isset(\$_COOKIE['bt_theme']) && \$_COOKIE['bt_theme'] === 'dark') ? 'dark' : ''; ?>";
+        });
+
         Blade::directive('BeartropyAssets', function () {
             $ziggyUrl = route('beartropy.assets.ziggy');
 

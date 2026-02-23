@@ -1,19 +1,22 @@
-<script>
+<style data-navigate-once>html.dark{color-scheme:dark}html:not(.dark){color-scheme:light}</style>
+<script data-navigate-once>
 (function(){
     var d=document.documentElement;
-    function t(){
-        var s=localStorage.getItem('theme'),
-            k=s==='dark'||(s!=='light'&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+    function c(){
+        var s=localStorage.getItem('theme');
+        return s==='dark'||(s!=='light'&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+    }
+    function a(){
+        var k=c();
         d.classList.toggle('dark',k);
         d.style.colorScheme=k?'dark':'light';
+        try{document.cookie='bt_theme='+(k?'dark':'light')+';path=/;max-age=31536000;SameSite=Lax'}catch(e){}
     }
-    t();
+    a();
     if(!window.__btThemeGuard){
         window.__btThemeGuard=true;
         new MutationObserver(function(){
-            var s=localStorage.getItem('theme'),
-                k=s==='dark'||(s!=='light'&&window.matchMedia('(prefers-color-scheme:dark)').matches),
-                h=d.classList.contains('dark');
+            var k=c(),h=d.classList.contains('dark');
             if(h!==k){
                 d.classList.toggle('dark',k);
                 d.style.colorScheme=k?'dark':'light';

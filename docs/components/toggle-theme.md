@@ -1,6 +1,6 @@
 # Toggle Theme
 
-A dark/light mode toggle that persists the user's preference to `localStorage` and syncs across components via a custom `theme-change` event. Includes a global script that applies the saved theme before CSS loads to prevent flash of unstyled content (FOUC). Three display modes: bare icon, rounded button, or square button.
+A dark/light mode toggle that persists the user's preference to `localStorage` and a `bt_theme` cookie. Syncs across components via a custom `theme-change` event. Includes FOUC prevention that works across full page loads and `wire:navigate` SPA navigation. Three display modes: bare icon, rounded button, or square button.
 
 ## Basic Usage
 
@@ -99,9 +99,26 @@ Or provide fully custom SVG/HTML via slots:
 
 ## FOUC Prevention
 
-`@beartropyAssets` automatically includes an inline theme script that prevents the light-to-dark flash on page load and during `wire:navigate` navigation.
+`@BeartropyAssets` handles FOUC prevention automatically via four layers:
 
-If you load assets manually (e.g., via `@vite`), add `<x-bt-theme-head />` to your layout's `<head>` before stylesheets:
+1. **Inline CSS** — `html.dark{color-scheme:dark}` for native form controls (no JS needed)
+2. **Inline script** — applies `dark` class synchronously before body renders
+3. **`data-navigate-once`** — prevents `wire:navigate` from removing CSS/JS during navigation
+4. **MutationObserver** — catches `wire:navigate` morphing `<html>` class and re-applies `dark` before repaint
+
+### Server-Side Rendering (recommended)
+
+For zero-FOUC on the very first paint, add `@beartropyHtmlClass` to your `<html>` tag:
+
+```blade
+<html lang="en" class="@beartropyHtmlClass">
+```
+
+This reads the `bt_theme` cookie (set automatically by the toggle) and renders the `dark` class server-side. The browser receives `<html class="dark">` in the initial HTML — no JS dependency.
+
+### Manual Asset Loading
+
+If you load assets via `@vite` without `@BeartropyAssets`, add `<x-bt-theme-head />` to your layout's `<head>` before stylesheets:
 
 ```blade
 <head>
@@ -114,11 +131,12 @@ See [Theme Head](theme-head.md) for details.
 
 ## How It Works
 
-1. **Global script** runs before CSS, reads `localStorage.theme`, applies `dark` class + `colorScheme` to `<html>`
-2. **Alpine component** manages toggle interaction, rotation animation, and `localStorage` persistence
-3. **Custom event** `theme-change` is dispatched on toggle for cross-component sync
-4. **Global `window.__setTheme(mode)`** function allows external code to set theme programmatically
-5. **Livewire aware** — re-applies theme on `livewire:navigated` events
+1. **Inline CSS** sets `color-scheme` based on `.dark` class — native form controls respect dark mode immediately
+2. **Inline script** reads `localStorage.theme`, applies `dark` class + `colorScheme` to `<html>`, sets `bt_theme` cookie
+3. **MutationObserver** watches `<html>` class — if anything removes `dark` (e.g., Livewire morph), it's reapplied before the browser repaints
+4. **Alpine component** manages toggle interaction, rotation animation, and persistence
+5. **Custom event** `theme-change` is dispatched on toggle for cross-component sync
+6. **Global `window.__setTheme(mode)`** function allows external code to set theme programmatically
 
 ## Keyboard Shortcuts
 

@@ -14,9 +14,9 @@
   - `initTheme()` — runs at bundle load (before Alpine), applies saved theme, exposes `__setTheme`
   - `btToggleTheme()` — registered as `Alpine.data()`, handles toggle/rotation/event sync
 - No preset file — colors are per-instance props with sensible defaults
-- Persists to `localStorage.theme` (`'dark'` | `'light'`)
+- Persists to `localStorage.theme` (`'dark'` | `'light'`) **and** `bt_theme` cookie (for server-side rendering)
 - Dispatches `theme-change` CustomEvent for cross-component sync
-- Re-applies theme on `livewire:navigated` events
+- Uses `MutationObserver` on `<html>` to catch `wire:navigate` morphing the class attribute
 
 ## Props (Constructor)
 
@@ -80,7 +80,8 @@ div[x-data="btToggleTheme()"]
 
     toggle() {
         // Flip dark, update <html> classList + colorScheme,
-        // persist to localStorage, dispatch 'theme-change' event,
+        // persist to localStorage + bt_theme cookie,
+        // dispatch 'theme-change' event,
         // trigger rotation via $nextTick (ensures new icon renders first)
     }
 }
@@ -90,8 +91,9 @@ div[x-data="btToggleTheme()"]
 ```js
 // initTheme() — called at bundle load, before Alpine
 // - Applies saved theme before CSS loads (FOUC prevention)
+// - Sets bt_theme cookie (enables server-side rendering via @beartropyHtmlClass)
 // - Exposes window.__setTheme('dark' | 'light') for programmatic use
-// - Re-applies on livewire:navigated events
+// - MutationObserver on <html> catches wire:navigate class morphing
 
 window.__setTheme('dark');  // Programmatic theme setter
 // Dispatches: CustomEvent('theme-change', { detail: { theme: 'dark' } })
@@ -129,7 +131,23 @@ window.__setTheme('dark');  // Programmatic theme setter
 ```
 
 ## FOUC Prevention
-`@beartropyAssets` automatically includes an inline theme script that prevents the light-to-dark flash. If you load assets manually (e.g., via `@vite`), add `<x-bt-theme-head />` to your layout's `<head>` before stylesheets. See [theme-head](theme-head.md) for details.
+
+`@BeartropyAssets` handles FOUC prevention automatically via four layers:
+
+1. **Inline `<style>`** — `html.dark{color-scheme:dark}` for native form control theming (CSS-only, no JS dependency)
+2. **Inline `<script>`** — applies `dark` class + `colorScheme` synchronously before body renders
+3. **`data-navigate-once`** — prevents Livewire `wire:navigate` from removing/re-adding CSS and JS during head merging
+4. **`MutationObserver`** — watches `<html>` class attribute; if `wire:navigate` morphs it and strips `dark`, the observer re-applies before the browser repaints
+
+For zero-FOUC server-side rendering, use `@beartropyHtmlClass` on your `<html>` tag:
+
+```blade
+<html lang="en" class="@beartropyHtmlClass">
+```
+
+This reads the `bt_theme` cookie (set automatically by the toggle) and renders the `dark` class server-side.
+
+If you load assets manually (e.g., via `@vite` without `@BeartropyAssets`), add `<x-bt-theme-head />` to your layout's `<head>` before stylesheets. See [theme-head](theme-head.md) for details.
 
 ## Key Notes
 - Icon mode renders a `<button>` (not bare SVG) — proper semantics + keyboard accessible
@@ -139,4 +157,5 @@ window.__setTheme('dark');  // Programmatic theme setter
 - Global `<script>` runs on every page load (even with multiple instances, safe to duplicate)
 - `window.__setTheme()` allows external code (nav dropdowns, settings pages) to change theme
 - `colorScheme` CSS property is set alongside `dark` class for native form element dark mode
+- `bt_theme` cookie enables server-side theme rendering via `@beartropyHtmlClass`
 - Slot check uses `isset($__data['iconLight'])` (camelCase) — slots are stored camelCase in `$__data`

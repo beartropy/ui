@@ -1,10 +1,17 @@
 // Toggle Theme Module
 
+function setThemeCookie(dark) {
+    try {
+        document.cookie = 'bt_theme=' + (dark ? 'dark' : 'light') + ';path=/;max-age=31536000;SameSite=Lax';
+    } catch (e) { /* cookie blocked */ }
+}
+
 /**
  * Global theme initializer — runs immediately (before CSS/Alpine).
  * Reads localStorage.theme or system preference, applies dark class + colorScheme.
+ * Sets a bt_theme cookie for server-side rendering (see @beartropyHtmlClass).
  * Exposes window.__setTheme() for programmatic use.
- * Re-applies on Livewire navigated events.
+ * Uses MutationObserver to catch wire:navigate morphing <html> class.
  */
 export function initTheme() {
     const d = document.documentElement;
@@ -20,6 +27,7 @@ export function initTheme() {
         const dark = computeDark();
         d.classList.toggle('dark', dark);
         d.style.colorScheme = dark ? 'dark' : 'light';
+        setThemeCookie(dark);
     }
 
     // Apply theme (acts as fallback if <x-bt-theme-head /> is not in <head>)
@@ -70,6 +78,7 @@ export function btToggleTheme() {
             document.documentElement.classList.toggle('dark', this.dark);
             document.documentElement.style.colorScheme = this.dark ? 'dark' : 'light';
             localStorage.theme = this.dark ? 'dark' : 'light';
+            setThemeCookie(this.dark);
             window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: this.dark ? 'dark' : 'light' } }));
             this.$nextTick(() => {
                 this.rotating = true;
