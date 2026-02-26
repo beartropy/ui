@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.12] - 2026-02-26
+
+### Fixed
+- **ToggleTheme**: Fix dark mode FOUC (flash of unstyled content) during `wire:navigate` navigation. Added `livewire:navigated` event listener to re-apply theme after SPA navigation and restored `data-bt-theme` attribute in MutationObserver callback.
+
 ## [v1.0.11] - 2026-02-23
 
 ### Fixed
