@@ -51,8 +51,12 @@ export function initTheme() {
             if (d.classList.contains('dark') !== dark) {
                 d.classList.toggle('dark', dark);
                 d.style.colorScheme = dark ? 'dark' : 'light';
+                d.setAttribute('data-bt-theme', dark ? 'dark' : 'light');
             }
         }).observe(d, { attributes: true, attributeFilter: ['class'] });
+
+        // Re-apply theme after Livewire wire:navigate completes DOM swap.
+        document.addEventListener('livewire:navigated', () => applyTheme());
     }
 }
 

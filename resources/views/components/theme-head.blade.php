@@ -21,8 +21,10 @@
             if(h!==k){
                 d.classList.toggle('dark',k);
                 d.style.colorScheme=k?'dark':'light';
+                d.setAttribute('data-bt-theme',k?'dark':'light');
             }
         }).observe(d,{attributes:true,attributeFilter:['class']});
+        document.addEventListener('livewire:navigated',a);
     }
 })();
 </script>

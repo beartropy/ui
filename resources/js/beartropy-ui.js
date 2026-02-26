@@ -2114,8 +2114,10 @@
         if (d.classList.contains("dark") !== dark) {
           d.classList.toggle("dark", dark);
           d.style.colorScheme = dark ? "dark" : "light";
+          d.setAttribute("data-bt-theme", dark ? "dark" : "light");
         }
       }).observe(d, { attributes: true, attributeFilter: ["class"] });
+      document.addEventListener("livewire:navigated", () => applyTheme());
     }
   }
   function btToggleTheme() {
