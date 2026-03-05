@@ -33,6 +33,10 @@
     // Width behavior: true = match trigger width, false = min-width only (dropdown can be wider)
     'fitAnchor' => true,
 
+    // Min/max width constraints (CSS values, e.g. '12rem', '400px')
+    'minWidth' => null,
+    'maxWidth' => null,
+
 ])
 
 @php
@@ -138,8 +142,13 @@
                 posStyle = `bottom:${vh - rect.top + 4}px;`;
             }
 
-            const widthRule = {{ $fitAnchor ? 'true' : 'false' }} ? `width:${rect.width}px` : `min-width:${rect.width}px`;
-            this.teleportStyle = `position:fixed; ${posStyle} left:${leftPos}px; max-height:${maxH}px; ${widthRule}; z-index:9999;`;
+            const minWPx = {{ $minWidth ? "this._cssToPx('{$minWidth}')" : '0' }};
+            const maxWPx = {{ $maxWidth ? "this._cssToPx('{$maxWidth}')" : '99999' }};
+            const clampedW = Math.min(Math.max(rect.width, minWPx), maxWPx);
+            const widthRule = {{ $fitAnchor ? 'true' : 'false' }} ? `width:${clampedW}px` : `min-width:${clampedW}px`;
+            const minW = minWPx ? `min-width:${minWPx}px;` : '';
+            const maxW = maxWPx < 99999 ? `max-width:${maxWPx}px;` : '';
+            this.teleportStyle = `position:fixed; ${posStyle} left:${leftPos}px; max-height:${maxH}px; ${widthRule}; ${minW} ${maxW} z-index:9999;`;
             this.maxStyle = `max-height:${maxH}px;`;
         },
 
@@ -222,6 +231,13 @@
             panel.classList.toggle('rounded-2xl', this.mobileModeLocal === 'center');
         },
 
+        _cssToPx(val) {
+            if (!val) return 0;
+            const num = parseFloat(val);
+            if (val.endsWith('rem')) return num * parseFloat(getComputedStyle(document.documentElement).fontSize);
+            return num; // px or unitless
+        },
+
         _bindListeners() {
             const onResize = () => {
                 this._onResize();
@@ -269,7 +285,7 @@
                 {{ $overflowClass }}
                 {{ $thinScrollbar }}"
             :class="sideLocal === 'top' ? 'bottom-full mb-1 origin-bottom' : 'top-full mt-1 origin-top'"
-            :style="`min-width:8rem; ${maxStyle}`"
+            :style="`min-width:{{ $minWidth ?? '8rem' }}; {{ $maxWidth ? "max-width:{$maxWidth};" : '' }} ${maxStyle}`"
         >
             {{ $slot }}
         </div>
@@ -291,8 +307,7 @@
                 role="menu"
                 aria-orientation="vertical"
                 tabindex="-1"
-                class="{{ $width }}
-                    rounded-lg
+                class="rounded-lg
                     {{ $colorPreset['dropdown_border'] ?? '' }}
                     {{ $colorPreset['dropdown_bg'] }}
                     {{ $colorPreset['dropdown_shadow'] }}

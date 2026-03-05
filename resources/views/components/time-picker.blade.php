@@ -83,6 +83,8 @@
                 preset-for="time-picker"
                 width="w-auto"
                 :fit-anchor="false"
+                min-width="12rem"
+                max-width="22rem"
                 x-show="open"
                 triggerLabel="{{ $label }}"
                 x-transition

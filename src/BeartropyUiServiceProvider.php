@@ -45,6 +45,10 @@ class BeartropyUiServiceProvider extends ServiceProvider
         ], 'beartropy-ui-config');
 
         $this->publishes([
+            __DIR__.'/../lang' => $this->app->langPath('vendor/beartropy-ui'),
+        ], 'beartropy-ui-lang');
+
+        $this->publishes([
             __DIR__.'/../resources/views/presets' => resource_path('views/vendor/beartropy/ui/presets'),
         ], 'beartropy-ui-presets');
 

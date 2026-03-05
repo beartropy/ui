@@ -1,5 +1,5 @@
 ---
-name: release
+name: bt-ui-release
 description: Release a new version of Beartropy UI — bumps version, updates changelog, commits, tags, and pushes
 version: 1.0.0
 author: Beartropy

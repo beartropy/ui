@@ -140,6 +140,8 @@
                 color="{{ $presetNames['color'] ?? '' }}"
                 preset-for="select"
                 width="w-full"
+                min-width="12rem"
+                max-width="32rem"
                 x-show="open"
                 @click.outside="close()"
             >

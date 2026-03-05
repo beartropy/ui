@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.13] - 2026-03-05
+
+### Added
+- **i18n**: Spanish (es) translation support for all UI components.
+- **ServiceProvider**: Publishable translations via `beartropy-ui-lang` tag.
+- **DropdownBase**: `minWidth` and `maxWidth` props for constraining dropdown panel dimensions.
+
+### Changed
+- **DropdownBase**: Teleport path now clamps width between min/max constraints instead of blindly matching trigger width. Removed `$width` class from teleport div to prevent `w-full` expanding to viewport.
+- **Datetime**: Set `fitAnchor` to false so calendar panel sizes independently from narrow triggers.
+- **Select**: Default `min-width: 12rem`, `max-width: 32rem`.
+- **Lookup**: Default `min-width: 12rem`, `max-width: 32rem`.
+- **TimePicker**: Default `min-width: 12rem`, `max-width: 22rem`.
+- **Datetime**: Default `min-width: 16rem`, `max-width: 25rem`.
+
+### Fixed
+- **DropdownBase**: Dropdown no longer breaks when trigger container is very narrow (e.g. `max-w-40`).
+
 ## [v1.0.12] - 2026-02-26
 
 ### Fixed

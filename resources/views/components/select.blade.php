@@ -262,6 +262,8 @@
                 preset-for="select"
                 width="{{ $fitTrigger ? 'w-full' : 'min-w-full' }}"
                 :fit-anchor="$fitTrigger"
+                min-width="12rem"
+                max-width="32rem"
                 x-show="open"
                 triggerLabel="{{ $label }}"
                 wire:key="{{ $selectId }}-dropdown"
