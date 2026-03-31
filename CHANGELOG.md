@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.14] - 2026-03-31
+
+### Fixed
+- **BeartropyAssets**: Fixed `render()` generating different `?v=` cache-busting values on every request when assets are not published to `public/`. The `time()` fallback is replaced with `filemtime()` on the package's source files, producing a stable version string that prevents Livewire's `data-navigate-once` from duplicating `<script>` and `<link>` tags during `wire:navigate` SPA navigation.
+- **Nav**: Fixed sidebar highlighting both `/request` and `/requested` when on `/requested`. Child item active detection now uses segment-aware path matching (`/request/` boundary) instead of naive string `startsWith`.
+
 ## [v1.0.13] - 2026-03-05
 
 ### Added

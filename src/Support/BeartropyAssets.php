@@ -22,8 +22,11 @@ class BeartropyAssets
         $cssPath = public_path('beartropy-ui-assets/beartropy-ui.css');
         $jsPath  = public_path('beartropy-ui-assets/beartropy-ui.js');
 
-        $cssVersion = file_exists($cssPath) ? filemtime($cssPath) : time();
-        $jsVersion  = file_exists($jsPath) ? filemtime($jsPath) : time();
+        $cssSourcePath = __DIR__ . '/../../resources/css/beartropy-ui.css';
+        $jsSourcePath  = __DIR__ . '/../../resources/js/beartropy-ui.js';
+
+        $cssVersion = file_exists($cssPath) ? filemtime($cssPath) : filemtime($cssSourcePath);
+        $jsVersion  = file_exists($jsPath) ? filemtime($jsPath) : filemtime($jsSourcePath);
 
         return <<<HTML
             <style data-navigate-once>html.dark{color-scheme:dark}html:not(.dark){color-scheme:light}html:not([data-bt-theme]) body{opacity:0}</style>

@@ -65,7 +65,10 @@ isActiveHref(href, mode = 'exact') {
   const here  = this._norm(this.activePath);
   const there = this._norm(href);
   if (!there) return false; // prevents '' from matching everything
-  return mode === 'startsWith' ? here.startsWith(there) : here === there;
+  if (mode === 'startsWith') {
+    return this._pathStartsWith(this._path(this.activePath), this._path(href));
+  }
+  return here === there;
 },
 hrefFromEl(el) {
   // 1) data-href rendered by Blade
