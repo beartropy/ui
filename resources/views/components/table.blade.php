@@ -15,14 +15,16 @@
 >
     <!-- Search and actions -->
     <div class="flex items-center justify-between {{ $colorPreset['searchbox'] }}">
-        <template x-if="searchable">
-            <x-beartropy-ui::input
-                sm
-                type="text"
-                x-model="search"
-                placeholder="{{ __('beartropy-ui::ui.search') }}"
-            />
-        </template>
+        <div>
+            <template x-if="searchable">
+                <x-beartropy-ui::input
+                    sm
+                    type="text"
+                    x-model="search"
+                    placeholder="{{ __('beartropy-ui::ui.search') }}"
+                />
+            </template>
+        </div>
         @if(isset($actions))
             <div>{{ $actions }}</div>
         @endif
