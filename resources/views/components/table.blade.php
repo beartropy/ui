@@ -14,8 +14,8 @@
     class="w-full"
 >
     <!-- Search and actions -->
-    <div class="flex items-center justify-between {{ $colorPreset['searchbox'] }}">
-        <div>
+    <div class="flex items-center justify-between {{ $colorPreset['searchbar'] ?? '' }}">
+        <div class="{{ $colorPreset['searchbox'] }}">
             <template x-if="searchable">
                 <x-beartropy-ui::input
                     sm

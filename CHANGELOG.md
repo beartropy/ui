@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.17] - 2026-04-05
+
+### Fixed
+- **Table**: Moved `max-w-[20rem]` from the outer searchbox container to the search input wrapper so `justify-between` can push the `actions` slot to the right. Added `searchbar` preset key for outer container spacing.
+
 ## [v1.0.16] - 2026-04-05
 
 ### Fixed

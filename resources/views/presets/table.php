@@ -3,7 +3,8 @@
 return [
     'colors' => [
         'beartropy' => [
-            'searchbox'             => 'mb-1 ml-0.5 max-w-[20rem]',
+            'searchbar'             => 'mb-1',
+            'searchbox'             => 'ml-0.5 max-w-[20rem]',
             'thead'                 => 'bg-beartropy-200 dark:bg-beartropy-900 text-beartropy-800 dark:text-beartropy-200',
             'th'                    => 'font-semibold',
             'row'                   => 'text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors',
