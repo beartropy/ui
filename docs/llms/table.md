@@ -27,6 +27,12 @@
 | allowHtml | `bool` | `false` | `:allow-html="true"` |
 | color | `?string` | `null` | `color="beartropy"` |
 
+## Slots
+
+| Slot | Purpose | Default |
+|------|---------|---------|
+| `actions` | Content rendered top-right of the table, opposite the search input (e.g., buttons, filters) | _(empty)_ |
+
 ## Magic Attributes
 
 ### Colors (mutually exclusive)
@@ -141,6 +147,13 @@ colors → {color} → {
 
 {{-- No pagination --}}
 <x-bt-table :items="$data" :paginated="false" />
+
+{{-- Actions slot (top-right content) --}}
+<x-bt-table :items="$users" :columns="['name' => 'Name', 'email' => 'Email']">
+    <x-slot name="actions">
+        <x-bt-button primary sm>Add User</x-bt-button>
+    </x-slot>
+</x-bt-table>
 
 {{-- Colored --}}
 <x-bt-table :items="$data" color="beartropy" />

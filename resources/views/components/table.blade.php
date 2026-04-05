@@ -13,8 +13,8 @@
     })"
     class="w-full"
 >
-    <!-- Search and counter -->
-    <div class="{{ $colorPreset['searchbox'] }}">
+    <!-- Search and actions -->
+    <div class="flex items-center justify-between {{ $colorPreset['searchbox'] }}">
         <template x-if="searchable">
             <x-beartropy-ui::input
                 sm
@@ -23,6 +23,9 @@
                 placeholder="{{ __('beartropy-ui::ui.search') }}"
             />
         </template>
+        @if(isset($actions))
+            <div>{{ $actions }}</div>
+        @endif
     </div>
 
     <!-- Table -->

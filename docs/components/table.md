@@ -22,6 +22,20 @@ A data table component with client-side sorting, searching, and pagination power
 | `allow-html` | `bool` | `false` | Render cell content as HTML instead of text (use only with trusted data) |
 | `color` | `string\|null` | `null` | Table color preset |
 
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| `actions` | Content rendered in the top-right of the table header, opposite the search input. Useful for action buttons, filters, or other controls. |
+
+```blade
+<x-bt-table :items="$users">
+    <x-slot name="actions">
+        <x-bt-button primary sm>Add User</x-bt-button>
+    </x-slot>
+</x-bt-table>
+```
+
 ## Columns
 
 Columns are auto-detected from the first data item's keys when not specified.

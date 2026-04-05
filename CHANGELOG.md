@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.15] - 2026-04-05
+
+### Added
+- **Table**: `actions` slot for rendering content (buttons, filters) in the top-right of the table header, opposite the search input.
+
 ## [v1.0.14] - 2026-03-31
 
 ### Fixed
