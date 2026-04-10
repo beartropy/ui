@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.18] - 2026-04-10
+
+### Fixed
+- **Dropdown**: Fixed hover/active highlight invisible in dark mode for gray-scale themes (slate, gray, zinc, neutral, stone). These themes used -900 shades indistinguishable from the dropdown background.
+
 ## [v1.0.17] - 2026-04-05
 
 ### Fixed
